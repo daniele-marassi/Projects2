@@ -1,0 +1,32 @@
+﻿@model List<Mair.DigitalSuite.Dashboard.Models.Dto.Automation.PlcDataDto>
+@namespace Mair.DigitalSuite.Dashboard.Views.PlcData
+@using Mair.DigitalSuite.Dashboard.Controllers;
+
+<link href="~/css/table.css" rel="stylesheet" type="text/css" />
+<script src="~/js/Utility.js"></script>
+
+@{
+    ViewData["Title"] = "DashBoard Blazor Charts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = HomeController.Culture;
+}
+
+@using (Html.BeginForm("PlcDataList", "PlcData", FormMethod.Get))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <h1>@ViewData["Title"]</h1>
+
+    <hr />
+
+    <div>
+        <div id="ChartAndTableContainer"></div>
+
+        @(await Html.RenderComponentAsync<DashBoardBlazorCharts>(RenderMode.ServerPrerendered, new { Token = ViewBag.AccessTokenCookie }))
+    </div>
+
+    <div class="text-danger">
+        @Html.ValidationSummary(false)
+    </div>
+}

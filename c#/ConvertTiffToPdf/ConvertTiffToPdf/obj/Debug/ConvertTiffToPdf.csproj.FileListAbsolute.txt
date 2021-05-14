@@ -1,0 +1,7 @@
+C:\Users\daniele.marassi\OneDrive\Projects\c#\ConvertTiffToPdf\ConvertTiffToPdf\bin\Debug\ConvertTiffToPdf.exe.config
+C:\Users\daniele.marassi\OneDrive\Projects\c#\ConvertTiffToPdf\ConvertTiffToPdf\bin\Debug\ConvertTiffToPdf.exe
+C:\Users\daniele.marassi\OneDrive\Projects\c#\ConvertTiffToPdf\ConvertTiffToPdf\bin\Debug\ConvertTiffToPdf.pdb
+C:\Users\daniele.marassi\OneDrive\Projects\c#\ConvertTiffToPdf\ConvertTiffToPdf\obj\Debug\ConvertTiffToPdf.csprojResolveAssemblyReference.cache
+C:\Users\daniele.marassi\OneDrive\Projects\c#\ConvertTiffToPdf\ConvertTiffToPdf\obj\Debug\ConvertTiffToPdf.csproj.CoreCompileInputs.cache
+C:\Users\daniele.marassi\OneDrive\Projects\c#\ConvertTiffToPdf\ConvertTiffToPdf\obj\Debug\ConvertTiffToPdf.exe
+C:\Users\daniele.marassi\OneDrive\Projects\c#\ConvertTiffToPdf\ConvertTiffToPdf\obj\Debug\ConvertTiffToPdf.pdb

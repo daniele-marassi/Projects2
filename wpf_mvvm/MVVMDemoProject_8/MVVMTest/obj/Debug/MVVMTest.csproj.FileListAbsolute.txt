@@ -1,0 +1,16 @@
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\MVVMDemoProject_8\MVVMTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\MVVMDemoProject_8\MVVMTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\MVVMDemoProject_8\MVVMTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\MVVMDemoProject_8\MVVMTest\bin\Debug\MVVMTest.dll
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\MVVMDemoProject_8\MVVMTest\bin\Debug\MVVMTest.pdb
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\MVVMDemoProject_8\MVVMTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\MVVMDemoProject_8\MVVMTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\MVVMDemoProject_8\MVVMTest\bin\Debug\MVVMDemo.exe
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\MVVMDemoProject_8\MVVMTest\bin\Debug\MVVMDemo.pdb
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\MVVMDemoProject_8\MVVMTest\bin\Debug\MVVMDemo.exe.config
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\MVVMDemoProject_8\MVVMTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\MVVMDemoProject_8\MVVMTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\MVVMDemoProject_8\MVVMTest\obj\Debug\MVVMTest.csprojResolveAssemblyReference.cache
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\MVVMDemoProject_8\MVVMTest\obj\Debug\MVVMTest.csproj.CoreCompileInputs.cache
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\MVVMDemoProject_8\MVVMTest\obj\Debug\MVVMTest.dll
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\MVVMDemoProject_8\MVVMTest\obj\Debug\MVVMTest.pdb

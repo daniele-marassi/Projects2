@@ -1,0 +1,9 @@
+C:\Users\Administrator\Desktop\Addins\csAddinsTest\BatchConvert\bin\Debug\Resources\BCNVfile.bcnv
+C:\Users\Administrator\Desktop\Addins\csAddinsTest\BatchConvert\bin\Debug\BatchConvert.exe
+C:\Users\Administrator\Desktop\Addins\csAddinsTest\BatchConvert\bin\Debug\BatchConvert.pdb
+C:\Users\Administrator\Desktop\Addins\csAddinsTest\BatchConvert\obj\Debug\BatchConvert.csprojAssemblyReference.cache
+C:\Users\Administrator\Desktop\Addins\csAddinsTest\BatchConvert\obj\Debug\BatchConvert.BatchConvertForms.resources
+C:\Users\Administrator\Desktop\Addins\csAddinsTest\BatchConvert\obj\Debug\BatchConvert.Properties.Resources.resources
+C:\Users\Administrator\Desktop\Addins\csAddinsTest\BatchConvert\obj\Debug\BatchConvert.csproj.GenerateResource.cache
+C:\Users\Administrator\Desktop\Addins\csAddinsTest\BatchConvert\obj\Debug\BatchConvert.exe
+C:\Users\Administrator\Desktop\Addins\csAddinsTest\BatchConvert\obj\Debug\BatchConvert.pdb

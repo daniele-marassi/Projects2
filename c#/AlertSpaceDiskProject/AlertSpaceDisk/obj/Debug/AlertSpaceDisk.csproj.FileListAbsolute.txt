@@ -1,0 +1,24 @@
+e:\users\marassid\documents\visual studio 2015\Projects\AlertSpaceDisk\AlertSpaceDisk\bin\Debug\AlertSpaceDisk.exe.config
+e:\users\marassid\documents\visual studio 2015\Projects\AlertSpaceDisk\AlertSpaceDisk\obj\Debug\AlertSpaceDisk.csprojResolveAssemblyReference.cache
+e:\users\marassid\documents\visual studio 2015\Projects\AlertSpaceDisk\AlertSpaceDisk\bin\Debug\AlertSpaceDisk.exe
+e:\users\marassid\documents\visual studio 2015\Projects\AlertSpaceDisk\AlertSpaceDisk\bin\Debug\AlertSpaceDisk.pdb
+e:\users\marassid\documents\visual studio 2015\Projects\AlertSpaceDisk\AlertSpaceDisk\obj\Debug\AlertSpaceDisk.exe
+e:\users\marassid\documents\visual studio 2015\Projects\AlertSpaceDisk\AlertSpaceDisk\obj\Debug\AlertSpaceDisk.pdb
+e:\Users\marassid\Desktop\AlertSpaceDiskProject\AlertSpaceDisk\bin\Debug\AlertSpaceDisk.exe.config
+e:\Users\marassid\Desktop\AlertSpaceDiskProject\AlertSpaceDisk\obj\Debug\AlertSpaceDisk.exe
+e:\Users\marassid\Desktop\AlertSpaceDiskProject\AlertSpaceDisk\obj\Debug\AlertSpaceDisk.pdb
+e:\Users\marassid\Desktop\AlertSpaceDiskProject\AlertSpaceDisk\bin\Debug\AlertSpaceDisk.exe
+e:\Users\marassid\Desktop\AlertSpaceDiskProject\AlertSpaceDisk\bin\Debug\AlertSpaceDisk.pdb
+e:\Users\marassid\Desktop\AlertSpaceDiskProject\AlertSpaceDisk\obj\Debug\AlertSpaceDisk.csprojResolveAssemblyReference.cache
+C:\Users\daniele.marassi\Desktop\AlertSpaceDiskProject\AlertSpaceDisk\bin\Debug\AlertSpaceDisk.exe.config
+C:\Users\daniele.marassi\Desktop\AlertSpaceDiskProject\AlertSpaceDisk\obj\Debug\AlertSpaceDisk.exe
+C:\Users\daniele.marassi\Desktop\AlertSpaceDiskProject\AlertSpaceDisk\obj\Debug\AlertSpaceDisk.pdb
+C:\Users\daniele.marassi\Desktop\AlertSpaceDiskProject\AlertSpaceDisk\bin\Debug\AlertSpaceDisk.exe
+C:\Users\daniele.marassi\Desktop\AlertSpaceDiskProject\AlertSpaceDisk\bin\Debug\AlertSpaceDisk.pdb
+C:\Users\daniele.marassi\Desktop\AlertSpaceDiskProject\AlertSpaceDisk\obj\Debug\AlertSpaceDisk.csprojResolveAssemblyReference.cache
+C:\Users\daniele.marassi\OneDrive\Projects\c#\AlertSpaceDiskProject\AlertSpaceDisk\bin\Debug\AlertSpaceDisk.exe.config
+C:\Users\daniele.marassi\OneDrive\Projects\c#\AlertSpaceDiskProject\AlertSpaceDisk\bin\Debug\AlertSpaceDisk.exe
+C:\Users\daniele.marassi\OneDrive\Projects\c#\AlertSpaceDiskProject\AlertSpaceDisk\bin\Debug\AlertSpaceDisk.pdb
+C:\Users\daniele.marassi\OneDrive\Projects\c#\AlertSpaceDiskProject\AlertSpaceDisk\obj\Debug\AlertSpaceDisk.csprojResolveAssemblyReference.cache
+C:\Users\daniele.marassi\OneDrive\Projects\c#\AlertSpaceDiskProject\AlertSpaceDisk\obj\Debug\AlertSpaceDisk.exe
+C:\Users\daniele.marassi\OneDrive\Projects\c#\AlertSpaceDiskProject\AlertSpaceDisk\obj\Debug\AlertSpaceDisk.pdb

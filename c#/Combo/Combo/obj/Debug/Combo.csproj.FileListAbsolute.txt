@@ -1,0 +1,10 @@
+C:\Users\ev\OneDrive\Projects\c#\Combo\Combo\bin\Debug\Combo.exe.config
+C:\Users\ev\OneDrive\Projects\c#\Combo\Combo\bin\Debug\Combo.exe
+C:\Users\ev\OneDrive\Projects\c#\Combo\Combo\bin\Debug\Combo.pdb
+C:\Users\ev\OneDrive\Projects\c#\Combo\Combo\obj\Debug\Combo.csprojResolveAssemblyReference.cache
+C:\Users\ev\OneDrive\Projects\c#\Combo\Combo\obj\Debug\Combo.Combo.resources
+C:\Users\ev\OneDrive\Projects\c#\Combo\Combo\obj\Debug\Combo.Properties.Resources.resources
+C:\Users\ev\OneDrive\Projects\c#\Combo\Combo\obj\Debug\Combo.csproj.GenerateResource.Cache
+C:\Users\ev\OneDrive\Projects\c#\Combo\Combo\obj\Debug\Combo.csproj.CoreCompileInputs.cache
+C:\Users\ev\OneDrive\Projects\c#\Combo\Combo\obj\Debug\Combo.exe
+C:\Users\ev\OneDrive\Projects\c#\Combo\Combo\obj\Debug\Combo.pdb

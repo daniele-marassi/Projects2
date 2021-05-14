@@ -1,0 +1,65 @@
+﻿@model Supp.Site.Models.WebSpeechDto
+
+@{
+    ViewData["Title"] = "WebSpeech Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Phrase)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Phrase)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Operation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Operation)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Parameters)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Parameters)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Host)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Host)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Answer)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Answer)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FinalStep)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FinalStep)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<div class="text-danger">
+    @Html.ValidationSummary(false)
+</div>

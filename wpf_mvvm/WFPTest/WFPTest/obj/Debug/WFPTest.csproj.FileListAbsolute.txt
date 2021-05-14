@@ -1,0 +1,15 @@
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\WFPTest\WFPTest\bin\Debug\WFPTest.exe.config
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\WFPTest\WFPTest\bin\Debug\WFPTest.exe
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\WFPTest\WFPTest\bin\Debug\WFPTest.pdb
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\WFPTest\WFPTest\obj\Debug\WFPTest.csprojResolveAssemblyReference.cache
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\WFPTest\WFPTest\obj\Debug\MainWindow.g.cs
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\WFPTest\WFPTest\obj\Debug\App.g.cs
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\WFPTest\WFPTest\obj\Debug\WFPTest_MarkupCompile.cache
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\WFPTest\WFPTest\obj\Debug\WFPTest_MarkupCompile.lref
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\WFPTest\WFPTest\obj\Debug\MainWindow.baml
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\WFPTest\WFPTest\obj\Debug\WFPTest.g.resources
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\WFPTest\WFPTest\obj\Debug\WFPTest.Properties.Resources.resources
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\WFPTest\WFPTest\obj\Debug\WFPTest.csproj.GenerateResource.Cache
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\WFPTest\WFPTest\obj\Debug\WFPTest.csproj.CoreCompileInputs.cache
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\WFPTest\WFPTest\obj\Debug\WFPTest.exe
+C:\Users\daniele.marassi\OneDrive\Projects\wpf_mvvm\WFPTest\WFPTest\obj\Debug\WFPTest.pdb

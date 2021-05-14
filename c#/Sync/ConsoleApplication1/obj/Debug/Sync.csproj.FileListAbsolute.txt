@@ -1,0 +1,14 @@
+C:\Users\daniele.marassi\Desktop\Sync\SyncScript\ConsoleApplication1\bin\Debug\Sync.exe.config
+C:\Users\daniele.marassi\Desktop\Sync\ConsoleApplication1\bin\Debug\Sync.exe.config
+C:\Users\daniele.marassi\OneDrive\Projects\c#\Sync\ConsoleApplication1\bin\Debug\Sync.exe.config
+C:\Users\daniele.marassi\OneDrive\Projects\c#\Sync\ConsoleApplication1\bin\Debug\Sync.exe
+C:\Users\daniele.marassi\OneDrive\Projects\c#\Sync\ConsoleApplication1\bin\Debug\Sync.pdb
+C:\Users\daniele.marassi\OneDrive\Projects\c#\Sync\ConsoleApplication1\obj\Debug\Sync.csprojResolveAssemblyReference.cache
+C:\Users\daniele.marassi\OneDrive\Projects\c#\Sync\ConsoleApplication1\obj\Debug\Sync.exe
+C:\Users\daniele.marassi\OneDrive\Projects\c#\Sync\ConsoleApplication1\obj\Debug\Sync.pdb
+C:\Users\ev\OneDrive\Projects\c#\Sync\ConsoleApplication1\bin\Debug\Sync.exe.config
+C:\Users\ev\OneDrive\Projects\c#\Sync\ConsoleApplication1\obj\Debug\Sync.exe
+C:\Users\ev\OneDrive\Projects\c#\Sync\ConsoleApplication1\obj\Debug\Sync.pdb
+C:\Users\ev\OneDrive\Projects\c#\Sync\ConsoleApplication1\bin\Debug\Sync.exe
+C:\Users\ev\OneDrive\Projects\c#\Sync\ConsoleApplication1\bin\Debug\Sync.pdb
+C:\Users\ev\OneDrive\Projects\c#\Sync\ConsoleApplication1\obj\Debug\Sync.csprojResolveAssemblyReference.cache

@@ -1,0 +1,75 @@
+	<select class="listbox" style="height:38px;" id="roles_cmb" multiple="multiple">
+		@foreach (var item in data.Roles)
+		{
+			<option value="@item.Id">@item.Type</option>
+		}
+	</select>
+	
+    private static System.Timers.Timer aTimer;
+    private bool loaded = false;	
+			
+	private void SetTimer()
+    {
+        // Create a timer with a two second interval.
+        aTimer = new System.Timers.Timer(500);
+        // Hook up the Elapsed event for the timer. 
+        aTimer.Elapsed += OnTimedEvent;
+        aTimer.AutoReset = true;
+        aTimer.Enabled = true;
+    }
+
+    private async void OnTimedEvent(Object source, ElapsedEventArgs e)
+    {
+        aTimer.Stop();
+        aTimer.Dispose();
+        
+        await SetValuesForMultiSelect();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!loaded) await InitMultiSelect();
+        if (!loaded && !firstRender)
+        {
+            loaded = true;           
+            SetTimer();
+        } 
+    }	
+	
+    private async Task InitMultiSelect()
+    {
+        //Init MultiSelect
+        var _par = new List<string>();
+
+        var _obj = _par.Cast<object>().ToArray();
+
+        await JsRuntime.InvokeVoidAsync("InitMultiSelect", _obj);
+    }
+
+    private async Task SetValuesForMultiSelect()
+    {
+        //Set Values For MultiSelect roles_cmb
+        var _par = new List<string>();
+        _par.Add("roles_cmb");
+        _par.Add(JsonConvert.SerializeObject(data.RoleIds));
+        _par.Add(data.Roles.Count().ToString());
+
+        var _obj = _par.Cast<object>().ToArray();
+
+        await JsRuntime.InvokeVoidAsync("SetValuesForMultiSelect", _obj);
+    }
+
+    private async Task Submit()
+    {
+        //Get Values From MultiSelect
+        var _par = new List<string>();
+        _par.Add("roles_cmb");
+
+        var _obj = _par.Cast<object>().ToArray();
+
+        var values = await JsRuntime.InvokeAsync<string>("GetValuesFromMultiSelect", _obj);
+
+        data.RoleIds = JsonConvert.DeserializeObject<List<long>>(values);
+
+        Console.WriteLine("###########" + JsonConvert.SerializeObject(data.RoleIds) + "############");
+    }	

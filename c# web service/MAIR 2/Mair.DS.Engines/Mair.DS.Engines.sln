@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mair.DS.Engines", "Mair.DS.Engines.csproj", "{9062AB0F-A2D6-4C7F-864F-5444DBE4496E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9062AB0F-A2D6-4C7F-864F-5444DBE4496E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9062AB0F-A2D6-4C7F-864F-5444DBE4496E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9062AB0F-A2D6-4C7F-864F-5444DBE4496E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9062AB0F-A2D6-4C7F-864F-5444DBE4496E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {60F28AB3-B774-439D-A532-73F770C2A2ED}
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN2019 - Subversion Support for Visual Studio
+	EndGlobalSection
+EndGlobal

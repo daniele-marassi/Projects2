@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>Mair.DS.Database</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{9cbf19a1-208b-41d3-9ef3-595a50ba7f7b}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql140DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>Mair.DS.Database</RootNamespace>
+    <AssemblyName>Mair.DS.Database</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <SccProjectName>Svn</SccProjectName>
+    <SccProvider>SubversionScc</SccProvider>
+    <SccAuxPath>Svn</SccAuxPath>
+    <SccLocalPath>Svn</SccLocalPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="Automation" />
+    <Folder Include="Automation\Schema" />
+    <Folder Include="Automation\Tables" />
+    <Folder Include="Automation\Scripts" />
+    <Folder Include="Automation\Procedures" />
+    <Folder Include="Automation\Views" />
+    <Folder Include="Auth" />
+    <Folder Include="Auth\Procedures" />
+    <Folder Include="Auth\Schema" />
+    <Folder Include="Auth\Scripts" />
+    <Folder Include="Auth\Tables" />
+    <Folder Include="Auth\Views" />
+    <Folder Include="EventManager" />
+    <Folder Include="EventManager\Views" />
+    <Folder Include="EventManager\Tables" />
+    <Folder Include="EventManager\Scripts" />
+    <Folder Include="EventManager\Schema" />
+    <Folder Include="EventManager\Procedures" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Automation\Tables\Events.sql" />
+    <Build Include="Automation\Tables\Nodes.sql" />
+    <Build Include="Automation\Tables\Tags.sql" />
+    <Build Include="Automation\Tables\Timers.sql" />
+    <Build Include="Automation\Schema\Automation.sql" />
+    <Build Include="Automation\Tables\SimulatedConnector.sql" />
+    <Build Include="Auth\Schema\Auth.sql" />
+    <Build Include="Auth\Tables\Authentications.sql" />
+    <Build Include="Auth\Tables\Users.sql" />
+    <Build Include="Auth\Tables\UserRoles.sql" />
+    <Build Include="Auth\Tables\Roles.sql" />
+    <Build Include="EventManager\Schema\EventManager.sql" />
+    <Build Include="EventManager\Tables\Actions.sql" />
+    <Build Include="EventManager\Tables\ActionsType.sql" />
+    <Build Include="EventManager\Tables\Conditions.sql" />
+    <Build Include="EventManager\Tables\EmailActions.sql" />
+    <Build Include="EventManager\Tables\EmailActionsData.sql" />
+    <Build Include="EventManager\Tables\EventLog.sql" />
+    <Build Include="EventManager\Tables\Events.sql" />
+    <Build Include="EventManager\Tables\NotificationActions.sql" />
+    <Build Include="EventManager\Tables\NotificationActionsData.sql" />
+    <Build Include="EventManager\Tables\DbActions.sql" />
+    <Build Include="EventManager\Tables\DbActionsDetails.sql" />
+    <Build Include="EventManager\Tables\DbActionsData.sql" />
+    <Build Include="EventManager\Tables\DbActionsDetailsData.sql" />
+    <Build Include="Auth\Tables\RolePaths.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Mair.DS.Database.Development.publish.xml" />
+    <None Include="Mair.DS.Database.publish.xml" />
+    <None Include="Auth\Scripts\Mock.sql" />
+    <None Include="Mair_1.DS.Database.publish.xml" />
+    <None Include="Automation\Scripts\AutomationMock.sql" />
+    <None Include="Mair_2.DS.Database.publish.xml" />
+    <None Include="EventManager\Scripts\EventManagerMock.sql" />
+    <None Include="Mair_5.DS.Database.publish.xml" />
+    <None Include="Mair_6.DS.Database.publish.xml" />
+    <None Include="Mair_7.DS.Database.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="Mair.DS.Database.refactorlog" />
+  </ItemGroup>
+</Project>

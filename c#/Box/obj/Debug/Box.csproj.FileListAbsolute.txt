@@ -1,0 +1,10 @@
+C:\Users\ev\GoogleDriveShare\Projects\c#\Box\bin\Debug\Box.exe.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\Box\bin\Debug\Box.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\Box\bin\Debug\Box.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\Box\obj\Debug\Box.Form1.resources
+C:\Users\ev\GoogleDriveShare\Projects\c#\Box\obj\Debug\Box.Properties.Resources.resources
+C:\Users\ev\GoogleDriveShare\Projects\c#\Box\obj\Debug\Box.csproj.GenerateResource.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\Box\obj\Debug\Box.csproj.CoreCompileInputs.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\Box\obj\Debug\Box.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\Box\obj\Debug\Box.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\Box\obj\Debug\Box.csprojAssemblyReference.cache

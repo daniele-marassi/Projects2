@@ -1,0 +1,13 @@
+C:\Users\ev\OneDrive\Projects\c#\ApplicationStart\ApplicationStart\bin\Debug\ApplicationStart.exe.config
+C:\Users\ev\OneDrive\Projects\c#\ApplicationStart\ApplicationStart\bin\Debug\ApplicationStart.exe
+C:\Users\ev\OneDrive\Projects\c#\ApplicationStart\ApplicationStart\bin\Debug\ApplicationStart.pdb
+C:\Users\ev\OneDrive\Projects\c#\ApplicationStart\ApplicationStart\obj\Debug\ApplicationStart.csprojResolveAssemblyReference.cache
+C:\Users\ev\OneDrive\Projects\c#\ApplicationStart\ApplicationStart\obj\Debug\ApplicationStart.csproj.CoreCompileInputs.cache
+C:\Users\ev\OneDrive\Projects\c#\ApplicationStart\ApplicationStart\obj\Debug\ApplicationStart.exe
+C:\Users\ev\OneDrive\Projects\c#\ApplicationStart\ApplicationStart\obj\Debug\ApplicationStart.pdb
+C:\Users\ev\OneDrive\Projects\c#\ApplicationStartProject\ApplicationStart\bin\Debug\ApplicationStart.exe.config
+C:\Users\ev\OneDrive\Projects\c#\ApplicationStartProject\ApplicationStart\bin\Debug\ApplicationStart.exe
+C:\Users\ev\OneDrive\Projects\c#\ApplicationStartProject\ApplicationStart\bin\Debug\ApplicationStart.pdb
+C:\Users\ev\OneDrive\Projects\c#\ApplicationStartProject\ApplicationStart\obj\Debug\ApplicationStart.csproj.CoreCompileInputs.cache
+C:\Users\ev\OneDrive\Projects\c#\ApplicationStartProject\ApplicationStart\obj\Debug\ApplicationStart.exe
+C:\Users\ev\OneDrive\Projects\c#\ApplicationStartProject\ApplicationStart\obj\Debug\ApplicationStart.pdb

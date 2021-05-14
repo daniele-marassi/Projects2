@@ -1,0 +1,169 @@
+﻿@model Supp.Site.Models.MediaDto
+
+@{
+    ViewData["Title"] = "Delete Media";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.GoogleDriveAccounts.FirstOrDefault().Account)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.GoogleDriveAccounts.Where(_ => _.Id == model.GoogleDriveAccountId).FirstOrDefault().Account)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.FileId)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.FileId)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Path)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Path)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ModifiedTime)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ModifiedTime)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CreatedTime)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CreatedTime)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Size)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Size)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.FileExtension)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.FileExtension)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.MimeType)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.MimeType)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.VideoDurationMillis)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.VideoDurationMillis)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.VideoHeight)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.VideoHeight)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.VideoWidth)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.VideoWidth)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ImageTime)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ImageTime)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ImageWidth)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ImageWidth)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ImageHeight)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ImageHeight)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ImageLocationAltitude)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ImageLocationAltitude)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ImageLocationLatitude)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ImageLocationLatitude)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ImageLocationLongitude)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ImageLocationLongitude)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.File)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.File)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Thumbnail)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Thumbnail)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ThumbnailWidth)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ThumbnailWidth)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ThumbnailHeight)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ThumbnailHeight)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" /><input type="hidden" asp-for="InsDateTime" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
+
+<div class="text-danger">
+    @Html.ValidationSummary(false)
+</div>

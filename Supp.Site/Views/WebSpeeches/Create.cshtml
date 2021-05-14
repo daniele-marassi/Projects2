@@ -1,0 +1,67 @@
+﻿@model Supp.Site.Models.WebSpeechDto
+
+@{
+    ViewData["Title"] = "Create WebSpeech";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control textBoxCustom" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Phrase" class="control-label"></label>
+                <input asp-for="Phrase" class="form-control textBoxCustom" />
+                <span asp-validation-for="Phrase" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Operation" class="control-label"></label>
+                <input asp-for="Operation" class="form-control textBoxCustom" />
+                <span asp-validation-for="Operation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Parameters" class="control-label"></label>
+                <input asp-for="Parameters" class="form-control textBoxCustom" />
+                <span asp-validation-for="Parameters" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Host" class="control-label"></label>
+                <input asp-for="Host" class="form-control textBoxCustom" />
+                <span asp-validation-for="Host" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Answer" class="control-label"></label>
+                <input asp-for="Answer" class="form-control textBoxCustom" />
+                <span asp-validation-for="Answer" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="FinalStep" /> @Html.DisplayNameFor(model => model.FinalStep)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<div class="text-danger">
+    @Html.ValidationSummary(false)
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

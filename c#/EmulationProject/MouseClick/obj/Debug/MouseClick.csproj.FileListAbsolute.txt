@@ -1,0 +1,12 @@
+C:\Users\daniele.marassi\OneDrive\Projects\c#\EmulationProject\MouseClick\bin\Debug\MouseClick.exe.config
+C:\Users\daniele.marassi\OneDrive\Projects\c#\EmulationProject\MouseClick\bin\Debug\MouseClick.exe
+C:\Users\daniele.marassi\OneDrive\Projects\c#\EmulationProject\MouseClick\bin\Debug\MouseClick.pdb
+C:\Users\daniele.marassi\OneDrive\Projects\c#\EmulationProject\MouseClick\obj\Debug\MouseClick.MouseClick.resources
+C:\Users\daniele.marassi\OneDrive\Projects\c#\EmulationProject\MouseClick\obj\Debug\MouseClick.Properties.Resources.resources
+C:\Users\daniele.marassi\OneDrive\Projects\c#\EmulationProject\MouseClick\obj\Debug\MouseClick.csproj.GenerateResource.Cache
+C:\Users\daniele.marassi\OneDrive\Projects\c#\EmulationProject\MouseClick\obj\Debug\MouseClick.csproj.CoreCompileInputs.cache
+C:\Users\daniele.marassi\OneDrive\Projects\c#\EmulationProject\MouseClick\obj\Debug\MouseClick.exe
+C:\Users\daniele.marassi\OneDrive\Projects\c#\EmulationProject\MouseClick\obj\Debug\MouseClick.pdb
+C:\Users\daniele.marassi\OneDrive\Projects\c#\EmulationProject\MouseClick\obj\Debug\MouseClick.csprojResolveAssemblyReference.cache
+C:\Users\daniele.marassi\OneDrive\Projects\c#\EmulationProject\MouseClick\bin\Debug\Additional.dll
+C:\Users\daniele.marassi\OneDrive\Projects\c#\EmulationProject\MouseClick\bin\Debug\Additional.pdb

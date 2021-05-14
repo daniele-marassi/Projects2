@@ -1,0 +1,116 @@
+﻿@page "/login"
+@using Mair.DS.Client.Web.Repositories.Auth
+@using Mair.DS.Client.Web.Common
+@using System.Net.Http
+@using Mair.DS.Client.Web.Models.Params.Auth
+@using Mair.DS.Client.Web.Repositories
+
+@inject HttpClient Http
+@inject IJSRuntime JsRuntime
+@inject NavigationManager Navigation
+
+<h1>Login</h1>
+
+<div class="container">
+    <div>
+        <label for="uname"><b>Username</b></label>
+        <input type="text" placeholder="Enter Username" @bind="Username" required>
+    </div>
+    <div>
+        <label for="psw"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" @bind="Password" required>
+    </div>
+    <div>
+        <button class="btn btn-primary" @onclick="Authentication">Submit</button>
+    </div>
+
+    <div style="margin-top:100px;">
+        <label style="color:#ff0000; font-weight:bold;">@Errors</label>
+    </div>
+</div>
+
+@code {
+    protected string Username { get; set; }
+    protected string Password { get; set; }
+    protected string Errors { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+    }
+
+    private async void Authentication()
+    {
+        AuthenticationLoginParam authenticationLoginParam = new AuthenticationLoginParam() { UserName = this.Username, Password = this.Password };
+
+        var authenticationsRepository = new AuthenticationsRepository();
+
+        // try login
+        var result = await authenticationsRepository.Login(Username, Password);
+
+        if (result.Successful && result.IsAuthenticated)
+        {
+            // save token in cookies
+            var date = DateTime.UtcNow.AddSeconds(Defaults.CookieExpireInSeconds);
+
+            //Token
+            List<string> par = new List<string>();
+            par.Add(Defaults.MairDSClientWebAccessTokenCookieName);
+            par.Add(result.Data.FirstOrDefault().Token);
+            par.Add(date.ToString());
+            par.Add("");
+            var obj = par.Cast<object>().ToArray();
+            await JsRuntime.InvokeVoidAsync("SetCookie", obj);
+
+            //UserId
+            par = new List<string>();
+            par.Add(Defaults.MairDSClientWebAuthenticatedUserIdCookieName);
+            par.Add(result.Data.FirstOrDefault().UserId.ToString());
+            par.Add(date.ToString());
+            par.Add("");
+            obj = par.Cast<object>().ToArray();
+            await JsRuntime.InvokeVoidAsync("SetCookie", obj);
+
+            //UserName
+            par = new List<string>();
+            par.Add(Defaults.MairDSClientWebAuthenticatedUserNameCookieName);
+            par.Add(result.Data.FirstOrDefault().UserName);
+            par.Add(date.ToString());
+            par.Add("");
+            obj = par.Cast<object>().ToArray();
+            await JsRuntime.InvokeVoidAsync("SetCookie", obj);
+
+            var roles = "";
+
+            foreach (var role in result.Data.FirstOrDefault().Roles)
+            {
+                if (roles != String.Empty) roles += " ,";
+                roles += role.ToString();
+            }
+
+            //UserRoles
+            par = new List<string>();
+            par.Add(Defaults.MairDSClientWebAuthenticatedUserRolesCookieName);
+            par.Add(roles);
+            par.Add(date.ToString());
+            par.Add("");
+            obj = par.Cast<object>().ToArray();
+            await JsRuntime.InvokeVoidAsync("SetCookie", obj);
+
+            Errors = String.Empty;
+            StateHasChanged();
+
+            Navigation.NavigateTo("tagdispatcher", true);
+        }
+        else if (result?.OriginalException == null)
+        {
+            Errors = result?.Data?.FirstOrDefault()?.Message + " - " + result?.Message + " - " + result?.OriginalException?.Message;
+            StateHasChanged();
+        }
+        else
+        {
+            Errors = result?.Data?.FirstOrDefault()?.Message + " - " + result?.Message + " - " + result?.OriginalException?.Message;
+            StateHasChanged();
+        }
+    }
+}

@@ -1,0 +1,74 @@
+﻿@model X.PagedList.IPagedList<Mair.DigitalSuite.Dashboard.Models.Dto.Auth.UserRoleDto>
+
+@using Mair.DigitalSuite.Dashboard.Controllers;
+@using X.PagedList.Mvc.Core
+
+<link href="~/css/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewData["Title"] = "UserRole List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = HomeController.Culture;
+}
+
+@using (Html.BeginForm("Index", "UserRoles", FormMethod.Get))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <h1>@ViewData["Title"]</h1>
+
+    <hr />
+
+    <div>
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+        <p>
+            Find: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+              <input type="submit" value="Search" class="btn btn-primary" style="margin-top:-2px;" />
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+
+                    <th id="selectable">
+                        @Html.ActionLink("UserFullName", "Index", new { sortOrder = "UserFullName", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("TypeName", "Index", new { sortOrder = "TypeName", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="borderTitle"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Users.Where(_ => _.Id == item.UserId).FirstOrDefault().UserFullName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserRoleTypes.Where(_ => _.Id == item.UserRoleTypeId).FirstOrDefault().TypeName)
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-danger">
+        @Html.ValidationSummary(false)
+    </div>
+}
+    Page @if (Model != null) {@(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)} of @if (Model != null) {@Model.PageCount}
+
+    @if (Model != null) { @Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))}

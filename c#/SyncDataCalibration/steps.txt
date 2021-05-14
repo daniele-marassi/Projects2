@@ -1,0 +1,9 @@
+1. Recupero Nomi tabelle
+2. Recupero relazioni (foreign key) da tabella
+3. costruzione albero da tenere in memoria
+4. Apertura transazione
+5. (recupero data di sync [da vedere di mettere nel db]
+6. Recupero record da sync
+7. Add/Update records
+8. Loop
+9. Commmit

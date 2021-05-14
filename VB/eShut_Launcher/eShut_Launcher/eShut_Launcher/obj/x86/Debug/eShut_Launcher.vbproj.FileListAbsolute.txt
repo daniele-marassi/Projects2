@@ -1,0 +1,12 @@
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\obj\x86\Debug\eShut.Resources.resources
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\obj\x86\Debug\eShut.vbproj.GenerateResource.Cache
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\obj\x86\Debug\eShut.Form1.resources
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\obj\x86\Debug\eShut.pdb
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\bin\Debug\eShut.exe
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\bin\Debug\eShut.pdb
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\bin\Debug\eShut.xml
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\obj\x86\Debug\eShut.exe
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\obj\x86\Debug\eShut.xml
+C:\Users\eVe\Desktop\PROGETTI\eShut_Launcher\eShut_Launcher\eShut_Launcher\obj\x86\Debug\eShut_Launcher.exe
+C:\Users\eVe\Desktop\PROGETTI\eShut_Launcher\eShut_Launcher\eShut_Launcher\obj\x86\Debug\eShut_Launcher.xml
+C:\Users\eVe\Desktop\PROGETTI\eShut_Launcher\eShut_Launcher\eShut_Launcher\obj\x86\Debug\eShut_Launcher.pdb

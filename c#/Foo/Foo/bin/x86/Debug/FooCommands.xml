@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.2">
+  <CommandSet xml:lang="en-us" Name="commandSet_en-us">
+    <!-- The word/name Cortana uses to activate our app -->
+    <CommandPrefix> Foo, </CommandPrefix>
+    <Example> Get due for Larry Charlton. </Example>
+    <!-- A command for our application service -->
+    <Command Name="fooServiceCommand">
+      <Example> Get due for Larry Charlton </Example>
+      <!-- the values in {} are the parameters passed to our service -->
+      <ListenFor> Get due for {first} {last} </ListenFor>
+      <!-- What Cortana says while activing our service -->
+      <Feedback> Finding {first}'s due </Feedback>
+      <!-- The class in our application service Cortana will call -->
+      <VoiceCommandService Target="FooService"/>
+    </Command>
+    <!-- A command for our universal app ui (this project) -->
+    <Command Name="fooAppCommand">
+      <Example> Show due for Larry Charlton. </Example>
+      <ListenFor> Show due for {first} {last} </ListenFor>
+      <Feedback> Showing {first}'s due </Feedback>
+      <Navigate />
+    </Command>
+    <!-- How Cortana recognizes the parameters, could be PhraseList -->
+    <!-- PhraseLists are limited to a total of 2000 items per Voice Command File -->
+    <PhraseTopic Label="first">
+      <Subject>Person Names</Subject>
+    </PhraseTopic>
+    <PhraseTopic Label="last">
+      <Subject>Person Names</Subject>
+    </PhraseTopic>
+  </CommandSet>
+  <!-- Other CommandSets for other languages -->
+</VoiceCommands>

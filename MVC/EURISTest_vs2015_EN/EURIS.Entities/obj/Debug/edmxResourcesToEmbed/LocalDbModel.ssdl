@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="LocalDbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Catalog">
+    <Key>
+      <PropertyRef Name="Code" />
+    </Key>
+    <Property Name="Code" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Product">
+    <Key>
+      <PropertyRef Name="Code" />
+    </Key>
+    <Property Name="Code" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Price" Type="decimal" Precision="18" Scale="5" />
+  </EntityType>
+  <EntityType Name="ProductsCatalog">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="CatalogCode" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="ProductCode" Type="nvarchar" MaxLength="10" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_dbo_ProductsCatalog_dbo_Catalog_Code">
+    <End Role="Catalog" Type="Self.Catalog" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ProductsCatalog" Type="Self.ProductsCatalog" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Catalog">
+        <PropertyRef Name="Code" />
+      </Principal>
+      <Dependent Role="ProductsCatalog">
+        <PropertyRef Name="CatalogCode" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_ProductsCatalog_dbo_Product_Code">
+    <End Role="Product" Type="Self.Product" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ProductsCatalog" Type="Self.ProductsCatalog" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Product">
+        <PropertyRef Name="Code" />
+      </Principal>
+      <Dependent Role="ProductsCatalog">
+        <PropertyRef Name="ProductCode" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="LocalDbModelStoreContainer">
+    <EntitySet Name="Catalog" EntityType="Self.Catalog" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ProductsCatalog" EntityType="Self.ProductsCatalog" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_dbo_ProductsCatalog_dbo_Catalog_Code" Association="Self.FK_dbo_ProductsCatalog_dbo_Catalog_Code">
+      <End Role="Catalog" EntitySet="Catalog" />
+      <End Role="ProductsCatalog" EntitySet="ProductsCatalog" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_ProductsCatalog_dbo_Product_Code" Association="Self.FK_dbo_ProductsCatalog_dbo_Product_Code">
+      <End Role="Product" EntitySet="Product" />
+      <End Role="ProductsCatalog" EntitySet="ProductsCatalog" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Supp.ServiceHost.Models
+{
+    public class WebSpeechDto
+    {
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public string Phrase { get; set; }
+        public string Operation { get; set; }
+        public string Parameters { get; set; }
+        public string Host { get; set; }
+        public string Answer { get; set; }
+        public bool FinalStep { get; set; }
+
+        public System.DateTime InsDateTime { get; set;}
+    }
+}

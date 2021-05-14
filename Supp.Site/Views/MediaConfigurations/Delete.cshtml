@@ -1,0 +1,43 @@
+﻿@model Supp.Site.Models.MediaConfigurationDto
+
+@{
+    ViewData["Title"] = "Delete Media Configuration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Users.FirstOrDefault().UserFullName)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Users.Where(_ => _.Id == model.UserId).FirstOrDefault().UserFullName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.MaxThumbnailSize)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.MaxThumbnailSize)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.MinThumbnailSize)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.MinThumbnailSize)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" /><input type="hidden" asp-for="InsDateTime" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
+
+<div class="text-danger">
+    @Html.ValidationSummary(false)
+</div>

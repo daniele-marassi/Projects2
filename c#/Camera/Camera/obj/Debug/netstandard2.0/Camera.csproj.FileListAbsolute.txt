@@ -1,0 +1,13 @@
+C:\Users\marassi\OneDrive\Projects\c#\Camera\Camera\bin\Debug\netstandard2.0\Camera.deps.json
+C:\Users\marassi\OneDrive\Projects\c#\Camera\Camera\bin\Debug\netstandard2.0\Camera.dll
+C:\Users\marassi\OneDrive\Projects\c#\Camera\Camera\bin\Debug\netstandard2.0\ref\Camera.dll
+C:\Users\marassi\OneDrive\Projects\c#\Camera\Camera\bin\Debug\netstandard2.0\Camera.pdb
+C:\Users\marassi\OneDrive\Projects\c#\Camera\Camera\obj\Debug\netstandard2.0\Camera.csprojAssemblyReference.cache
+C:\Users\marassi\OneDrive\Projects\c#\Camera\Camera\obj\Debug\netstandard2.0\App.xaml.g.cs
+C:\Users\marassi\OneDrive\Projects\c#\Camera\Camera\obj\Debug\netstandard2.0\MainPage.xaml.g.cs
+C:\Users\marassi\OneDrive\Projects\c#\Camera\Camera\obj\Debug\netstandard2.0\Camera.AssemblyInfoInputs.cache
+C:\Users\marassi\OneDrive\Projects\c#\Camera\Camera\obj\Debug\netstandard2.0\Camera.AssemblyInfo.cs
+C:\Users\marassi\OneDrive\Projects\c#\Camera\Camera\obj\Debug\netstandard2.0\XamlC.stamp
+C:\Users\marassi\OneDrive\Projects\c#\Camera\Camera\obj\Debug\netstandard2.0\Camera.dll
+C:\Users\marassi\OneDrive\Projects\c#\Camera\Camera\obj\Debug\netstandard2.0\ref\Camera.dll
+C:\Users\marassi\OneDrive\Projects\c#\Camera\Camera\obj\Debug\netstandard2.0\Camera.pdb

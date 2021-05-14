@@ -1,0 +1,2 @@
+C:\Users\daniele.marassi\OneDrive\Projects\c#\Foo\Foo\Foo.vbproj;x86
+C:\Users\daniele.marassi\OneDrive\Projects\c#\Foo\FooVoiceCommandService\FooVoiceCommandService.vbproj;x86

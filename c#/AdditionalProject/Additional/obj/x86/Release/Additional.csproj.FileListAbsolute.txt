@@ -1,0 +1,15 @@
+C:\Users\ev\OneDrive\Projects\c#\AdditionalProject\Additional\bin\x86\Release\Additional.dll.config
+C:\Users\ev\OneDrive\Projects\c#\AdditionalProject\Additional\bin\x86\Release\Additional.dll
+C:\Users\ev\OneDrive\Projects\c#\AdditionalProject\Additional\bin\x86\Release\Additional.pdb
+C:\Users\ev\OneDrive\Projects\c#\AdditionalProject\Additional\bin\x86\Release\EntityFramework.dll
+C:\Users\ev\OneDrive\Projects\c#\AdditionalProject\Additional\bin\x86\Release\EntityFramework.SqlServer.dll
+C:\Users\ev\OneDrive\Projects\c#\AdditionalProject\Additional\bin\x86\Release\System.Data.SQLite.dll
+C:\Users\ev\OneDrive\Projects\c#\AdditionalProject\Additional\bin\x86\Release\System.Data.SQLite.EF6.dll
+C:\Users\ev\OneDrive\Projects\c#\AdditionalProject\Additional\bin\x86\Release\System.Data.SQLite.Linq.dll
+C:\Users\ev\OneDrive\Projects\c#\AdditionalProject\Additional\bin\x86\Release\EntityFramework.xml
+C:\Users\ev\OneDrive\Projects\c#\AdditionalProject\Additional\bin\x86\Release\EntityFramework.SqlServer.xml
+C:\Users\ev\OneDrive\Projects\c#\AdditionalProject\Additional\bin\x86\Release\System.Data.SQLite.xml
+C:\Users\ev\OneDrive\Projects\c#\AdditionalProject\Additional\bin\x86\Release\System.Data.SQLite.dll.config
+C:\Users\ev\OneDrive\Projects\c#\AdditionalProject\Additional\obj\x86\Release\Additional.csproj.CoreCompileInputs.cache
+C:\Users\ev\OneDrive\Projects\c#\AdditionalProject\Additional\obj\x86\Release\Additional.dll
+C:\Users\ev\OneDrive\Projects\c#\AdditionalProject\Additional\obj\x86\Release\Additional.pdb

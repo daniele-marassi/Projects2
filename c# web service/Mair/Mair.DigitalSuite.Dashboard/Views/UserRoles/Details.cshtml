@@ -1,0 +1,35 @@
+﻿@model Mair.DigitalSuite.Dashboard.Models.Dto.Auth.UserRoleDto
+
+@{
+    ViewData["Title"] = "UserRole Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Users.FirstOrDefault().UserFullName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Users.Where(_ => _.Id == model.UserId).FirstOrDefault().UserFullName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UserRoleTypes.FirstOrDefault().TypeName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UserRoleTypes.Where(_ => _.Id == model.UserRoleTypeId).FirstOrDefault().TypeName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<div class="text-danger">
+    @Html.ValidationSummary(false)
+</div>

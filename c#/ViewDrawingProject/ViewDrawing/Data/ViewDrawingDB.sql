@@ -1,0 +1,71 @@
+BEGIN TRANSACTION;
+
+DROP TABLE IF EXISTS `ProductLine`;
+CREATE TABLE IF NOT EXISTS `ProductLine` (
+	`ID`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`Name`	VARCHAR (50) NOT NULL DEFAULT ''
+);
+
+DROP TABLE IF EXISTS `Project`;
+CREATE TABLE IF NOT EXISTS `Project` (
+	`ID`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`IDProductLine`	INTEGER NOT NULL,
+	`Name`	VARCHAR (50) NOT NULL DEFAULT '',
+	FOREIGN KEY(IDProductLine) REFERENCES ProductLine(ID)
+);
+
+DROP TABLE IF EXISTS `Item`;
+CREATE TABLE IF NOT EXISTS `Item` (
+	`ID`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`IDProject`	INTEGER NOT NULL,
+	`Name`	VARCHAR (50) NOT NULL DEFAULT '',
+	FOREIGN KEY(IDProject) REFERENCES Project(ID)
+);
+
+DROP TABLE IF EXISTS `Drawing`;
+CREATE TABLE IF NOT EXISTS `Drawing` (
+	`ID`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`IDItem`	INTEGER NOT NULL,
+	`Name`	VARCHAR (50) NOT NULL DEFAULT '',
+	`PathFile`	VARCHAR (4000) NOT NULL DEFAULT '',
+	FOREIGN KEY(IDItem) REFERENCES Item(ID)
+);
+
+INSERT INTO `ProductLine` VALUES (1,'DH');
+INSERT INTO `ProductLine` VALUES (2,'DMH');
+INSERT INTO `ProductLine` VALUES (3,'DWU');
+
+INSERT INTO `Project` VALUES (1,1,'0-100001');
+INSERT INTO `Project` VALUES (2,1,'0-100002');
+INSERT INTO `Project` VALUES (3,2,'0-200001');
+INSERT INTO `Project` VALUES (4,2,'0-200002');
+INSERT INTO `Project` VALUES (5,2,'0-200003');
+INSERT INTO `Project` VALUES (6,3,'0-300001');
+
+INSERT INTO `Item` VALUES (1,1,'FD01-000-000-001');
+INSERT INTO `Item` VALUES (2,1,'FD01-000-000-002');
+INSERT INTO `Item` VALUES (3,2,'FD02-000-000-001');
+INSERT INTO `Item` VALUES (4,3,'FD03-000-000-001');
+INSERT INTO `Item` VALUES (5,4,'FD04-000-000-001');
+INSERT INTO `Item` VALUES (6,4,'FD04-000-000-002');
+INSERT INTO `Item` VALUES (7,4,'FD04-000-000-003');
+INSERT INTO `Item` VALUES (8,5,'FD05-000-000-001');
+INSERT INTO `Item` VALUES (9,6,'FD06-000-000-001');
+INSERT INTO `Item` VALUES (10,6,'FD06-000-000-002');
+
+INSERT INTO `Drawing` VALUES (1,1,'5.511141.N_001','C:\Drawing\5.511141.N_001.TIF');
+INSERT INTO `Drawing` VALUES (2,1,'Derive Components ADN Case','C:\Drawing\Derive Components ADN Case.pdf');
+INSERT INTO `Drawing` VALUES (3,2,'00002530','C:\Drawing\00002530.TIF');
+INSERT INTO `Drawing` VALUES (4,3,'XDM Server Architecture','C:\Drawing\XDM Server Architecture.pdf');
+INSERT INTO `Drawing` VALUES (5,4,'5.511141.N_001','C:\Drawing\5.511141.N_001.TIF');
+INSERT INTO `Drawing` VALUES (6,4,'Technical_Discussion_Danieli_Replication','C:\Drawing\Technical_Discussion_Danieli_Replication.pdf');
+INSERT INTO `Drawing` VALUES (7,4,'Derive Components ADN Case','C:\Drawing\Derive Components ADN Case.pdf');
+INSERT INTO `Drawing` VALUES (8,5,'8.640726.Z_001','C:\Drawing\8.640726.Z_001.TIF');
+INSERT INTO `Drawing` VALUES (9,6,'XDM Server Architecture','C:\Drawing\XDM Server Architecture.pdf');
+INSERT INTO `Drawing` VALUES (10,7,'00002530','C:\Drawing\00002530.TIF');
+INSERT INTO `Drawing` VALUES (11,7,'XDM Server Architecture','C:\Drawing\XDM Server Architecture.pdf');
+INSERT INTO `Drawing` VALUES (12,8,'8.640726.Z_001','C:\Drawing\8.640726.Z_001.TIF');
+INSERT INTO `Drawing` VALUES (13,9,'Derive Components ADN Case','C:\Drawing\Derive Components ADN Case.pdf');
+INSERT INTO `Drawing` VALUES (14,10,'Technical_Discussion_Danieli_Replication','C:\Drawing\Technical_Discussion_Danieli_Replication.pdf');
+INSERT INTO `Drawing` VALUES (15,10,'00002530','C:\Drawing\00002530.TIF');
+COMMIT;

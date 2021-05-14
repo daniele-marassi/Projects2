@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="79287a8b-ae79-4eb4-9409-3267c1779c43" ChangeDateTime="02/14/2020 16:42:43">
+    <Property Name="ElementName" Value="[Automation].[Tags].[IsEnable]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[Automation].[Tags]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="IsEnabled" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="2aad3c74-8f03-43bc-ad86-73dbb44771b1" ChangeDateTime="02/26/2020 09:08:05">
+    <Property Name="ElementName" Value="[Automation].[TagValues].[InsDate]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[Automation].[TagValues]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Created" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1cfe201d-bcc9-4c9a-8034-ffab64377d9b" ChangeDateTime="03/03/2020 16:14:09">
+    <Property Name="ElementName" Value="[Automation].[TagValues].[LastUpdate]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[Automation].[TagValues]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="LastUpdated" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="073e5861-517e-44b3-a843-a95fde84c5f2" ChangeDateTime="04/08/2020 12:06:23">
+    <Property Name="ElementName" Value="[dbo].[WiNmenu].[InDate]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[WiNmenu]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="InsDate" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="4d29a360-bcdd-4476-a653-f7635d0f491a" ChangeDateTime="04/09/2020 12:37:49">
+    <Property Name="ElementName" Value="[EventManager].[DbActions_Data].[Message]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[EventManager].[DbActions_Data]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Name" />
+  </Operation>
+</Operations>

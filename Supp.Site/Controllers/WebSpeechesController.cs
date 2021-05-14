@@ -1,0 +1,765 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Supp.Site.Models;
+using Supp.Site.Repositories;
+using Supp.Site.Common;
+using System.Reflection;
+using NLog;
+using X.PagedList;
+using static Supp.Site.Common.Config;
+using Additional.NLog;
+using Microsoft.AspNetCore.Http;
+using System.Net;
+using System.Diagnostics;
+using System.Management;
+using System.Globalization;
+
+using System.Threading;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
+namespace Supp.Site.Controllers
+{
+    public class WebSpeechesController : Controller
+    {
+        private readonly static Logger classLogger = LogManager.GetCurrentClassLogger();
+        private readonly NLogUtility nLogUtility = new NLogUtility();
+        private readonly WebSpeechesRepository webSpeecheRepo;
+        private readonly ExecutionQueuesRepository executionQueueRepo;
+        private readonly SuppUtility suppUtility;
+        private readonly AuthenticationsRepository authenticationRepo;
+
+        public WebSpeechesController()
+        {
+            webSpeecheRepo = new WebSpeechesRepository();
+            executionQueueRepo = new ExecutionQueuesRepository();
+            suppUtility = new SuppUtility();
+            authenticationRepo = new AuthenticationsRepository();
+        }
+
+        // GET: WebSpeeches
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                WebSpeechResult result = new WebSpeechResult() { Data = new List<WebSpeechDto>() { }, Successful = false };
+                IEnumerable<WebSpeechDto> data;
+
+                try
+                {
+                    var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
+                    var method = currentMethod.Name;
+                    var className = currentMethod.DeclaringType.Name;
+
+                    ViewBag.CurrentSort = sortOrder;
+                    ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name" : "";
+
+                    if (searchString != null)
+                    {
+                        page = 1;
+                    }
+                    else
+                    {
+                        searchString = currentFilter;
+                    }
+
+                    ViewBag.CurrentFilter = searchString;
+
+                    string access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+
+                    result = await webSpeecheRepo.GetAllWebSpeeches(access_token_cookie);
+
+                    if (result.Successful == false)
+                        throw new Exception($"Error - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetAllWebSpeeches)}] - Message: [{result.Message}]");
+
+                    data = from s in result.Data
+                           select s;
+
+                    long val = 0;
+                    Int64.TryParse(searchString, out val);
+
+                    if (val != 0)
+                    {
+                        data = data.Where(_ => _.Id == val);
+                    }
+                    else if (searchString != null && (searchString.Trim().ToLower() == "true" || searchString.Trim().ToLower() == "false"))
+                    {
+                        data = data.Where(_ => _.Id == val);
+                    }
+                    else if (!String.IsNullOrEmpty(searchString))
+                    {
+                        data = data.Where(_ => _.Name.ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Operation.ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Parameters.ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Host.ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Answer.ToUpper().Contains(searchString.ToUpper().Trim())
+                        );
+                    }
+
+                    switch (sortOrder)
+                    {
+                        case "Name":
+                            data = data.OrderBy(_ => _.Name);
+                            break;
+                        case "Operation":
+                            data = data.OrderBy(_ => _.Operation);
+                            break;
+                        case "Parameters":
+                            data = data.OrderBy(_ => _.Parameters);
+                            break;
+                        case "Host":
+                            data = data.OrderBy(_ => _.Host);
+                            break;
+                        case "Answer":
+                            data = data.OrderBy(_ => _.Answer);
+                            break;
+                        case "FinalStep":
+                            data = data.OrderBy(_ => _.FinalStep);
+                            break;
+                        default:
+                            data = data.OrderBy(_ => _.Name);
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.ToString());
+                    ModelState.AddModelError("ModelStateErrors", ex.Message);
+                    suppUtility.AddErrorToCookie(Request, Response, ex.Message);
+
+                    return RedirectToAction("Index", "Home");
+                }
+
+                if (result.Successful && result.Data.Count > 0)
+                {
+                    int pageSize = GeneralSettings.Static.PageSize;
+                    int pageNumber = (page ?? 1);
+                    return View(data.ToPagedList(pageNumber, pageSize));
+                }
+                else
+                {
+                    ModelState.AddModelError("ModelStateErrors", "WebSpeeches not found!");
+                    return View();
+                }
+            }
+        }
+
+        // GET: WebSpeeches/Details/5
+        public async Task<IActionResult> Details(long? id)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                try
+                {
+                    var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
+                    var method = currentMethod.Name;
+                    var className = currentMethod.DeclaringType.Name;
+
+                    if (id == null)
+                        throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
+
+                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
+                    var data = result.Data.FirstOrDefault();
+
+                    if (result.Successful == false || data == null)
+                        throw new Exception($"Error [Data not found!] - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetWebSpeechesById)}] - Message: [{result.Message}]");
+
+                    return View(data);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.ToString());
+                    ModelState.AddModelError("ModelStateErrors", ex.Message);
+                    return View();
+                }
+            }
+        }
+
+        // GET: WebSpeeches/Create
+        public IActionResult Create()
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                return View();
+            }
+        }
+
+        // POST: WebSpeeches/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,Name,Phrase,Operation,Parameters,Host,Answer,FinalStep,InsDateTime")] WebSpeechDto dto)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                if (ModelState.IsValid)
+                {
+                    var data = new List<WebSpeechDto>() { };
+                    try
+                    {
+                        var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
+                        var method = currentMethod.Name;
+                        var className = currentMethod.DeclaringType.Name;
+                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var result = await webSpeecheRepo.AddWebSpeech(dto, access_token_cookie);
+
+                        data.AddRange(result.Data);
+
+                        if (!result.Successful)
+                            throw new Exception($"Error [Add failed!] - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.AddWebSpeech)}] - Message: [{result.Message}]");
+
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex.ToString());
+                        ModelState.AddModelError("ModelStateErrors", ex.Message);
+                        return View(dto);
+                    }
+                }
+                return View(dto);
+            }
+        }
+
+        // GET: WebSpeeches/Edit/5
+        public async Task<IActionResult> Edit(long? id)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                try
+                {
+                    var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
+                    var method = currentMethod.Name;
+                    var className = currentMethod.DeclaringType.Name;
+
+                    if (id == null)
+                        throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
+
+                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
+                    var data = result.Data.FirstOrDefault();
+
+                    if (result.Successful == false || data == null)
+                        throw new Exception($"Error [Data not found!] - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetWebSpeechesById)}] - Message: [{result.Message}]");
+
+                    return View(data);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.ToString());
+                    ModelState.AddModelError("ModelStateErrors", ex.Message);
+                    return View();
+                }
+            }
+        }
+
+        // POST: WebSpeeches/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Phrase,Operation,Parameters,Host,Answer,FinalStep,InsDateTime")] WebSpeechDto dto)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
+                        var method = currentMethod.Name;
+                        var className = currentMethod.DeclaringType.Name;
+
+                        if (id != dto.Id)
+                            throw new Exception($"Error [Id not match!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
+
+                        if (!WebSpeecheExists(dto.Id))
+                            throw new Exception($"Error [Id not exists!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
+
+                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var result = await webSpeecheRepo.UpdateWebSpeech(dto, access_token_cookie);
+
+                        if (!result.Successful)
+                            throw new Exception($"Error [Update failed!] - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.UpdateWebSpeech)}] - Message: [{result.Message}]");
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex.ToString());
+                        ModelState.AddModelError("ModelStateErrors", ex.Message);
+                        return View(dto);
+                    }
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(dto);
+            }
+        }
+
+        // GET: WebSpeeches/Delete/5
+        public async Task<IActionResult> Delete(long? id)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                try
+                {
+                    var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
+                    var method = currentMethod.Name;
+                    var className = currentMethod.DeclaringType.Name;
+
+                    if (id == null)
+                        throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
+
+                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
+                    var data = result.Data.FirstOrDefault();
+
+                    if (result.Successful == false || data == null)
+                        throw new Exception($"Error [Data not found!] - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetWebSpeechesById)}] - Message: [{result.Message}]");
+
+                    return View(data);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.ToString());
+                    ModelState.AddModelError("ModelStateErrors", ex.Message);
+                    return View();
+                }
+            }
+        }
+
+        // POST: WebSpeeches/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(long id)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                if (ModelState.IsValid)
+                {
+                    var data = new List<WebSpeechDto>() { };
+                    try
+                    {
+                        var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
+                        var method = currentMethod.Name;
+                        var className = currentMethod.DeclaringType.Name;
+                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var result = await webSpeecheRepo.DeleteWebSpeechById(id, access_token_cookie);
+
+                        data.AddRange(result.Data);
+
+                        if (!result.Successful)
+                            throw new Exception($"Error [Delete failed!] - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.DeleteWebSpeechById)}] - Message: [{result.Message}]");
+
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex.ToString());
+                        ModelState.AddModelError("ModelStateErrors", ex.Message);
+                        return View();
+                    }
+                }
+                return View();
+            }
+        }
+
+        private bool WebSpeecheExists(long id)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                var exists = false;
+                try
+                {
+                    var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
+                    var method = currentMethod.Name;
+                    var className = currentMethod.DeclaringType.Name;
+
+                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var result = webSpeecheRepo.GetWebSpeechesById(id, access_token_cookie).Result;
+                    var data = result.Data.FirstOrDefault();
+
+                    if (result.Successful == false || data == null)
+                        throw new Exception($"Error [Data not found!] - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetWebSpeechesById)}] - Message: [{result.Message}]");
+
+                    exists = true;
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.ToString());
+                    ModelState.AddModelError("ModelStateErrors", ex.Message);
+                }
+
+                return exists;
+            }
+        }
+
+        // GET: WebSpeeches/Recognition
+        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                WebSpeechDto data = null;
+                try
+                {
+                    var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
+                    var method = currentMethod.Name;
+                    var className = currentMethod.DeclaringType.Name;
+                    WebSpeechResult result = null;
+                    List<WebSpeechDto> _data = null;
+                    Random rnd = new Random();
+                    bool application = false;
+                    bool alwaysShow = false;
+                    long executionQueueId = 0;
+                    long.TryParse(_executionQueueId?.ToString(), out executionQueueId);
+                    bool.TryParse(_application?.ToString(), out application);
+                    bool.TryParse(_alwaysShow?.ToString(), out alwaysShow);
+
+                    var expiresInSeconds = 0;
+
+                    if (_userName != null && _password != null)
+                    {
+                        var dto = new LoginDto() { UserName = _userName, Password = _password };
+                        var authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response);
+
+                        Config.GeneralSettings.Static.Name = authenticationResult.Data.Name;
+                        Config.GeneralSettings.Static.Surname = authenticationResult.Data.Surname;
+                    }
+
+                    if (_hostSelected == null) _hostSelected = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
+                    else
+                    {
+                        if (expiresInSeconds == 0) int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName), out expiresInSeconds);
+                        suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteHostSelectedCookieName, _hostSelected, expiresInSeconds);
+                    }
+
+                    if (_application == null) bool.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteApplicationCookieName), out application);
+                    else
+                    {
+                        if (expiresInSeconds == 0) int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName), out expiresInSeconds);
+                        suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteApplicationCookieName, application.ToString(), expiresInSeconds);
+                    }
+
+                    if (_alwaysShow == null) bool.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName), out alwaysShow);
+                    else
+                    {
+                        if (expiresInSeconds == 0) int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName), out expiresInSeconds);
+                        suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName, alwaysShow.ToString(), expiresInSeconds);
+                    }
+
+                    if (_phrase != "" && _phrase != null)
+                    {
+                        string access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+
+                        result = await webSpeecheRepo.GetAllWebSpeeches(access_token_cookie);
+
+                        var _words = _phrase.Split(" ");
+                        var _wordsCount = _words.Count();
+                        var countMatch = 0;
+                        var match = 0;
+
+                        foreach (var item in result.Data.ToList())
+                        {
+                            var words = item.Phrase.Split(" ");
+                            var wordsCount = words.Count();
+                            var minMatch = (int)Math.Ceiling(wordsCount * GeneralSettings.Static.SpeechWordsCoefficient);
+                            var maxWords = (int)(wordsCount + Math.Ceiling(wordsCount * GeneralSettings.Static.SpeechWordsCoefficient));
+
+                            if (minMatch == 0) minMatch = 1;
+                            match = 0;
+                            foreach (var word in words)
+                            {
+                                foreach (var _word in _words)
+                                {
+                                    if (_word.Trim().ToLower() == word.Trim().ToLower())
+                                    {
+                                        match++;
+                                    }
+                                }
+                            }
+
+                            if (match > countMatch && match >= minMatch && _wordsCount <= maxWords)
+                            {
+                                countMatch = match;
+                                _data = new List<WebSpeechDto>();
+                                _data.Add(item);
+                            }
+
+                            if (match == countMatch && match >= minMatch && _wordsCount <= maxWords)
+                            {
+                                _data.Add(item);
+                            }
+                        }
+
+                        if (_data != null)
+                        {
+                            int x = rnd.Next(0, _data.Count());
+
+                            data = _data[x];
+                        }
+
+                        if (data != null && data.Operation != null)
+                        {
+                            var type = "";
+                            if (data.Operation != null && data.Operation.ToLower().Contains(".exe")) type = "RunExe";
+                            var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = _hostSelected, Type = type };
+                            var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
+
+                            if (addExecutionQueueResult.Successful)
+                            {
+                                executionQueueId = addExecutionQueueResult.Data.FirstOrDefault().Id;
+                            }
+                        }
+                    }
+
+                    var salutation = GeneralSettings.Static.Salutation;
+                    if (Config.GeneralSettings.Static.Name == null && GeneralSettings.Static.Culture.ToLower() == "it-it") Config.GeneralSettings.Static.Name = "tu";
+                    if (Config.GeneralSettings.Static.Name == null && GeneralSettings.Static.Culture.ToLower() == "en-us") Config.GeneralSettings.Static.Name = "you";
+                    if (Config.GeneralSettings.Static.Surname == null) Config.GeneralSettings.Static.Surname = String.Empty;
+                    salutation = salutation.Replace("NAME", Config.GeneralSettings.Static.Name);
+                    salutation = salutation.Replace("SURNAME", Config.GeneralSettings.Static.Surname);
+
+                    var startAnswer = salutation + " " + GetSalutation(new CultureInfo(GeneralSettings.Static.Culture, false));
+
+                    if ((_phrase == null || _phrase == "") &&  data == null && _reset != true)
+                        data = new WebSpeechDto() { Answer = startAnswer, Ehi = 0, FinalStep = true };
+                    if (_phrase != null && _phrase != "" && data == null && result != null)
+                    {
+                        data = new WebSpeechDto() { };
+
+                        data = result.Data.Where(_ => _.Name == "RequestNotImplemented_1").FirstOrDefault();
+                        data.Implementation = true;
+                    }
+
+                    if(data == null) data = new WebSpeechDto() { Answer = "", Ehi = 0 };
+
+                    data.HostsArray = GeneralSettings.Static.HostsArray;
+                    data.HostSelected = GeneralSettings.Static.HostSelected;
+                    data.ListeningWord1 = GeneralSettings.Static.ListeningWord1;
+                    data.ListeningWord2 = GeneralSettings.Static.ListeningWord2;
+                    data.ListeningAnswer = GeneralSettings.Static.ListeningAnswer;
+                    data.Culture = GeneralSettings.Static.Culture;
+                    data.StartAnswer = startAnswer;
+                    data.Application = application;
+                    data.AlwaysShow = alwaysShow;
+                    data.ExecutionQueueId = executionQueueId;
+
+                    if ((_phrase != null && _phrase != "") && (data.FinalStep == false || _phrase == (data.ListeningWord1 + " " + data.ListeningWord2))) data.Ehi = 1;
+
+                    if (_reset == true && alwaysShow == false) 
+                    {
+                        if (_hostSelected == null || _hostSelected == String.Empty) _hostSelected = GeneralSettings.Static.HostSelected;
+                        await ExecutionFinished(executionQueueId, _hostSelected, application);
+                    }
+
+                    data.Error = null;
+
+                    return View(data);
+                }
+                catch (Exception ex)
+                {
+                    if (data == null) data = new WebSpeechDto() {  };
+                    data.Error = nameof(WebSpeechesController.Recognition) + " - " + ex.Message.ToString();
+                    logger.Error(ex.ToString());
+                    ModelState.AddModelError("ModelStateErrors", ex.Message);
+                    return View(data);
+                }
+            }
+        }
+
+        // GET: WebSpeeches/ExecutionFinished
+        public async Task ExecutionFinished(long _id, string _hostSelected, bool _application)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                if (_id == 0 && _application)
+                {
+                    try
+                    {
+                        string access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+
+                        var executionQueue = new ExecutionQueueDto() { FullPath = "*", Arguments = "*", Host = _hostSelected, Type = "ForceHideApplication", StateQueue = ExecutionQueueStateQueue.RunningStep2.ToString() };
+                        var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex.ToString());
+                    }
+                }
+
+                if (_id != 0)
+                {
+                    try
+                    {
+                        string access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+
+                        var getExecutionQueuesByIdResult = await executionQueueRepo.GetExecutionQueuesById(_id, access_token_cookie);
+                        var executionQueue = getExecutionQueuesByIdResult.Data.FirstOrDefault();
+                        executionQueue.StateQueue = ExecutionQueueStateQueue.RunningStep2.ToString();
+                        var addExecutionQueueResult = await executionQueueRepo.UpdateExecutionQueue(executionQueue, access_token_cookie);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex.ToString());
+                    }
+                }
+            }
+        }
+
+        public string GetSalutation(CultureInfo cultureInfo)
+        {
+            Random rnd = new Random();
+
+            var result = "";
+            var time = int.Parse(DateTime.Now.ToString("HHmm"));
+
+            if (time >= 600 && time <= 1159)
+            {
+                int x = rnd.Next(0, 10 + 1);
+                if (cultureInfo.Name == "it-IT" && x == 0) result = "Buongiorno";
+                if (cultureInfo.Name == "en-US" && x == 0) result = "Good morning";
+
+                if (cultureInfo.Name == "it-IT" && x == 1) result = ". Ti auguro una buona giornata";
+                if (cultureInfo.Name == "en-US" && x == 1) result = ". Have a nice day";
+
+                if (cultureInfo.Name == "it-IT" && x == 2) result = "Buona giornata";
+                if (cultureInfo.Name == "en-US" && x == 2) result = "Good day";
+
+                if (cultureInfo.Name == "it-IT" && x == 3) result = ". Ti auguro una splendida giornata";
+                if (cultureInfo.Name == "en-US" && x == 3) result = ". Have a beautiful day";
+
+                if (cultureInfo.Name == "it-IT" && x == 4) result = "Splendida giornata";
+                if (cultureInfo.Name == "en-US" && x == 4) result = "Beautiful day";
+
+                if (cultureInfo.Name == "it-IT" && x == 5) result = ". Ti auguro una meravigliosa giornata";
+                if (cultureInfo.Name == "en-US" && x == 5) result = ". Have a marvelous day";
+
+                if (cultureInfo.Name == "it-IT" && x == 6) result = "Meravigliosa giornata";
+                if (cultureInfo.Name == "en-US" && x == 6) result = "Marvelous day";
+
+                if (cultureInfo.Name == "it-IT" && x == 7) result = ". Ti auguro una stupenda giornata";
+                if (cultureInfo.Name == "en-US" && x == 7) result = ". Have a stupendous day";
+
+                if (cultureInfo.Name == "it-IT" && x == 8) result = "Stupenda giornata";
+                if (cultureInfo.Name == "en-US" && x == 8) result = "Stupendous day";
+
+                if (cultureInfo.Name == "it-IT" && x == 9) result = ". Ti auguro una strepitosa giornata";
+                if (cultureInfo.Name == "en-US" && x == 9) result = ". Have a amazing day";
+
+                if (cultureInfo.Name == "it-IT" && x == 10) result = "Strepitosa giornata";
+                if (cultureInfo.Name == "en-US" && x == 10) result = "Amazing day";
+            }
+
+            if (time >= 1200 && time <= 1759)
+            {
+                int x = rnd.Next(0, 9 + 1);
+                if (cultureInfo.Name == "it-IT" && x == 0) result = "Buon pomeriggio";
+                if (cultureInfo.Name == "en-US" && x == 0) result = "Good afternoon";
+
+                if (cultureInfo.Name == "it-IT" && x == 1) result = ". Ti auguro un buon pomeriggio";
+                if (cultureInfo.Name == "en-US" && x == 1) result = ". Have a nice afternoon";
+
+                if (cultureInfo.Name == "it-IT" && x == 2) result = ". Ti auguro un splendido pomeriggio";
+                if (cultureInfo.Name == "en-US" && x == 2) result = ". Have a beautiful afternoon";
+
+                if (cultureInfo.Name == "it-IT" && x == 3) result = "Splendido pomeriggio";
+                if (cultureInfo.Name == "en-US" && x == 3) result = "Beautiful afternoon";
+
+                if (cultureInfo.Name == "it-IT" && x == 4) result = ". Ti auguro un meraviglioso pomeriggio";
+                if (cultureInfo.Name == "en-US" && x == 4) result = ". Have a marvelous afternoon";
+
+                if (cultureInfo.Name == "it-IT" && x == 5) result = "Meraviglioso pomeriggio";
+                if (cultureInfo.Name == "en-US" && x == 5) result = "Marvelous afternoon";
+
+                if (cultureInfo.Name == "it-IT" && x == 6) result = ". Ti auguro un stupendo pomeriggio";
+                if (cultureInfo.Name == "en-US" && x == 6) result = ". Have a stupendous afternoon";
+
+                if (cultureInfo.Name == "it-IT" && x == 7) result = "Stupenda giornata";
+                if (cultureInfo.Name == "en-US" && x == 7) result = "Stupendous afternoon";
+
+                if (cultureInfo.Name == "it-IT" && x == 8) result = ". Ti auguro un strepitoso pomeriggio";
+                if (cultureInfo.Name == "en-US" && x == 8) result = ". Have a amazing afternoon";
+
+                if (cultureInfo.Name == "it-IT" && x == 9) result = "Strepitoso pomeriggio";
+                if (cultureInfo.Name == "en-US" && x == 9) result = "Amazing afternoon";
+            }
+
+            if (time >= 1800 && time <= 2359)
+            {
+                int x = rnd.Next(0, 10 + 1);
+                if (cultureInfo.Name == "it-IT" && x == 0) result = "Buonasera";
+                if (cultureInfo.Name == "en-US" && x == 0) result = "Good evening";
+
+                if (cultureInfo.Name == "it-IT" && x == 1) result = ". Ti auguro una buona serata";
+                if (cultureInfo.Name == "en-US" && x == 1) result = ". Have a nice evening";
+
+                if (cultureInfo.Name == "it-IT" && x == 2) result = "Buona serata";
+                if (cultureInfo.Name == "en-US" && x == 2) result = "Good evening";
+
+                if (cultureInfo.Name == "it-IT" && x == 3) result = ". Ti auguro una splendida serata";
+                if (cultureInfo.Name == "en-US" && x == 3) result = ". Have a beautiful evening";
+
+                if (cultureInfo.Name == "it-IT" && x == 4) result = "Splendida serata";
+                if (cultureInfo.Name == "en-US" && x == 4) result = "Beautiful evening";
+
+                if (cultureInfo.Name == "it-IT" && x == 5) result = ". Ti auguro una meravigliosa serata";
+                if (cultureInfo.Name == "en-US" && x == 5) result = ". Have a marvelous evening";
+
+                if (cultureInfo.Name == "it-IT" && x == 6) result = "Meravigliosa serata";
+                if (cultureInfo.Name == "en-US" && x == 6) result = "Marvelous evening";
+
+                if (cultureInfo.Name == "it-IT" && x == 7) result = ". Ti auguro una stupenda serata";
+                if (cultureInfo.Name == "en-US" && x == 7) result = ". Have a stupendous evening";
+
+                if (cultureInfo.Name == "it-IT" && x == 8) result = "Stupenda serata";
+                if (cultureInfo.Name == "en-US" && x == 8) result = "Stupendous evening";
+
+                if (cultureInfo.Name == "it-IT" && x == 9) result = ". Ti auguro una strepitosa serata";
+                if (cultureInfo.Name == "en-US" && x == 9) result = ". Have a amazing evening";
+
+                if (cultureInfo.Name == "it-IT" && x == 10) result = "Strepitosa serata";
+                if (cultureInfo.Name == "en-US" && x == 10) result = "Amazing evening";
+            }
+
+            if (time >= 0 && time <= 559)
+            {
+                int x = rnd.Next(0, 9 + 1);
+                if (cultureInfo.Name == "it-IT" && x == 0) result = "Buona notte";
+                if (cultureInfo.Name == "en-US" && x == 0) result = "Good night";
+
+                if (cultureInfo.Name == "it-IT" && x == 1) result = ". Ti auguro una buona notte";
+                if (cultureInfo.Name == "en-US" && x == 1) result = ". Have a nice night";
+
+                if (cultureInfo.Name == "it-IT" && x == 2) result = ". Ti auguro una splendida notte";
+                if (cultureInfo.Name == "en-US" && x == 2) result = ". Have a beautiful night";
+
+                if (cultureInfo.Name == "it-IT" && x == 3) result = "Splendida notte";
+                if (cultureInfo.Name == "en-US" && x == 3) result = "Beautiful night";
+
+                if (cultureInfo.Name == "it-IT" && x == 4) result = ". Ti auguro una meravigliosa notte";
+                if (cultureInfo.Name == "en-US" && x == 4) result = ". Have a marvelous night";
+
+                if (cultureInfo.Name == "it-IT" && x == 5) result = "Meravigliosa notte";
+                if (cultureInfo.Name == "en-US" && x == 5) result = "Marvelous night";
+
+                if (cultureInfo.Name == "it-IT" && x == 6) result = ". Ti auguro una stupenda notte";
+                if (cultureInfo.Name == "en-US" && x == 6) result = ". Have a stupendous night";
+
+                if (cultureInfo.Name == "it-IT" && x == 7) result = "Stupenda notte";
+                if (cultureInfo.Name == "en-US" && x == 7) result = "Stupendous night";
+
+                if (cultureInfo.Name == "it-IT" && x == 8) result = ". Ti auguro una strepitosa notte";
+                if (cultureInfo.Name == "en-US" && x == 8) result = ". Have a amazing night";
+
+                if (cultureInfo.Name == "it-IT" && x == 9) result = "Strepitosa notte";
+                if (cultureInfo.Name == "en-US" && x == 9) result = "Amazing night";
+            }
+
+            return result;
+        }
+    }
+}

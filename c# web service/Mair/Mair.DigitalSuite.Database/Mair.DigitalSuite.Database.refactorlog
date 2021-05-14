@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="2cbfebd1-394f-4976-a396-af8d3bc6ce76" ChangeDateTime="01/07/2020 15:29:44">
+    <Property Name="ElementName" Value="[tag].[Tags].[Node]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[tag].[Tags]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="NodeId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="b45f44c2-8070-4faa-bbc9-1ff5e5a5a722" ChangeDateTime="02/07/2020 13:33:12">
+    <Property Name="ElementName" Value="[tag].[Events].[PcAckId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[tag].[Events]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PlcAckId" />
+  </Operation>
+</Operations>

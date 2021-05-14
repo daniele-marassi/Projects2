@@ -1,0 +1,58 @@
+﻿@model EURIS.Entities.Catalog
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Catalog Details";
+}
+
+<h2>Catalog Details</h2>
+<br />
+<fieldset>
+    <legend>Catalog</legend>
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.Code)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Code)
+    </div>
+    <br />
+    <div class="display-label">
+        @Html.LabelFor(model => model.Description)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Description)
+    </div>
+
+    <div class="display-label">
+        <table>
+            <tr>
+                <th id="borderTitle">
+                    <label style="font:bold; font-size:16px;">Products Codes</label>
+                </th>
+                <th id="borderTitle">
+                    <label style="font:bold; font-size:16px;">Products Description</label>
+                </th>
+            </tr>
+
+            @foreach (var item in Model.ProductsCatalog)
+            {
+                <tr>
+                    <td >
+                        @Html.DisplayFor(modelItem => item.ProductCode)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Product.Description)
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { code = Model.Code }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

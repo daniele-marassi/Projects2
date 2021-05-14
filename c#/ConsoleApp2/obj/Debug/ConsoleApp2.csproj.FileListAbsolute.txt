@@ -1,0 +1,15 @@
+C:\Users\ev\OneDrive\Projects\c#\ConsoleApp2\bin\Debug\ConsoleApp2.exe.config
+C:\Users\ev\OneDrive\Projects\c#\ConsoleApp2\bin\Debug\ConsoleApp2.exe
+C:\Users\ev\OneDrive\Projects\c#\ConsoleApp2\bin\Debug\ConsoleApp2.pdb
+C:\Users\ev\OneDrive\Projects\c#\ConsoleApp2\obj\Debug\ConsoleApp2.csprojAssemblyReference.cache
+C:\Users\ev\OneDrive\Projects\c#\ConsoleApp2\obj\Debug\ConsoleApp2.exe
+C:\Users\ev\OneDrive\Projects\c#\ConsoleApp2\obj\Debug\ConsoleApp2.pdb
+C:\Users\marassi\OneDrive\Projects\c#\ConsoleApp2\bin\Debug\ConsoleApp2.exe.config
+C:\Users\marassi\OneDrive\Projects\c#\ConsoleApp2\bin\Debug\ConsoleApp2.exe
+C:\Users\marassi\OneDrive\Projects\c#\ConsoleApp2\bin\Debug\ConsoleApp2.pdb
+C:\Users\marassi\OneDrive\Projects\c#\ConsoleApp2\obj\Debug\ConsoleApp2.csprojAssemblyReference.cache
+C:\Users\marassi\OneDrive\Projects\c#\ConsoleApp2\obj\Debug\ConsoleApp2.exe
+C:\Users\marassi\OneDrive\Projects\c#\ConsoleApp2\obj\Debug\ConsoleApp2.pdb
+C:\Users\marassi\OneDrive\Projects\c#\ConsoleApp2\bin\Debug\Newtonsoft.Json.dll
+C:\Users\marassi\OneDrive\Projects\c#\ConsoleApp2\bin\Debug\Newtonsoft.Json.xml
+C:\Users\marassi\OneDrive\Projects\c#\ConsoleApp2\obj\Debug\ConsoleApp2.csproj.CopyComplete

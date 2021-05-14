@@ -1,0 +1,1 @@
+START /Min "Speech Recognition" "C:\Users\ev\GoogleDriveShare\Projects\python\SpeechRecognition\dist\SpeechRecognition.exe"

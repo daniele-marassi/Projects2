@@ -1,0 +1,13 @@
+C:\as\code\KeyboardMouseHooks\KeyboardMouseHooks\bin\Release\KeyboardMouseHooks.exe
+C:\as\code\KeyboardMouseHooks\KeyboardMouseHooks\bin\Release\KeyboardMouseHooks.pdb
+C:\as\code\KeyboardMouseHooks\KeyboardMouseHooks\obj\x86\Release\ResolveAssemblyReference.cache
+C:\as\code\KeyboardMouseHooks\KeyboardMouseHooks\obj\x86\Release\KeyboardMouseHooks.mainForm.resources
+C:\as\code\KeyboardMouseHooks\KeyboardMouseHooks\obj\x86\Release\KeyboardMouseHooks.Properties.Resources.resources
+C:\as\code\KeyboardMouseHooks\KeyboardMouseHooks\obj\x86\Release\GenerateResource.read.1.tlog
+C:\as\code\KeyboardMouseHooks\KeyboardMouseHooks\obj\x86\Release\GenerateResource.write.1.tlog
+C:\as\code\KeyboardMouseHooks\KeyboardMouseHooks\obj\x86\Release\KeyboardMouseHooks.exe
+C:\as\code\KeyboardMouseHooks\KeyboardMouseHooks\obj\x86\Release\KeyboardMouseHooks.pdb
+C:\as\code\KeyboardMouseHooks\KeyboardMouseHooks\bin\Release\KeyboardMouseHooks.XML
+C:\as\code\KeyboardMouseHooks\KeyboardMouseHooks\bin\Release\KeyboardMouseHooks.exe.config
+C:\as\code\KeyboardMouseHooks\KeyboardMouseHooks\obj\x86\Release\GenerateResource-ResGen.read.1.tlog
+C:\as\code\KeyboardMouseHooks\KeyboardMouseHooks\obj\x86\Release\GenerateResource-ResGen.write.1.tlog

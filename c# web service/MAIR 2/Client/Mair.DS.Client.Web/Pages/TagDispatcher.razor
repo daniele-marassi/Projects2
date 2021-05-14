@@ -1,0 +1,227 @@
+﻿@page "/tagdispatcher"
+@inject HttpClient Http
+@inject IJSRuntime JsRuntime
+@inject NavigationManager Navigation
+
+@using Mair.DS.Client.Web.Common
+@using Newtonsoft.Json
+@using Mair.DS.Client.Web.Models.Dto.Automation
+@using Mair.DS.Client.Web.Models.Params.Page
+@using Mair.DS.Client.Web.Repositories.Automation
+
+@*@attribute [Authorize(Roles = "Admin, SuperUser, User")]*@
+
+    <div style="position:relative; width:100%;">
+        <h1>Tag Dispatcher</h1>
+
+        @if (tags == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <div>
+                <div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Tag Id</th>
+                                <th>Tag Name</th>
+                                <th>Address</th>
+                                <th>IsEnabled</th>
+                                <th>Node Name</th>
+                                <th>Node Description</th>
+                                <th>Driver</th>
+                                <th>Connection String</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var tag in tags)
+                            {
+                                <tr>
+                                    <td>@tag.Id</td>
+                                    <td>@tag.Name</td>
+                                    <td>@tag.Address</td>
+                                    <td>@tag.IsEnabled</td>
+                                    <td>@tag.Node.Name</td>
+                                    <td>@tag.Node.Description.</td>
+                                    <td>@tag.Node.Driver</td>
+                                    <td>@tag.Node.ConnectionString</td>
+                                    <td><button class="btn btn-primary" @onclick="(async () => { await GetTagValue(tag.Id); })">Get TagValue</button></td>
+                                    <td><input name="TagValue_Txt" type="text" id="@("TagValue_" + tag.Id.ToString())" value=""></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div style="clear:left; width:300px; position:relative;">
+                    <div style="float:left;">
+                        <label for="records_cmb">N Records:</label>
+
+                        <select id="records_cmb" value="@numberOfrecords.ToString()" @onchange="(async () => { await InitPage();  })">
+                            <option value="1">1</option>
+                            <option value="3">3</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
+                        </select>
+                    </div>
+                    <div style="float:right;">
+                        <button id="prev_btn" class="btn btn-primary" @onclick="(async () => { await PreviousPage();  })" value="" disabled>&#8592;</button>
+                        <label>@currentPage</label>
+                        <button id="next_btn" class="btn btn-primary" @onclick="(async () => { await NextPage(); })" value="">&#8594;</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+@code {
+
+    private List<TagDto> tags;
+    private int currentPage = 1;
+    private int maxRecords = 0;
+    private int numberOfrecords = 3;
+    private int fromRecord = 0;
+    TagsRepository tagsRepository = new TagsRepository();
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Check  Authorizations
+
+        //get roles from cookie
+        var _par = new List<string>();
+        _par.Add(Defaults.MairDSClientWebAuthenticatedUserRolesCookieName);
+
+        var _obj = _par.Cast<object>().ToArray();
+
+        var userRolesString = await JsRuntime.InvokeAsync<string>("GetCookie", _obj);
+
+        //if (AuthStateProvider.Roles == null || AuthStateProvider.Roles.Where(_ => _.Contains(Defaults.Roles.AdminRole) || _.Contains(Defaults.Roles.SuperUserRole) || _.Contains(Defaults.Roles.UserRole)).Count() == 0)
+        if(userRolesString.Contains(Defaults.Roles.AdminRole) || userRolesString.Contains(Defaults.Roles.SuperUserRole) || userRolesString.Contains(Defaults.Roles.UserRole))
+        {
+            await GetTagsCount();
+            await GetTags();
+        }
+        else
+        {
+            //Not Authorized
+            Console.WriteLine("Not Authorized!");
+            Navigation.NavigateTo("login");
+        }
+    }
+
+    private async Task NextPage()
+    {
+        PageManager pageManager = new PageManager();
+        var param = new PageManagerParam() { JSRuntime = JsRuntime, CurrentPage = currentPage, MaxRecords = maxRecords, NumberOfrecords = numberOfrecords, FromRecord = fromRecord };
+        var result = await pageManager.NextPage(param);
+
+        currentPage = result.CurrentPage;
+        maxRecords = result.MaxRecords;
+        numberOfrecords = result.NumberOfrecords;
+        fromRecord = result.FromRecord;
+
+        if (result.ChangePage) await GetTags();
+    }
+
+    private async Task InitPage()
+    {
+        PageManager pageManager = new PageManager();
+        var param = new PageManagerParam() { JSRuntime = JsRuntime, CurrentPage = currentPage, MaxRecords = maxRecords, NumberOfrecords = numberOfrecords, FromRecord = fromRecord };
+        var result = await pageManager.InitPage(param);
+
+        currentPage = result.CurrentPage;
+        maxRecords = result.MaxRecords;
+        numberOfrecords = result.NumberOfrecords;
+        fromRecord = result.FromRecord;
+
+        if (result.ChangePage) await GetTags();
+    }
+
+    private async Task PreviousPage()
+    {
+        PageManager pageManager = new PageManager();
+        var param = new PageManagerParam() { JSRuntime = JsRuntime, CurrentPage = currentPage, MaxRecords = maxRecords, NumberOfrecords = numberOfrecords, FromRecord = fromRecord };
+        var result = await pageManager.PreviousPage(param);
+
+        currentPage = result.CurrentPage;
+        maxRecords = result.MaxRecords;
+        numberOfrecords = result.NumberOfrecords;
+        fromRecord = result.FromRecord;
+
+        if (result.ChangePage) await GetTags();
+    }
+
+    private async Task GetTagsCount()
+    {
+        var utility = new Utility();
+        
+        //get token from cookie
+        var _par = new List<string>();
+        _par.Add(Defaults.MairDSClientWebAccessTokenCookieName);
+
+        var _obj = _par.Cast<object>().ToArray();
+
+        var token = await JsRuntime.InvokeAsync<string>("GetCookie", _obj);
+
+        //call api
+        maxRecords = await tagsRepository.GetTagsCount(token);
+
+        StateHasChanged();
+    }
+
+    private async Task GetTags()
+    {
+        var utility = new Utility();
+
+        //get token from cookie
+        var _par = new List<string>();
+        _par.Add(Defaults.MairDSClientWebAccessTokenCookieName);
+
+        var _obj = _par.Cast<object>().ToArray();
+
+        var token = await JsRuntime.InvokeAsync<string>("GetCookie", _obj);
+
+        //call api
+        var result = await tagsRepository.GetTagsPaged(fromRecord, numberOfrecords, token);
+
+        tags = result.Data;
+
+        StateHasChanged();
+    }
+
+    private async Task GetTagValue(long id)
+    {
+        var utility = new Utility();
+
+        //get token from cookie
+        var _par = new List<string>();
+        _par.Add(Defaults.MairDSClientWebAccessTokenCookieName);
+
+        var _obj = _par.Cast<object>().ToArray();
+
+        var token = await JsRuntime.InvokeAsync<string>("GetCookie", _obj);
+
+        //call api
+        var tagDispatcherRepository = new TagDispatcherRepository();
+        var value = await tagDispatcherRepository.GetTagDispatcherById(id, token);
+
+        //set tag value
+        _par = new List<string>();
+        _par.Add("TagValue_" + id.ToString());
+        _par.Add(value);
+
+        _obj = _par.Cast<object>().ToArray();
+
+        await JsRuntime.InvokeVoidAsync("FillValue", _obj);
+
+        StateHasChanged();
+    }
+}

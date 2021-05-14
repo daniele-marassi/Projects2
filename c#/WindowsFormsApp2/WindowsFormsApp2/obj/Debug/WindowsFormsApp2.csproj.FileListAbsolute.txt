@@ -1,0 +1,14 @@
+C:\Users\daniele.marassi\OneDrive\Projects\c#\WindowsFormsApp2\WindowsFormsApp2\bin\Debug\WindowsFormsApp2.exe.config
+C:\Users\daniele.marassi\OneDrive\Projects\c#\WindowsFormsApp2\WindowsFormsApp2\bin\Debug\WindowsFormsApp2.exe
+C:\Users\daniele.marassi\OneDrive\Projects\c#\WindowsFormsApp2\WindowsFormsApp2\bin\Debug\WindowsFormsApp2.pdb
+C:\Users\daniele.marassi\OneDrive\Projects\c#\WindowsFormsApp2\WindowsFormsApp2\bin\Debug\Facebook.dll
+C:\Users\daniele.marassi\OneDrive\Projects\c#\WindowsFormsApp2\WindowsFormsApp2\bin\Debug\Newtonsoft.Json.dll
+C:\Users\daniele.marassi\OneDrive\Projects\c#\WindowsFormsApp2\WindowsFormsApp2\bin\Debug\Facebook.xml
+C:\Users\daniele.marassi\OneDrive\Projects\c#\WindowsFormsApp2\WindowsFormsApp2\bin\Debug\Newtonsoft.Json.xml
+C:\Users\daniele.marassi\OneDrive\Projects\c#\WindowsFormsApp2\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.csprojResolveAssemblyReference.cache
+C:\Users\daniele.marassi\OneDrive\Projects\c#\WindowsFormsApp2\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.Form1.resources
+C:\Users\daniele.marassi\OneDrive\Projects\c#\WindowsFormsApp2\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.Properties.Resources.resources
+C:\Users\daniele.marassi\OneDrive\Projects\c#\WindowsFormsApp2\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.csproj.GenerateResource.Cache
+C:\Users\daniele.marassi\OneDrive\Projects\c#\WindowsFormsApp2\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.csproj.CoreCompileInputs.cache
+C:\Users\daniele.marassi\OneDrive\Projects\c#\WindowsFormsApp2\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.exe
+C:\Users\daniele.marassi\OneDrive\Projects\c#\WindowsFormsApp2\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.pdb

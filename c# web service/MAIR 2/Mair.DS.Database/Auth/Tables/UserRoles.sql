@@ -1,0 +1,10 @@
+﻿CREATE TABLE [Auth].[UserRoles]
+(
+	[Id] BIGINT NOT NULL PRIMARY KEY IDENTITY,
+	[UserId] BIGINT NOT NULL,
+	[RoleId] BIGINT NOT NULL,
+    [LastUpdated] DATETIME2 NOT NULL DEFAULT sysdatetime(),
+	[Created] DATETIME2 NOT NULL DEFAULT sysdatetime(),
+	CONSTRAINT [FkUserRoles_UserId] FOREIGN KEY ([UserId]) REFERENCES [Auth].[Users] ([Id]) ON DELETE CASCADE,
+	CONSTRAINT [FkUserRoles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [Auth].[Roles] ([Id]) ON DELETE CASCADE,
+)

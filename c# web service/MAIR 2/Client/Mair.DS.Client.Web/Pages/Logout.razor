@@ -1,0 +1,63 @@
+﻿@page "/logout"
+
+@using Mair.DS.Client.Web.Common
+@using System.Net.Http
+
+
+@inject HttpClient Http
+@inject IJSRuntime JsRuntime
+@inject NavigationManager Navigation
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ResetCookies();
+    }
+
+    private async Task ResetCookies()
+    {
+        // save token in cookies
+        var date = DateTime.MinValue;
+
+        //Token
+        List<string> par = new List<string>();
+        par.Add(Defaults.MairDSClientWebAccessTokenCookieName);
+        par.Add("");
+        par.Add(date.ToString());
+        par.Add("");
+        var obj = par.Cast<object>().ToArray();
+        await JsRuntime.InvokeVoidAsync("SetCookie", obj);
+
+        //UserId
+        par = new List<string>();
+        par.Add(Defaults.MairDSClientWebAuthenticatedUserIdCookieName);
+        par.Add("");
+        par.Add(date.ToString());
+        par.Add("");
+        obj = par.Cast<object>().ToArray();
+        await JsRuntime.InvokeVoidAsync("SetCookie", obj);
+
+        //UserName
+        par = new List<string>();
+        par.Add(Defaults.MairDSClientWebAuthenticatedUserNameCookieName);
+        par.Add("");
+        par.Add(date.ToString());
+        par.Add("");
+        obj = par.Cast<object>().ToArray();
+        await JsRuntime.InvokeVoidAsync("SetCookie", obj);
+
+        //UserRoles
+        par = new List<string>();
+        par.Add(Defaults.MairDSClientWebAuthenticatedUserRolesCookieName);
+        par.Add("");
+        par.Add(date.ToString());
+        par.Add("");
+        obj = par.Cast<object>().ToArray();
+        await JsRuntime.InvokeVoidAsync("SetCookie", obj);
+
+        StateHasChanged();
+
+        Navigation.NavigateTo("login", true);
+    }
+}

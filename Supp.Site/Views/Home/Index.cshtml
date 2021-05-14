@@ -1,0 +1,39 @@
+﻿@using static Supp.Site.Common.Config;
+@using System.Collections.Generic;
+@using System;
+@using Newtonsoft.Json;
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+
+    <div class="content-wrapper">
+        <hgroup class="title">
+            <h1>@ViewBag.Title.</h1>
+            <h2>@ViewBag.Message</h2>
+        </hgroup>
+    </div>
+
+
+<div class="text-danger">
+    @{
+        Context.Request.Cookies.TryGetValue(GeneralSettings.Constants.SuppSiteErrorsCookieName, out string errorsFromCookie);
+        if (errorsFromCookie == null) { errorsFromCookie = String.Empty; }
+        var errors = JsonConvert.DeserializeObject<List<string>>(errorsFromCookie);
+    }
+
+    @if (errors != null)
+    {
+        <ul>
+            @foreach (var error in errors as List<string>)
+            {
+                <li>@Html.Raw(error)</li>
+            }
+        </ul>
+    }
+
+    @{
+        Context.Response.Cookies.Delete(GeneralSettings.Constants.SuppSiteErrorsCookieName);
+    }
+</div>

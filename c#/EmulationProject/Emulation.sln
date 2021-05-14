@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2006
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MouseClicking", "MouseClick\MouseClicking.csproj", "{61F138BB-842B-418F-94D1-0E5BE39A3FD9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MousePointer", "MousePointer\MousePointer.csproj", "{09D2A214-9EE1-47C2-93BC-CBBD0F089CF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tooltip", "Tooltip\Tooltip.csproj", "{F4C92CE0-D627-44D9-9765-A84FB9282119}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{61F138BB-842B-418F-94D1-0E5BE39A3FD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61F138BB-842B-418F-94D1-0E5BE39A3FD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61F138BB-842B-418F-94D1-0E5BE39A3FD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61F138BB-842B-418F-94D1-0E5BE39A3FD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09D2A214-9EE1-47C2-93BC-CBBD0F089CF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09D2A214-9EE1-47C2-93BC-CBBD0F089CF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09D2A214-9EE1-47C2-93BC-CBBD0F089CF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09D2A214-9EE1-47C2-93BC-CBBD0F089CF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4C92CE0-D627-44D9-9765-A84FB9282119}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4C92CE0-D627-44D9-9765-A84FB9282119}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4C92CE0-D627-44D9-9765-A84FB9282119}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4C92CE0-D627-44D9-9765-A84FB9282119}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {86B42E13-A8C7-4F7A-9F7B-7F8BB820A705}
+	EndGlobalSection
+EndGlobal

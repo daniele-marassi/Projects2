@@ -1,0 +1,9 @@
+C:\Users\marassi\GoogleDriveShare\Projects\c#\ChangeLastUpdateFiles\bin\Debug\ChangeLastUpdateFiles.exe.config
+C:\Users\marassi\GoogleDriveShare\Projects\c#\ChangeLastUpdateFiles\bin\Debug\ChangeLastUpdateFiles.exe
+C:\Users\marassi\GoogleDriveShare\Projects\c#\ChangeLastUpdateFiles\bin\Debug\ChangeLastUpdateFiles.pdb
+C:\Users\marassi\GoogleDriveShare\Projects\c#\ChangeLastUpdateFiles\obj\Debug\ChangeLastUpdateFiles.csprojAssemblyReference.cache
+C:\Users\marassi\GoogleDriveShare\Projects\c#\ChangeLastUpdateFiles\obj\Debug\ChangeLastUpdateFiles.Properties.Resources.resources
+C:\Users\marassi\GoogleDriveShare\Projects\c#\ChangeLastUpdateFiles\obj\Debug\ChangeLastUpdateFiles.csproj.GenerateResource.cache
+C:\Users\marassi\GoogleDriveShare\Projects\c#\ChangeLastUpdateFiles\obj\Debug\ChangeLastUpdateFiles.exe
+C:\Users\marassi\GoogleDriveShare\Projects\c#\ChangeLastUpdateFiles\obj\Debug\ChangeLastUpdateFiles.pdb
+C:\Users\marassi\GoogleDriveShare\Projects\c#\ChangeLastUpdateFiles\obj\Debug\ChangeLastUpdateFiles.ChangeLastUpdateFiles.resources

@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="c:\program files (x86)\microsoft visual studio\2017\enterprise\team tools\static analysis tools\fxcop\Xml\CodeAnalysisReport.xsl"?>
+<FxCopReport Version="15.0">
+ <Targets>
+  <Target Name="C:\Users\ev\OneDrive\Projects\c#\MediaBoxProject\MediaBox\bin\Release\MediaBox.exe">
+   <Modules>
+    <Module Name="mediabox.exe">
+     <Namespaces>
+      <Namespace Name="MediaBox">
+       <Types>
+        <Type Name="Data" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#PopolateCatalogInDataBase(System.String,System.Collections.Generic.List`1&lt;System.Object&gt;,System.Windows.Forms.Form)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Controllare l'eventuale vulnerabilità di sicurezza delle query SQL" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2019-03-02 13:45:40Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\Users\ev\OneDrive\Projects\c#\MediaBoxProject\MediaBox" File="Data.cs" Line="178">La stringa di query passata a 'SQLiteCommand.SQLiteCommand(string, SQLiteConnection)' in 'Data.PopolateCatalogInDataBase(string, List&lt;dynamic&gt;, Form)' potrebbe contenere le variabili 'tableName', 'props[i].Name', 'value.ToString()', 'value.ToString().Replace(',', '.')'. Se una qualsiasi di queste variabili viene fornita in base all'input dell'utente, provare a usare una stored procedure o una query SQL con parametri invece di compilare la query mediante concatenazioni di stringa.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="Demo" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Messages>
+          <Message TypeName="TypesThatOwnDisposableFieldsShouldBeDisposable" Category="Microsoft.Design" CheckId="CA1001" Status="Active" Created="2019-03-02 13:45:40Z" FixCategory="DependsOnFix">
+           <Issue Name="DependsOnFix" Certainty="95" Level="CriticalError">Implementare IDisposable in 'Demo' poiché crea membri dei tipi IDisposable seguenti: 'MousePointer'. Se 'Demo' è stato distribuito in precedenza, l'aggiunta di nuovi membri che implementano IDisposable in questo tipo è considerata una modifica di interruzione per i consumer esistenti.</Issue>
+          </Message>
+         </Messages>
+        </Type>
+       </Types>
+      </Namespace>
+     </Namespaces>
+    </Module>
+   </Modules>
+  </Target>
+ </Targets>
+ <Rules>
+  <Rule TypeName="Controllare l'eventuale vulnerabilità di sicurezza delle query SQL" Category="Microsoft.Security" CheckId="CA2100">
+   <Name>Controllare l'eventuale vulnerabilità di sicurezza delle query SQL</Name>
+   <Description>Una stringa di comando SQL compilata in base all'input dell'utente è vulnerabile agli attacchi injection SQL. Microsoft SQL Server e altri server database supportano le stored procedure e le query SQL con parametri, che riducono il rischio di attacchi injection.</Description>
+   <Resolution Name="WithNonLiterals">La stringa di query passata a {0} in {1} potrebbe contenere le variabili {2}. Se una qualsiasi di queste variabili viene fornita in base all'input dell'utente, provare a usare una stored procedure o una query SQL con parametri invece di compilare la query mediante concatenazioni di stringa.</Resolution>
+   <Owner>RuleOwner</Owner>
+   <Url>http://msdn.microsoft.com/library/ms182310.aspx</Url>
+   <Email />
+   <MessageLevel Certainty="75">Warning</MessageLevel>
+   <File Name="dataflowrules.dll" Version="15.0.0.0" />
+  </Rule>
+  <Rule TypeName="TypesThatOwnDisposableFieldsShouldBeDisposable" Category="Microsoft.Design" CheckId="CA1001">
+   <Name>I tipi proprietari di campi Disposable devono essere Disposable</Name>
+   <Description>I tipi che dichiarano membri Disposable devono implementare l'interfaccia IDisposable. Se il tipo non è proprietario di risorse non gestite, non implementare finalizzatori su di esso.</Description>
+   <Resolution Name="DependsOnFix">Implementare IDisposable in {0} poiché crea membri dei tipi IDisposable seguenti: {1}. Se {0} è stato distribuito in precedenza, l'aggiunta di nuovi membri che implementano IDisposable in questo tipo è considerata una modifica di interruzione per i consumer esistenti.</Resolution>
+   <Owner />
+   <Url>http://msdn.microsoft.com/library/ms182172.aspx</Url>
+   <Email>[none]</Email>
+   <MessageLevel Certainty="95">CriticalError</MessageLevel>
+   <File Name="designrules.dll" Version="15.0.0.0" />
+  </Rule>
+ </Rules>
+ <Localized>
+  <String Key="Category">Categoria</String>
+  <String Key="Certainty">Attendibilità</String>
+  <String Key="CollapseAll">Comprimi tutto</String>
+  <String Key="CheckId">ID controllo</String>
+  <String Key="Error">Errore</String>
+  <String Key="Errors">errori</String>
+  <String Key="ExpandAll">Espandi tutto</String>
+  <String Key="Help">Guida</String>
+  <String Key="Line">Riga</String>
+  <String Key="Messages">messaggi</String>
+  <String Key="LocationNotStoredInPdb">[Percorso non archiviato nel PDB]</String>
+  <String Key="Project">Progetto</String>
+  <String Key="Resolution">Risoluzione</String>
+  <String Key="Rule">Regola</String>
+  <String Key="RuleFile">File delle regole</String>
+  <String Key="RuleDescription">Descrizione regola</String>
+  <String Key="Source">Origine</String>
+  <String Key="Status">Stato</String>
+  <String Key="Target">Destinazione</String>
+  <String Key="Warning">Avviso</String>
+  <String Key="Warnings">avvisi</String>
+  <String Key="ReportTitle">Report di analisi codice</String>
+ </Localized>
+</FxCopReport>

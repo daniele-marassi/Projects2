@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <OutputType>Library</OutputType>
+    <LangVersion>default</LangVersion>
+    <RazorLangVersion>3.0</RazorLangVersion>
+    <TypeScriptToolsVersion>3.2</TypeScriptToolsVersion>
+    <Title>ChartJs.Blazor</Title>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <Company>Marius Muntean</Company>
+    <Authors>Marius Muntean</Authors>
+    <Description>ChartJs charts for Blazor.
+Compatible with client-side and server-side Blazor applications.</Description>
+    <RepositoryUrl>https://github.com/mariusmuntean/ChartJs.Blazor</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/mariusmuntean/ChartJs.Blazor</PackageProjectUrl>
+    <PackageTags>ChartJS Blazor ASP.Net Core wasm</PackageTags>
+    <PackageSummary></PackageSummary>
+    <PackageReleaseNotes>Much-improved Js interop layer that allows registering static and instance handlers for clicks and hover events. 
+Delta updates result in an animation to the new value instead of a complete redraw.</PackageReleaseNotes>
+    <AssemblyName>ChartJs.Blazor</AssemblyName>
+    <RootNamespace>ChartJs.Blazor</RootNamespace>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Version>1.0.3</Version>
+    <AssemblyVersion>1.0.3.0</AssemblyVersion>
+    <FileVersion>1.0.3.0</FileVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageVersion>1.0.3</PackageVersion>
+  </PropertyGroup>
+
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>.\ChartJs.Blazor.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>.\ChartJs.Blazor.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="bootstrap-select" Version="1.13.12" />
+    <PackageReference Include="Bootstrap.Multiselect" Version="0.9.13" />
+    <PackageReference Include="Infragistics.Blazor" Version="1.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.7.4">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+    <ItemGroup>
+        <None Update="ChartJS\BarChart\Axes\ExtendedCartesianAxes.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>ExtendedCartesianAxes.cs</LastGenOutput>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="ChartJS\BarChart\Axes\ExtendedCartesianAxes.cs">
+        <DependentUpon>ExtendedCartesianAxes.tt</DependentUpon>
+      </Compile>
+    </ItemGroup>
+</Project>

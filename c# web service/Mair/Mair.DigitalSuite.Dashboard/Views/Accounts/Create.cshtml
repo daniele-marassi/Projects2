@@ -1,0 +1,80 @@
+﻿@model Mair.DigitalSuite.Dashboard.Models.Dto.Auth.AccountDto
+
+@{
+    ViewData["Title"] = "Create Account";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Surname" class="control-label"></label>
+                <input asp-for="Surname" class="form-control" />
+                <span asp-validation-for="Surname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                @Html.TextBoxFor(model => model.UserName, new { autocomplete = "off" })
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                @Html.PasswordFor(model => model.Password, new { value = Model.Password, autocomplete = "off" })
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword" class="control-label"></label>
+                @Html.PasswordFor(model => model.ConfirmPassword, new { value = Model.ConfirmPassword, autocomplete = "off" })
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="PasswordExpiration" /> @Html.DisplayNameFor(model => model.PasswordExpiration)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="PasswordExpirationDays" class="control-label"></label>
+                <input asp-for="PasswordExpirationDays" class="form-control" />
+                <span asp-validation-for="PasswordExpirationDays" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Enable" /> @Html.DisplayNameFor(model => model.Enable)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserRoleTypes" class="control-label"></label>
+                @Html.ListBoxFor(x => x.UserRoleTypeIds, new SelectList(Model.UserRoleTypes, "Id", "Type"), new { @class = "listbox"})
+                @Html.ValidationMessageFor(x => x.UserRoleTypeIds)
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="text-danger">
+    @Html.ValidationSummary(false)
+</div>
+
+<script type="text/javascript">
+        $(function () {
+            $('.listbox').multiselect({
+                includeSelectAllOption: true
+            });
+        });
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

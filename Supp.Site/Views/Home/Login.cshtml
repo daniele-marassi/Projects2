@@ -1,0 +1,40 @@
+﻿@model Supp.Site.Models.LoginDto
+
+@using Supp.Site.Controllers;
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = HomeController.Culture;
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <h1>@ViewData["Title"]</h1>
+
+    <hr />
+    <div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.UserName)
+            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.UserName)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Password)
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Password)
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            @*@Html.ActionLink("Reset password", "ResetPassword")*@
+        </div>
+        <div class="text-danger">
+            @Html.ValidationSummary(false)
+        </div>
+    </div>
+}
+
+
+

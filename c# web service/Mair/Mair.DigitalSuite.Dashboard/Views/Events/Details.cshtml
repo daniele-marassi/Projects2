@@ -1,0 +1,68 @@
+﻿@model Mair.DigitalSuite.Dashboard.Models.Dto.Automation.EventDto
+
+@{
+    ViewData["Title"] = "Event Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Timers.FirstOrDefault().TimerName)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Timers.Where(_ => _.Id == model.TimerId).FirstOrDefault().TimerName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Tags.FirstOrDefault().TagName)
+            PlcStart
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Tags.Where(_ => _.Id == model.PlcStartId).FirstOrDefault().TagName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Tags.FirstOrDefault().TagName)
+            PlcEnd
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Tags.Where(_ => _.Id == model.PlcEndId).FirstOrDefault().TagName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Tags.FirstOrDefault().TagName)
+            PlcAck
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Tags.Where(_ => _.Id == model.PlcAckId).FirstOrDefault().TagName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<div class="text-danger">
+    @Html.ValidationSummary(false)
+</div>

@@ -1,0 +1,18 @@
+﻿@inject NavigationManager NavigationManager
+@inject  IJSRuntime jSRuntime
+@using Mair.DigitalSuite.Dashboard.Services.SignalR
+
+@code {
+
+    [Parameter]
+    public string Token { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        PlcHubClient plcHubClient = new PlcHubClient(jSRuntime, Token, "CreateChartAndDetail");
+        await plcHubClient.StartAsync(System.Threading.CancellationToken.None);
+    }
+
+}
+

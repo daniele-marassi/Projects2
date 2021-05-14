@@ -1,0 +1,88 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{9229E771-6DC5-4ED0-8005-AB6618B3679A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{7EB99017-BF78-4AE4-AED5-FE91084E6D3B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{BF913860-1D85-43F2-A8D8-71CF1E323052}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapters", "Adapters", "{9AD757A0-24DD-41F2-8781-24E716CDD5CF}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Mair.DS.Database", "Mair.DS.Database\Mair.DS.Database.sqlproj", "{9CBF19A1-208B-41D3-9EF3-595A50BA7F7B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mair.DS.Data", "Mair.DS.Data\Mair.DS.Data.csproj", "{F22ECD61-6FBC-400D-979C-78615FD6F14E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mair.DS.Models", "Mair.DS.Models\Mair.DS.Models.csproj", "{D852FAA3-74E3-441A-B94E-F5C9D9F54FC6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mair.DS.Services", "Mair.DS.Services\Mair.DS.Services.csproj", "{E10943C1-3ED9-47DF-AF82-B844CE699E63}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mair.DS.Common", "Mair.DS.Common\Mair.DS.Common.csproj", "{7F7A783D-38E5-43A8-AE95-7B2E95970EE5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Models", "Models", "{8443F5C6-FDE6-4F7D-A87C-A248011D662C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engines", "Engines", "{7D05F139-AF29-41F9-9A45-DFC6C6BC1597}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mair.DS.Engines", "Mair.DS.Engines\Mair.DS.Engines.csproj", "{5FBDBFF9-4BDF-4F66-9EED-1B4FE3CF79B2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mair.DS.Adapters", "Mair.DS.Adapters\Mair.DS.Adapters.csproj", "{3FB10547-189C-429A-9B9B-0C676675AB67}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9CBF19A1-208B-41D3-9EF3-595A50BA7F7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CBF19A1-208B-41D3-9EF3-595A50BA7F7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CBF19A1-208B-41D3-9EF3-595A50BA7F7B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{9CBF19A1-208B-41D3-9EF3-595A50BA7F7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CBF19A1-208B-41D3-9EF3-595A50BA7F7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CBF19A1-208B-41D3-9EF3-595A50BA7F7B}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F22ECD61-6FBC-400D-979C-78615FD6F14E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F22ECD61-6FBC-400D-979C-78615FD6F14E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F22ECD61-6FBC-400D-979C-78615FD6F14E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F22ECD61-6FBC-400D-979C-78615FD6F14E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D852FAA3-74E3-441A-B94E-F5C9D9F54FC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D852FAA3-74E3-441A-B94E-F5C9D9F54FC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D852FAA3-74E3-441A-B94E-F5C9D9F54FC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D852FAA3-74E3-441A-B94E-F5C9D9F54FC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E10943C1-3ED9-47DF-AF82-B844CE699E63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E10943C1-3ED9-47DF-AF82-B844CE699E63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E10943C1-3ED9-47DF-AF82-B844CE699E63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E10943C1-3ED9-47DF-AF82-B844CE699E63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F7A783D-38E5-43A8-AE95-7B2E95970EE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F7A783D-38E5-43A8-AE95-7B2E95970EE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F7A783D-38E5-43A8-AE95-7B2E95970EE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F7A783D-38E5-43A8-AE95-7B2E95970EE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FBDBFF9-4BDF-4F66-9EED-1B4FE3CF79B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FBDBFF9-4BDF-4F66-9EED-1B4FE3CF79B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FBDBFF9-4BDF-4F66-9EED-1B4FE3CF79B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FBDBFF9-4BDF-4F66-9EED-1B4FE3CF79B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FB10547-189C-429A-9B9B-0C676675AB67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FB10547-189C-429A-9B9B-0C676675AB67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FB10547-189C-429A-9B9B-0C676675AB67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FB10547-189C-429A-9B9B-0C676675AB67}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9CBF19A1-208B-41D3-9EF3-595A50BA7F7B} = {7EB99017-BF78-4AE4-AED5-FE91084E6D3B}
+		{F22ECD61-6FBC-400D-979C-78615FD6F14E} = {7EB99017-BF78-4AE4-AED5-FE91084E6D3B}
+		{D852FAA3-74E3-441A-B94E-F5C9D9F54FC6} = {8443F5C6-FDE6-4F7D-A87C-A248011D662C}
+		{E10943C1-3ED9-47DF-AF82-B844CE699E63} = {BF913860-1D85-43F2-A8D8-71CF1E323052}
+		{7F7A783D-38E5-43A8-AE95-7B2E95970EE5} = {9229E771-6DC5-4ED0-8005-AB6618B3679A}
+		{5FBDBFF9-4BDF-4F66-9EED-1B4FE3CF79B2} = {7D05F139-AF29-41F9-9A45-DFC6C6BC1597}
+		{3FB10547-189C-429A-9B9B-0C676675AB67} = {9AD757A0-24DD-41F2-8781-24E716CDD5CF}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8E4BDDAD-4823-46C0-BCB4-A7D31EE52CB6}
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN2019 - Subversion Support for Visual Studio
+	EndGlobalSection
+EndGlobal

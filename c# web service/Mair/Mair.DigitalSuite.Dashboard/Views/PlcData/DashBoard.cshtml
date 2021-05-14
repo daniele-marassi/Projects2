@@ -1,0 +1,35 @@
+﻿@model List<Mair.DigitalSuite.Dashboard.Models.Dto.Automation.PlcDataDto>
+@namespace Mair.DigitalSuite.Dashboard.Views.PlcData
+
+<link href="~/css/table.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="~/js/Utility.js"></script>
+<script src="~/js/GoogleCharts.js"></script>
+
+@using Mair.DigitalSuite.Dashboard.Controllers;
+
+@{
+    ViewData["Title"] = "DashBoard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = HomeController.Culture;
+}
+
+@using (Html.BeginForm("PlcDataList", "PlcData", FormMethod.Get))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <h1>@ViewData["Title"]</h1>
+
+    <hr />
+
+    <div>
+        <div id="ChartAndTableContainer"></div>
+
+        @(await Html.RenderComponentAsync<DashBoard>(RenderMode.ServerPrerendered, new { Token = ViewBag.AccessTokenCookie }))
+    </div>
+
+    <div class="text-danger">
+        @Html.ValidationSummary(false)
+    </div>
+}

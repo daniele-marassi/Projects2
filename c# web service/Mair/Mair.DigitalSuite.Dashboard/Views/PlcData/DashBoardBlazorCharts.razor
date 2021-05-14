@@ -1,0 +1,226 @@
+﻿@using ChartJs.Blazor.ChartJS.BarChart
+@using ChartJs.Blazor.ChartJS.Common.Axes
+@using ChartJs.Blazor.ChartJS.Common.Axes.Ticks
+@using ChartJs.Blazor.ChartJS.Common.Enums
+@using ChartJs.Blazor.ChartJS.Common.Properties
+@using ChartJs.Blazor.ChartJS.Common.Wrappers
+@using ChartJs.Blazor.Charts
+@using ChartJs.Blazor.Util
+@using Infragistics.Blazor.Controls;
+@inject IJSRuntime jSRuntime
+@using Mair.DigitalSuite.Dashboard.Models.Dto;
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NavigationManager
+@using Mair.DigitalSuite.Dashboard.Common
+@using Microsoft.AspNetCore.Http.Connections
+@using System.Reflection
+
+@if (_dashBoardDataDto.ElementAtOrDefault(0) != null)
+{
+    var i = 0;
+    <div style="position:relative; margin-top:30px;">
+        <div style="float:left;">
+            <input class="btn btn-primary" id="btn_0_@ChartName" type="button" onclick="Details(this.id)" value="+" style="position:relative; width:60px;" />
+        </div>
+        <div style="float:left;">
+            <ChartJsBarChart @ref="_barChart" Config="@_barChartConfig" Width="800" Height="160" />
+        </div>
+        <div style="clear:left;"></div>
+        <div id="div_0_@ChartName" style="position:relative; width:600px; height:0px; overflow:auto; display:none;">
+            <table class="table" style="position:relative; ">
+                <thead>
+                    <tr>
+                        @foreach (PropertyInfo prop in typeof(DashBoardDataDto).GetProperties())
+                        {
+                            <th style="color:#777; background-color:#F7F7F7; border-right:solid; border-right-color:#F0F0F0; border-right-width:1px; padding:4px; white-space:nowrap;">
+                                @Utility.SplitCamelCase(prop.Name)
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        @foreach (PropertyInfo prop in typeof(DashBoardDataDto).GetProperties())
+                        {
+                            PropertyInfo property = _dashBoardDataDto[i + 2].GetType().GetProperty(prop.Name);
+                            object value = property.GetValue(_dashBoardDataDto[i + 2], null);
+                            <th style="color:#777; font-weight:normal; border-right:solid; border-right-color:#F7F7F7; border-right-width:1px; padding:1px;">@value</th>
+                        }
+                    </tr>
+                    <tr>
+                        @foreach (PropertyInfo prop in typeof(DashBoardDataDto).GetProperties())
+                        {
+                            PropertyInfo property = _dashBoardDataDto[i].GetType().GetProperty(prop.Name);
+                            object value = property.GetValue(_dashBoardDataDto[i], null);
+                            <th style="color:#777; font-weight:normal; border-right:solid; border-right-color:#F7F7F7; border-right-width:1px; padding:1px;">@value</th>
+                        }
+                    </tr>
+                    <tr>
+                        @foreach (PropertyInfo prop in typeof(DashBoardDataDto).GetProperties())
+                        {
+                            PropertyInfo property = _dashBoardDataDto[i + 1].GetType().GetProperty(prop.Name);
+                            object value = property.GetValue(_dashBoardDataDto[i + 1], null);
+                            <th style="color:#777; font-weight:normal; border-right:solid; border-right-color:#F7F7F7; border-right-width:1px; padding:1px;">@value</th>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@for (int i = 0; i < (_dashBoardDataDto.Count); i += 3)
+{
+    <div style="position:relative; margin-top:30px;">
+        <div style="float:left;">
+            <label style="font-size:50px; color:#999; position:relative;">@_dashBoardDataDto[i].EventName</label>
+            <input class="btn btn-primary" id="btn_@_dashBoardDataDto[i].EventName" type="button" onclick="Details(this.id)" value="+" style="position:relative; width:60px;" />
+        </div>
+        <div style="float:left;">
+            <RadialGauge Width='200px' Height='200px' MaximumValue='@double.Parse(_dashBoardDataDto[i+1].TagValue)' MinimumValue='@double.Parse(_dashBoardDataDto[i+2].TagValue)' Value='@double.Parse(_dashBoardDataDto[i].TagValue)'></RadialGauge>
+        </div>
+        <div style="clear:left;"></div>
+        <div id="div_@_dashBoardDataDto[i].EventName" style="position:relative; width:600px; height:0px; overflow:auto; display:none;">
+            <table class="table" style="position:relative; ">
+                <thead>
+                    <tr>
+                        @foreach (PropertyInfo prop in typeof(DashBoardDataDto).GetProperties())
+                        {
+                            <th style="color:#777; background-color:#F7F7F7; border-right:solid; border-right-color:#F0F0F0; border-right-width:1px; padding:4px; white-space:nowrap;">
+                                @Utility.SplitCamelCase(prop.Name)
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        @foreach (PropertyInfo prop in typeof(DashBoardDataDto).GetProperties())
+                        {
+                            PropertyInfo property = _dashBoardDataDto[i + 2].GetType().GetProperty(prop.Name);
+                            object value = property.GetValue(_dashBoardDataDto[i + 2], null);
+                            <th style="color:#777; font-weight:normal; border-right:solid; border-right-color:#F7F7F7; border-right-width:1px; padding:1px;">@value</th>
+                        }
+                    </tr>
+                    <tr>
+                        @foreach (PropertyInfo prop in typeof(DashBoardDataDto).GetProperties())
+                        {
+                            PropertyInfo property = _dashBoardDataDto[i].GetType().GetProperty(prop.Name);
+                            object value = property.GetValue(_dashBoardDataDto[i], null);
+                            <th style="color:#777; font-weight:normal; border-right:solid; border-right-color:#F7F7F7; border-right-width:1px; padding:1px;">@value</th>
+                        }
+                    </tr>
+                    <tr>
+                        @foreach (PropertyInfo prop in typeof(DashBoardDataDto).GetProperties())
+                        {
+                            PropertyInfo property = _dashBoardDataDto[i + 1].GetType().GetProperty(prop.Name);
+                            object value = property.GetValue(_dashBoardDataDto[i + 1], null);
+                            <th style="color:#777; font-weight:normal; border-right:solid; border-right-color:#F7F7F7; border-right-width:1px; padding:1px;">@value</th>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code
+{
+    [Parameter]
+    public string Token { get; set; }
+
+    public BarConfig _barChartConfig { get; set; }
+    public ChartJsBarChart _barChart { get; set; }
+    private HubConnection _connection;
+    public string OldValue { get; set; }
+    public List<DashBoardDataDto> _dashBoardDataDto = new List<DashBoardDataDto>() { };
+    public string ChartName { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        BarDataset<DoubleWrapper> _barDataSet;
+
+        _barChartConfig = new BarConfig(ChartType.HorizontalBar)
+        {
+            Options = new BarOptions { }
+        };
+
+        _connection = new HubConnectionBuilder()
+            .WithUrl(new Uri(new Uri(Config.GeneralSettings.Static.BaseUrl) + "hubs/plcData"),
+            HttpTransportType.WebSockets, options =>
+            {
+                options.Headers.Add("access_token", Token);
+            })
+            .Build();
+
+        _connection.On<List<DashBoardDataDto>>("ShowDashboardData",
+            dto => CompileCharts(dto));
+
+        await _connection.StartAsync();
+    }
+
+    private void CompileCharts(List<DashBoardDataDto> dashBoardDataDto)
+    {
+        InvokeAsync(() =>
+        {
+            ChartName = dashBoardDataDto[0].EventName;
+
+            dashBoardDataDto = dashBoardDataDto.OrderBy(_ => _.EventName).ThenBy(_ => _.TagName).ToList();
+
+            _dashBoardDataDto = dashBoardDataDto;
+
+            BarDataset<DoubleWrapper> _barDataSet;
+
+            _barChartConfig.Options = new BarOptions
+            {
+                Title = new OptionsTitle
+                {
+                    Display = true,
+                    Text = dashBoardDataDto[0].EventName,
+                    FontSize = 50,
+                    Position = Position.Left,
+                    FontColor = ColorUtil.ColorString(153, 153, 153),
+                },
+                Responsive = true,
+                Scales = new BarScales
+                {
+                    XAxes = new List<CartesianAxis>
+                {
+                        new LinearCartesianAxis
+                        {
+                            Ticks = new LinearCartesianTicks
+                            {
+                                AutoSkip = false,
+                                Min = double.Parse(dashBoardDataDto[2].TagValue),
+                                Max= double.Parse(dashBoardDataDto[1].TagValue)
+                            }
+                        }
+                    }
+                }
+            };
+
+            _barChartConfig.Data.Labels.Clear();
+            _barChartConfig.Data.Labels.AddRange(new[] { "" });
+
+            _barDataSet = new BarDataset<DoubleWrapper>(ChartType.HorizontalBar)
+            {
+                Label = dashBoardDataDto[0].TagValue,
+
+                BackgroundColor = ColorUtil.ColorString(0, 255, 0, 0.5),
+                BorderColor = ColorUtil.ColorString(0, 255, 10, 0.7),
+                BorderWidth = 1
+            };
+
+            _barDataSet.AddRange(new double[] { double.Parse(dashBoardDataDto[0].TagValue) }.Wrap());
+
+            if (OldValue != dashBoardDataDto[0].TagValue)
+            {
+                _barChartConfig.Data.Datasets.Clear();
+                _barChartConfig.Data.Datasets.Add(_barDataSet);
+            }
+
+            OldValue = dashBoardDataDto[0].TagValue;
+
+            StateHasChanged();
+        });
+    }
+}

@@ -1,0 +1,26 @@
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\NLog.config
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\Data\default_DB_NOT_EDIT_NOT_REMOVE.zip
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\Data\LocalDbSource.sqlite
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\Guida\Guida GetAttestati.docx
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\Data\default_DB_NOT_EDIT_NOT_REMOVE.sql
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\GetAttestati.exe.config
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\GetAttestati.exe
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\GetAttestati.pdb
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\EntityFramework.dll
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\NLog.dll
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\Select.HtmlToPdf.dll
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\System.Data.SQLite.dll
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\System.Data.SQLite.EF6.dll
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\System.Data.SQLite.Linq.dll
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\EntityFramework.xml
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\NLog.xml
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\Select.HtmlToPdf.xml
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\System.Data.SQLite.xml
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\System.Data.SQLite.dll.config
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\bin\Debug\Select.Html.dep
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\obj\Debug\GetAttestati.csproj.CoreCompileInputs.cache
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\obj\Debug\GetAttestati.csproj.CopyComplete
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\obj\Debug\GetAttestati.exe
+C:\Users\daniele.marassi\OneDrive\Projects\c#\GetAttestati\GetAttestati\obj\Debug\GetAttestati.pdb

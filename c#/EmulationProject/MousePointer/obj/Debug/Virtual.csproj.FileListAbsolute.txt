@@ -1,0 +1,6 @@
+C:\Users\daniele.marassi\OneDrive\Projects\c#\Virtual\Virtual\obj\Debug\Virtual.csprojResolveAssemblyReference.cache
+C:\Users\daniele.marassi\OneDrive\Projects\c#\Virtual\Virtual\obj\Debug\Virtual.g.resources
+C:\Users\daniele.marassi\OneDrive\Projects\c#\Virtual\Virtual\obj\Debug\Virtual.Properties.Resources.resources
+C:\Users\daniele.marassi\OneDrive\Projects\c#\Virtual\Virtual\obj\Debug\Virtual.MousePointer.resources
+C:\Users\daniele.marassi\OneDrive\Projects\c#\Virtual\Virtual\obj\Debug\Virtual.csproj.GenerateResource.Cache
+C:\Users\daniele.marassi\OneDrive\Projects\c#\Virtual\Virtual\obj\Debug\Virtual.csproj.CoreCompileInputs.cache

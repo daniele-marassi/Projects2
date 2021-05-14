@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+
+    <div id="specialLogo" style="float:left; width:150px; height:150px; border: dashed blue 2px;">
+        @RenderSection("_Logo")
+    </div>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        @*@Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+        @Html.ActionLink("About", "About")
+    </div>
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+       @* @Html.Partial("_LayoutFooter")*@
+
+    </div>
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+   @*@RenderSection("_specialScripts",false)*@
+</body>
+</html>

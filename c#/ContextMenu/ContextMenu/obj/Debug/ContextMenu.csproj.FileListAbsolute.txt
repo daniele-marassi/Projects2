@@ -1,0 +1,12 @@
+C:\Users\ev\OneDrive\Projects\c#\ContextMenu\ContextMenu\bin\Debug\Resources\Close.png
+C:\Users\ev\OneDrive\Projects\c#\ContextMenu\ContextMenu\bin\Debug\Resources\Edit.png
+C:\Users\ev\OneDrive\Projects\c#\ContextMenu\ContextMenu\bin\Debug\ContextMenu.exe.config
+C:\Users\ev\OneDrive\Projects\c#\ContextMenu\ContextMenu\bin\Debug\ContextMenu.exe
+C:\Users\ev\OneDrive\Projects\c#\ContextMenu\ContextMenu\bin\Debug\ContextMenu.pdb
+C:\Users\ev\OneDrive\Projects\c#\ContextMenu\ContextMenu\obj\Debug\ContextMenu.ContexMenuFrm.resources
+C:\Users\ev\OneDrive\Projects\c#\ContextMenu\ContextMenu\obj\Debug\ContextMenu.Modalfrm.resources
+C:\Users\ev\OneDrive\Projects\c#\ContextMenu\ContextMenu\obj\Debug\ContextMenu.Properties.Resources.resources
+C:\Users\ev\OneDrive\Projects\c#\ContextMenu\ContextMenu\obj\Debug\ContextMenu.csproj.GenerateResource.Cache
+C:\Users\ev\OneDrive\Projects\c#\ContextMenu\ContextMenu\obj\Debug\ContextMenu.csproj.CoreCompileInputs.cache
+C:\Users\ev\OneDrive\Projects\c#\ContextMenu\ContextMenu\obj\Debug\ContextMenu.exe
+C:\Users\ev\OneDrive\Projects\c#\ContextMenu\ContextMenu\obj\Debug\ContextMenu.pdb

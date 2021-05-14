@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ChartJs.Blazor\**" />
+    <Content Remove="ChartJs.Blazor\**" />
+    <EmbeddedResource Remove="ChartJs.Blazor\**" />
+    <None Remove="ChartJs.Blazor\**" />
+  </ItemGroup>
+  
+   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="bootstrap-select" Version="1.13.12" />
+    <PackageReference Include="Bootstrap.Multiselect" Version="0.9.13" />
+    <PackageReference Include="Infragistics.Blazor" Version="1.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="0.7.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NLog" Version="4.6.8" />
+    <PackageReference Include="NLog.Schema" Version="4.6.8" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="7.9.1" />
+  </ItemGroup>
+  
+   <ItemGroup>
+     <ProjectReference Include="ChartJs.Blazor\ChartJs.Blazor.csproj" />
+   </ItemGroup> 
+
+</Project>

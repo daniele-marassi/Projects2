@@ -1,0 +1,103 @@
+﻿@model X.PagedList.IPagedList<Supp.Site.Models.WebSpeechDto>
+
+@using Supp.Site.Controllers;
+@using X.PagedList.Mvc.Core
+
+<link href="~/css/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewData["Title"] = "WebSpeech List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = HomeController.Culture;
+}
+
+@using (Html.BeginForm("Index", "WebSpeeches", FormMethod.Get))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <h1>@ViewData["Title"]</h1>
+
+    <hr />
+
+    <div>
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+        <p>
+            Find: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+              <input type="submit" value="Search" class="btn btn-primary" style="margin-top:-2px;" />
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th id="selectable">
+                        @Html.ActionLink("Name", "Index", new { sortOrder = "Name", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("Phrase", "Index", new { sortOrder = "Phrase", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("Operation", "Index", new { sortOrder = "Operation", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("Parameters", "Index", new { sortOrder = "Parameters", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("Host", "Index", new { sortOrder = "Host", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("Answer", "Index", new { sortOrder = "Answer", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("FinalStep", "Index", new { sortOrder = "FinalStep", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="borderTitle"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    @foreach (var item in Model)
+                    {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Phrase)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Operation)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Parameters)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Host)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Answer)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FinalStep)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+                    }
+                }
+                </tbody>
+        </table>
+    </div>
+
+    <div class="text-danger">
+        @Html.ValidationSummary(false)
+    </div>
+}
+    Page @if (Model != null) {@(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)} of @if (Model != null) {@Model.PageCount}
+
+    @if (Model != null) { @Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))}

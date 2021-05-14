@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Supp.ServiceHost.Models.ApiDto>;
+
+@using Supp.ServiceHost.Controllers;
+
+@{
+    ViewData["Title"] = "Supp ServiceHost Api";
+}
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Get))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <h1>@ViewData["Title"]</h1>
+
+    <hr />
+
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+
+                    <th style="padding-left:50px; text-align:left;">
+                        @Html.LabelFor(modelItem => modelItem.FirstOrDefault().Url)
+                    </th>
+                    <th style="padding-left:50px; text-align:left;">
+                        @Html.LabelFor(modelItem => modelItem.FirstOrDefault().Parameters)
+                    </th>
+                    <th style="padding-left:50px; text-align:left;">
+                        @Html.LabelFor(modelItem => modelItem.FirstOrDefault().ActionType)
+                    </th>
+                    <th style="padding-left:50px; text-align:left;">
+                        @Html.LabelFor(modelItem => modelItem.FirstOrDefault().Roles)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="padding-left:50px; text-align:left;">
+                                @Html.DisplayFor(modelItem => item.Url)
+                            </td>
+                            <td style="padding-left:50px; text-align:left;">
+                                @Html.DisplayFor(modelItem => item.Parameters)
+                            </td>
+                            <td style="padding-left: 50px; text-align:left;">
+                                @Html.DisplayFor(modelItem => item.ActionType)
+                            </td>
+                            <td style="padding-left: 50px; text-align:left;">
+                                @Html.DisplayFor(modelItem => item.Roles)
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-danger">
+        @Html.ValidationSummary(false)
+    </div>
+}

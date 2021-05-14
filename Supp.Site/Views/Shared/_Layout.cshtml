@@ -1,0 +1,197 @@
+﻿@using Additional.NLog
+@using Newtonsoft.Json
+@using Supp.Site.Common;
+@using Microsoft.AspNetCore.Http;
+
+
+<!DOCTYPE html>
+<link rel="icon" href="/Images/supp.png" type="image/gif" />
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/PagedList.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-multiselect.css" />
+    <link rel="stylesheet" href="~/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/bootstrap-select.min.css" />
+    <link rel="stylesheet" href="~/css/bootstrap-select.css" />
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/Utility.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap-multiselect.js"></script>
+
+</head>
+<body style="background-color:#000;">
+    <header>
+        <nav id="navbar" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-black menuCustom" style="border-bottom-color:#222; position:absolute; z-index:999;">
+            <div class="container">
+                <div style="width:230px; overflow:hidden; position:relative;">
+                    <div style="/*background-image: url('../../Images/logo.png');*/ background-repeat: no-repeat; background-size: 100px 50px; position:relative; ">
+                        <a class="navbar-brand" href="#" style="/*margin-left:70px;*/">
+                            @Html.ActionLink("Supp", "Index", "Home", null,
+                            new { @style = "font-size:24px; text-decoration: none; color:#999;" })
+                        </a>
+                    </div>
+                </div>
+                <button id="menu_button" class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation" style="color:#999; border: 1px solid #222;">
+                    <span class="navbar-toggler-icon" style="background-color:#222;"></span>
+                </button>
+                <div id="menu_items" class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse" style="margin-left:30px;">
+                    <ul class="navbar-nav flex-grow-1">
+                        @{
+                            var claims = User.Claims.FirstOrDefault(c => c.Type == "ConfigInJson");
+                            var configInJson = claims?.Value;
+
+                            if (configInJson != null && configInJson != String.Empty)
+                            {
+                                var obj = JsonConvert.DeserializeObject<Configuration>(configInJson);
+
+                                Config.GeneralSettings.SetGeneralSettings(null, obj);
+                            }
+
+                            claims = User.Claims.FirstOrDefault(c => c.Type == "UserName");
+                            Config.GeneralSettings.Static.UserName = claims?.Value;
+                            var _claims = User.Claims.FirstOrDefault(c => c.Type == "Name");
+                            Config.GeneralSettings.Static.Name = _claims?.Value;
+                            _claims = User.Claims.FirstOrDefault(c => c.Type == "Surname");
+                            Config.GeneralSettings.Static.Surname = _claims?.Value;
+
+                            var claimValues = new Dictionary<string, string>() { };
+
+                            var isAuthenticated = false;
+
+                            if (claims != null && claims.Subject != null)
+                            {
+                                foreach (var claim in claims.Subject.Claims)
+                                {
+                                    claimValues.Add(claim.Type.ToString(), claim.Value.ToString());
+                                }
+
+                                isAuthenticated = claims.Subject.IsAuthenticated;
+                            }
+                        }
+
+                        @if (isAuthenticated)
+                        {
+                            var nLogUtility = new NLogUtility();
+                            nLogUtility.ClearNLogFile("mainLog", Config.GeneralSettings.Static.LimitLogFileInMB);
+
+                            @if (claimValues["Roles"].Contains(Config.Roles.Constants.RoleAdmin) || claimValues["Roles"].Contains(Config.Roles.Constants.RoleSuperUser) || claimValues["Roles"].Contains(Config.Roles.Constants.RoleUser))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
+                                        Media
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("Get Structure Media", "GetStructureMedia", "Media", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("Media Box", "MediaBox", "Media", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+
+                                        @if (claimValues["Roles"].Contains(Config.Roles.Constants.RoleAdmin))
+                                        {
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("List Media", "Index", "Media", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("List Media Configurations", "Index", "MediaConfigurations", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("List GoogleDrive Authorizations", "Index", "GoogleDriveAuths", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("List GoogleDrive Accounts", "Index", "GoogleDriveAccounts", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        }
+                                    </div>
+                                </li>
+                            }
+
+                            @if (claimValues["Roles"].Contains(Config.Roles.Constants.RoleAdmin))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
+                                        Accounts
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("Create Account", "Create", "Accounts", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("Reset Password", "ResetPassword", "Accounts", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("Disable Account", "DisableAccount", "Accounts", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("Enable Account", "EnableAccount", "Accounts", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("Remove Account", "RemoveAccount", "Accounts", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("Authentications", "Index", "Authentications", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("Users", "Index", "Users", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("User Roles", "Index", "UserRoles", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("User Role Types", "Index", "UserRoleTypes", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                    </div>
+                                </li>
+
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
+                                        Tools
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("Execution Queue", "Index", "ExecutionQueues", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("Web Speeches", "Index", "WebSpeeches", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("Web Speeches Recognition", "Recognition", "WebSpeeches", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                    </div>
+                                </li>
+                            }
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-center bg-black menuCustom text-uppercase" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
+                                    @Config.GeneralSettings.Static.Name
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
+                                    <div class="dropdown-divider"></div>
+                                    @Html.ActionLink("Logout", "Logout", "Home", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                    @if (claimValues["Roles"].Contains(Config.Roles.Constants.RoleAdmin) || claimValues["Roles"].Contains(Config.Roles.Constants.RoleSuperUser) || claimValues["Roles"].Contains(Config.Roles.Constants.RoleUser))
+                                    {
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("Change Password", "ChangePassword", "Accounts", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                    }
+                                </div>
+                            </li>
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Login", "Login", "Home", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container" id="mainContainer" style="overflow:auto; height:auto;">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="footer text-muted" id="footer" style="border-top: 1px solid #111; ">
+        <div class="container">
+            &copy; @DateTime.Now.Year - Supp Site
+        </div>
+    </footer>
+
+    <base href="~/" />
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

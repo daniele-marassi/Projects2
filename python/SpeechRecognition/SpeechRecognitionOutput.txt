@@ -1,0 +1,7 @@
+{date:"2021-04-18T14:16:04.488884Z", phrase:"senza pensieri"}
+{date:"2021-04-18T14:16:16.182592Z", phrase:"mi senti"}
+{date:"2021-04-18T14:16:24.837928Z", phrase:"mi senti"}
+{date:"2021-04-18T14:24:28.246991Z", phrase:"Dove vuoi che ci vediamo"}
+{date:"2021-04-18T14:29:05.288340Z", phrase:"arrivano tante telefonate fasulle"}
+{date:"2021-04-18T14:29:51.998324Z", phrase:"Come si chiamava l'amico"}
+{date:"2021-04-18T15:25:37.560851Z", phrase:"siete in banca per aprire il discorso con mio padre non c'era niente di solito poi sabato mattina stanno sistemando le sue cose in camera da letto e ho trovato qualcosa di insolito"}

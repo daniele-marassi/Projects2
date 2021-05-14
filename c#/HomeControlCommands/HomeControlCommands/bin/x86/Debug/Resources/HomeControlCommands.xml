@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.2">
+  <CommandSet xml:lang="en-us" Name="HomeControlCommandSet_en-us">
+    <CommandPrefix>Hey controllo</CommandPrefix>
+    <Example>Controllo sicurezza, temperatura, luci e altro</Example>
+
+    <Command Name="Attivare_sicurezza">
+      <Example>Attivare sicurezza</Example>
+      <ListenFor>[Vuoi] [perpiacere] attivare [l] sicurezza [perfavore]</ListenFor>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase">Attivare sicurezza</ListenFor>
+      <ListenFor RequireAppName="ExplicitlySpecified">Attivare {builtin:AppName} sicurezza</ListenFor>
+      <Feedback>Attivazione sicurezza</Feedback>
+      <Navigate />
+    </Command>
+
+    <Command Name="Cambia_temperatura">
+      <Example>Cambia temperatura 25º gradi</Example>
+      <ListenFor>Cambia temperatura a {temperatura} gradi</ListenFor>
+      <Feedback>Cambio temperatura a {temperatura} gradi</Feedback>
+      <Navigate />
+    </Command>
+
+    <Command Name="Cambia_colore_luci">
+      <Example>Cambia colore luci a giallo</Example>
+      <ListenFor>Cambia colore luci a {colore}</ListenFor>
+      <Feedback>Cambio colore luci a {colore}</Feedback>
+      <Navigate />
+    </Command>
+
+    <PhraseList Label="colori">
+      <Item>giallo</Item>
+      <Item>verde</Item>
+      <Item>rosso</Item>
+    </PhraseList>
+
+    <PhraseTopic Label="temperatura">
+    </PhraseTopic>
+  </CommandSet>
+</VoiceCommands>

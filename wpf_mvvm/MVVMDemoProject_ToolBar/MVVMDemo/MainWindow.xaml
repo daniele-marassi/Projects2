@@ -1,0 +1,46 @@
+﻿<!-- Width="Auto" Height="Auto" SizeToContent="WidthAndHeight"-->
+<Window x:Class = "MVVMDemo.MainWindow" Width="500" Height="{Binding Path=HeightMainView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+       
+    xmlns = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x = "http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d = "http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views = "clr-namespace:MVVMDemo.Views"
+        xmlns:viewmodels="clr-namespace:MVVMDemo.ViewModels"
+   xmlns:local = "clr-namespace:MVVMDemo.Views" 
+   xmlns:viewModels = "clr-namespace:MVVMDemo.ViewModels" 
+   xmlns:data = "clr-namespace:MVVMDemo.Models" 
+    
+      
+>
+    <Window.DataContext>
+        <viewmodels:MainViewModel></viewmodels:MainViewModel>
+    </Window.DataContext>
+    
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewmodels:SchoolClassViewModel}">
+            <views:SchoolClassView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:StudentViewModel}">
+            <views:StudentView />
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid Margin="30,5,0,0">
+        <StackPanel Orientation = "Horizontal">
+            <Button Content="Students" Command ="{Binding ChangeInStudentViewCommand}" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="74"/>
+            <Button Content="Classes" Command ="{Binding ChangeInSchoolClassViewCommand}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="74"/>
+        </StackPanel>
+
+        <StackPanel Orientation = "Horizontal">
+            <views:ToolBarView x:Name = "ToolBarView" Margin="0,40,0,0"/>
+        </StackPanel>
+
+        <StackPanel Orientation = "Horizontal">
+            <!--<views:SchoolClassView x:Name = "StudentViewControl" Margin="0,75,0,50"/>-->
+            <ContentControl Content="{Binding SelectedView}" Margin="0,75,0,50" Width="400"  />
+        </StackPanel>
+        
+    </Grid>
+
+</Window>

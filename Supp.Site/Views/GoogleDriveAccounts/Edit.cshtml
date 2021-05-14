@@ -1,0 +1,52 @@
+﻿@model Supp.Site.Models.GoogleDriveAccountDto
+
+@{
+    ViewData["Title"] = "Edit Google Drive Account";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" /><input type="hidden" asp-for="InsDateTime" />
+            <div class="form-group">
+                <label asp-for="Account" class="control-label"></label>
+                <input asp-for="Account" class="form-control textBoxCustom" />
+                <span asp-validation-for="Account" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FolderToFilter" class="control-label"></label>
+                <input asp-for="FolderToFilter" class="form-control textBoxCustom" />
+                <span asp-validation-for="FolderToFilter" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GoogleDriveAuths.FirstOrDefault().Client_id" class="control-label"></label>
+                @Html.DropDownListFor(x => x.GoogleDriveAuthId, new SelectList(Model.GoogleDriveAuths, "Id", "GoogleDriveAuthClient_id", Model.GoogleDriveAuthId), "-- Select --", new { @class = "select" })
+                @Html.ValidationMessageFor(x => x.GoogleDriveAuthId)
+            </div>
+            <div class="form-group">
+                <label asp-for="Users.FirstOrDefault().UserFullName" class="control-label"></label>
+                @Html.DropDownListFor(x => x.UserId, new SelectList(Model.Users, "Id", "UserFullName", Model.UserId), "-- Select --", new { @class = "select" })
+                @Html.ValidationMessageFor(x => x.UserId)
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<div class="text-danger">
+    @Html.ValidationSummary(false)
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

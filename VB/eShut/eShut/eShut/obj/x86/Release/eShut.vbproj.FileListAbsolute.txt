@@ -1,0 +1,10 @@
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\bin\Release\eShut.exe
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\bin\Release\eShut.pdb
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\bin\Release\eShut.xml
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\obj\x86\Release\eShut.Form1.resources
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\obj\x86\Release\eShut.Form2.resources
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\obj\x86\Release\eShut.Resources.resources
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\obj\x86\Release\eShut.vbproj.GenerateResource.Cache
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\obj\x86\Release\eShut.exe
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\obj\x86\Release\eShut.xml
+C:\Users\eVe\Desktop\PROGETTI\eShut\eShut\eShut\obj\x86\Release\eShut.pdb

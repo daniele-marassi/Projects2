@@ -1,0 +1,23 @@
+﻿@using Routing.Models
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@{Cliente c = ViewData["unCliente"] as Cliente; }
+
+<h2>Index</h2>
+@*<p>Benvenuto, @c.getCognome()</p>*@
+<p>Benvenuto, @ViewBag.unCliente.getCognome()</p>
+<p>Oggi è @ViewData["oggi"]</p>
+
+
+<h3>LISTA PRODOTTI</h3>
+@*@Html.Partial("PartialElencoProdotti")*@
+
+<h2>PROMOZIONI</h2>
+@*@Html.Partial("PartialPromozioni")*@
+
+@section _Logo{
+    <p style="color:red; font-size: 20px;"> LogoText ...</p>    
+}

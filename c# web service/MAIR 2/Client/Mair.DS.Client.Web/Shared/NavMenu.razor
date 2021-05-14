@@ -1,0 +1,89 @@
+﻿@using Mair.DS.Client.Web.Common
+@using Newtonsoft.Json
+@using System
+@using Mair.DS.Client.Web.Menu
+@using Mair.DS.Client.Web.Models.Dto
+
+@inject IJSRuntime JsRuntime
+@inject NavigationManager Navigation
+
+<div style="width:100%; height:54px; color:#505050; font-size:20px; text-align:left;">
+    <div style="width:300px;">
+
+    </div>
+</div>
+<div id="menu" name="level_-1" style="padding-right: 20px;">
+
+</div>
+<div style="width:100%; height:50px;">
+
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await PopulateMenu();
+    }
+
+    private async Task PopulateMenu()
+    {
+        var utility = new Utility();
+
+        var url = Navigation.Uri.ToString();
+
+        var urlPath = url.Split("/");
+
+        Defaults.ClientUrl = urlPath[0] + "//" + urlPath[2];
+
+        //create parameters
+        var keyValuePairs = new Dictionary<string, string>() { };
+        keyValuePairs["key"] = "";
+
+        //get token from cookie
+        var _par = new List<string>();
+        _par.Add(Defaults.MairDSClientWebAccessTokenCookieName);
+
+        var _obj = _par.Cast<object>().ToArray();
+
+        var token = await JsRuntime.InvokeAsync<string>("GetCookie", _obj);
+
+        if (token == "")
+        {
+            Navigation.NavigateTo("login");
+        }
+        else
+        {
+
+            //get userId from cookie
+            _par = new List<string>();
+            _par.Add(Defaults.MairDSClientWebAuthenticatedUserIdCookieName);
+
+            _obj = _par.Cast<object>().ToArray();
+
+            var userIdString = await JsRuntime.InvokeAsync<string>("GetCookie", _obj);
+
+            long userId = 0;
+
+            long.TryParse(userIdString, out userId);
+
+            MenuManager menuManager = new MenuManager();
+            var result = await menuManager.GetMenuItems(token, userId);
+
+            if (result.Successful)
+            {
+                //CreateMenu
+                var html = menuManager.PrepareMenuForHtml(result.Data);
+
+                _par = new List<string>();
+                _par.Add("menu");
+                _par.Add(html);
+
+                _obj = _par.Cast<object>().ToArray();
+
+                await JsRuntime.InvokeVoidAsync("CreateMenu", _obj);
+
+                StateHasChanged();
+            }
+        }
+    }
+}

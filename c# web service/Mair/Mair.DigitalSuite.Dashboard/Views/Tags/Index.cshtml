@@ -1,0 +1,93 @@
+﻿@model X.PagedList.IPagedList<Mair.DigitalSuite.Dashboard.Models.Dto.Automation.TagDto>
+
+@using Mair.DigitalSuite.Dashboard.Controllers;
+@using X.PagedList.Mvc.Core
+
+<link href="~/css/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewData["Title"] = "Tag List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = HomeController.Culture;
+}
+
+@using (Html.BeginForm("Index", "Tags", FormMethod.Get))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <h1>@ViewData["Title"]</h1>
+
+    <hr />
+
+    <div>
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+        <p>
+            Find: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+              <input type="submit" value="Search" class="btn btn-primary" style="margin-top:-2px;" />
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+
+                    <th id="selectable">
+                        @Html.ActionLink("Name", "Index", new { sortOrder = "Name", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("Description", "Index", new { sortOrder = "Description", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("NodeName", "Index", new { sortOrder = "NodeName", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("Address", "Index", new { sortOrder = "Address", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("Enable", "Index", new { sortOrder = "Enable", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+
+                    <th id="borderTitle"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    @foreach (var item in Model)
+                    {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nodes.Where(_ => _.Id == item.NodeId).FirstOrDefault().NodeName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Enable)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+                    }
+                }
+                </tbody>
+        </table>
+    </div>
+
+    <div class="text-danger">
+        @Html.ValidationSummary(false)
+    </div>
+}
+    Page @if (Model != null) {@(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)} of @if (Model != null) {@Model.PageCount}
+
+    @if (Model != null) { @Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))}

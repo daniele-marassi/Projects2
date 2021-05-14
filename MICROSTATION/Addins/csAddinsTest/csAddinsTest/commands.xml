@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<KeyinTree xmlns="http://www.bentley.com/schemas/1.0/MicroStation/AddIn/KeyinTree.xsd">
+  <RootKeyinTable ID="root">
+    <Keyword SubtableRef="MC"
+            CommandClass="MacroCommand" CommandWord="csAddinsTest" >
+      <Options Required ="true"/>
+    </Keyword>  
+  </RootKeyinTable>
+
+  <SubKeyinTables>
+    <KeyinTable ID="MC">
+      <Keyword SubtableRef="Commands" CommandWord="CreateElement">
+        <Options Required ="true"/>
+      </Keyword>
+      <Keyword SubtableRef="Loads" CommandWord="LoadForms">
+        <Options Required="true"/>
+      </Keyword>
+      <Keyword SubtableRef="Retrives" CommandWord="ScanElement">
+        <Options Required="true"/>
+      </Keyword>      
+    </KeyinTable>
+    <KeyinTable ID="Commands">
+      <Keyword CommandWord="LineAndLineString"> </Keyword>
+      <Keyword CommandWord="ShapeAndComplexShape"> </Keyword>
+      <Keyword CommandWord="TextAndTextNode"> </Keyword>
+      <Keyword CommandWord="CellAndSharedCell"> </Keyword>
+      <Keyword CommandWord="LinearAndAngularDimension"> </Keyword>
+      <Keyword CommandWord="CurveAndBsplineCurve"> </Keyword>
+      <Keyword CommandWord="ConeAndBsplineSurface"> </Keyword>
+      <Keyword CommandWord="Mesh"> </Keyword>
+    </KeyinTable>
+    <KeyinTable ID="Loads">
+      <Keyword CommandWord="Toolbar"/>
+      <Keyword CommandWord="ToolSettings"/>
+      <Keyword CommandWord="LevelChanged"/>
+      <Keyword CommandWord="OutputList"/> 
+    </KeyinTable>
+    <KeyinTable ID="Retrives">
+      <Keyword CommandWord="Utility"/>
+    </KeyinTable>
+  </SubKeyinTables>
+
+  <KeyinHandlers>
+    <KeyinHandler Keyin="csAddinsTest CreateElement LineAndLineString"
+        Function="csAddinsTest.CreateElement.LineAndLineString"/>
+    <KeyinHandler Keyin="csAddinsTest CreateElement ShapeAndComplexShape"
+        Function="csAddinsTest.CreateElement.ShapeAndComplexShape"/>
+    <KeyinHandler Keyin="csAddinsTest CreateElement TextAndTextNode"
+        Function="csAddinsTest.CreateElement.TextAndTextNode"/>
+    <KeyinHandler Keyin="csAddinsTest CreateElement CellAndSharedCell"
+        Function="csAddinsTest.CreateElement.CellAndSharedCell"/>
+    <KeyinHandler Keyin="csAddinsTest CreateElement LinearAndAngularDimension"
+        Function="csAddinsTest.CreateElement.LinearAndAngularDimension"/>
+    <KeyinHandler Keyin="csAddinsTest CreateElement CurveAndBsplineCurve"
+        Function="csAddinsTest.CreateElement.CurveAndBsplineCurve"/>
+    <KeyinHandler Keyin="csAddinsTest CreateElement ConeAndBsplineSurface"
+        Function="csAddinsTest.CreateElement.ConeAndBsplineSurface"/>
+    <KeyinHandler Keyin="csAddinsTest CreateElement Mesh"
+        Function="csAddinsTest.CreateElement.Mesh"/>
+    
+    <KeyinHandler Keyin="csAddinsTest LoadForms Toolbar" Function="csAddinsTest.LoadForms.Toolbar"/>
+    <KeyinHandler Keyin="csAddinsTest LoadForms ToolSettings" Function="csAddinsTest.LoadForms.ToolSettings"/>
+    <KeyinHandler Keyin="csAddinsTest LoadForms LevelChanged" Function="csAddinsTest.LoadForms.LevelChanged"/>
+    <KeyinHandler Keyin="csAddinsTest LoadForms OutputList" Function="csAddinsTest.LoadForms.OutputList"/>
+
+    <KeyinHandler Keyin="csAddinsTest ScanElement Utility" Function="csAddinsTest.ScanElement.Utility"/>
+    
+  </KeyinHandlers>
+</KeyinTree>

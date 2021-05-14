@@ -1,0 +1,570 @@
+﻿@model Supp.Site.Models.WebSpeechDto
+
+@using Supp.Site.Controllers;
+@using Supp.Site.Common;
+
+@{
+    ViewData["Title"] = "Box";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = HomeController.Culture;
+}
+
+@using (Html.BeginForm("Recognition", "WebSpeeches", FormMethod.Get))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <script>
+        //103
+        var final_transcript = '';
+        var recognizing = false;
+        var ignore_onend = true;
+        var ehi = 0;
+        var recognition = null;
+        var _phrase = null;
+        var _old_phrase = '';
+        var listeningPhrase = '';
+        var r = [];
+        var ellipseStep = [];
+        var animateIntervals = [];
+        var recognitionActive = true;
+        var speech = null;
+        var answer = '@Model?.Answer';
+        var startAnswer = '@Model?.StartAnswer';
+        var finalStep = '@Model?.FinalStep';
+        var serviceInterval = null;
+        var hostsArrayString = '@Model?.HostsArray';
+        var _error = '@Model?.Error';
+        var hosts = [];
+        var _reset = false;
+        var hosts_cmb_string ='';
+        var two_line = /\n\n/g;
+        var one_line = /\n/g;
+        var first_char = /\S/;
+        var fakeClickMilliseconds = 0;
+        var url = null;
+        var application = '@Model?.Application';
+        var alwaysShow = '@Model?.AlwaysShow';
+        var resetActive = false;
+        var countTheTimesToReset = 0;
+
+        function AddAnimateInterval(id, size, range, amount, milliseconds) {
+            if (animateIntervals[id] != null) clearInterval(animateIntervals[id]);
+            animateIntervals[id] = setInterval( function() { SetEllipse(id, size, range, amount, 0); }, milliseconds );
+        }
+
+        function StopAnimateIntervalsListening(milliseconds) {
+            //if (animateIntervals['StopAnimateIntervalsListening'] != null) 
+            clearInterval(animateIntervals['StopAnimateIntervalsListening']);
+            animateIntervals['StopAnimateIntervalsListening'] = setInterval( function() { StopAnimateIntervalsListeningDelay(); }, milliseconds );
+        }
+
+        function StopAnimateIntervalsListeningDelay(){
+            StopAnimateIntervals(); 
+            StartAnimateIntervals(70); 
+            clearInterval(animateIntervals['StopAnimateIntervalsListening']);
+        }
+
+        function StopAnimateIntervals(){
+            clearInterval(animateIntervals['ellipse1']);
+            clearInterval(animateIntervals['ellipse2']);
+            clearInterval(animateIntervals['ellipse3']);
+            clearInterval(animateIntervals['ellipse4']);
+            clearInterval(animateIntervals['ellipse5']);
+
+            animateIntervals['ellipse1'] = null;
+            animateIntervals['ellipse2'] = null;
+            animateIntervals['ellipse3'] = null;
+            animateIntervals['ellipse4'] = null;
+            animateIntervals['ellipse5'] = null;
+            DefaultEllipses(1);
+        }
+
+        function DefaultEllipses(amount){
+            SetEllipse('ellipse1', 50, 4, 1, amount, 1);
+            SetEllipse('ellipse2', 50, 4, 1, amount, 1);
+            SetEllipse('ellipse3', 50, 4, 1, amount, 1);
+            SetEllipse('ellipse4', 50, 4, 1, amount, 1);
+            SetEllipse('ellipse5', 50, 4, 1, amount, 1);   
+        }
+
+        function StartAnimateIntervalsListening(amount){
+            AddAnimateInterval('ellipse1', 50, 8, 1, amount + 0);
+            AddAnimateInterval('ellipse2', 50, 6, 1, amount + 5);
+            AddAnimateInterval('ellipse3', 50, 7, 1, amount + 10);
+            AddAnimateInterval('ellipse4', 50, 9, 1, amount + 15);
+            AddAnimateInterval('ellipse5', 50, 10, 1, amount + 20);           
+        }        
+
+        function StartAnimateIntervals(amount){
+            AddAnimateInterval('ellipse1', 50, 4, 1, amount + 10);
+            AddAnimateInterval('ellipse2', 50, 4, 1, amount + 14);
+            AddAnimateInterval('ellipse3', 50, 4, 1, amount + 16);
+            AddAnimateInterval('ellipse4', 50, 4, 1, amount + 18);
+            AddAnimateInterval('ellipse5', 50, 4, 1, amount + 20);   
+        }
+
+        function SetEllipse(id, size, range, amount, reset) {
+            var ellipse = document.getElementById(id);
+
+            if (r[id] == null){
+                r[id] = new Array();
+                r[id]['x']=0;
+                r[id]['y']=0;
+            }
+
+            if(reset == 1) {
+                ellipse.setAttribute("ry", size);
+                ellipse.setAttribute("rx", size);
+                r[id]['x']=0;
+                r[id]['y']=0;
+                return;
+            }
+
+            var xy ="";
+            if(Math.floor(Math.random() * 2)==0) {
+                xy ="y";
+            } else { 
+                xy ="x";
+            }
+
+            if (ellipseStep[id] == null) ellipseStep[id] = 0;
+
+            if (ellipse != null) {
+                if (r[id][xy] < range && ellipseStep[id] == 0) {
+                    r[id][xy] = r[id][xy] + amount;
+                }
+
+                if (r[id][xy] >= range && ellipseStep[id] == 0) {
+                    ellipseStep[id] = amount;
+                }
+
+                if (r[id][xy] <= range && ellipseStep[id] == 1) {
+                    r[id][xy] = r[id][xy] - amount;
+                }
+
+                if (r[id][xy] <= -range && ellipseStep[id] == 1) {
+                    ellipseStep[id] = 0;
+                }
+
+                if(xy == "y") {
+                    ellipse.setAttribute("ry", size + r[id]['y']);
+                } 
+
+                if(xy == "x"){ 
+                     ellipse.setAttribute("rx", size + r[id]['x']);
+                }
+            }
+        }
+
+        function SendPost(url, json) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                 if (this.readyState == 4 && this.status == 200) {
+                     console.log(this.responseText);
+                 }
+            };
+            xhttp.open("POST", url, true);
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send(json);
+        }
+
+        function ReadOutLoud(message) {
+            recognitionActive = false;
+            if(recognition != null){
+                recognition.abort();
+                recognition.stop();
+            }
+
+            StartAnimateIntervalsListening(10);
+            speech = new SpeechSynthesisUtterance();
+            // Set the text and voice attributes.
+            speech.text = message;
+            speech.volume = 1;
+            speech.rate = 1;
+            speech.pitch = 1;
+            speech.lang = '@Model?.Culture';
+
+            var synth = window.speechSynthesis;
+            var speakHasError = false;
+
+            try {
+               synth.speak(speech);
+            }
+            catch (error) { 
+                speakHasError=true;
+            }
+
+            var speakIsSuccesuful = synth.speaking;
+
+            if(speakIsSuccesuful == false || speakHasError == true) {
+                //PartialReset();
+                InitFinal();
+            }
+            
+            speech.onend = function(event) {
+                if(recognition != null){                  
+                    try {
+                        recognition.start();
+                    }
+                    catch (error) { } 
+                }
+                StopAnimateIntervalsListening(100);
+                recognitionActive = true;
+
+                countTheTimesToReset = 0;
+                if(ehi == 1 && recognitionActive == true) resetActive = true;   
+                if(ehi == 0 && recognitionActive == true && alwaysShow == false) Reset();
+                if(ehi == 0 && recognitionActive == true && alwaysShow == true) {
+                    //PartialReset();
+                    InitFinal();
+                }
+            }
+        }
+
+        function ExecutionFinished(){
+            if(url != null && GetBoolean(application) == true)
+            {
+                var json = "{_id:@Model?.Id,_hostSelected:@Model?.HostSelected}";
+                var _url = url.replace("Recognition","ExecutionFinished")+'?_id=@Model?.ExecutionQueueId&_hostSelected=@Model?.HostSelected';
+                SendPost(_url, json);
+            }
+        }
+
+        function GetBoolean(value){
+            var result = false;
+            if(value == '1' || value == 1 || value == "True" || value == "true" || value == true ) result = true;
+            return result;
+        }
+
+        function InitPage(){
+            document.getElementById('menu_button').style.display = 'inline';
+
+            var element = document.getElementById("menu_items");
+
+            //element.classList.remove("flex-sm-row-reverse");
+            //element.classList.remove("d-sm-inline-flex");
+            //element.classList.remove("navbar-expand-sm");
+            //element.classList.remove("navbar-collapse");
+                    
+            hostsArrayString = hostsArrayString.replace(/&quot;/g,'"');
+            if(_error != null && _error != '') console.log(_error);
+            try {
+                hosts = JSON.parse(hostsArrayString);
+            }
+            catch (error) {  
+                if(recognitionActive == true) Reset(); 
+            }   
+
+            try {
+                ehi=parseInt('@Model?.Ehi');
+            }
+            catch (error) { ehi = 0; }
+
+            if(GetBoolean(finalStep) == false) {
+                if('@Model?.Phrase' != null && '@Model?.Phrase' != ''){           
+                    if(_old_phrase != '') _old_phrase += ' ';
+                    _old_phrase += '@Model?.Phrase';
+                }
+            }
+            else{
+                _old_phrase = '';
+            }
+
+            if(hosts != null && hosts.length > 0 ){
+                hosts_cmb_string='<select name="hosts_cmb" id="hosts_cmb" value="@Model?.HostSelected" style="background-color:#000; color:#555; border-color:#555;">';
+                for (var i = 0; i < hosts.length; i++)
+                {
+                    hosts_cmb_string+='<option>'+ hosts[i]+'</option>';
+                }  
+                hosts_cmb_string+='</select>';
+                $("#hosts_cmb_container").html(hosts_cmb_string);
+            }
+        }
+
+        function SendPhrase(){
+            if(_reset == false){
+                _phrase = $("#sendPhrase_text").val();
+                var phrase = _phrase;
+                if(_old_phrase != '') phrase = _old_phrase + ' ' + _phrase;
+                PartialReset();
+                clearInterval(serviceInterval);
+                location.href = '@Url.Action("Recognition", "WebSpeeches")?_phrase=' + phrase + '&_hostSelected='+$( "#hosts_cmb option:selected" ).text() + '&_application=@Model?.Application';
+            }
+        }
+
+        function Upgrade() {
+            if(recognitionActive == true) StopAnimateIntervals();
+            console.log('info_upgrade');
+        }
+
+        function Linebreak(s) {
+            return s.replace(two_line, '<p></p>').replace(one_line, '<br>');
+        }
+
+        function Capitalize(s) {
+            return s.replace(first_char, function (m) { return m.toUpperCase(); });
+        }
+
+        function StartButton(event) {
+            try {
+                recognition.abort();
+                recognition.stop();
+            }
+            catch (error) { } 
+
+            if (animateIntervals['ellipse1'] == null && recognitionActive == true) StartAnimateIntervals(70);
+            final_transcript = '';
+            recognition.lang = '@Model?.Culture';
+            ActiveAudio();
+
+            try {
+                recognition.start();
+            }
+            catch (error) { } 
+
+            recognitionActive = true;
+            ignore_onend = false;
+            document.getElementById('final_span').innerHTML = '';
+            document.getElementById('interim_span').innerHTML = '';
+        }
+
+        function InitSpeech(){
+            if (!('webkitSpeechRecognition' in window)) {
+                Upgrade();
+            } else {
+                recognition = new webkitSpeechRecognition('No warning should arise');
+
+                recognition.continuous = true;
+                recognition.interimResults = true;
+
+                recognition.onstart = function () {
+                    recognizing = true;
+                    console.log('info_speak_now');
+                };
+
+                recognition.onerror = function (event) {
+                    console.log('recognition.onerror: ' + event.error);
+                    if(recognitionActive == true){
+                        PartialReset();
+                        StopAnimateIntervals();
+                        InitFinal();
+                    }
+                    if (event.error == 'no-speech') {
+                        console.log('info_no_speech');
+                        ignore_onend = true;
+                    }
+                    if (event.error == 'audio-capture') {
+                        console.log('info_no_microphone');
+                        ignore_onend = true;
+                    }
+                    if (event.error == 'not-allowed') {
+                        console.log('not-allowed');
+                        ignore_onend = true;
+                    }
+                };
+
+                recognition.onend = function () {     
+                    if(recognitionActive == true){
+                        PartialReset();
+                        InitFinal();
+                    }
+                };
+
+                recognition.onresult = function (event) {
+                    for (var i = event.resultIndex; i < event.results.length; ++i) {
+                        if(_phrase == null){
+                            _phrase = event.results[i][0].transcript.toLowerCase().trim();
+                            if (_phrase != '' && _phrase != null) {
+                                countTheTimesToReset = 0;
+                                if(recognitionActive == true) StartAnimateIntervalsListening(10);
+                                if(recognitionActive == true) StopAnimateIntervalsListening(500);
+                                if (recognitionActive == true) console.log(_phrase);
+                                var _phraseSplit = _phrase.split(" ");
+                                if (_phraseSplit.length > 0 && recognitionActive == true) {
+                                    if (event.results[i].isFinal){
+                                        if (_phraseSplit.length > 1 && _phraseSplit[0] == '@Model?.ListeningWord1' && _phraseSplit[1] == '@Model?.ListeningWord2' && ehi == 0 && _reset == false) {
+                                            var phrase = '@Model?.ListeningWord1' + ' ' + '@Model?.ListeningWord2';
+                                            PartialReset();
+                                            clearInterval(serviceInterval);
+                                            location.href = '@Url.Action("Recognition", "WebSpeeches")?_phrase=' + phrase + '&_hostSelected='+$( "#hosts_cmb option:selected" ).text() + '&_application=@Model?.Application';
+                                        } else if (ehi == 1 && _phrase != listeningPhrase && _phrase != null && _phrase!= '' && _reset == false) {
+                                            var phrase = _phrase;
+                                            if(_old_phrase != '') phrase = _old_phrase + ' ' + _phrase;
+                                            PartialReset();
+                                            clearInterval(serviceInterval);
+                                            location.href = '@Url.Action("Recognition", "WebSpeeches")?_phrase=' + phrase + '&_hostSelected='+$( "#hosts_cmb option:selected" ).text() + '&_application=@Model?.Application';
+                                        }
+                                    }
+                                }
+                            }
+                            _phrase = null;
+                        }
+                    }
+
+                    var interim_transcript = '';
+                    if (typeof (event.results) == 'undefined') {
+                        if(recognitionActive == true) StopAnimateIntervals();
+                    }
+                    for (var i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            final_transcript += event.results[i][0].transcript;
+                        } else {
+                            interim_transcript += event.results[i][0].transcript;
+                        }
+                    }
+                    final_transcript = Capitalize(final_transcript);
+                    document.getElementById('final_span').innerHTML = Linebreak(final_transcript);
+                    document.getElementById('interim_span').innerHTML = Linebreak(interim_transcript);
+                    if (final_transcript || interim_transcript) {
+                        document.getElementById('final_span').innerHTML = '';
+                    }
+                };
+            }
+        }
+
+        function SimulateClick(control) {
+            if (document.all) {
+                control.click();
+            } else {
+                var evObj = document.createEvent('MouseEvents');
+                evObj.initMouseEvent('click', true, true, window, 1, 12, 345, 7, 220, false, false, true, false, 0, null);
+                control.dispatchEvent(evObj);
+            }
+        }
+
+        function Service() {
+            ActiveAudio();
+
+            if(resetActive && countTheTimesToReset == 10 && recognitionActive == true){
+                countTheTimesToReset = 0;
+                resetActive = false;
+                if(alwaysShow == false) Reset();
+                if(alwaysShow == true) PartialReset();
+            }
+
+            if(resetActive && recognitionActive == true) countTheTimesToReset++;
+            else countTheTimesToReset = 0;
+        }
+
+        function ActiveAudio(){
+            navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(function (stream) {
+                console.log('You let me use your mic!')
+            })
+            .catch(function (err) {
+                console.log('No mic for you!')
+            });
+        }
+
+        function FakeClick(){
+            if (answer != null && answer != '') { 
+                ReadOutLoud(answer); 
+                answer = null;
+            } else {
+                PartialReset();
+            }
+        }
+
+        function Reset(){
+            PartialReset();
+            if(_reset == false){ 
+                 _reset = true;
+                clearInterval(serviceInterval);
+                location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset=true' + '&_application=@Model?.Application' + '&_executionQueueId=@Model?.ExecutionQueueId' + '&_hostSelected=@Model?.HostSelected';
+            }
+        }
+
+        function PartialReset(){
+            ehi = 0;
+            listeningPhrase = '';
+            _old_phrase = '';
+            _phrase = null;
+            resetActive = false;;
+            countTheTimesToReset = 0;
+            $("#sendPhrase_text").val('');
+            document.getElementById('final_span').innerHTML = '';
+            document.getElementById('interim_span').innerHTML = '';
+        }
+
+        function InitFinal(){
+            StartButton(event);
+            clearInterval(serviceInterval);
+            serviceInterval = setInterval( function() { Service(); }, 1000);
+            
+            if(answer != startAnswer) fakeClickMilliseconds = 500;
+            else fakeClickMilliseconds = 2000;
+            
+            setTimeout(function(){
+                SimulateClick(document.getElementById('fakeClick_button'));
+            }, fakeClickMilliseconds);  
+        }
+
+        function ClearUrl(){
+            var _url = window.location.toString();
+            var splitUrl = _url.split('?');
+            url = splitUrl[0];
+            history.pushState({}, null, url);        
+        }
+
+        function RecognitionEnableDisable(){
+            if(recognitionActive == true){
+                recognitionActive = false;
+                PartialReset();
+                recognition.abort();
+                recognition.stop();
+                StopAnimateIntervals();
+                clearInterval(animateIntervals['StopAnimateIntervalsListening']);
+                animateIntervals['StopAnimateIntervalsListening'] = null;
+                document.getElementById("recognitionEnableDisable_image").src = '/Images/micOff.png';
+                
+            } else {
+                recognitionActive = true;
+                StartButton(event);
+                document.getElementById("recognitionEnableDisable_image").src = '/Images/micOn.png';
+            }
+        }
+    </script>
+}
+    
+<div id="main">
+    <div style="text-align:center;">
+        <div id="div_ellipse" style="margin:auto; padding:100px; ">
+            <svg viewBox="-50 -20 300 140" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <filter id="blurMe">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
+                    </filter>
+                </defs>
+                <ellipse id="ellipse1" cx="100" cy="50" rx="50" ry="50" style="fill: #c9c30d;" filter="url(#blurMe)"/>
+                <ellipse id="ellipse2" cx="100" cy="50" rx="50" ry="50" style="fill: #02ad02;" filter="url(#blurMe)"/>
+                <ellipse id="ellipse3" cx="100" cy="50" rx="50" ry="50" style="fill: #026aad;" filter="url(#blurMe)"/>
+                <ellipse id="ellipse4" cx="100" cy="50" rx="50" ry="50" style="fill: #7a1cc9;" filter="url(#blurMe)"/>
+                <ellipse id="ellipse5" cx="100" cy="50" rx="50" ry="50" style="fill: #c22b10;" filter="url(#blurMe)"/>
+                <ellipse id="ellipse6" cx="100" cy="50" rx="48" ry="48" style="fill: #000;" />
+            </svg>
+        </div>
+
+        <div id="hosts_cmb_container" style="text-align:center;">
+        </div>
+        <div id="div_text" style="text-align:center;">
+            <button id="recognitionEnableDisable_button" onclick="RecognitionEnableDisable()" style="display: inline-block; border:none;">
+                <img id="recognitionEnableDisable_image" src="/Images/micOn.png" alt="Microphone" style="height:35px; opacity:0.2;">
+            </button>
+            <input type="text" id="sendPhrase_text" value="" />
+            <button id="sendPhrase_button" onclick="SendPhrase()" style="display: inline-block; color:#555; border-color:#555;">Send</button>
+            <button id="fakeClick_button" onclick="FakeClick()" style="display:none;"></button>
+        </div>
+        <div id="results" style="text-align:center;">
+            <span class="final" id="final_span"></span> <span class="interim" id="interim_span"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+	window.onload = function(e){ 
+		InitPage();
+        //InitSpeech();
+        //InitFinal();  
+        //ClearUrl();
+	}	
+</script>

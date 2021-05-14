@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="LocalDbModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="LocalDbEntities" p1:LazyLoadingEnabled="true">
+    <EntitySet Name="Catalog" EntityType="LocalDbModel.Catalog" />
+    <EntitySet Name="Product" EntityType="LocalDbModel.Product" />
+    <EntitySet Name="ProductsCatalog" EntityType="LocalDbModel.ProductsCatalog" />
+    <AssociationSet Name="FK_dbo_ProductsCatalog_dbo_Catalog_Code" Association="LocalDbModel.FK_dbo_ProductsCatalog_dbo_Catalog_Code">
+      <End Role="Catalog" EntitySet="Catalog" />
+      <End Role="ProductsCatalog" EntitySet="ProductsCatalog" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_ProductsCatalog_dbo_Product_Code" Association="LocalDbModel.FK_dbo_ProductsCatalog_dbo_Product_Code">
+      <End Role="Product" EntitySet="Product" />
+      <End Role="ProductsCatalog" EntitySet="ProductsCatalog" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Catalog">
+    <Key>
+      <PropertyRef Name="Code" />
+    </Key>
+    <Property Name="Code" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="Description" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="ProductsCatalog" Relationship="LocalDbModel.FK_dbo_ProductsCatalog_dbo_Catalog_Code" FromRole="Catalog" ToRole="ProductsCatalog" />
+  </EntityType>
+  <EntityType Name="Product">
+    <Key>
+      <PropertyRef Name="Code" />
+    </Key>
+    <Property Name="Code" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="Description" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="ProductsCatalog" Relationship="LocalDbModel.FK_dbo_ProductsCatalog_dbo_Product_Code" FromRole="Product" ToRole="ProductsCatalog" />
+    <Property Name="Price" Type="Decimal" Precision="18" Scale="5" />
+  </EntityType>
+  <EntityType Name="ProductsCatalog">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="CatalogCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="ProductCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Catalog" Relationship="LocalDbModel.FK_dbo_ProductsCatalog_dbo_Catalog_Code" FromRole="ProductsCatalog" ToRole="Catalog" />
+    <NavigationProperty Name="Product" Relationship="LocalDbModel.FK_dbo_ProductsCatalog_dbo_Product_Code" FromRole="ProductsCatalog" ToRole="Product" />
+  </EntityType>
+  <Association Name="FK_dbo_ProductsCatalog_dbo_Catalog_Code">
+    <End Type="LocalDbModel.Catalog" Role="Catalog" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="LocalDbModel.ProductsCatalog" Role="ProductsCatalog" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Catalog">
+        <PropertyRef Name="Code" />
+      </Principal>
+      <Dependent Role="ProductsCatalog">
+        <PropertyRef Name="CatalogCode" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_ProductsCatalog_dbo_Product_Code">
+    <End Type="LocalDbModel.Product" Role="Product" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="LocalDbModel.ProductsCatalog" Role="ProductsCatalog" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Product">
+        <PropertyRef Name="Code" />
+      </Principal>
+      <Dependent Role="ProductsCatalog">
+        <PropertyRef Name="ProductCode" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

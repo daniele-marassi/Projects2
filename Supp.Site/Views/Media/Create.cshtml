@@ -1,0 +1,151 @@
+﻿@model Supp.Site.Models.MediaDto
+
+@{
+    ViewData["Title"] = "Create Media";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="GoogleDriveAccounts.FirstOrDefault().Account" class="control-label"></label>
+                @Html.DropDownListFor(x => x.GoogleDriveAccountId, new SelectList(Model.GoogleDriveAccounts, "Id", "Account", Model.GoogleDriveAccountId), "-- Select --", new { @class = "select" })
+                @Html.ValidationMessageFor(x => x.GoogleDriveAccountId)
+            </div>
+            <div class="form-group">
+                <label asp-for="FileId" class="control-label"></label>
+                <input asp-for="FileId" class="form-control textBoxCustom" />
+                <span asp-validation-for="FileId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control textBoxCustom" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Path" class="control-label"></label>
+                <input asp-for="Path" class="form-control textBoxCustom" />
+                <span asp-validation-for="Path" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ModifiedTime" class="control-label"></label>
+                <input asp-for="ModifiedTime" class="form-control textBoxCustom" />
+                <span asp-validation-for="ModifiedTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedTime" class="control-label"></label>
+                <input asp-for="CreatedTime" class="form-control textBoxCustom" />
+                <span asp-validation-for="CreatedTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Size" class="control-label"></label>
+                <input asp-for="Size" class="form-control textBoxCustom" />
+                <span asp-validation-for="Size" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FileExtension" class="control-label"></label>
+                <input asp-for="FileExtension" class="form-control textBoxCustom" />
+                <span asp-validation-for="FileExtension" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MimeType" class="control-label"></label>
+                <input asp-for="MimeType" class="form-control textBoxCustom" />
+                <span asp-validation-for="MimeType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VideoDurationMillis" class="control-label"></label>
+                <input asp-for="VideoDurationMillis" class="form-control textBoxCustom" />
+                <span asp-validation-for="VideoDurationMillis" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VideoHeight" class="control-label"></label>
+                <input asp-for="VideoHeight" class="form-control textBoxCustom" />
+                <span asp-validation-for="VideoHeight" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VideoWidth" class="control-label"></label>
+                <input asp-for="VideoWidth" class="form-control textBoxCustom" />
+                <span asp-validation-for="VideoWidth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageTime" class="control-label"></label>
+                <input asp-for="ImageTime" class="form-control textBoxCustom" />
+                <span asp-validation-for="ImageTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageWidth" class="control-label"></label>
+                <input asp-for="ImageWidth" class="form-control textBoxCustom" />
+                <span asp-validation-for="ImageWidth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageHeight" class="control-label"></label>
+                <input asp-for="ImageHeight" class="form-control textBoxCustom" />
+                <span asp-validation-for="ImageHeight" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageLocationAltitude" class="control-label"></label>
+                <input asp-for="ImageLocationAltitude" class="form-control textBoxCustom" />
+                <span asp-validation-for="ImageLocationAltitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageLocationLatitude" class="control-label"></label>
+                <input asp-for="ImageLocationLatitude" class="form-control textBoxCustom" />
+                <span asp-validation-for="ImageLocationLatitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageLocationLongitude" class="control-label"></label>
+                <input asp-for="ImageLocationLongitude" class="form-control textBoxCustom" />
+                <span asp-validation-for="ImageLocationLongitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control textBoxCustom" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Type" class="control-label"></label>
+                <input asp-for="Type" class="form-control textBoxCustom" />
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="File" class="control-label"></label>
+                <input asp-for="File" class="form-control textBoxCustom" />
+                <span asp-validation-for="File" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Thumbnail" class="control-label"></label>
+                <input asp-for="Thumbnail" class="form-control textBoxCustom" />
+                <span asp-validation-for="Thumbnail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ThumbnailWidth" class="control-label"></label>
+                <input asp-for="ThumbnailWidth" class="form-control textBoxCustom" />
+                <span asp-validation-for="ThumbnailWidth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ThumbnailHeight" class="control-label"></label>
+                <input asp-for="ThumbnailHeight" class="form-control textBoxCustom" />
+                <span asp-validation-for="ThumbnailHeight" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<div class="text-danger">
+    @Html.ValidationSummary(false)
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
