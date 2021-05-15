@@ -17,5 +17,8 @@ function RepositionMenu() {
     document.getElementById('navbar').style.width = window.innerWidth + 'px';
 }
 
+function MenuClick() {
+    //empty function to override
+}
 
 

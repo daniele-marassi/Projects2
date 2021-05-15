@@ -411,13 +411,15 @@ namespace Supp.Site.Controllers
                     var className = currentMethod.DeclaringType.Name;
                     WebSpeechResult result = null;
                     List<WebSpeechDto> _data = null;
-                    Random rnd = new Random();
-                    bool application = false;
-                    bool alwaysShow = false;
+                    var rnd = new Random();
+                    var application = false;
+                    var alwaysShow = false;
+                    var hostSelected = "";
                     long executionQueueId = 0;
                     long.TryParse(_executionQueueId?.ToString(), out executionQueueId);
                     bool.TryParse(_application?.ToString(), out application);
                     bool.TryParse(_alwaysShow?.ToString(), out alwaysShow);
+                    hostSelected = _hostSelected;
 
                     var expiresInSeconds = 0;
 
@@ -428,13 +430,17 @@ namespace Supp.Site.Controllers
 
                         Config.GeneralSettings.Static.Name = authenticationResult.Data.Name;
                         Config.GeneralSettings.Static.Surname = authenticationResult.Data.Surname;
+
+                        suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
+                        suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteApplicationCookieName);
+                        suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName);
                     }
 
-                    if (_hostSelected == null) _hostSelected = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
+                    if (_hostSelected == null) hostSelected = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
                     else
                     {
                         if (expiresInSeconds == 0) int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName), out expiresInSeconds);
-                        suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteHostSelectedCookieName, _hostSelected, expiresInSeconds);
+                        suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteHostSelectedCookieName, hostSelected, expiresInSeconds);
                     }
 
                     if (_application == null) bool.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteApplicationCookieName), out application);
@@ -506,7 +512,7 @@ namespace Supp.Site.Controllers
                         {
                             var type = "";
                             if (data.Operation != null && data.Operation.ToLower().Contains(".exe")) type = "RunExe";
-                            var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = _hostSelected, Type = type };
+                            var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = hostSelected, Type = type };
                             var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
 
                             if (addExecutionQueueResult.Successful)
@@ -552,8 +558,8 @@ namespace Supp.Site.Controllers
 
                     if (_reset == true && alwaysShow == false) 
                     {
-                        if (_hostSelected == null || _hostSelected == String.Empty) _hostSelected = GeneralSettings.Static.HostSelected;
-                        await ExecutionFinished(executionQueueId, _hostSelected, application);
+                        if (hostSelected == null || hostSelected == String.Empty) hostSelected = GeneralSettings.Static.HostSelected;
+                        await ExecutionFinished(executionQueueId, hostSelected, application);
                     }
 
                     data.Error = null;

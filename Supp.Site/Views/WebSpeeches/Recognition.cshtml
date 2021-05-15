@@ -237,14 +237,23 @@
         }
 
         function InitPage(){
-            document.getElementById('menu_button').style.display = 'inline';
+            //application = 'true';
+            if(GetBoolean(application) == true){
+                document.getElementById('menu_button').style.display = 'inline';
+                document.getElementById('menu_button').style.marginLeft = '400px';
 
-            var element = document.getElementById("menu_items");
+                var element = document.getElementById("menu_items");
+                element.classList.remove("flex-sm-row-reverse");
+                element.classList.remove("d-sm-inline-flex");
+                element.classList.remove("navbar-expand-sm");
+                element.classList.remove("navbar-collapse");
 
-            //element.classList.remove("flex-sm-row-reverse");
-            //element.classList.remove("d-sm-inline-flex");
-            //element.classList.remove("navbar-expand-sm");
-            //element.classList.remove("navbar-collapse");
+                element = document.getElementById("navbarBrand");
+                element.classList.remove("flex-sm-row-reverse");
+                element.style.color = '#333';
+
+                document.getElementById('footerContainer').style.color = '#333';  
+            }
                     
             hostsArrayString = hostsArrayString.replace(/&quot;/g,'"');
             if(_error != null && _error != '') console.log(_error);
@@ -271,7 +280,7 @@
             }
 
             if(hosts != null && hosts.length > 0 ){
-                hosts_cmb_string='<select name="hosts_cmb" id="hosts_cmb" value="@Model?.HostSelected" style="background-color:#000; color:#555; border-color:#555;">';
+                hosts_cmb_string='<select name="hosts_cmb" id="hosts_cmb" value="@Model?.HostSelected" style="background-color:#000; color:#333; border-color:#333;">';
                 for (var i = 0; i < hosts.length; i++)
                 {
                     hosts_cmb_string+='<option>'+ hosts[i]+'</option>';
@@ -523,6 +532,14 @@
                 document.getElementById("recognitionEnableDisable_image").src = '/Images/micOn.png';
             }
         }
+
+        function MenuClick() {
+            if(GetBoolean(application) == true){
+                var element = document.getElementById("menu_items");
+                if(element.style.display != 'inline') element.style.display = 'inline';
+                else element.style.display = 'none';
+            }
+        }
     </script>
 }
     
@@ -551,7 +568,7 @@
                 <img id="recognitionEnableDisable_image" src="/Images/micOn.png" alt="Microphone" style="height:35px; opacity:0.2;">
             </button>
             <input type="text" id="sendPhrase_text" value="" />
-            <button id="sendPhrase_button" onclick="SendPhrase()" style="display: inline-block; color:#555; border-color:#555;">Send</button>
+            <button id="sendPhrase_button" onclick="SendPhrase()" style="display: inline-block; color:#333; border-color:#333;">Send</button>
             <button id="fakeClick_button" onclick="FakeClick()" style="display:none;"></button>
         </div>
         <div id="results" style="text-align:center;">
@@ -563,8 +580,8 @@
 <script>
 	window.onload = function(e){ 
 		InitPage();
-        //InitSpeech();
-        //InitFinal();  
-        //ClearUrl();
+        InitSpeech();
+        InitFinal();  
+        ClearUrl();
 	}	
 </script>

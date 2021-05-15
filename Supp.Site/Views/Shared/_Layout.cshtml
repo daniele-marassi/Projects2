@@ -35,12 +35,12 @@
                     <div style="/*background-image: url('../../Images/logo.png');*/ background-repeat: no-repeat; background-size: 100px 50px; position:relative; ">
                         <a class="navbar-brand" href="#" style="/*margin-left:70px;*/">
                             @Html.ActionLink("Supp", "Index", "Home", null,
-                            new { @style = "font-size:24px; text-decoration: none; color:#999;" })
+                            new { @id="navbarBrand", @style = "font-size:24px; text-decoration: none; color:#999;" })
                         </a>
                     </div>
                 </div>
                 <button id="menu_button" class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation" style="color:#999; border: 1px solid #222;">
+                        aria-expanded="false" aria-label="Toggle navigation" style="color:#999; border: 1px solid #222;" onclick="MenuClick()">
                     <span class="navbar-toggler-icon" style="background-color:#222;"></span>
                 </button>
                 <div id="menu_items" class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse" style="margin-left:30px;">
@@ -185,7 +185,7 @@
     </div>
 
     <footer class="footer text-muted" id="footer" style="border-top: 1px solid #111; ">
-        <div class="container">
+        <div id="footerContainer" class="container">
             &copy; @DateTime.Now.Year - Supp Site
         </div>
     </footer>
