@@ -280,3 +280,11 @@ C:\Users\daniele.marassi\OneDrive\Projects\c#\ShutProject\Shut\obj\Debug\Shut.cs
 C:\Users\daniele.marassi\OneDrive\Projects\c#\ShutProject\Shut\obj\Debug\Shut.csproj.CopyComplete
 C:\Users\daniele.marassi\OneDrive\Projects\c#\ShutProject\Shut\obj\Debug\Shut.exe
 C:\Users\daniele.marassi\OneDrive\Projects\c#\ShutProject\Shut\obj\Debug\Shut.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Debug\Shut.csprojAssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Debug\Shut.Shut.resources
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Debug\Shut.Properties.Resources.resources
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Debug\Shut.ShutBack.resources
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Debug\Shut.csproj.GenerateResource.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Debug\Shut.csproj.CoreCompileInputs.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Debug\Shut.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Debug\Shut.pdb
