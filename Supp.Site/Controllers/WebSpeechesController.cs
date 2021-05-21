@@ -21,6 +21,7 @@ using System.Threading;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Newtonsoft.Json;
 
 namespace Supp.Site.Controllers
 {
@@ -39,6 +40,44 @@ namespace Supp.Site.Controllers
             executionQueueRepo = new ExecutionQueuesRepository();
             suppUtility = new SuppUtility();
             authenticationRepo = new AuthenticationsRepository();
+        }
+
+        public List<WebSpeechDto> GetWebSpeeches(List<WebSpeechDto> data)
+        {
+            foreach (var item in data)
+            {
+                if (item.UserId == 0) item.PrivateInstruction = false;
+                else item.PrivateInstruction = true;
+
+                if (item.ParentIds != null && item.ParentIds != String.Empty)
+                {
+                    try
+                    {
+                        if (item.ParentIds != null && item.ParentIds != String.Empty)
+                        {
+                            var webSpeechIds = JsonConvert.DeserializeObject<long[]>(item.ParentIds);
+                            item.WebSpeechIds = webSpeechIds;
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+
+                if (item.WebSpeechIds != null && item.WebSpeechIds.Count() > 0)
+                {
+                    foreach (var id in item.WebSpeechIds)
+                    {
+                        var _phrase = data.Where(_ => _.Id == id).Select(_ => _.Phrase).FirstOrDefault();
+                        if (item.PreviousPhrase == null) item.PreviousPhrase = String.Empty;
+                        if (item.PreviousPhrase != "") item.PreviousPhrase += " ";
+                        item.PreviousPhrase += _phrase;
+                    }
+                }
+            }
+
+            return data;
         }
 
         // GET: WebSpeeches
@@ -75,6 +114,8 @@ namespace Supp.Site.Controllers
 
                     if (result.Successful == false)
                         throw new Exception($"Error - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetAllWebSpeeches)}] - Message: [{result.Message}]");
+
+                    result.Data = GetWebSpeeches(result.Data);
 
                     data = from s in result.Data
                            select s;
@@ -164,6 +205,9 @@ namespace Supp.Site.Controllers
 
                     var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                     var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
+
+                    result.Data = GetWebSpeeches(result.Data);
+
                     var data = result.Data.FirstOrDefault();
 
                     if (result.Successful == false || data == null)
@@ -185,7 +229,48 @@ namespace Supp.Site.Controllers
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                return View();
+                var data = new List<WebSpeechDto>() { };
+                try
+                {
+                    var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
+                    var method = currentMethod.Name;
+                    var className = currentMethod.DeclaringType.Name;
+
+                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+
+                    data.Add(new WebSpeechDto() { });
+
+                    var getAllWebSpeechesResult = webSpeecheRepo.GetAllWebSpeeches(access_token_cookie).Result;
+                    if (!getAllWebSpeechesResult.Successful)
+                        throw new Exception($"Error [Get failed!] - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetAllWebSpeeches)}] - Message: [{getAllWebSpeechesResult.Message}]");
+
+                    var webSpeeches = getAllWebSpeechesResult.Data.ToList();
+
+                    foreach (var row in data)
+                    {
+                        row.Id = 0;
+                        row.Name = String.Empty;
+                        row.Phrase = String.Empty;
+                        row.Operation = String.Empty;
+                        row.Parameters = String.Empty;
+                        row.Host = String.Empty;
+                        row.Answer = String.Empty;
+                        row.FinalStep = true;
+                        row.UserId = 0;
+                        row.ParentIds = String.Empty;
+                        row.PrivateInstruction = true;
+                        row.WebSpeeches = webSpeeches;
+                        row.WebSpeechIds = new long[] { };
+                    }
+
+                    return View(data.FirstOrDefault());
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.ToString());
+                    ModelState.AddModelError("ModelStateErrors", ex.Message);
+                    return View(data);
+                }
             }
         }
 
@@ -194,7 +279,7 @@ namespace Supp.Site.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Phrase,Operation,Parameters,Host,Answer,FinalStep,InsDateTime")] WebSpeechDto dto)
+        public async Task<IActionResult> Create([Bind("Id,Name,Phrase,Operation,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,InsDateTime")] WebSpeechDto dto)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -207,6 +292,11 @@ namespace Supp.Site.Controllers
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
                         var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+
+                        var claims = SuppUtility.GetClaims(User);
+                        if (dto.PrivateInstruction == true) dto.UserId = claims.UserId;
+                        else dto.UserId = 0;
+
                         var result = await webSpeecheRepo.AddWebSpeech(dto, access_token_cookie);
 
                         data.AddRange(result.Data);
@@ -223,6 +313,7 @@ namespace Supp.Site.Controllers
                         return View(dto);
                     }
                 }
+
                 return View(dto);
             }
         }
@@ -243,10 +334,23 @@ namespace Supp.Site.Controllers
 
                     var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                     var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
+
+                    result.Data = GetWebSpeeches(result.Data);
+
                     var data = result.Data.FirstOrDefault();
 
                     if (result.Successful == false || data == null)
                         throw new Exception($"Error [Data not found!] - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetWebSpeechesById)}] - Message: [{result.Message}]");
+
+                    var getAllWebSpeechesResult = webSpeecheRepo.GetAllWebSpeeches(access_token_cookie).Result;
+                    if (!getAllWebSpeechesResult.Successful)
+                        throw new Exception($"Error [Get failed!] - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetAllWebSpeeches)}] - Message: [{getAllWebSpeechesResult.Message}]");
+
+                    getAllWebSpeechesResult.Data = GetWebSpeeches(getAllWebSpeechesResult.Data);
+
+                    var webSpeeches = getAllWebSpeechesResult.Data.ToList();
+
+                    data.WebSpeeches = webSpeeches;
 
                     return View(data);
                 }
@@ -264,7 +368,7 @@ namespace Supp.Site.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Phrase,Operation,Parameters,Host,Answer,FinalStep,InsDateTime")] WebSpeechDto dto)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Phrase,Operation,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,InsDateTime")] WebSpeechDto dto)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -283,6 +387,14 @@ namespace Supp.Site.Controllers
                             throw new Exception($"Error [Id not exists!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
                         var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+
+                        var parentIds = JsonConvert.SerializeObject(dto.WebSpeechIds);
+                        dto.ParentIds = parentIds;
+
+                        var claims = SuppUtility.GetClaims(User);
+                        if (dto.PrivateInstruction == true) dto.UserId = claims.UserId;
+                        else dto.UserId = 0;
+
                         var result = await webSpeecheRepo.UpdateWebSpeech(dto, access_token_cookie);
 
                         if (!result.Successful)
@@ -316,6 +428,9 @@ namespace Supp.Site.Controllers
 
                     var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                     var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
+
+                    result.Data = GetWebSpeeches(result.Data);
+
                     var data = result.Data.FirstOrDefault();
 
                     if (result.Successful == false || data == null)
@@ -417,13 +532,11 @@ namespace Supp.Site.Controllers
                     var hostSelected = "";
                     long executionQueueId = 0;
                     long.TryParse(_executionQueueId?.ToString(), out executionQueueId);
-                    bool.TryParse(_application?.ToString(), out application);
-                    bool.TryParse(_alwaysShow?.ToString(), out alwaysShow);
-                    hostSelected = _hostSelected;
-
                     var expiresInSeconds = 0;
 
-                    if (_userName != null && _password != null)
+                    var claims = SuppUtility.GetClaims(User);
+
+                    if (_userName != null && _password != null || claims.IsAuthenticated == false)
                     {
                         var dto = new LoginDto() { UserName = _userName, Password = _password };
                         var authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response);
@@ -434,27 +547,42 @@ namespace Supp.Site.Controllers
                         suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
                         suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteApplicationCookieName);
                         suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName);
-                    }
 
-                    if (_hostSelected == null) hostSelected = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
+                        int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName), out expiresInSeconds);
+
+                        if (_hostSelected != null && _hostSelected != "")
+                        {
+                            suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteHostSelectedCookieName, _hostSelected, expiresInSeconds);
+                            hostSelected = _hostSelected;
+                        }
+                        else
+                        {
+                            suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteHostSelectedCookieName, GeneralSettings.Static.HostSelected, expiresInSeconds);
+                            hostSelected = GeneralSettings.Static.HostSelected;
+                        }
+
+                        if (_application != null)
+                        {
+                            suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteApplicationCookieName, _application.ToString(), expiresInSeconds);
+                            bool.TryParse(_application?.ToString(), out application);
+                        }
+
+                        if (_alwaysShow != null)
+                        {
+                            suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName, _alwaysShow.ToString(), expiresInSeconds);
+                            bool.TryParse(_alwaysShow?.ToString(), out application);
+                        }
+                    }
                     else
                     {
-                        if (expiresInSeconds == 0) int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName), out expiresInSeconds);
-                        suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteHostSelectedCookieName, hostSelected, expiresInSeconds);
-                    }
+                        if (_hostSelected == null) hostSelected = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
+                        else hostSelected = _hostSelected;
 
-                    if (_application == null) bool.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteApplicationCookieName), out application);
-                    else
-                    {
-                        if (expiresInSeconds == 0) int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName), out expiresInSeconds);
-                        suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteApplicationCookieName, application.ToString(), expiresInSeconds);
-                    }
+                        if (_application == null) bool.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteApplicationCookieName), out application);
+                        else bool.TryParse(_application?.ToString(), out application);
 
-                    if (_alwaysShow == null) bool.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName), out alwaysShow);
-                    else
-                    {
-                        if (expiresInSeconds == 0) int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName), out expiresInSeconds);
-                        suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName, alwaysShow.ToString(), expiresInSeconds);
+                        if (_alwaysShow == null) bool.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName), out alwaysShow);
+                        else bool.TryParse(_alwaysShow?.ToString(), out alwaysShow);
                     }
 
                     if (_phrase != "" && _phrase != null)
@@ -463,6 +591,8 @@ namespace Supp.Site.Controllers
 
                         result = await webSpeecheRepo.GetAllWebSpeeches(access_token_cookie);
 
+                        result.Data = GetWebSpeeches(result.Data);
+
                         var _words = _phrase.Split(" ");
                         var _wordsCount = _words.Count();
                         var countMatch = 0;
@@ -470,34 +600,54 @@ namespace Supp.Site.Controllers
 
                         foreach (var item in result.Data.ToList())
                         {
-                            var words = item.Phrase.Split(" ");
-                            var wordsCount = words.Count();
-                            var minMatch = (int)Math.Ceiling(wordsCount * GeneralSettings.Static.SpeechWordsCoefficient);
-                            var maxWords = (int)(wordsCount + Math.Ceiling(wordsCount * GeneralSettings.Static.SpeechWordsCoefficient));
+                            var phrases = new List<string>() { };
 
-                            if (minMatch == 0) minMatch = 1;
-                            match = 0;
-                            foreach (var word in words)
+                            try
                             {
-                                foreach (var _word in _words)
+                                phrases = JsonConvert.DeserializeObject<List<string>>(item.Phrase); 
+                            }
+                            catch (Exception)
+                            {
+                                phrases.Add(item.Phrase);
+                            }
+
+                            for (int i = 0; i < phrases.Count; i++)
+                            {
+                                if (item.PreviousPhrase != null && item.PreviousPhrase != String.Empty)
+                                    phrases[i] = item.PreviousPhrase + " " + phrases[i];
+                            }
+
+                            foreach (var phrase in phrases)
+                            {
+                                var words = phrase.Split(" ");
+                                var wordsCount = words.Count();
+                                var minMatch = (int)Math.Ceiling(wordsCount * GeneralSettings.Static.SpeechWordsCoefficient);
+                                var maxWords = (int)(wordsCount + Math.Ceiling(wordsCount * GeneralSettings.Static.SpeechWordsCoefficient));
+
+                                if (minMatch == 0) minMatch = 1;
+                                match = 0;
+                                foreach (var word in words)
                                 {
-                                    if (_word.Trim().ToLower() == word.Trim().ToLower())
+                                    foreach (var _word in _words)
                                     {
-                                        match++;
+                                        if (_word.Trim().ToLower() == word.Trim().ToLower())
+                                        {
+                                            match++;
+                                        }
                                     }
                                 }
-                            }
 
-                            if (match > countMatch && match >= minMatch && _wordsCount <= maxWords)
-                            {
-                                countMatch = match;
-                                _data = new List<WebSpeechDto>();
-                                _data.Add(item);
-                            }
+                                if (match > countMatch && match >= minMatch && _wordsCount <= maxWords)
+                                {
+                                    countMatch = match;
+                                    _data = new List<WebSpeechDto>();
+                                    _data.Add(item);
+                                }
 
-                            if (match == countMatch && match >= minMatch && _wordsCount <= maxWords)
-                            {
-                                _data.Add(item);
+                                if (match == countMatch && match >= minMatch && _wordsCount <= maxWords)
+                                {
+                                    _data.Add(item);
+                                }
                             }
                         }
 
@@ -506,6 +656,22 @@ namespace Supp.Site.Controllers
                             int x = rnd.Next(0, _data.Count());
 
                             data = _data[x];
+
+                            var answers = new List<string>() { };
+
+                            try
+                            {
+                                answers = JsonConvert.DeserializeObject<List<string>>(data.Answer);
+                            }
+                            catch (Exception)
+                            {
+                                answers.Add(data.Answer);
+                            }
+
+                            x = rnd.Next(0, answers.Count());
+
+                            data.Answer = answers[x];
+
                         }
 
                         if (data != null && data.Operation != null)

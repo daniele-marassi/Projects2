@@ -15,6 +15,8 @@ namespace Supp.Site.Models
         public string Host { get; set; }
         public string Answer { get; set; }
         public bool FinalStep { get; set; }
+        public long UserId { get; set; }
+        public string ParentIds { get; set; }
         public System.DateTime InsDateTime { get; set;}
         public string HostsArray { get; set; }
         public string HostSelected { get; set; }
@@ -29,5 +31,10 @@ namespace Supp.Site.Models
         public bool AlwaysShow { get; set; } 
         public long ExecutionQueueId { get; set; }
         public string Error { get; set; }
+        public bool PrivateInstruction { get; set; }
+        public string PreviousPhrase { get; set; }
+        public IEnumerable<WebSpeechDto> WebSpeeches { get; set; }
+
+        public long[] WebSpeechIds { get; set; }
     }
 }

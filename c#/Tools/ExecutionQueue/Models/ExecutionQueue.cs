@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Tools.ExecutionQueue.Models
 {
@@ -12,6 +13,7 @@ namespace Tools.ExecutionQueue.Models
         public string Output { get; set; }
         public string Host { get; set; }
         public string StateQueue { get; set; }
+        [DataType(DataType.DateTime)]
         public System.DateTime InsDateTime { get; }
     }
 }

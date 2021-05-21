@@ -601,3 +601,4 @@ E:\GoogleDriveShare\Projects\Supp.Site\obj\Release\netcoreapp3.1\staticwebassets
 E:\GoogleDriveShare\Projects\Supp.Site\obj\Release\netcoreapp3.1\Supp.Site.dll
 E:\GoogleDriveShare\Projects\Supp.Site\obj\Release\netcoreapp3.1\Supp.Site.pdb
 E:\GoogleDriveShare\Projects\Supp.Site\obj\Release\netcoreapp3.1\Supp.Site.genruntimeconfig.cache
+E:\GoogleDriveShare\Projects\Supp.Site\bin\Release\netcoreapp3.1\Microsoft.AspNet.Identity.Core.dll

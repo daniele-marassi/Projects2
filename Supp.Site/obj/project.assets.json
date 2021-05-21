@@ -24,6 +24,15 @@
           "buildMultiTargeting/JSconsoleExtensionsLib.props": {}
         }
       },
+      "Microsoft.AspNet.Identity.Core/2.2.3": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Microsoft.AspNet.Identity.Core.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.AspNet.Identity.Core.dll": {}
+        }
+      },
       "Microsoft.AspNetCore.Antiforgery/2.2.0": {
         "type": "package",
         "dependencies": {
@@ -3357,6 +3366,19 @@
         "staticwebassets/JSconsoleExtensions.js",
         "staticwebassets/background.png",
         "staticwebassets/exampleJsInterop.js"
+      ]
+    },
+    "Microsoft.AspNet.Identity.Core/2.2.3": {
+      "sha512": "Mv5FpoaxspE8hlWLE4r1IdZtovg/OyFgVRhxQbx47J4sqdLImN1hnM1lnwCj+/wLmqtqFk/RYMoZ5GAcwm/00g==",
+      "type": "package",
+      "path": "microsoft.aspnet.identity.core/2.2.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net45/Microsoft.AspNet.Identity.Core.dll",
+        "lib/net45/Microsoft.AspNet.Identity.Core.xml",
+        "microsoft.aspnet.identity.core.2.2.3.nupkg.sha512",
+        "microsoft.aspnet.identity.core.nuspec"
       ]
     },
     "Microsoft.AspNetCore.Antiforgery/2.2.0": {
@@ -10005,6 +10027,7 @@
     ".NETCoreApp,Version=v3.1": [
       "AutoMapper >= 9.0.0",
       "JSconsoleExtensionsLib >= 5.0.2",
+      "Microsoft.AspNet.Identity.Core >= 2.2.3",
       "Microsoft.EntityFrameworkCore.SqlServer >= 3.1.11",
       "Microsoft.EntityFrameworkCore.Sqlite >= 3.1.11",
       "Microsoft.EntityFrameworkCore.Tools >= 3.1.11",
@@ -10067,6 +10090,10 @@
             "target": "Package",
             "version": "[5.0.2, )"
           },
+          "Microsoft.AspNet.Identity.Core": {
+            "target": "Package",
+            "version": "[2.2.3, )"
+          },
           "Microsoft.EntityFrameworkCore.SqlServer": {
             "target": "Package",
             "version": "[3.1.11, )"
@@ -10127,5 +10154,17 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.203\\RuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Il pacchetto 'Microsoft.AspNet.Identity.Core 2.2.3' è stato ripristinato mediante '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' e non mediante il framework di destinazione del progetto '.NETCoreApp,Version=v3.1'. Questo pacchetto potrebbe non essere completamente compatibile con il progetto.",
+      "libraryId": "Microsoft.AspNet.Identity.Core",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v3.1"
+      ]
+    }
+  ]
 }

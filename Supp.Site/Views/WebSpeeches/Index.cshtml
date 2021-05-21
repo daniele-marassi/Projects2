@@ -50,7 +50,13 @@
                         @Html.ActionLink("Answer", "Index", new { sortOrder = "Answer", currentFilter = ViewBag.CurrentFilter })
                     </th>
                     <th id="selectable">
+                        @Html.ActionLink("Previous Phrase", "Index", new { sortOrder = "PreviousPhrase", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
                         @Html.ActionLink("FinalStep", "Index", new { sortOrder = "FinalStep", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("PrivateInstruction", "Index", new { sortOrder = "PrivateInstruction", currentFilter = ViewBag.CurrentFilter })
                     </th>
                     <th id="borderTitle"></th>
                 </tr>
@@ -80,7 +86,13 @@
                         @Html.DisplayFor(modelItem => item.Answer)
                     </td>
                     <td>
+                        @Html.DisplayFor(modelItem => item.PreviousPhrase)
+                    </td>
+                    <td>
                         @Html.DisplayFor(modelItem => item.FinalStep)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PrivateInstruction)
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

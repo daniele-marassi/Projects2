@@ -46,44 +46,21 @@
                 <div id="menu_items" class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse" style="margin-left:30px;">
                     <ul class="navbar-nav flex-grow-1">
                         @{
-                            var claims = User.Claims.FirstOrDefault(c => c.Type == "ConfigInJson");
-                            var configInJson = claims?.Value;
+                            var claims = SuppUtility.GetClaims(User);
 
-                            if (configInJson != null && configInJson != String.Empty)
-                            {
-                                var obj = JsonConvert.DeserializeObject<Configuration>(configInJson);
-
-                                Config.GeneralSettings.SetGeneralSettings(null, obj);
-                            }
-
-                            claims = User.Claims.FirstOrDefault(c => c.Type == "UserName");
-                            Config.GeneralSettings.Static.UserName = claims?.Value;
-                            var _claims = User.Claims.FirstOrDefault(c => c.Type == "Name");
-                            Config.GeneralSettings.Static.Name = _claims?.Value;
-                            _claims = User.Claims.FirstOrDefault(c => c.Type == "Surname");
-                            Config.GeneralSettings.Static.Surname = _claims?.Value;
-
-                            var claimValues = new Dictionary<string, string>() { };
-
-                            var isAuthenticated = false;
-
-                            if (claims != null && claims.Subject != null)
-                            {
-                                foreach (var claim in claims.Subject.Claims)
-                                {
-                                    claimValues.Add(claim.Type.ToString(), claim.Value.ToString());
-                                }
-
-                                isAuthenticated = claims.Subject.IsAuthenticated;
-                            }
+                            Config.GeneralSettings.SetGeneralSettings(null, claims.Configuration);
+                            Config.GeneralSettings.SetGeneralSettings(null, claims.Configuration);
+                            Config.GeneralSettings.Static.UserName = claims.UserName;
+                            Config.GeneralSettings.Static.Name = claims.Name;
+                            Config.GeneralSettings.Static.Surname = claims.Surname;
                         }
 
-                        @if (isAuthenticated)
+                        @if (claims.IsAuthenticated)
                         {
                             var nLogUtility = new NLogUtility();
                             nLogUtility.ClearNLogFile("mainLog", Config.GeneralSettings.Static.LimitLogFileInMB);
 
-                            @if (claimValues["Roles"].Contains(Config.Roles.Constants.RoleAdmin) || claimValues["Roles"].Contains(Config.Roles.Constants.RoleSuperUser) || claimValues["Roles"].Contains(Config.Roles.Constants.RoleUser))
+                            @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
                             {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
@@ -95,7 +72,7 @@
                                         <div class="dropdown-divider"></div>
                                         @Html.ActionLink("Media Box", "MediaBox", "Media", null, new { @class = "nav-item", @style = "text-decoration: none;" })
 
-                                        @if (claimValues["Roles"].Contains(Config.Roles.Constants.RoleAdmin))
+                                        @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0)
                                         {
                                             <div class="dropdown-divider"></div>
                                             @Html.ActionLink("List Media", "Index", "Media", null, new { @class = "nav-item", @style = "text-decoration: none;" })
@@ -110,7 +87,7 @@
                                 </li>
                             }
 
-                            @if (claimValues["Roles"].Contains(Config.Roles.Constants.RoleAdmin))
+                            @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0)
                             {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
@@ -160,7 +137,7 @@
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
                                     <div class="dropdown-divider"></div>
                                     @Html.ActionLink("Logout", "Logout", "Home", null, new { @class = "nav-item", @style = "text-decoration: none;" })
-                                    @if (claimValues["Roles"].Contains(Config.Roles.Constants.RoleAdmin) || claimValues["Roles"].Contains(Config.Roles.Constants.RoleSuperUser) || claimValues["Roles"].Contains(Config.Roles.Constants.RoleUser))
+                                    @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
                                     {
                                         <div class="dropdown-divider"></div>
                                         @Html.ActionLink("Change Password", "ChangePassword", "Accounts", null, new { @class = "nav-item", @style = "text-decoration: none;" })

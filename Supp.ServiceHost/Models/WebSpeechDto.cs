@@ -15,7 +15,8 @@ namespace Supp.ServiceHost.Models
         public string Host { get; set; }
         public string Answer { get; set; }
         public bool FinalStep { get; set; }
-
+        public long UserId { get; set; }
+        public string ParentIds { get; set; }
         public System.DateTime InsDateTime { get; set;}
     }
 }

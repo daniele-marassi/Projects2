@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
+using Supp.Site.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -186,6 +189,41 @@ namespace Supp.Site.Common
                 @"(\p{Ll})(\P{Ll})",
                 "$1 $2"
             );
+        }
+
+        public static ClaimsDto GetClaims(ClaimsPrincipal user)
+        {
+            var claims = user.Claims.ToList();
+
+            var dto = new ClaimsDto() { IsAuthenticated = false, Roles = new List<string>() { } };
+
+            if (claims != null && claims.Count > 0)
+            {
+                dto.IsAuthenticated = true;
+
+                dto.UserName = claims.Where(_ => _.Type == nameof(ClaimsDto.UserName)).Select(_ => _.Value).FirstOrDefault();
+
+                var configInJson = claims.Where(_ => _.Type == nameof(ClaimsDto.Configuration)).Select(_ => _.Value).FirstOrDefault();
+                if (configInJson != null && configInJson != String.Empty)
+                {
+                    var obj = JsonConvert.DeserializeObject<Configuration>(configInJson);
+                    dto.Configuration = obj;
+                }
+
+                dto.Name = claims.Where(_ => _.Type == nameof(ClaimsDto.Name)).Select(_ => _.Value).FirstOrDefault();
+                dto.Surname = claims.Where(_ => _.Type == nameof(ClaimsDto.Surname)).Select(_ => _.Value).FirstOrDefault();
+                dto.UserId = long.Parse(claims.Where(_ => _.Type == nameof(ClaimsDto.UserId)).Select(_ => _.Value).FirstOrDefault());
+
+                var rolesInString = claims.Where(_ => _.Type == nameof(ClaimsDto.Roles)).Select(_ => _.Value).FirstOrDefault();
+                if (rolesInString != null && rolesInString != String.Empty)
+                {
+                    var obj = rolesInString.Split(",");
+                    dto.Roles.AddRange(obj);
+                }
+
+            }
+
+            return dto;
         }
     }
 }

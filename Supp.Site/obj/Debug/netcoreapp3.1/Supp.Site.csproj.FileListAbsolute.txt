@@ -604,3 +604,4 @@ E:\GoogleDriveShare\Projects\Supp.Site\obj\Debug\netcoreapp3.1\Razor\Views\Execu
 E:\GoogleDriveShare\Projects\Supp.Site\obj\Debug\netcoreapp3.1\Razor\Views\ExecutionQueues\Details.cshtml.g.cs
 E:\GoogleDriveShare\Projects\Supp.Site\obj\Debug\netcoreapp3.1\Razor\Views\ExecutionQueues\Edit.cshtml.g.cs
 E:\GoogleDriveShare\Projects\Supp.Site\obj\Debug\netcoreapp3.1\Razor\Views\ExecutionQueues\Index.cshtml.g.cs
+C:\Users\ev\GoogleDriveShare\Projects\Supp.Site\bin\Debug\netcoreapp3.1\Microsoft.AspNet.Identity.Core.dll

@@ -26,6 +26,9 @@ namespace Supp.ServiceHost.Models
 
         public bool FinalStep { get; set; }
 
+        public long UserId { get; set; }
+
+        public string ParentIds { get; set; }
 
         public System.DateTime InsDateTime { get; set;}
     }

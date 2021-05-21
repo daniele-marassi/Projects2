@@ -46,6 +46,7 @@
         var alwaysShow = '@Model?.AlwaysShow';
         var resetActive = false;
         var countTheTimesToReset = 0;
+        var audioActive = true;
 
         function AddAnimateInterval(id, size, range, amount, milliseconds) {
             if (animateIntervals[id] != null) clearInterval(animateIntervals[id]);
@@ -324,7 +325,7 @@
             if (animateIntervals['ellipse1'] == null && recognitionActive == true) StartAnimateIntervals(70);
             final_transcript = '';
             recognition.lang = '@Model?.Culture';
-            ActiveAudio();
+            SetAudio();
 
             try {
                 recognition.start();
@@ -442,7 +443,7 @@
         }
 
         function Service() {
-            ActiveAudio();
+            //if(audioActive == true) SetAudio();
 
             if(resetActive && countTheTimesToReset == 10 && recognitionActive == true){
                 countTheTimesToReset = 0;
@@ -455,14 +456,23 @@
             else countTheTimesToReset = 0;
         }
 
-        function ActiveAudio(){
-            navigator.mediaDevices.getUserMedia({ audio: true })
-            .then(function (stream) {
-                console.log('You let me use your mic!')
-            })
-            .catch(function (err) {
-                console.log('No mic for you!')
-            });
+        function SetAudio(){
+            if(audioActive == true) {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(function (stream) {
+                    window.localStream = stream;
+                    console.log('You let me use your mic!')
+                })
+                .catch(function (err) {
+                    console.log('No mic for you!')
+                });
+            } else {
+                localStream.getTracks().forEach( (track) => {
+                    track.stop();
+                     console.log('mic off')
+                });
+                localStream.getAudioTracks()[0].stop();
+            }
         }
 
         function FakeClick(){
@@ -488,7 +498,8 @@
             listeningPhrase = '';
             _old_phrase = '';
             _phrase = null;
-            resetActive = false;;
+            resetActive = false;
+            audioActive = true;
             countTheTimesToReset = 0;
             $("#sendPhrase_text").val('');
             document.getElementById('final_span').innerHTML = '';
@@ -517,8 +528,12 @@
 
         function RecognitionEnableDisable(){
             if(recognitionActive == true){
-                recognitionActive = false;
+                clearInterval(serviceInterval);
+                serviceInterval = null;
                 PartialReset();
+                recognitionActive = false;
+                audioActive = false;
+                SetAudio();
                 recognition.abort();
                 recognition.stop();
                 StopAnimateIntervals();
@@ -527,8 +542,10 @@
                 document.getElementById("recognitionEnableDisable_image").src = '/Images/micOff.png';
                 
             } else {
+                PartialReset();
                 recognitionActive = true;
-                StartButton(event);
+                audioActive = true;
+                InitFinal();
                 document.getElementById("recognitionEnableDisable_image").src = '/Images/micOn.png';
             }
         }
@@ -545,8 +562,8 @@
     
 <div id="main">
     <div style="text-align:center;">
-        <div id="div_ellipse" style="margin:auto; padding:100px; ">
-            <svg viewBox="-50 -20 300 140" xmlns="http://www.w3.org/2000/svg">
+        <div id="div_ellipse" style="margin:50px; padding-bottom:40px;">
+            <svg viewBox="-7 -20 210 140" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <filter id="blurMe">
                         <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
@@ -561,7 +578,7 @@
             </svg>
         </div>
 
-        <div id="hosts_cmb_container" style="text-align:center;">
+        <div id="hosts_cmb_container" style="text-align:center; margin-top:-100px;">
         </div>
         <div id="div_text" style="text-align:center;">
             <button id="recognitionEnableDisable_button" onclick="RecognitionEnableDisable()" style="display: inline-block; border:none;">
@@ -572,7 +589,8 @@
             <button id="fakeClick_button" onclick="FakeClick()" style="display:none;"></button>
         </div>
         <div id="results" style="text-align:center;">
-            <span class="final" id="final_span"></span> <span class="interim" id="interim_span"></span>
+            <span class="final" id="final_span"></span> 
+            <span class="interim" id="interim_span" style="overflow:hidden;"></span>
         </div>
     </div>
 </div>

@@ -15,6 +15,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using static Supp.Site.Common.Config;
 using Additional.NLog;
+using Microsoft.AspNet.Identity;
 
 namespace Supp.Site.Controllers
 {
@@ -142,7 +143,10 @@ namespace Supp.Site.Controllers
                         result.Data = data;
 
                         var principal = CreatePrincipal(data, nLogUtility, user);
-                        httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                        CookieOptions option = new CookieOptions();
+                        option.Expires = DateTime.Now.AddSeconds((double)data.ExpiresInSeconds);
+                        var properties = new AuthenticationProperties() { AllowRefresh = true, ExpiresUtc = option.Expires, IsPersistent = true };
+                        httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, properties);
 
                         suppUtility.RemoveCookie(response, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                         suppUtility.RemoveCookie(response, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
@@ -185,6 +189,8 @@ namespace Supp.Site.Controllers
                     };
                     principal.AddIdentity(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
                     user.AddIdentity(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
+
+                    
                 }
                 catch (Exception ex)
                 {

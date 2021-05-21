@@ -33,6 +33,7 @@
         "dependencies": {
           "AutoMapper": "9.0.0",
           "JSconsoleExtensionsLib": "5.0.2",
+          "Microsoft.AspNet.Identity.Core": "2.2.3",
           "Microsoft.EntityFrameworkCore.SqlServer": "3.1.11",
           "Microsoft.EntityFrameworkCore.Sqlite": "3.1.11",
           "Microsoft.EntityFrameworkCore.Tools": "3.1.11",
@@ -333,6 +334,17 @@
         }
       },
       "JSconsoleExtensionsLib/5.0.2": {},
+      "Microsoft.AspNet.Identity.Core/2.2.3": {
+        "runtime": {
+          "lib/net45/Microsoft.AspNet.Identity.Core.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.2.3.11125"
+          }
+        },
+        "compile": {
+          "lib/net45/Microsoft.AspNet.Identity.Core.dll": {}
+        }
+      },
       "Microsoft.AspNetCore.Antiforgery/2.2.0": {
         "dependencies": {
           "Microsoft.AspNetCore.DataProtection": "2.2.0",
@@ -4425,6 +4437,13 @@
       "sha512": "sha512-t7f7R305/KndWZH7hinJvwLlJt+zvm9nELYlV1/ZnaiL59ycNZpE2QjmNsc9CSb5EUp5T969lbpKnUkxLoGQ/g==",
       "path": "jsconsoleextensionslib/5.0.2",
       "hashPath": "jsconsoleextensionslib.5.0.2.nupkg.sha512"
+    },
+    "Microsoft.AspNet.Identity.Core/2.2.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Mv5FpoaxspE8hlWLE4r1IdZtovg/OyFgVRhxQbx47J4sqdLImN1hnM1lnwCj+/wLmqtqFk/RYMoZ5GAcwm/00g==",
+      "path": "microsoft.aspnet.identity.core/2.2.3",
+      "hashPath": "microsoft.aspnet.identity.core.2.2.3.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Antiforgery/2.2.0": {
       "type": "package",

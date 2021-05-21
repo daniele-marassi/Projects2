@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 
 namespace Tools.ExecutionQueue.Contexts
 {
@@ -10,5 +11,12 @@ namespace Tools.ExecutionQueue.Contexts
         }
 
         public DbSet<Models.ExecutionQueue> ExecutionQueues { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            //modelBuilder.Entity<Models.ExecutionQueue>()
+            //    .Property(_ => _.InsDateTime)
+            //    .HasColumnType("datetime");
+        }
     }
 }

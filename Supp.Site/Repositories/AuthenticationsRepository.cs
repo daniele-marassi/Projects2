@@ -38,7 +38,6 @@ namespace Supp.Site.Repositories
                     keyValuePairs["UserName"] = userName;
                     keyValuePairs["Password"] = password;
 
-
                     var result = await utility.CallApi(HttpMethod.Get, GeneralSettings.Static.BaseUrl, "api/Authentications/GetToken", keyValuePairs, null);
 
                     var content = await result.Content.ReadAsStringAsync();
