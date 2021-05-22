@@ -21,6 +21,10 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\bin\Debug\External_tools\Messages
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\bin\Debug\External_tools\MessagesPopUp.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\bin\Debug\External_tools\Newtonsoft.Json.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\bin\Debug\External_tools\Newtonsoft.Json.xml
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\bin\Debug\Resources\Error.mp3
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\bin\Debug\Resources\Recover.mp3
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\bin\Debug\Resources\Supp.png
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\bin\Debug\Resources\SuppHide.png
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\bin\Debug\Tools.ico
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\bin\Debug\External_tools\MessagesPopUp.exe.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\bin\Debug\Tools.exe.config

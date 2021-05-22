@@ -256,6 +256,7 @@ namespace Tools
 			if (itemName == "SpeechServiceMenuItem")
 			{
 				var item = Common.ContextMenus.Menu.Items[itemName];
+				var _item = Common.ContextMenus.Menu.Items["SpeechShowHideMenuItem"];
 
 				if (ProcessIcon.SpeechServiceActive)
 				{
@@ -264,6 +265,7 @@ namespace Tools
 					AddOrUpdateAppSettings("Speech", ProcessIcon.SpeechServiceActive.ToString());
 
 					item.Image = Resources.ServiceDisable;
+					_item.Image = Resources.SuppHide;
 					if (ProcessIcon._Speech != null)
 					{
 						//ProcessIcon._SpeechService.Stop();
@@ -277,6 +279,7 @@ namespace Tools
 					ProcessIcon.SpeechServiceActive = true;
 					AddOrUpdateAppSettings("Speech", ProcessIcon.SpeechServiceActive.ToString());
 					item.Image = Resources.ServiceActive;
+					_item.Image = Resources.Supp;
 					ProcessIcon._Speech = new Speech();
 					//ProcessIcon._SpeechService = new SpeechService();
 					Task.Run(() => ProcessIcon._Speech.Start());
@@ -284,12 +287,13 @@ namespace Tools
 				}
 			}
 
-			if (itemName == "SpeechShowHideMenuItem")
+			if (itemName == "SpeechShowHideMenuItem" && ProcessIcon.SpeechServiceActive)
 			{
+				var item = Common.ContextMenus.Menu.Items[itemName];
 				if (ProcessIcon.SpeechShowHideActive)
 				{
 					ProcessIcon.SpeechShowHideActive = false;
-
+					item.Image = Resources.SuppHide;
 					if (ProcessIcon._Speech != null)
 					{
 						ProcessIcon._Speech.Hide();
@@ -299,7 +303,7 @@ namespace Tools
 				else
 				{
 					ProcessIcon.SpeechShowHideActive = true;
-
+					item.Image = Resources.Supp;
 					ProcessIcon._Speech = new Speech();
 					Task.Run(() => ProcessIcon._Speech.Show());
 				}

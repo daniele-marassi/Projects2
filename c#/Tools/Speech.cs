@@ -67,7 +67,7 @@ namespace Tools
             showTimeout = int.Parse(appSettings["ShowTimeout"]);
         }
 
-        public void Start()
+        public void Start(bool removeFocus = true)
         {
             var webAddressParamsString = "";
             (int? ProcessId, string Error) result;
@@ -96,7 +96,7 @@ namespace Tools
 
             var _processId = (int)result.ProcessId;
 
-            RemoveFocus();
+            if(removeFocus) RemoveFocus();
         }
 
         public void RemoveFocus() 
@@ -118,11 +118,13 @@ namespace Tools
         {
             //windowWidth = 530;
             //windowHeight = 600;
-
+            IntPtr result = default(IntPtr);
             try
             {     
-                if(fullScreen) utilty.MoveExtWindow(windowCaption, -10, -40, workingAreaWidth + 20, workingAreaHeight + 50);
-                else utilty.MoveExtWindow(windowCaption, (workingAreaWidth - windowWidth) + 10, (workingAreaHeight - windowHeight) + 10, windowWidth, windowHeight);
+                if(fullScreen) result = utilty.MoveExtWindow(windowCaption, -10, -40, workingAreaWidth + 20, workingAreaHeight + 50);
+                else result = utilty.MoveExtWindow(windowCaption, (workingAreaWidth - windowWidth) + 10, (workingAreaHeight - windowHeight) + 10, windowWidth, windowHeight);
+
+                if (result == default(IntPtr)) Start(false);
 
                 var speechService = new SpeechService();
                 Task.Run(() => speechService.Start(true));
@@ -139,6 +141,7 @@ namespace Tools
 
             windowX = 0;
             windowY = workingAreaHeight;
+            IntPtr result = default(IntPtr);
 
             try
             {

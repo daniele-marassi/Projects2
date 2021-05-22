@@ -56,7 +56,7 @@ namespace Tools.SyncIp
                 {
                     address = utility.GetPublicIPAddress();
                     //Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " - " + address);
-                    if (address != oldAddress)
+                    if (address != oldAddress || showError != null)
                     {
                         var keyValuePairs = new Dictionary<string, string>() { };
                         keyValuePairs["api"] = "SetIp";

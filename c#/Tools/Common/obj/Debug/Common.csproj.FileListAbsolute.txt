@@ -17,6 +17,7 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Common.dll.confi
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Common.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Common.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\AboutBox.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\AxInterop.WMPLib.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\MessagesPopUp.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\NLog.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\System.Resources.Extensions.dll

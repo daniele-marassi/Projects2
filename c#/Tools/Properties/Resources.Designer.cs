@@ -71,12 +71,32 @@ namespace Tools.Properties {
         }
         
         /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Byte[].
+        /// </summary>
+        internal static byte[] Error {
+            get {
+                object obj = ResourceManager.GetObject("Error", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Exit {
             get {
                 object obj = ResourceManager.GetObject("Exit", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Byte[].
+        /// </summary>
+        internal static byte[] Recover {
+            get {
+                object obj = ResourceManager.GetObject("Recover", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
@@ -116,6 +136,16 @@ namespace Tools.Properties {
         internal static System.Drawing.Bitmap Supp {
             get {
                 object obj = ResourceManager.GetObject("Supp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SuppHide {
+            get {
+                object obj = ResourceManager.GetObject("SuppHide", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
