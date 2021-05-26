@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using static Supp.Site.Common.Config;
 using Additional.NLog;
 using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 
 namespace Supp.Site.Controllers
 {
@@ -151,10 +152,14 @@ namespace Supp.Site.Controllers
                         suppUtility.RemoveCookie(response, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                         suppUtility.RemoveCookie(response, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
                         suppUtility.RemoveCookie(response, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName);
+                        suppUtility.RemoveCookie(response, GeneralSettings.Constants.SuppSiteClaimsCookieName);
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName, data.ExpiresInSeconds.ToString(), data.ExpiresInSeconds);
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAccessTokenCookieName, data.Token, data.ExpiresInSeconds);
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName, dto.UserName, data.ExpiresInSeconds);
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName, data.UserId.ToString(), data.ExpiresInSeconds);
+
+                        var claims = SuppUtility.GetClaims(principal);
+                        suppUtility.SetCookie(response, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName, JsonConvert.SerializeObject(claims), data.ExpiresInSeconds);
                     }
                     else
                     {
@@ -189,8 +194,6 @@ namespace Supp.Site.Controllers
                     };
                     principal.AddIdentity(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
                     user.AddIdentity(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
-
-                    
                 }
                 catch (Exception ex)
                 {
@@ -211,6 +214,7 @@ namespace Supp.Site.Controllers
                     suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
                     suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName);
                     suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteErrorsCookieName);
+                    suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteClaimsCookieName);
 
                     HttpContext.SignOutAsync();
                     return RedirectToAction("Login");

@@ -30,6 +30,12 @@ namespace Supp.ServiceHost.Models
 
         public string ParentIds { get; set; }
 
+        public string Ico { get; set; }
+
+        public int Order { get; set; }
+
+        public string Type { get; set; }
+
         public System.DateTime InsDateTime { get; set;}
     }
 }

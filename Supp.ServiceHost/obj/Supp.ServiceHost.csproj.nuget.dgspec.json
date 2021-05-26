@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "E:\\GoogleDriveShare\\Projects\\Supp.ServiceHost\\Supp.ServiceHost.csproj": {}
+    "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.ServiceHost\\Supp.ServiceHost.csproj": {}
   },
   "projects": {
-    "E:\\GoogleDriveShare\\Projects\\Supp.ServiceHost\\Supp.ServiceHost.csproj": {
+    "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.ServiceHost\\Supp.ServiceHost.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\GoogleDriveShare\\Projects\\Supp.ServiceHost\\Supp.ServiceHost.csproj",
+        "projectUniqueName": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.ServiceHost\\Supp.ServiceHost.csproj",
         "projectName": "Supp.ServiceHost",
-        "projectPath": "E:\\GoogleDriveShare\\Projects\\Supp.ServiceHost\\Supp.ServiceHost.csproj",
-        "packagesPath": "C:\\Users\\eV\\.nuget\\packages\\",
-        "outputPath": "E:\\GoogleDriveShare\\Projects\\Supp.ServiceHost\\obj\\",
+        "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.ServiceHost\\Supp.ServiceHost.csproj",
+        "packagesPath": "C:\\Users\\ev\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.ServiceHost\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\eV\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ev\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -29,6 +29,7 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -40,6 +41,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "AutoMapper": {
               "target": "Package",
@@ -136,7 +138,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.203\\RuntimeIdentifierGraph.json"
         }
       }
     }

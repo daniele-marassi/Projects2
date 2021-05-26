@@ -97,6 +97,9 @@ CREATE TABLE [dbo].[WebSpeeches](
 	[FinalStep] [bit] NOT NULL,
 	[UserId] [bigint] NOT NULL,
 	[ParentIds] [nvarchar](max) NULL,
+	[Ico] [nvarchar](256) NULL,
+	[Order] [int] NOT NULL,
+	[Type] [nvarchar](256) NOT NULL,
 	[InsDateTime] [datetime] NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
@@ -277,6 +280,9 @@ GO
 ALTER TABLE [dbo].[WebSpeeches] ADD  DEFAULT (getdate()) FOR [InsDateTime]
 GO
 
+ALTER TABLE [dbo].[WebSpeeches] ADD  CONSTRAINT [DF_WebSpeeches_Order]  DEFAULT ((0)) FOR [Order]
+GO
+
 CREATE NONCLUSTERED INDEX dbo_ExecutionQueues_Type   
     ON [dbo].[ExecutionQueues] (Type);
 GO
@@ -311,7 +317,7 @@ SET IDENTITY_INSERT [auth].[Users] ON
 INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [InsDateTime], [CustomizeParams]) VALUES (1, N'Admin', N'Admin', N'Admin', CAST(N'2020-01-10T13:42:42.153' AS DateTime), NULL)
 INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [InsDateTime], [CustomizeParams]) VALUES (2, N'SuperUser', N'SuperUser', N'SuperUser', CAST(N'2020-01-27T14:20:42.970' AS DateTime), NULL)
 INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [InsDateTime], [CustomizeParams]) VALUES (3, N'Guest', N'Guest', N'Guest', CAST(N'2020-01-27T14:20:55.193' AS DateTime), NULL)
-INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [InsDateTime], [CustomizeParams]) VALUES (4, N'daniele.marassi@gmail.com', N'Daniele', N'Marassi', CAST(N'2021-04-28T22:15:21.000' AS DateTime), N'{"General":{"PageSize":"3","Culture":"it-IT"},"Speech":{"HostsArray":"[\"EV-PC\",\"EV-TB\"]","HostSelected":"EV-PC","ListeningWord1":"ehi","ListeningWord2":"box","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME","SpeechWordsCoefficient":"0,6666666666666667"}}')
+INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [InsDateTime], [CustomizeParams]) VALUES (4, N'daniele.marassi@gmail.com', N'Daniele', N'Marassi', CAST(N'2021-04-28T22:15:21.000' AS DateTime), N'{"General":{"PageSize":"3","Culture":"it-IT"},"Speech":{"HostsArray":"[\"EV-PC\",\"EV-TB\"]","HostDefault":"EV-PC","ListeningWord1":"ehi","ListeningWord2":"box","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME","SpeechWordsCoefficient":"0,6666666666666667"}}')
 SET IDENTITY_INSERT [auth].[Users] OFF
 
 SET IDENTITY_INSERT [auth].[UserRoles] ON 
@@ -334,15 +340,15 @@ SET IDENTITY_INSERT [auth].[Authentications] OFF
 
 SET IDENTITY_INSERT [dbo].[WebSpeeches] ON 
 --DEFAULT
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [InsDateTime]) VALUES (1, N'Ehi_Box', N'Ehi box', N'C:\Program Files (x86)\Commands\RepositionSpeech\RepositionSpeech.exe', N'WindowWidth:530, WindowHeight:600, WindowCaption:Box, FullScreen:true, Hide:false', N'EV-PC', N'["Si dimmi","Eccomi amore"]', 1, 0, N'', CAST(N'2021-04-24T21:56:46.000' AS DateTime))
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [InsDateTime]) VALUES (2, N'RequestNotImplemented_1', N'Mi dispiace, non conosco! Mi insegni?', NULL, NULL, N'EV-PC', N'Mi dispiace, non conosco! Mi insegni?', 0, 0, N'', CAST(N'2021-04-08T21:46:19.000' AS DateTime))
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [InsDateTime]) VALUES (3, N'RequestNotImplemented_2', N'No grazie', NULL, NULL, N'EV-PC', N'Ok', 1, 0, N'[2]', CAST(N'2021-04-08T21:47:40.000' AS DateTime))
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [InsDateTime]) VALUES (4, N'RequestNotImplemented_3', N'Si', NULL, NULL, N'EV-PC', N'Dimmi il nome', 0, 0, N'[2]', CAST(N'2021-04-08T21:51:07.000' AS DateTime))
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [InsDateTime]) VALUES (5, N'RequestNotImplemented_4', N'Sì', NULL, NULL, N'EV-PC', N'Cosa devo fare?', 0, 0, N'[2]', CAST(N'2021-04-22T23:34:29.000' AS DateTime))
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [InsDateTime]) VALUES (1, N'RequestNotImplemented_1', N'Mi dispiace, non conosco! Mi insegni?', NULL, NULL, N'EV-PC', N'Mi dispiace, non conosco! Mi insegni?', 0, 0, N'', N'', 0, 'SystemRequest', CAST(N'2021-04-08T21:46:19.000' AS DateTime))
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [InsDateTime]) VALUES (2, N'RequestNotImplemented_2', N'No grazie', NULL, NULL, N'EV-PC', N'Ok', 1, 0, N'[2]', N'', 0, 'SystemRequest', CAST(N'2021-04-08T21:47:40.000' AS DateTime))
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [InsDateTime]) VALUES (3, N'RequestNotImplemented_3', N'Si', NULL, NULL, N'EV-PC', N'Dimmi il nome', 0, 0, N'[2]', N'', 0, 'SystemRequest', CAST(N'2021-04-08T21:51:07.000' AS DateTime))
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [InsDateTime]) VALUES (4, N'RequestNotImplemented_4', N'Sì', NULL, NULL, N'EV-PC', N'Cosa devo fare?', 0, 0, N'[2]', N'', 0, 'SystemRequest', CAST(N'2021-04-22T23:34:29.000' AS DateTime))
 --DEFAULT
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [InsDateTime]) VALUES (6, N'Alza_il_volume', N'Alza il volume', N'C:\Program Files (x86)\Commands\Volume\Alza_il_volume.exe', NULL, N'EV-PC', N'Volume alzato', 1, 4, N'', CAST(N'2020-01-10T13:42:42.000' AS DateTime))
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [InsDateTime]) VALUES (7, N'Abbassa_il_volume', N'Abbassa il volume', N'C:\Program Files (x86)\Commands\Volume\Abbassa_il_volume.exe', NULL, N'EV-PC', N'Volume abbassato', 1, 4, N'', CAST(N'2021-04-08T20:42:19.320' AS DateTime))
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [InsDateTime]) VALUES (8, N'Silenzia', N'Silenzia', N'C:\Program Files (x86)\Commands\Volume\Silenzia.exe', NULL, N'EV-PC', NULL, 1, 4, N'', CAST(N'2021-04-08T20:52:40.517' AS DateTime))
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [InsDateTime]) VALUES (5, N'Ehi_Box', N'Ehi box', N'C:\Program Files (x86)\Commands\RepositionSpeech\RepositionSpeech.exe', N'WindowWidth:530, WindowHeight:600, WindowCaption:Box, FullScreen:true, Hide:false', N'EV-PC', N'["Si dimmi","Eccomi amore"]', 1, 4, N'', N'', 0, 'SystemRunExe', CAST(N'2021-04-24T21:56:46.000' AS DateTime))
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [InsDateTime]) VALUES (6, N'Alza_il_volume', N'Alza il volume', N'C:\Program Files (x86)\Commands\Volume\Alza_il_volume.exe', NULL, N'EV-PC', N'Volume alzato', 1, 4, N'', N'/Images/application.png', 0, 'RunExe', CAST(N'2020-01-10T13:42:42.000' AS DateTime))
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [InsDateTime]) VALUES (7, N'Abbassa_il_volume', N'Abbassa il volume', N'C:\Program Files (x86)\Commands\Volume\Abbassa_il_volume.exe', NULL, N'EV-PC', N'Volume abbassato', 1, 4, N'', N'/Images/application.png', 0, 'RunExe', CAST(N'2021-04-08T20:42:19.320' AS DateTime))
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [InsDateTime]) VALUES (8, N'Silenzia', N'Silenzia', N'C:\Program Files (x86)\Commands\Volume\Silenzia.exe', NULL, N'EV-PC', NULL, 1, 4, N'', N'/Images/application.png', 0, 'RunExe', CAST(N'2021-04-08T20:52:40.517' AS DateTime))
 SET IDENTITY_INSERT [dbo].[WebSpeeches] OFF
 
 SET ANSI_PADDING ON

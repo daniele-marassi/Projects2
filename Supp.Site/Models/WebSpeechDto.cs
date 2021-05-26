@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Supp.Site.Models.WebSpeechTypes;
 
 namespace Supp.Site.Models
 {
@@ -17,6 +18,9 @@ namespace Supp.Site.Models
         public bool FinalStep { get; set; }
         public long UserId { get; set; }
         public string ParentIds { get; set; }
+        public string Ico { get; set; }
+        public int Order { get; set; }
+        public string Type { get; set; }
         public System.DateTime InsDateTime { get; set;}
         public string HostsArray { get; set; }
         public string HostSelected { get; set; }
@@ -36,5 +40,9 @@ namespace Supp.Site.Models
         public IEnumerable<WebSpeechDto> WebSpeeches { get; set; }
 
         public long[] WebSpeechIds { get; set; }
+        public string ShortcutsInJson { get; set; }
+
+        public IEnumerable<WebSpeechType> WebSpeechTypes { get { return Supp.Site.Models.WebSpeechTypes.Get(); } }
+  
     }
 }

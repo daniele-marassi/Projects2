@@ -11,6 +11,7 @@ using NLog;
 using X.PagedList;
 using static Supp.Site.Common.Config;
 using Additional.NLog;
+using Newtonsoft.Json;
 
 namespace Supp.Site.Controllers
 {
@@ -74,8 +75,8 @@ namespace Supp.Site.Controllers
                     }
                     else if (!String.IsNullOrEmpty(searchString))
                     {
-                        data = data.Where(_ => _.Surname.ToUpper().Contains(searchString.ToUpper().Trim())
-                            || _.Name.ToUpper().Contains(searchString.ToUpper().Trim())
+                        data = data.Where(_ => _.Surname.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Name.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                         );
                     }
 
@@ -152,7 +153,20 @@ namespace Supp.Site.Controllers
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var dto = new UserDto() { ConfigDefaultInJson = GeneralSettings.Static.ConfigDefaultInJson, CustomizeParams = GeneralSettings.Static.ConfigDefaultInJson };
+                var claims = new ClaimsDto() { IsAuthenticated = false };
+                var suppUtility = new SuppUtility();
+
+                try
+                {
+                    var claimsString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName);
+                    claims = JsonConvert.DeserializeObject<ClaimsDto>(claimsString);
+                }
+                catch (Exception)
+                {
+
+                }
+                var configDefaultInJson = JsonConvert.SerializeObject(claims.Configuration);
+                var dto = new UserDto() { ConfigDefaultInJson = configDefaultInJson, CustomizeParams = configDefaultInJson };
                 return View(dto);
             }
         }
@@ -213,7 +227,20 @@ namespace Supp.Site.Controllers
                     var result = await userRepo.GetUsersById((long)id, access_token_cookie);
                     var data = result.Data.FirstOrDefault();
 
-                    data.ConfigDefaultInJson = GeneralSettings.Static.ConfigDefaultInJson;
+                    var claims = new ClaimsDto() { IsAuthenticated = false };
+
+                    try
+                    {
+                        var claimsString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName);
+                        claims = JsonConvert.DeserializeObject<ClaimsDto>(claimsString);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                    var configDefaultInJson = JsonConvert.SerializeObject(claims.Configuration);
+
+                    data.ConfigDefaultInJson = configDefaultInJson;
 
                     if (result.Successful == false || data == null)
                         throw new Exception($"Error [Data not found!] - Class: [{className}, Method: [{method}], Operation: [{nameof(userRepo.GetUsersById)}] - Message: [{result.Message}]");

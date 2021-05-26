@@ -74,12 +74,12 @@ namespace Supp.Site.Controllers
                     }
                     else if (!String.IsNullOrEmpty(searchString))
                     {
-                        data = data.Where(_ => _.Host.ToUpper().Contains(searchString.ToUpper().Trim())
-                            || _.Type.ToUpper().Contains(searchString.ToUpper().Trim())
-                            || _.FullPath.ToUpper().Contains(searchString.ToUpper().Trim())
-                            || _.Arguments.ToUpper().Contains(searchString.ToUpper().Trim())
-                            || _.StateQueue.ToUpper().Contains(searchString.ToUpper().Trim())
-                            || _.Output.ToUpper().Contains(searchString.ToUpper().Trim())
+                        data = data.Where(_ => _.Host.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Type.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.FullPath.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Arguments.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.StateQueue.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Output.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                         );
                     }
 

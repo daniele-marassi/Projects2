@@ -7,12 +7,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Resources\Fonts\
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Resources\Fonts\WEBDINGS.TTF
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\External_library\Additional.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\External_library\Additional.pdb
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Resources\Exit.png
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Resources\ServiceActive.png
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Resources\ServiceDisable.png
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Resources\ServicesError.png
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Resources\Tools.ico
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Resources\Tools.png
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Common.dll.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Common.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Common.pdb

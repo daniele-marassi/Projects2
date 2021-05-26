@@ -38,7 +38,7 @@ namespace Supp.Site
                 }
             );
 
-            GeneralSettings.SetGeneralSettings(_configuration, null);
+            GeneralSettings.SetGeneralSettings(_configuration);
             var ip = Dns.GetHostAddresses(Dns.GetHostName())[1].ToString();
             GeneralSettings.Static.BaseUrl = GeneralSettings.Static.BaseUrl.Replace("IP",ip);
         }

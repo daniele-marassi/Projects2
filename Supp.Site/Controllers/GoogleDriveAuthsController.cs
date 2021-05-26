@@ -74,9 +74,9 @@ namespace Supp.Site.Controllers
                     }
                     else if (!String.IsNullOrEmpty(searchString))
                     {
-                        data = data.Where(_ => _.Client_id.ToUpper().Contains(searchString.ToUpper().Trim())
-                            || _.Project_id.ToUpper().Contains(searchString.ToUpper().Trim())
-                            || _.Client_secret.ToUpper().Contains(searchString.ToUpper().Trim())
+                        data = data.Where(_ => _.Client_id.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Project_id.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Client_secret.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                         );
                     }
 

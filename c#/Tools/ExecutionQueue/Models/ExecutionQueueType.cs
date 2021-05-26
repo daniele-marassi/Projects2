@@ -4,6 +4,7 @@ namespace Tools.ExecutionQueue.Models
     public enum ExecutionQueueType
     {
         RunExe = 0,
-        Other = 1
+        SystemRunExe = 1,
+        Other = 2
     }
 }

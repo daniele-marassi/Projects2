@@ -91,10 +91,10 @@ namespace Supp.Site.Controllers
                     }
                     else if (!String.IsNullOrEmpty(searchString))
                     {
-                        var _userIds = users.Where(_ => _.UserFullName.ToUpper().Contains(searchString.ToUpper().Trim())).Select(_ => _.Id).ToList();
-                        var _googleDriveAuthIds = googleDriveAuths.Where(_ => _.Client_id.ToUpper().Contains(searchString.ToUpper().Trim())).Select(_ => _.Id).ToList();
-                        data = data.Where(_ => _.Account.ToUpper().Contains(searchString.ToUpper().Trim())
-                            || _.FolderToFilter.ToUpper().Contains(searchString.ToUpper().Trim())
+                        var _userIds = users.Where(_ => _.UserFullName.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())).Select(_ => _.Id).ToList();
+                        var _googleDriveAuthIds = googleDriveAuths.Where(_ => _.Client_id.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())).Select(_ => _.Id).ToList();
+                        data = data.Where(_ => _.Account.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.FolderToFilter.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                             || _userIds.Contains(_.UserId)
                             || _googleDriveAuthIds.Contains(_.GoogleDriveAuthId)
                         );

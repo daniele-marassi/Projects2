@@ -50,6 +50,15 @@
                         @Html.ActionLink("Answer", "Index", new { sortOrder = "Answer", currentFilter = ViewBag.CurrentFilter })
                     </th>
                     <th id="selectable">
+                        @Html.ActionLink("Ico", "Index", new { sortOrder = "Ico", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("Order", "Index", new { sortOrder = "Order", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("Type", "Index", new { sortOrder = "Type", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
                         @Html.ActionLink("Previous Phrase", "Index", new { sortOrder = "PreviousPhrase", currentFilter = ViewBag.CurrentFilter })
                     </th>
                     <th id="selectable">
@@ -86,6 +95,15 @@
                         @Html.DisplayFor(modelItem => item.Answer)
                     </td>
                     <td>
+                        @Html.DisplayFor(modelItem => item.Ico)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Order)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Type)
+                    </td>
+                    <td>
                         @Html.DisplayFor(modelItem => item.PreviousPhrase)
                     </td>
                     <td>
@@ -106,7 +124,7 @@
         </table>
     </div>
 
-    <div class="text-danger">
+    <div class="text-danger" style="padding:30px;">
         @Html.ValidationSummary(false)
     </div>
 }

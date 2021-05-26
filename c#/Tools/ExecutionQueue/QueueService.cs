@@ -121,7 +121,7 @@ namespace Tools.ExecutionQueue
 
                         foreach (var item in newQueue)
                         {
-                            if (item.Type == ExecutionQueueType.RunExe.ToString())
+                            if (item.Type == ExecutionQueueType.RunExe.ToString() || item.Type == ExecutionQueueType.SystemRunExe.ToString())
                             {
                                 item.StateQueue = ExecutionQueueStateQueue.AttemptToStart.ToString();
                             }
@@ -149,7 +149,7 @@ namespace Tools.ExecutionQueue
                             }
                             else
                             {
-                                if (item.Type == ExecutionQueueType.RunExe.ToString())
+                                if (item.Type == ExecutionQueueType.RunExe.ToString() || item.Type == ExecutionQueueType.SystemRunExe.ToString())
                                 {
                                     //Task.Run(() => RunExeAndUpdateDbAsync(item));
                                     await RunExeAndUpdateDbAsync(item);

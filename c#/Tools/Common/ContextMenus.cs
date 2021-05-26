@@ -1,5 +1,6 @@
-﻿using System.Windows.Forms;
-using Tools.Common.Properties;
+﻿using Common.Properties;
+using System.Windows.Forms;
+
 
 namespace Tools.Common
 {

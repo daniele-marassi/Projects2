@@ -20,7 +20,7 @@ namespace Supp.Site.Models
         public class _Speech
         {
             public string HostsArray { get; set; }
-            public string HostSelected { get; set; }
+            public string HostDefault { get; set; }
             public string ListeningWord1 { get; set; }
             public string ListeningWord2 { get; set; }
             public string ListeningAnswer { get; set; }

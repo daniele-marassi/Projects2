@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Supp.Site.Models
 {
+    [Serializable]
     public class ClaimsDto
     {
         public bool IsAuthenticated { get; set; }

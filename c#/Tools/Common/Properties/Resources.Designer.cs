@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Tools.Common.Properties {
+namespace Common.Properties {
     using System;
     
     
@@ -61,36 +61,6 @@ namespace Tools.Common.Properties {
         }
         
         /// <summary>
-        ///   Cerca una risorsa localizzata di tipo System.Drawing.Icon simile a (Icona).
-        /// </summary>
-        internal static System.Drawing.Icon About {
-            get {
-                object obj = ResourceManager.GetObject("About", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap About1 {
-            get {
-                object obj = ResourceManager.GetObject("About1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Exit {
-            get {
-                object obj = ResourceManager.GetObject("Exit", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap ServiceActive {
@@ -116,26 +86,6 @@ namespace Tools.Common.Properties {
         internal static System.Drawing.Bitmap ServicesError {
             get {
                 object obj = ResourceManager.GetObject("ServicesError", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una risorsa localizzata di tipo System.Drawing.Icon simile a (Icona).
-        /// </summary>
-        internal static System.Drawing.Icon Tools {
-            get {
-                object obj = ResourceManager.GetObject("Tools", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Tools1 {
-            get {
-                object obj = ResourceManager.GetObject("Tools1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

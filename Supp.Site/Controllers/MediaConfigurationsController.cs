@@ -87,7 +87,7 @@ namespace Supp.Site.Controllers
                     }
                     else if (!String.IsNullOrEmpty(searchString))
                     {
-                        var _userIds = users.Where(_ => _.UserFullName.ToUpper().Contains(searchString.ToUpper().Trim())).Select(_ => _.Id).ToList();
+                        var _userIds = users.Where(_ => _.UserFullName.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())).Select(_ => _.Id).ToList();
                         data = data.Where(_ => _userIds.Contains(_.UserId)
                         );
                     }

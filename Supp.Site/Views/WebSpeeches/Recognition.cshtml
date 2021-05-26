@@ -47,6 +47,7 @@
         var resetActive = false;
         var countTheTimesToReset = 0;
         var audioActive = true;
+        var shortcuts;
 
         function AddAnimateInterval(id, size, range, amount, milliseconds) {
             if (animateIntervals[id] != null) clearInterval(animateIntervals[id]);
@@ -281,7 +282,7 @@
             }
 
             if(hosts != null && hosts.length > 0 ){
-                hosts_cmb_string='<select name="hosts_cmb" id="hosts_cmb" value="@Model?.HostSelected" style="background-color:#000; color:#333; border-color:#333;">';
+                hosts_cmb_string='<select name="hosts_cmb" class="btn btn-dark" id="hosts_cmb" value="@Model?.HostSelected" style="background-color:#000; color:#333;">';
                 for (var i = 0; i < hosts.length; i++)
                 {
                     hosts_cmb_string+='<option>'+ hosts[i]+'</option>';
@@ -294,11 +295,13 @@
         function SendPhrase(){
             if(_reset == false){
                 _phrase = $("#sendPhrase_text").val();
-                var phrase = _phrase;
-                if(_old_phrase != '') phrase = _old_phrase + ' ' + _phrase;
-                PartialReset();
-                clearInterval(serviceInterval);
-                location.href = '@Url.Action("Recognition", "WebSpeeches")?_phrase=' + phrase + '&_hostSelected='+$( "#hosts_cmb option:selected" ).text() + '&_application=@Model?.Application';
+                if(_phrase != null && _phrase != ''){
+                    var phrase = _phrase;
+                    if(_old_phrase != '') phrase = _old_phrase + ' ' + _phrase;
+                    PartialReset();
+                    clearInterval(serviceInterval);
+                    location.href = '@Url.Action("Recognition", "WebSpeeches")?_phrase=' + phrase + '&_hostSelected='+$( "#hosts_cmb option:selected" ).text() + '&_application=@Model?.Application';
+                }
             }
         }
 
@@ -393,6 +396,10 @@
                                 if (_phraseSplit.length > 0 && recognitionActive == true) {
                                     if (event.results[i].isFinal){
                                         if (_phraseSplit.length > 1 && _phraseSplit[0] == '@Model?.ListeningWord1' && _phraseSplit[1] == '@Model?.ListeningWord2' && ehi == 0 && _reset == false) {
+
+                                            var audio = new Audio("/Files/Ehi.mp3");
+                                            audio.play();
+                                            
                                             var phrase = '@Model?.ListeningWord1' + ' ' + '@Model?.ListeningWord2';
                                             PartialReset();
                                             clearInterval(serviceInterval);
@@ -467,11 +474,11 @@
                     console.log('No mic for you!')
                 });
             } else {
-                localStream.getTracks().forEach( (track) => {
+                window.localStream.getTracks().forEach( (track) => {
                     track.stop();
                      console.log('mic off')
                 });
-                localStream.getAudioTracks()[0].stop();
+                window.localStream.getAudioTracks()[0].stop();
             }
         }
 
@@ -517,6 +524,12 @@
             setTimeout(function(){
                 SimulateClick(document.getElementById('fakeClick_button'));
             }, fakeClickMilliseconds);  
+
+            //var shortcuts = new Array('{"Id":"1", "Ico":"/Images/application.png", "Title":"Test 1", "Action":"app"}', '{"Id":"2", "Ico":"/Images/application.png", "Title":"Test 2", "Action":"app"}', '{"Id":"3", "Ico":"/Images/application.png", "Title":"Test 3", "Action":"app"}', '{"Id":"4", "Ico":"/Images/application.png", "Title":"Test 4", "Action":"app"}', '{"Id":"5", "Ico":"/Images/application.png", "Title":"Test 5", "Action":"app"}', '{"Id":"6", "Ico":"/Images/application.png", "Title":"Test 6", "Action":"app"}', '{"Id":"7", "Ico":"/Images/application.png", "Title":"Test 7", "Action":"app"}');
+            var shortcutsInJson = ('@Model.ShortcutsInJson').replace(/&quot;/g, '"');
+            shortcuts = JSON.parse(shortcutsInJson);
+            
+            CreateShortcuts(shortcuts);
         }
 
         function ClearUrl(){
@@ -557,11 +570,74 @@
                 else element.style.display = 'none';
             }
         }
+
+        function OpenShortcuts(){
+            var element = document.getElementById("div_shortcuts");
+            element.style.display = "block";
+        }
+
+        function CloseShortcuts(){
+            var element = document.getElementById("div_shortcuts");
+            element.style.display = "none";
+        }
+
+        function ActionShortcut(id){
+
+            if(parseInt(id) == 0) CloseShortcuts();
+
+            for (var i = 0; i < shortcuts.length; ++i) {
+                var shortcut = shortcuts[i];
+
+                if(shortcut['Id'] == parseInt(id)){
+
+                    //if(GetBoolean(application) == true && shortcut['Type'] == 'xxx' ){
+                    //}
+
+                    //if(GetBoolean(application) == false && shortcut['Type'] == 'xxx' ){
+                    //}                
+                }
+            }
+        }
+
+        function AddShortcuts(shortcut){
+            var element = document.getElementById("shortcutsContainer");
+            var dt = '';
+
+            dt += '<dt class="col-sm-3" style="">';
+            dt += '<div>';
+            dt += '<img class="btn shortcut-dark" id="shortcut_'+shortcut['Id']+'" src="'+shortcut['Ico']+'" alt="'+shortcut['Title']+'" style="width:90%; margin:5%;" onclick="ActionShortcut(' + "" + shortcut['Id'] + "" +');">';
+
+            dt += '</div>';
+            dt += '<div style="font-size:18px;">'+shortcut['Title']+'</div>';
+            dt += '</dt>';
+
+            element.innerHTML += dt;
+        }
+
+        function CreateShortcuts(_shortcuts){
+            var element = document.getElementById("shortcutsContainer");
+            element.innerHTML = '';
+
+            for (var i = 0; i < _shortcuts.length; ++i) {
+                var shortcut = _shortcuts[i];
+                
+                if(i == 0){
+                    var _shortcut = JSON.parse('{"Id":"' + i + '", "Ico":"/Images/exit.png", "Title":"Exit", "Action":"Exit"}');
+                    AddShortcuts(_shortcut);
+                }
+
+                AddShortcuts(shortcut);
+            }
+        }
     </script>
 }
     
 <div id="main">
     <div style="text-align:center;">
+        <div id="div_shortcuts" style="display: none; z-index: 999; width: 70%; position: absolute; background-color: rgb(50, 50, 50); left: 0; right: 0; margin:auto; box-shadow: 0 0rem 1rem rgba(150, 150, 150, 0.95) !important;">
+            <dl id="shortcutsContainer" class="row" style="max-height:600px; overflow-y:auto; " >
+            </dl>
+        </div>
         <div id="div_ellipse" style="margin:50px; padding-bottom:40px;">
             <svg viewBox="-7 -20 210 140" xmlns="http://www.w3.org/2000/svg">
                 <defs>
@@ -574,19 +650,18 @@
                 <ellipse id="ellipse3" cx="100" cy="50" rx="50" ry="50" style="fill: #026aad;" filter="url(#blurMe)"/>
                 <ellipse id="ellipse4" cx="100" cy="50" rx="50" ry="50" style="fill: #7a1cc9;" filter="url(#blurMe)"/>
                 <ellipse id="ellipse5" cx="100" cy="50" rx="50" ry="50" style="fill: #c22b10;" filter="url(#blurMe)"/>
-                <ellipse id="ellipse6" cx="100" cy="50" rx="48" ry="48" style="fill: #000;" />
+                <ellipse id="ellipse6" cx="100" cy="50" rx="48" ry="48" style=" cursor:pointer;" onclick="OpenShortcuts();"  class="btn ellipse-dark" />
             </svg>
         </div>
-
         <div id="hosts_cmb_container" style="text-align:center; margin-top:-100px;">
         </div>
-        <div id="div_text" style="text-align:center;">
-            <button id="recognitionEnableDisable_button" onclick="RecognitionEnableDisable()" style="display: inline-block; border:none;">
-                <img id="recognitionEnableDisable_image" src="/Images/micOn.png" alt="Microphone" style="height:35px; opacity:0.2;">
+        <div id="div_text" style="text-align:center; width:100%; margin-top:2px;">
+            <button id="recognitionEnableDisable_button" onclick="RecognitionEnableDisable()"  class="btn btn-dark" style="width:57px; border-width:1px; display: inline-block; outline: 0; box-shadow: none!important; height:38px; margin-top:-1px; margin-right:0px;">
+                <img id="recognitionEnableDisable_image" src="/Images/micOn.png" alt="Microphone" style="height:34px; opacity:0.2; margin-top:-5px;">
             </button>
-            <input type="text" id="sendPhrase_text" value="" />
-            <button id="sendPhrase_button" onclick="SendPhrase()" style="display: inline-block; color:#333; border-color:#333;">Send</button>
-            <button id="fakeClick_button" onclick="FakeClick()" style="display:none;"></button>
+            <input type="text" id="sendPhrase_text" value="" style="height:38px; width:50%; display:inline-block; " class="btn btn-dark"/>
+            <button id="sendPhrase_button" onclick="SendPhrase()" class="btn btn-dark" style="width:57px; display:inline-block; color:#333; border-width:1px; outline: 0;box-shadow: none!important; height:38px; margin-top:-1px;">Send</button>
+            <button id="fakeClick_button" onclick="FakeClick()" style="display:none; "></button>
         </div>
         <div id="results" style="text-align:center;">
             <span class="final" id="final_span"></span> 

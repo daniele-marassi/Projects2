@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using static Supp.Site.Models.WebSpeechTypes;
 
 namespace Supp.Site.Models
 {
@@ -17,5 +18,7 @@ namespace Supp.Site.Models
         public string StateQueue { get; set; }
 
         public System.DateTime InsDateTime { get; set; }
+
+        public IEnumerable<WebSpeechType> WebSpeechTypes { get { return Supp.Site.Models.WebSpeechTypes.Get(); } }
     }
 }

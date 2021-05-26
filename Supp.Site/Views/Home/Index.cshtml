@@ -16,7 +16,7 @@
     </div>
 
 
-<div class="text-danger">
+<div class="text-danger" style="padding:30px;">
     @{
         Context.Request.Cookies.TryGetValue(GeneralSettings.Constants.SuppSiteErrorsCookieName, out string errorsFromCookie);
         if (errorsFromCookie == null) { errorsFromCookie = String.Empty; }

@@ -42,8 +42,12 @@ namespace Supp.Site.Controllers
             authenticationRepo = new AuthenticationsRepository();
         }
 
-        public List<WebSpeechDto> GetWebSpeeches(List<WebSpeechDto> data)
+        public (List<WebSpeechDto> WebSpeeches, List<ShortcutDto> Shortcuts) GetData(List<WebSpeechDto> data)
         {
+            (List<WebSpeechDto> WebSpeeches, List<ShortcutDto> Shortcuts) result;
+            result.WebSpeeches = new List<WebSpeechDto>() { };
+            result.Shortcuts = new List<ShortcutDto>() { };
+
             foreach (var item in data)
             {
                 if (item.UserId == 0) item.PrivateInstruction = false;
@@ -75,9 +79,14 @@ namespace Supp.Site.Controllers
                         item.PreviousPhrase += _phrase;
                     }
                 }
+
+                if(!item.Type.ToLower().Contains("system"))
+                    result.Shortcuts.Add( new ShortcutDto() { Id = item.Id, Type = item.Type, Order = item.Order, Title = item.Name.Replace("_"," "), Action = item.Operation.ToStringExtended().Replace("\\", "/") + " " + item.Parameters.ToStringExtended().Replace("\\", "/"), Ico = item.Ico});
+                
+                result.WebSpeeches.Add(item);
             }
 
-            return data;
+            return result;
         }
 
         // GET: WebSpeeches
@@ -115,7 +124,7 @@ namespace Supp.Site.Controllers
                     if (result.Successful == false)
                         throw new Exception($"Error - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetAllWebSpeeches)}] - Message: [{result.Message}]");
 
-                    result.Data = GetWebSpeeches(result.Data);
+                    result.Data = GetData(result.Data).WebSpeeches;
 
                     data = from s in result.Data
                            select s;
@@ -129,15 +138,18 @@ namespace Supp.Site.Controllers
                     }
                     else if (searchString != null && (searchString.Trim().ToLower() == "true" || searchString.Trim().ToLower() == "false"))
                     {
-                        data = data.Where(_ => _.Id == val);
+                        data = data.Where(_ => _.FinalStep == bool.Parse(searchString.Trim().ToLower()));
                     }
                     else if (!String.IsNullOrEmpty(searchString))
                     {
-                        data = data.Where(_ => _.Name.ToUpper().Contains(searchString.ToUpper().Trim())
-                            || _.Operation.ToUpper().Contains(searchString.ToUpper().Trim())
-                            || _.Parameters.ToUpper().Contains(searchString.ToUpper().Trim())
-                            || _.Host.ToUpper().Contains(searchString.ToUpper().Trim())
-                            || _.Answer.ToUpper().Contains(searchString.ToUpper().Trim())
+                        data = data.Where(_ => _.Name.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Operation.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Parameters.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Host.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Answer.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Ico.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Type.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.Phrase.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                         );
                     }
 
@@ -158,8 +170,20 @@ namespace Supp.Site.Controllers
                         case "Answer":
                             data = data.OrderBy(_ => _.Answer);
                             break;
+                        case "Ico":
+                            data = data.OrderBy(_ => _.Ico);
+                            break;
+                        case "Order":
+                            data = data.OrderBy(_ => _.Order);
+                            break;
                         case "FinalStep":
                             data = data.OrderBy(_ => _.FinalStep);
+                            break;
+                        case "Type":
+                            data = data.OrderBy(_ => _.Type);
+                            break;
+                        case "Phrase":
+                            data = data.OrderBy(_ => _.Phrase);
                             break;
                         default:
                             data = data.OrderBy(_ => _.Name);
@@ -206,7 +230,7 @@ namespace Supp.Site.Controllers
                     var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                     var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
 
-                    result.Data = GetWebSpeeches(result.Data);
+                    result.Data = GetData(result.Data).WebSpeeches;
 
                     var data = result.Data.FirstOrDefault();
 
@@ -279,7 +303,7 @@ namespace Supp.Site.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Phrase,Operation,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,InsDateTime")] WebSpeechDto dto)
+        public async Task<IActionResult> Create([Bind("Id,Name,Phrase,Operation,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,InsDateTime")] WebSpeechDto dto)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -335,7 +359,7 @@ namespace Supp.Site.Controllers
                     var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                     var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
 
-                    result.Data = GetWebSpeeches(result.Data);
+                    result.Data = GetData(result.Data).WebSpeeches;
 
                     var data = result.Data.FirstOrDefault();
 
@@ -346,7 +370,7 @@ namespace Supp.Site.Controllers
                     if (!getAllWebSpeechesResult.Successful)
                         throw new Exception($"Error [Get failed!] - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetAllWebSpeeches)}] - Message: [{getAllWebSpeechesResult.Message}]");
 
-                    getAllWebSpeechesResult.Data = GetWebSpeeches(getAllWebSpeechesResult.Data);
+                    getAllWebSpeechesResult.Data = GetData(getAllWebSpeechesResult.Data).WebSpeeches;
 
                     var webSpeeches = getAllWebSpeechesResult.Data.ToList();
 
@@ -368,7 +392,7 @@ namespace Supp.Site.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Phrase,Operation,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,InsDateTime")] WebSpeechDto dto)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Phrase,Operation,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,InsDateTime")] WebSpeechDto dto)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -429,7 +453,7 @@ namespace Supp.Site.Controllers
                     var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                     var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
 
-                    result.Data = GetWebSpeeches(result.Data);
+                    result.Data = GetData(result.Data).WebSpeeches;
 
                     var data = result.Data.FirstOrDefault();
 
@@ -526,6 +550,7 @@ namespace Supp.Site.Controllers
                     var className = currentMethod.DeclaringType.Name;
                     WebSpeechResult result = null;
                     List<WebSpeechDto> _data = null;
+                    List<ShortcutDto> shortcuts = new List<ShortcutDto>() { };
                     var rnd = new Random();
                     var application = false;
                     var alwaysShow = false;
@@ -533,16 +558,12 @@ namespace Supp.Site.Controllers
                     long executionQueueId = 0;
                     long.TryParse(_executionQueueId?.ToString(), out executionQueueId);
                     var expiresInSeconds = 0;
+                    var claims = new ClaimsDto() { IsAuthenticated = false };
 
-                    var claims = SuppUtility.GetClaims(User);
-
-                    if (_userName != null && _password != null || claims.IsAuthenticated == false)
+                    if (_userName != null && _password != null)
                     {
                         var dto = new LoginDto() { UserName = _userName, Password = _password };
                         var authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response);
-
-                        Config.GeneralSettings.Static.Name = authenticationResult.Data.Name;
-                        Config.GeneralSettings.Static.Surname = authenticationResult.Data.Surname;
 
                         suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
                         suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteApplicationCookieName);
@@ -557,8 +578,8 @@ namespace Supp.Site.Controllers
                         }
                         else
                         {
-                            suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteHostSelectedCookieName, GeneralSettings.Static.HostSelected, expiresInSeconds);
-                            hostSelected = GeneralSettings.Static.HostSelected;
+                            suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteHostSelectedCookieName, GeneralSettings.Static.HostDefault, expiresInSeconds);
+                            hostSelected = GeneralSettings.Static.HostDefault;
                         }
 
                         if (_application != null)
@@ -572,6 +593,8 @@ namespace Supp.Site.Controllers
                             suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName, _alwaysShow.ToString(), expiresInSeconds);
                             bool.TryParse(_alwaysShow?.ToString(), out application);
                         }
+
+                        claims = SuppUtility.GetClaims(User);
                     }
                     else
                     {
@@ -585,14 +608,27 @@ namespace Supp.Site.Controllers
                         else bool.TryParse(_alwaysShow?.ToString(), out alwaysShow);
                     }
 
+                    try
+                    {
+                        var claimsString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName);
+                        claims = JsonConvert.DeserializeObject<ClaimsDto>(claimsString);
+                    }
+                    catch (Exception)
+                    {
+                        claims = SuppUtility.GetClaims(User);
+                    }
+
+                    string access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+
+                    result = await webSpeecheRepo.GetAllWebSpeeches(access_token_cookie);
+
+                    var getDataResult = GetData(result.Data);
+
+                    result.Data = getDataResult.WebSpeeches;
+                    shortcuts = getDataResult.Shortcuts.OrderBy(_=>_.Order).ToList();
+
                     if (_phrase != "" && _phrase != null)
                     {
-                        string access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
-
-                        result = await webSpeecheRepo.GetAllWebSpeeches(access_token_cookie);
-
-                        result.Data = GetWebSpeeches(result.Data);
-
                         var _words = _phrase.Split(" ");
                         var _wordsCount = _words.Count();
                         var countMatch = 0;
@@ -621,8 +657,8 @@ namespace Supp.Site.Controllers
                             {
                                 var words = phrase.Split(" ");
                                 var wordsCount = words.Count();
-                                var minMatch = (int)Math.Ceiling(wordsCount * GeneralSettings.Static.SpeechWordsCoefficient);
-                                var maxWords = (int)(wordsCount + Math.Ceiling(wordsCount * GeneralSettings.Static.SpeechWordsCoefficient));
+                                var minMatch = (int)Math.Ceiling(wordsCount * decimal.Parse(claims.Configuration.Speech.SpeechWordsCoefficient));
+                                var maxWords = (int)(wordsCount + Math.Ceiling(wordsCount * decimal.Parse(claims.Configuration.Speech.SpeechWordsCoefficient)));
 
                                 if (minMatch == 0) minMatch = 1;
                                 match = 0;
@@ -676,9 +712,7 @@ namespace Supp.Site.Controllers
 
                         if (data != null && data.Operation != null)
                         {
-                            var type = "";
-                            if (data.Operation != null && data.Operation.ToLower().Contains(".exe")) type = "RunExe";
-                            var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = hostSelected, Type = type };
+                            var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = hostSelected, Type = data.Type };
                             var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
 
                             if (addExecutionQueueResult.Successful)
@@ -688,14 +722,14 @@ namespace Supp.Site.Controllers
                         }
                     }
 
-                    var salutation = GeneralSettings.Static.Salutation;
-                    if (Config.GeneralSettings.Static.Name == null && GeneralSettings.Static.Culture.ToLower() == "it-it") Config.GeneralSettings.Static.Name = "tu";
-                    if (Config.GeneralSettings.Static.Name == null && GeneralSettings.Static.Culture.ToLower() == "en-us") Config.GeneralSettings.Static.Name = "you";
-                    if (Config.GeneralSettings.Static.Surname == null) Config.GeneralSettings.Static.Surname = String.Empty;
-                    salutation = salutation.Replace("NAME", Config.GeneralSettings.Static.Name);
-                    salutation = salutation.Replace("SURNAME", Config.GeneralSettings.Static.Surname);
+                    var salutation = claims.Configuration.Speech.Salutation;
+                    if (claims.Name == null && claims.Configuration.General.Culture.ToLower() == "it-it") claims.Name = "tu";
+                    if (claims.Name == null && claims.Configuration.General.Culture.ToLower() == "en-us") claims.Name = "you";
+                    if (claims.Surname == null) claims.Surname = String.Empty;
+                    salutation = salutation.Replace("NAME", claims.Name);
+                    salutation = salutation.Replace("SURNAME", claims.Surname);
 
-                    var startAnswer = salutation + " " + GetSalutation(new CultureInfo(GeneralSettings.Static.Culture, false));
+                    var startAnswer = salutation + " " + GetSalutation(new CultureInfo(claims.Configuration.General.Culture, false));
 
                     if ((_phrase == null || _phrase == "") &&  data == null && _reset != true)
                         data = new WebSpeechDto() { Answer = startAnswer, Ehi = 0, FinalStep = true };
@@ -709,24 +743,27 @@ namespace Supp.Site.Controllers
 
                     if(data == null) data = new WebSpeechDto() { Answer = "", Ehi = 0 };
 
-                    data.HostsArray = GeneralSettings.Static.HostsArray;
-                    data.HostSelected = GeneralSettings.Static.HostSelected;
-                    data.ListeningWord1 = GeneralSettings.Static.ListeningWord1;
-                    data.ListeningWord2 = GeneralSettings.Static.ListeningWord2;
-                    data.ListeningAnswer = GeneralSettings.Static.ListeningAnswer;
-                    data.Culture = GeneralSettings.Static.Culture;
+                    data.HostsArray = claims.Configuration.Speech.HostsArray;
+                    data.HostSelected = claims.Configuration.Speech.HostDefault;
+                    data.ListeningWord1 = claims.Configuration.Speech.ListeningWord1;
+                    data.ListeningWord2 = claims.Configuration.Speech.ListeningWord2;
+                    data.ListeningAnswer = claims.Configuration.Speech.ListeningAnswer;
+                    data.Culture = claims.Configuration.General.Culture;
                     data.StartAnswer = startAnswer;
                     data.Application = application;
                     data.AlwaysShow = alwaysShow;
                     data.ExecutionQueueId = executionQueueId;
 
+
                     if ((_phrase != null && _phrase != "") && (data.FinalStep == false || _phrase == (data.ListeningWord1 + " " + data.ListeningWord2))) data.Ehi = 1;
 
                     if (_reset == true && alwaysShow == false) 
                     {
-                        if (hostSelected == null || hostSelected == String.Empty) hostSelected = GeneralSettings.Static.HostSelected;
+                        if (hostSelected == null || hostSelected == String.Empty) hostSelected = claims.Configuration.Speech.HostDefault;
                         await ExecutionFinished(executionQueueId, hostSelected, application);
                     }
+
+                    data.ShortcutsInJson = JsonConvert.SerializeObject(shortcuts);
 
                     data.Error = null;
 

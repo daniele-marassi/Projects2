@@ -193,33 +193,41 @@ namespace Supp.Site.Common
 
         public static ClaimsDto GetClaims(ClaimsPrincipal user)
         {
-            var claims = user.Claims.ToList();
-
             var dto = new ClaimsDto() { IsAuthenticated = false, Roles = new List<string>() { } };
 
-            if (claims != null && claims.Count > 0)
+            try
             {
-                dto.IsAuthenticated = true;
+                var claims = user.Claims.ToList();
 
-                dto.UserName = claims.Where(_ => _.Type == nameof(ClaimsDto.UserName)).Select(_ => _.Value).FirstOrDefault();
-
-                var configInJson = claims.Where(_ => _.Type == nameof(ClaimsDto.Configuration)).Select(_ => _.Value).FirstOrDefault();
-                if (configInJson != null && configInJson != String.Empty)
+                if (claims != null && claims.Count > 0)
                 {
-                    var obj = JsonConvert.DeserializeObject<Configuration>(configInJson);
-                    dto.Configuration = obj;
-                }
+                    dto.IsAuthenticated = true;
 
-                dto.Name = claims.Where(_ => _.Type == nameof(ClaimsDto.Name)).Select(_ => _.Value).FirstOrDefault();
-                dto.Surname = claims.Where(_ => _.Type == nameof(ClaimsDto.Surname)).Select(_ => _.Value).FirstOrDefault();
-                dto.UserId = long.Parse(claims.Where(_ => _.Type == nameof(ClaimsDto.UserId)).Select(_ => _.Value).FirstOrDefault());
+                    dto.UserName = claims.Where(_ => _.Type == nameof(ClaimsDto.UserName)).Select(_ => _.Value).FirstOrDefault();
 
-                var rolesInString = claims.Where(_ => _.Type == nameof(ClaimsDto.Roles)).Select(_ => _.Value).FirstOrDefault();
-                if (rolesInString != null && rolesInString != String.Empty)
-                {
-                    var obj = rolesInString.Split(",");
-                    dto.Roles.AddRange(obj);
+                    var configInJson = claims.Where(_ => _.Type == "ConfigInJson").Select(_ => _.Value).FirstOrDefault();
+                    if (configInJson != null && configInJson != String.Empty)
+                    {
+                        var obj = JsonConvert.DeserializeObject<Configuration>(configInJson);
+                        dto.Configuration = obj;
+                    }
+                    else dto.Configuration = JsonConvert.DeserializeObject<Configuration>(GeneralSettings.Static.ConfigDefaultInJson);
+
+                    dto.Name = claims.Where(_ => _.Type == nameof(ClaimsDto.Name)).Select(_ => _.Value).FirstOrDefault();
+                    dto.Surname = claims.Where(_ => _.Type == nameof(ClaimsDto.Surname)).Select(_ => _.Value).FirstOrDefault();
+                    dto.UserId = long.Parse(claims.Where(_ => _.Type == nameof(ClaimsDto.UserId)).Select(_ => _.Value).FirstOrDefault());
+
+                    var rolesInString = claims.Where(_ => _.Type == nameof(ClaimsDto.Roles)).Select(_ => _.Value).FirstOrDefault();
+                    if (rolesInString != null && rolesInString != String.Empty)
+                    {
+                        var obj = rolesInString.Split(",");
+                        dto.Roles.AddRange(obj);
+                    }
+
                 }
+            }
+            catch (Exception)
+            {
 
             }
 

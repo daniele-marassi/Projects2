@@ -76,7 +76,7 @@ namespace Supp.Site.Controllers
                     }
                     else if (!String.IsNullOrEmpty(searchString))
                     {
-                        data = data.Where(_ => _.Type.ToUpper().Contains(searchString.ToUpper().Trim()));
+                        data = data.Where(_ => _.Type.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim()));
                     }
 
                     switch (sortOrder)
