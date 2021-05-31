@@ -13,8 +13,9 @@
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
+
     <script>
-        //103
+        //101
         var final_transcript = '';
         var recognizing = false;
         var ignore_onend = true;
@@ -158,29 +159,58 @@
             }
         }
 
-        function SendPost(url, json) {
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-                 if (this.readyState == 4 && this.status == 200) {
-                     console.log(this.responseText);
-                 }
-            };
-            xhttp.open("POST", url, true);
-            xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.send(json);
-        }
-
-        function ReadOutLoud(message) {
+        function ReadOutLoud(_message, _finalStep) {
             recognitionActive = false;
             if(recognition != null){
                 recognition.abort();
                 recognition.stop();
             }
 
+            _message = _message.replace(/\./g, '. ');
+            _message = _message.replace(/:/g, ': ');
+            _message = _message.replace(/;/g, '; ');
+            _message = _message.replace(/,/g, ', ');
+            
+            _message = _message.replace(/   /g, ' ');
+            _message = _message.replace(/  /g, ' ');
+
+            var message = '';
+            var words = _message.split(' ');
+            var countWords = words.length;
+            var maxWords = 30;
+            var actualWords = 0;
+
+            actualWords = maxWords;
+            _finalStep = false;
+
+            if(_finalStep == false){
+                var isActualWord = true;
+
+                for (var i = 0; i < countWords; i++)
+                {
+                    if(isActualWord == true)
+                    {
+                        if(message != '') message += ' ';
+                        message += words[i];
+                    } 
+
+                    if((i == actualWords) || (i <= actualWords && (words[i].indexOf('.') > -1 || words[i].indexOf(',') > -1 || words[i].indexOf(';') > -1 || words[i].indexOf(':') > -1))) isActualWord = false;
+                }  
+
+                _message = _message.replace(message, '').trim();    
+
+                if(_message == '')_finalStep = true;
+
+            }
+            
+            //console.log('[' + message + ']');
+
+            document.getElementById('final_span').innerHTML = message.trim();
+
             StartAnimateIntervalsListening(10);
             speech = new SpeechSynthesisUtterance();
             // Set the text and voice attributes.
-            speech.text = message;
+            speech.text = message.trim();
             speech.volume = 1;
             speech.rate = 1;
             speech.pitch = 1;
@@ -204,21 +234,29 @@
             }
             
             speech.onend = function(event) {
-                if(recognition != null){                  
-                    try {
-                        recognition.start();
-                    }
-                    catch (error) { } 
-                }
-                StopAnimateIntervalsListening(100);
-                recognitionActive = true;
+                if(_finalStep==true){
 
-                countTheTimesToReset = 0;
-                if(ehi == 1 && recognitionActive == true) resetActive = true;   
-                if(ehi == 0 && recognitionActive == true && alwaysShow == false) Reset();
-                if(ehi == 0 && recognitionActive == true && alwaysShow == true) {
-                    //PartialReset();
-                    InitFinal();
+                    if(recognition != null){                  
+                        try {
+                            recognition.start();
+                        }
+                        catch (error) { } 
+                    }
+                    StopAnimateIntervalsListening(100);
+                    recognitionActive = true;
+
+                    countTheTimesToReset = 0;
+                    if(ehi == 1 && recognitionActive == true) resetActive = true;   
+                    if(ehi == 0 && recognitionActive == true && alwaysShow == false) Reset();
+                    if(ehi == 0 && recognitionActive == true && alwaysShow == true) {
+                        //PartialReset();
+                        InitFinal();
+                    }
+
+                    document.getElementById('final_span').innerHTML = '';
+                } else {
+                    synth.cancel();
+                    ReadOutLoud(_message, _finalStep); 
                 }
             }
         }
@@ -228,7 +266,7 @@
             {
                 var json = "{_id:@Model?.Id,_hostSelected:@Model?.HostSelected}";
                 var _url = url.replace("Recognition","ExecutionFinished")+'?_id=@Model?.ExecutionQueueId&_hostSelected=@Model?.HostSelected';
-                SendPost(_url, json);
+                SendPostAsync("POST", _url, json, null);
             }
         }
 
@@ -482,9 +520,39 @@
             }
         }
 
-        function FakeClick(){
-            if (answer != null && answer != '') { 
-                ReadOutLoud(answer); 
+        function HexDecode(str) {
+            str = str.replace(/&aacute;/g, "à");
+            str = str.replace(/&eacute;/g, "è");
+            str = str.replace(/&oacute;/g, "ò");
+            str = str.replace(/&uacute;/g, "ù");
+            str = str.replace(/&iacute;/g, "ì");
+
+            str = str.replace(/&Aacute;/g, "à");
+            str = str.replace(/&Eacute;/g, "è");
+            str = str.replace(/&Oacute;/g, "ò");
+            str = str.replace(/&Uacute;/g, "ù");
+            str = str.replace(/&Iacute;/g, "ì");
+
+            str = str.replace(/&#xE0;/g, "à");
+            str = str.replace(/&#xE8;/g, "è");
+            str = str.replace(/&#xF2;/g, "ò");
+            str = str.replace(/&#xF9;/g, "ù");
+            str = str.replace(/&#xEC;/g, "ì");
+
+            str = str.replace(/&#xC0;/g, "à");
+            str = str.replace(/&#xC8;/g, "è");
+            str = str.replace(/&#xD2;/g, "ò");
+            str = str.replace(/&#xD9;/g, "ù");
+            str = str.replace(/&#xCC;/g, "ì");
+
+            str = str.replace(/&#x27;/g, "'");
+            return str;
+        }
+
+        function Speak(){
+            if (answer != null && answer != '') {
+                var _answer = HexDecode(answer);
+                ReadOutLoud(_answer); 
                 answer = null;
             } else {
                 PartialReset();
@@ -523,9 +591,13 @@
             
             setTimeout(function(){
                 SimulateClick(document.getElementById('fakeClick_button'));
+
+                var type = '@Model.Type'; 
+                var link = '@Model.Parameters';
+                Action(type, link);
+
             }, fakeClickMilliseconds);  
 
-            //var shortcuts = new Array('{"Id":"1", "Ico":"/Images/application.png", "Title":"Test 1", "Action":"app"}', '{"Id":"2", "Ico":"/Images/application.png", "Title":"Test 2", "Action":"app"}', '{"Id":"3", "Ico":"/Images/application.png", "Title":"Test 3", "Action":"app"}', '{"Id":"4", "Ico":"/Images/application.png", "Title":"Test 4", "Action":"app"}', '{"Id":"5", "Ico":"/Images/application.png", "Title":"Test 5", "Action":"app"}', '{"Id":"6", "Ico":"/Images/application.png", "Title":"Test 6", "Action":"app"}', '{"Id":"7", "Ico":"/Images/application.png", "Title":"Test 7", "Action":"app"}');
             var shortcutsInJson = ('@Model.ShortcutsInJson').replace(/&quot;/g, '"');
             shortcuts = JSON.parse(shortcutsInJson);
             
@@ -582,7 +654,6 @@
         }
 
         function ActionShortcut(id){
-
             if(parseInt(id) == 0) CloseShortcuts();
 
             for (var i = 0; i < shortcuts.length; ++i) {
@@ -590,18 +661,44 @@
 
                 if(shortcut['Id'] == parseInt(id)){
 
-                    //if(GetBoolean(application) == true && shortcut['Type'] == 'xxx' ){
-                    //}
+                    if(GetBoolean(application) == false && shortcut['Type'] == 'Link' ){
+                        window.open(shortcut['Action']);
+                    }
 
-                    //if(GetBoolean(application) == false && shortcut['Type'] == 'xxx' ){
-                    //}                
+                    else if(GetBoolean(application) == true && shortcut['Type'] == 'Link' ){
+                        window.open(shortcut['Action'], "_blank");
+                    } 
+                    
+                    else {
+                        location.href = '@Url.Action("Recognition", "WebSpeeches")?_id=' + shortcut['Id'] + '&_hostSelected='+$( "#hosts_cmb option:selected" ).text() + '&_application=@Model?.Application';
+                    }  
                 }
             }
+        }
+
+        function Action(type, link){
+            if(GetBoolean(application) == false && type == 'Link' ){
+                window.open(link);
+            }
+
+            else if(GetBoolean(application) == true && type == 'Link' ){
+                window.open(link, "_blank");
+            } 
+
+            else if(GetBoolean(application) == false && type == 'WebSearch' ){
+                window.open(link);
+            }
+
+            else if(GetBoolean(application) == true && type == 'WebSearch' ){
+                window.open(link, "_blank");
+            } 
         }
 
         function AddShortcuts(shortcut){
             var element = document.getElementById("shortcutsContainer");
             var dt = '';
+
+            if(shortcut['Ico'] == null || shortcut['Ico'] == '') shortcut['Ico'] = '/Images/application.png';
 
             dt += '<dt class="col-sm-3" style="">';
             dt += '<div>';
@@ -628,6 +725,40 @@
 
                 AddShortcuts(shortcut);
             }
+        }
+
+	    function ExecuteFunction(funcName, par)
+	    {
+		    var funcCall = funcName;
+            if(par != undefined && par != null && par != '') funcCall += "('" + par + "');";
+            else funcCall += "();";
+
+		    var ret = eval(funcCall);		
+	    }	
+
+        function SendPostAsync(method, url, json, funcName) {
+            //var xhttp = new XMLHttpRequest();
+            //xhttp.onreadystatechange = function() {
+            //     if (this.readyState == 4 && this.status == 200) {
+            //         console.log(this.responseText);
+            //         if(funcName != undefined && funcName != null && funcName != '') ExecuteFunction(funcName, par);
+            //     }
+            //};
+            //xhttp.open(method, url, true);
+            //xhttp.setRequestHeader("Content-type", "application/json");
+            //xhttp.send(json);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open(method, url, true);
+            xhr.onload = function(e) {
+                code = xhr.response;
+                if(funcName != undefined && funcName != null && funcName != '') ExecuteFunction(funcName, code);
+            };
+            xhr.onerror = function () {
+                console.error("** An error occurred during the XMLHttpRequest");
+            };
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send(json);
         }
     </script>
 }
@@ -661,7 +792,7 @@
             </button>
             <input type="text" id="sendPhrase_text" value="" style="height:38px; width:50%; display:inline-block; " class="btn btn-dark"/>
             <button id="sendPhrase_button" onclick="SendPhrase()" class="btn btn-dark" style="width:57px; display:inline-block; color:#333; border-width:1px; outline: 0;box-shadow: none!important; height:38px; margin-top:-1px;">Send</button>
-            <button id="fakeClick_button" onclick="FakeClick()" style="display:none; "></button>
+            <button id="fakeClick_button" onclick="Speak()" style="display:none; "></button>
         </div>
         <div id="results" style="text-align:center;">
             <span class="final" id="final_span"></span> 

@@ -35,6 +35,8 @@ namespace Supp.Site.Common
                 public static string ListeningWord2 { get; set; }
                 public static string ListeningAnswer { get; set; }
                 public static string Salutation { get; set; }
+                public static string MeteoParameterToTheSalutation { get; set; }
+                
                 //public static string Name { get; set; }
                 //public static string Surname { get; set; }
                 //public static string UserName { get; set; }
@@ -60,7 +62,8 @@ namespace Supp.Site.Common
                                 ListeningWord2 = GeneralSettings.Static.ListeningWord2,
                                 ListeningAnswer = GeneralSettings.Static.ListeningAnswer,
                                 Salutation = GeneralSettings.Static.Salutation,
-                                SpeechWordsCoefficient = GeneralSettings.Static.SpeechWordsCoefficient.ToString().Replace(".", ",")
+                                SpeechWordsCoefficient = GeneralSettings.Static.SpeechWordsCoefficient.ToString().Replace(".", ","),
+                                MeteoParameterToTheSalutation = GeneralSettings.Static.MeteoParameterToTheSalutation
                             }
                         };
 
@@ -70,6 +73,11 @@ namespace Supp.Site.Common
 
                         //add salutation note
                         result = result.Replace("\"" + nameof(Salutation) + "\"", " " + salutationNote + " " + "\"" + nameof(Salutation) + "\"");
+
+                        var meteoParameterToTheSalutationNote = "/*MeteoParameterToTheSalutation - empty to disable it.*/";
+
+                        //add meteoParameterToTheSalutation note
+                        result = result.Replace("\"" + nameof(MeteoParameterToTheSalutation) + "\"", " " + meteoParameterToTheSalutationNote + " " + "\"" + nameof(MeteoParameterToTheSalutation) + "\"");
 
                         return result;
                     }
@@ -105,9 +113,10 @@ namespace Supp.Site.Common
                     GeneralSettings.Static.ListeningWord1 = configuration.GetSection("AppSettings:ListeningWord1").Value;
                     GeneralSettings.Static.ListeningWord2 = configuration.GetSection("AppSettings:ListeningWord2").Value;
                     GeneralSettings.Static.ListeningAnswer = configuration.GetSection("AppSettings:ListeningAnswer").Value;
-                    GeneralSettings.Static.Salutation = configuration.GetSection("AppSettings:Salutation").Value;
+                    
                     GeneralSettings.Static.SpeechWordsCoefficient = decimal.Parse(configuration.GetSection("AppSettings:SpeechWordsCoefficient").Value);
                     GeneralSettings.Static.Culture = configuration.GetSection("AppSettings:Culture").Value;
+                    GeneralSettings.Static.MeteoParameterToTheSalutation = configuration.GetSection("AppSettings:MeteoParameterToTheSalutation").Value;              
                 }
             }
         }

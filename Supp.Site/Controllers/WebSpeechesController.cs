@@ -22,6 +22,10 @@ using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Newtonsoft.Json;
+using System.Web;
+using Additional;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
 
 namespace Supp.Site.Controllers
 {
@@ -538,7 +542,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/Recognition
-        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow)
+        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -557,6 +561,9 @@ namespace Supp.Site.Controllers
                     var hostSelected = "";
                     long executionQueueId = 0;
                     long.TryParse(_executionQueueId?.ToString(), out executionQueueId);
+                    long id = 0;
+                    long.TryParse(_id?.ToString(), out id);
+
                     var expiresInSeconds = 0;
                     var claims = new ClaimsDto() { IsAuthenticated = false };
 
@@ -661,6 +668,9 @@ namespace Supp.Site.Controllers
                                 var maxWords = (int)(wordsCount + Math.Ceiling(wordsCount * decimal.Parse(claims.Configuration.Speech.SpeechWordsCoefficient)));
 
                                 if (minMatch == 0) minMatch = 1;
+
+                                if (item.Type == "WebSearch") maxWords = _wordsCount;
+
                                 match = 0;
                                 foreach (var word in words)
                                 {
@@ -709,17 +719,49 @@ namespace Supp.Site.Controllers
                             data.Answer = answers[x];
 
                         }
+                    } 
+                    else if (id != 0) 
+                    {
+                        data = result.Data.Where(_ => _.Id == id).FirstOrDefault();
+                    }
 
-                        if (data != null && data.Operation != null)
+                    if (data != null && (data.Type == "SystemRunExe" || data.Type == "RunExe"))
+                    {
+                        var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = hostSelected, Type = data.Type };
+                        var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
+
+                        if (addExecutionQueueResult.Successful)
                         {
-                            var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = hostSelected, Type = data.Type };
-                            var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
-
-                            if (addExecutionQueueResult.Successful)
-                            {
-                                executionQueueId = addExecutionQueueResult.Data.FirstOrDefault().Id;
-                            }
+                            executionQueueId = addExecutionQueueResult.Data.FirstOrDefault().Id;
                         }
+                    }
+
+                    if (data != null && data.Type == "Meteo") 
+                    {
+                        data.Answer += GetMeteoTodayPhrase(data.Parameters, claims.Configuration.General.Culture.ToLower());
+                    }
+
+                    if (data != null && data.Type == "WebSearch") 
+                    {
+                        var phrases = new List<string>() { };
+                        var phrase = _phrase;
+
+                        try
+                        {
+                            phrases = JsonConvert.DeserializeObject<List<string>>(data.Phrase);
+                        }
+                        catch (Exception)
+                        {
+                            phrases.Add(data.Phrase);
+                        }
+
+                        foreach (var item in phrases)
+                        {
+                            phrase = phrase.Replace(item, "");
+                        }
+                        //HttpUtility.UrlEncode(phrase.Replace(" ", "+"));
+                        string url = "http://www.google.com/search?q=" + phrase.Trim().Replace(" ", "+");
+                        data.Parameters = url;
                     }
 
                     var salutation = claims.Configuration.Speech.Salutation;
@@ -731,8 +773,16 @@ namespace Supp.Site.Controllers
 
                     var startAnswer = salutation + " " + GetSalutation(new CultureInfo(claims.Configuration.General.Culture, false));
 
-                    if ((_phrase == null || _phrase == "") &&  data == null && _reset != true)
+                    if ((_phrase == null || _phrase == "") && data == null && _reset != true)
+                    {
                         data = new WebSpeechDto() { Answer = startAnswer, Ehi = 0, FinalStep = true };
+
+                        if (claims.Configuration.Speech.MeteoParameterToTheSalutation != null && claims.Configuration.Speech.MeteoParameterToTheSalutation != "")
+                        {
+                            data.Answer += GetMeteoTodayPhrase(claims.Configuration.Speech.MeteoParameterToTheSalutation, claims.Configuration.General.Culture.ToLower());
+                        }
+                    }
+
                     if (_phrase != null && _phrase != "" && data == null && result != null)
                     {
                         data = new WebSpeechDto() { };
@@ -780,6 +830,78 @@ namespace Supp.Site.Controllers
             }
         }
 
+        public string GetMeteoTodayPhrase(string param, string culture)
+        {
+            var result = "";
+
+            var getMeteoResult = GetMeteo(param).GetAwaiter().GetResult();
+
+            if (getMeteoResult.Error == null)
+            {
+                var meteoToday = GetMeteoToday(getMeteoResult.Data, culture).ToString();
+
+                result = ". " + meteoToday;
+            }
+            else
+            {
+                if(culture == "it-it")
+                    result = ". Non riesco a leggere il meteo.";
+                if (culture == "en-us")
+                    result = ". I can't read the weather.";
+            }
+
+            return result;
+        }
+
+        public string GetMeteoToday(JObject src, string culture)
+        {
+            var result = "";
+            
+            var description = src["data"]["weatherReportToday"]["description"];
+
+            var now = DateTime.Now;
+
+            var details = src["data"]["hours"][now.Hour];
+
+            if (culture.Trim().ToLower() == "it-it")
+            {
+                result = " Ecco le previsioni:";
+
+                result += description.ToString();
+
+                result += " Temperatura " + details["temperature"].ToString().Replace(",", " e ") + " gradi";
+
+                result += ", umidità " + details["umidity"].ToString().Replace(",", " e ") + " percento";
+
+                result += " e vento " + details["windIntensity"].ToString().Replace(",", " e ") + " chilometri orari.";
+            }
+
+            if (culture.Trim().ToLower() == "en-us")
+            {
+                result = " Here are the forecasts:";
+
+                result += description.ToString();
+
+                result += " Temperature " + details["temperature"].ToString().Replace(",", " and ") + " degrees";
+
+                result += ", umidity " + details["umidity"].ToString().Replace(",", " and ") + " percent";
+
+                result += " and wind " + details["windIntensity"].ToString().Replace(",", " and ") + " kilometers per hour.";
+            }
+
+            result = result.Replace("&amp;", "&");
+
+            result = System.Net.WebUtility.HtmlDecode(result);
+
+            result = result.Replace("a'", "à");
+            result = result.Replace("e'", "è");
+            result = result.Replace("o'", "ò");
+            result = result.Replace("u'", "ù");
+            result = result.Replace("i'", "ì");
+
+            return result;
+        }
+
         // GET: WebSpeeches/ExecutionFinished
         public async Task ExecutionFinished(long _id, string _hostSelected, bool _application)
         {
@@ -816,6 +938,51 @@ namespace Supp.Site.Controllers
                         logger.Error(ex.ToString());
                     }
                 }
+            }
+        }
+
+        // GET: WebSpeeches/GetMeteo
+        public async Task<(JObject Data, string Error)> GetMeteo(string _value)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                (JObject Data, string Error) response;
+                response.Data = null;
+                response.Error = null;
+                try
+                {
+                    var keyValuePairs = new Dictionary<string, string>() { };
+
+                    keyValuePairs["value"] = _value;
+                    var utility = new Utility();
+
+                    var result = await utility.CallApi(HttpMethod.Get, "http://supp.altervista.org/", "GetMeteo.php", keyValuePairs, null);
+                    var content = await result.Content.ReadAsStringAsync();
+
+                    if (result.IsSuccessStatusCode == false)
+                    {
+                        response.Data = null;
+                        response.Error = result.ReasonPhrase;
+                    }
+                    else
+                    {
+                        content = content.Replace("<meta http-equiv=\"Access-Control-Allow-Origin\" content=\"*\">\n", "");
+                       
+                        var data = (JObject)JsonConvert.DeserializeObject(content);
+
+                        response.Data = data;
+                        response.Error = null;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.ToString());
+                    response.Data = null;
+                    response.Error = ex.Message;
+                }
+
+                return response;
             }
         }
 
