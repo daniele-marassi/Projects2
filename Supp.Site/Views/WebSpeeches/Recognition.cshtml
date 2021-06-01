@@ -548,6 +548,10 @@
             str = str.replace(/&#xCC;/g, "ì");
 
             str = str.replace(/&#x27;/g, "'");
+
+            str = str.replace(/&#xD;/g, " ");
+            str = str.replace(/&#xA;/g, " ");
+
             return str;
         }
 

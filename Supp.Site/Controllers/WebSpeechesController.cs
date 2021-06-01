@@ -673,8 +673,8 @@ namespace Supp.Site.Controllers
                             {
                                 var words = phrase.Split(" ");
                                 var wordsCount = words.Count();
-                                var minMatch = (int)(_wordsCount - Math.Ceiling(_wordsCount * decimal.Parse(_claims.Configuration.Speech.SpeechWordsCoefficient)));
-                                var maxWords = (int)(_wordsCount + Math.Ceiling(_wordsCount * decimal.Parse(_claims.Configuration.Speech.SpeechWordsCoefficient)));
+                                var minMatch = (int)(_wordsCount - Math.Ceiling(_wordsCount * decimal.Parse(_claims.Configuration.Speech.MinSpeechWordsCoefficient)));
+                                var maxWords = (int)(_wordsCount + Math.Ceiling(_wordsCount * decimal.Parse(_claims.Configuration.Speech.MaxSpeechWordsCoefficient)));
 
                                 if (minMatch == 0) minMatch = 1;
 
@@ -746,7 +746,7 @@ namespace Supp.Site.Controllers
 
                     if (data != null && data.Type == "Meteo")
                     {
-                        data.Answer += GetMeteoTodayPhrase(data.Parameters, _claims.Configuration.General.Culture.ToLower());
+                        data.Answer += GetMeteoPhrase(_phrase, data.Parameters, _claims.Configuration.General.Culture.ToLower());
                     }
 
                     if (data != null && data.Type == "WebSearch")
@@ -787,7 +787,7 @@ namespace Supp.Site.Controllers
 
                         if (_claims.Configuration.Speech.MeteoParameterToTheSalutation != null && _claims.Configuration.Speech.MeteoParameterToTheSalutation != "")
                         {
-                            data.Answer += GetMeteoTodayPhrase(_claims.Configuration.Speech.MeteoParameterToTheSalutation, _claims.Configuration.General.Culture.ToLower());
+                            data.Answer += GetMeteoPhrase(String.Empty, _claims.Configuration.Speech.MeteoParameterToTheSalutation, _claims.Configuration.General.Culture.ToLower());
                         }
                     }
 
@@ -889,7 +889,7 @@ namespace Supp.Site.Controllers
             }
         }
 
-        public string GetMeteoTodayPhrase(string param, string culture)
+        public string GetMeteoPhrase(string request, string param, string culture)
         {
             var result = "";
 
@@ -897,36 +897,63 @@ namespace Supp.Site.Controllers
 
             if (getMeteoResult.Error == null)
             {
-                var meteoToday = GetMeteoToday(getMeteoResult.Data, culture).ToString();
+                dynamic partOfTheDay = PartsOfTheDayIta.NotSet;
+                var day = Days.Oggi;
 
-                result = ". " + meteoToday;
+                if (request.Contains(PartsOfTheDayIta.Mattina.ToString(), StringComparison.InvariantCultureIgnoreCase)) partOfTheDay = PartsOfTheDayIta.Mattina;
+                if (request.Contains(PartsOfTheDayIta2.Mattino.ToString(), StringComparison.InvariantCultureIgnoreCase)) partOfTheDay = PartsOfTheDayIta2.Mattino;
+                if (request.Contains(PartsOfTheDayIta.Pomerriggio.ToString(), StringComparison.InvariantCultureIgnoreCase)) partOfTheDay = PartsOfTheDayIta.Pomerriggio;
+                if (request.Contains(PartsOfTheDayIta.Sera.ToString(), StringComparison.InvariantCultureIgnoreCase)) partOfTheDay = PartsOfTheDayIta.Sera;
+                if (request.Contains(PartsOfTheDayIta.Notte.ToString(), StringComparison.InvariantCultureIgnoreCase)) partOfTheDay = PartsOfTheDayIta.Notte;
+
+                if (request.Contains(PartsOfTheDayEng.Morning.ToString(), StringComparison.InvariantCultureIgnoreCase)) partOfTheDay = PartsOfTheDayEng.Morning;
+                if (request.Contains(PartsOfTheDayEng.Afternoon.ToString(), StringComparison.InvariantCultureIgnoreCase)) partOfTheDay = PartsOfTheDayEng.Afternoon;
+                if (request.Contains(PartsOfTheDayEng.Evening.ToString(), StringComparison.InvariantCultureIgnoreCase)) partOfTheDay = PartsOfTheDayEng.Evening;
+                if (request.Contains(PartsOfTheDayEng.Night.ToString(), StringComparison.InvariantCultureIgnoreCase)) partOfTheDay = PartsOfTheDayEng.Night;
+
+                if (param.Contains(Days.Oggi.ToString(), StringComparison.InvariantCultureIgnoreCase)) day = Days.Today;
+                if (param.Contains(Days.Domani.ToString(), StringComparison.InvariantCultureIgnoreCase)) day = Days.Tomorrow;
+
+                if (param.Contains(Days.Today.ToString(), StringComparison.InvariantCultureIgnoreCase)) day = Days.Today;
+                if (param.Contains(Days.Tomorrow.ToString(), StringComparison.InvariantCultureIgnoreCase)) day = Days.Tomorrow;
+
+                var meteoToday = MeteoManage(getMeteoResult.Data, culture, partOfTheDay, day).ToString();
+
+                result = meteoToday;
             }
             else
             {
                 if(culture == "it-it")
-                    result = ". Non riesco a leggere il meteo.";
+                    result = " Non riesco a leggere il meteo.";
                 if (culture == "en-us")
-                    result = ". I can't read the weather.";
+                    result = " I can't read the weather.";
             }
 
             return result;
         }
 
-        public string GetMeteoToday(JObject src, string culture)
+        public string MeteoManage(JObject src, string culture, dynamic partOfTheDay, Days day)
         {
             var result = "";
+
+            var description = "";
             
-            var description = src["data"]["weatherReportToday"]["description"];
+            if (day == Days.Tomorrow) description = src["data"]["weatherReportTomorrow"]["description"].ToString();
+
+            if (day == Days.Today || description == "" || description == " ") description = src["data"]["weatherReportToday"]["description"].ToString();
 
             var now = DateTime.Now;
+            var hour = now.Hour;
 
-            var details = src["data"]["hours"][now.Hour];
+            if (partOfTheDay.ToString() != PartsOfTheDayIta.NotSet.ToString()) hour = (int)partOfTheDay;
+
+            var details = src["data"]["hours"][hour];
 
             if (culture.Trim().ToLower() == "it-it")
             {
-                result = " Ecco le previsioni:";
+                result = " Ecco le previsioni: ";
 
-                result += description.ToString();
+                result += description;
 
                 result += " Temperatura " + details["temperature"].ToString().Replace(",", " e ") + " gradi";
 
@@ -937,9 +964,9 @@ namespace Supp.Site.Controllers
 
             if (culture.Trim().ToLower() == "en-us")
             {
-                result = " Here are the forecasts:";
+                result = " Here are the forecasts: ";
 
-                result += description.ToString();
+                result += description;
 
                 result += " Temperature " + details["temperature"].ToString().Replace(",", " and ") + " degrees";
 
@@ -1055,143 +1082,143 @@ namespace Supp.Site.Controllers
             if (time >= 600 && time <= 1159)
             {
                 int x = rnd.Next(0, 10 + 1);
-                if (cultureInfo.Name == "it-IT" && x == 0) result = "Buongiorno";
-                if (cultureInfo.Name == "en-US" && x == 0) result = "Good morning";
+                if (cultureInfo.Name == "it-IT" && x == 0) result = "Buongiorno.";
+                if (cultureInfo.Name == "en-US" && x == 0) result = "Good morning.";
 
-                if (cultureInfo.Name == "it-IT" && x == 1) result = ". Ti auguro una buona giornata";
-                if (cultureInfo.Name == "en-US" && x == 1) result = ". Have a nice day";
+                if (cultureInfo.Name == "it-IT" && x == 1) result = ". Ti auguro una buona giornata.";
+                if (cultureInfo.Name == "en-US" && x == 1) result = ". Have a nice day.";
 
-                if (cultureInfo.Name == "it-IT" && x == 2) result = "Buona giornata";
-                if (cultureInfo.Name == "en-US" && x == 2) result = "Good day";
+                if (cultureInfo.Name == "it-IT" && x == 2) result = "Buona giornata.";
+                if (cultureInfo.Name == "en-US" && x == 2) result = "Good day.";
 
-                if (cultureInfo.Name == "it-IT" && x == 3) result = ". Ti auguro una splendida giornata";
-                if (cultureInfo.Name == "en-US" && x == 3) result = ". Have a beautiful day";
+                if (cultureInfo.Name == "it-IT" && x == 3) result = ". Ti auguro una splendida giornata.";
+                if (cultureInfo.Name == "en-US" && x == 3) result = ". Have a beautiful day.";
 
-                if (cultureInfo.Name == "it-IT" && x == 4) result = "Splendida giornata";
-                if (cultureInfo.Name == "en-US" && x == 4) result = "Beautiful day";
+                if (cultureInfo.Name == "it-IT" && x == 4) result = "Splendida giornata.";
+                if (cultureInfo.Name == "en-US" && x == 4) result = "Beautiful day.";
 
-                if (cultureInfo.Name == "it-IT" && x == 5) result = ". Ti auguro una meravigliosa giornata";
-                if (cultureInfo.Name == "en-US" && x == 5) result = ". Have a marvelous day";
+                if (cultureInfo.Name == "it-IT" && x == 5) result = ". Ti auguro una meravigliosa giornata.";
+                if (cultureInfo.Name == "en-US" && x == 5) result = ". Have a marvelous day.";
 
-                if (cultureInfo.Name == "it-IT" && x == 6) result = "Meravigliosa giornata";
-                if (cultureInfo.Name == "en-US" && x == 6) result = "Marvelous day";
+                if (cultureInfo.Name == "it-IT" && x == 6) result = "Meravigliosa giornata.";
+                if (cultureInfo.Name == "en-US" && x == 6) result = "Marvelous day.";
 
-                if (cultureInfo.Name == "it-IT" && x == 7) result = ". Ti auguro una stupenda giornata";
-                if (cultureInfo.Name == "en-US" && x == 7) result = ". Have a stupendous day";
+                if (cultureInfo.Name == "it-IT" && x == 7) result = ". Ti auguro una stupenda giornata.";
+                if (cultureInfo.Name == "en-US" && x == 7) result = ". Have a stupendous day.";
 
-                if (cultureInfo.Name == "it-IT" && x == 8) result = "Stupenda giornata";
-                if (cultureInfo.Name == "en-US" && x == 8) result = "Stupendous day";
+                if (cultureInfo.Name == "it-IT" && x == 8) result = "Stupenda giornata.";
+                if (cultureInfo.Name == "en-US" && x == 8) result = "Stupendous day.";
 
-                if (cultureInfo.Name == "it-IT" && x == 9) result = ". Ti auguro una strepitosa giornata";
-                if (cultureInfo.Name == "en-US" && x == 9) result = ". Have a amazing day";
+                if (cultureInfo.Name == "it-IT" && x == 9) result = ". Ti auguro una strepitosa giornata.";
+                if (cultureInfo.Name == "en-US" && x == 9) result = ". Have a amazing day.";
 
-                if (cultureInfo.Name == "it-IT" && x == 10) result = "Strepitosa giornata";
-                if (cultureInfo.Name == "en-US" && x == 10) result = "Amazing day";
+                if (cultureInfo.Name == "it-IT" && x == 10) result = "Strepitosa giornata.";
+                if (cultureInfo.Name == "en-US" && x == 10) result = "Amazing day.";
             }
 
             if (time >= 1200 && time <= 1759)
             {
                 int x = rnd.Next(0, 9 + 1);
-                if (cultureInfo.Name == "it-IT" && x == 0) result = "Buon pomeriggio";
-                if (cultureInfo.Name == "en-US" && x == 0) result = "Good afternoon";
+                if (cultureInfo.Name == "it-IT" && x == 0) result = "Buon pomeriggio.";
+                if (cultureInfo.Name == "en-US" && x == 0) result = "Good afternoon.";
 
-                if (cultureInfo.Name == "it-IT" && x == 1) result = ". Ti auguro un buon pomeriggio";
-                if (cultureInfo.Name == "en-US" && x == 1) result = ". Have a nice afternoon";
+                if (cultureInfo.Name == "it-IT" && x == 1) result = ". Ti auguro un buon pomeriggio.";
+                if (cultureInfo.Name == "en-US" && x == 1) result = ". Have a nice afternoon.";
 
-                if (cultureInfo.Name == "it-IT" && x == 2) result = ". Ti auguro un splendido pomeriggio";
-                if (cultureInfo.Name == "en-US" && x == 2) result = ". Have a beautiful afternoon";
+                if (cultureInfo.Name == "it-IT" && x == 2) result = ". Ti auguro un splendido pomeriggio.";
+                if (cultureInfo.Name == "en-US" && x == 2) result = ". Have a beautiful afternoon.";
 
-                if (cultureInfo.Name == "it-IT" && x == 3) result = "Splendido pomeriggio";
-                if (cultureInfo.Name == "en-US" && x == 3) result = "Beautiful afternoon";
+                if (cultureInfo.Name == "it-IT" && x == 3) result = "Splendido pomeriggio.";
+                if (cultureInfo.Name == "en-US" && x == 3) result = "Beautiful afternoon.";
 
-                if (cultureInfo.Name == "it-IT" && x == 4) result = ". Ti auguro un meraviglioso pomeriggio";
-                if (cultureInfo.Name == "en-US" && x == 4) result = ". Have a marvelous afternoon";
+                if (cultureInfo.Name == "it-IT" && x == 4) result = ". Ti auguro un meraviglioso pomeriggio.";
+                if (cultureInfo.Name == "en-US" && x == 4) result = ". Have a marvelous afternoon.";
 
-                if (cultureInfo.Name == "it-IT" && x == 5) result = "Meraviglioso pomeriggio";
-                if (cultureInfo.Name == "en-US" && x == 5) result = "Marvelous afternoon";
+                if (cultureInfo.Name == "it-IT" && x == 5) result = "Meraviglioso pomeriggio.";
+                if (cultureInfo.Name == "en-US" && x == 5) result = "Marvelous afternoon.";
 
-                if (cultureInfo.Name == "it-IT" && x == 6) result = ". Ti auguro un stupendo pomeriggio";
-                if (cultureInfo.Name == "en-US" && x == 6) result = ". Have a stupendous afternoon";
+                if (cultureInfo.Name == "it-IT" && x == 6) result = ". Ti auguro un stupendo pomeriggio.";
+                if (cultureInfo.Name == "en-US" && x == 6) result = ". Have a stupendous afternoon.";
 
-                if (cultureInfo.Name == "it-IT" && x == 7) result = "Stupenda giornata";
-                if (cultureInfo.Name == "en-US" && x == 7) result = "Stupendous afternoon";
+                if (cultureInfo.Name == "it-IT" && x == 7) result = "Stupenda giornata.";
+                if (cultureInfo.Name == "en-US" && x == 7) result = "Stupendous afternoon.";
 
-                if (cultureInfo.Name == "it-IT" && x == 8) result = ". Ti auguro un strepitoso pomeriggio";
-                if (cultureInfo.Name == "en-US" && x == 8) result = ". Have a amazing afternoon";
+                if (cultureInfo.Name == "it-IT" && x == 8) result = ". Ti auguro un strepitoso pomeriggio.";
+                if (cultureInfo.Name == "en-US" && x == 8) result = ". Have a amazing afternoon.";
 
-                if (cultureInfo.Name == "it-IT" && x == 9) result = "Strepitoso pomeriggio";
-                if (cultureInfo.Name == "en-US" && x == 9) result = "Amazing afternoon";
+                if (cultureInfo.Name == "it-IT" && x == 9) result = "Strepitoso pomeriggio.";
+                if (cultureInfo.Name == "en-US" && x == 9) result = "Amazing afternoon.";
             }
 
             if (time >= 1800 && time <= 2359)
             {
                 int x = rnd.Next(0, 10 + 1);
-                if (cultureInfo.Name == "it-IT" && x == 0) result = "Buonasera";
-                if (cultureInfo.Name == "en-US" && x == 0) result = "Good evening";
+                if (cultureInfo.Name == "it-IT" && x == 0) result = "Buonasera.";
+                if (cultureInfo.Name == "en-US" && x == 0) result = "Good evening.";
 
-                if (cultureInfo.Name == "it-IT" && x == 1) result = ". Ti auguro una buona serata";
-                if (cultureInfo.Name == "en-US" && x == 1) result = ". Have a nice evening";
+                if (cultureInfo.Name == "it-IT" && x == 1) result = ". Ti auguro una buona serata.";
+                if (cultureInfo.Name == "en-US" && x == 1) result = ". Have a nice evening.";
 
-                if (cultureInfo.Name == "it-IT" && x == 2) result = "Buona serata";
-                if (cultureInfo.Name == "en-US" && x == 2) result = "Good evening";
+                if (cultureInfo.Name == "it-IT" && x == 2) result = "Buona serata.";
+                if (cultureInfo.Name == "en-US" && x == 2) result = "Good evening.";
 
-                if (cultureInfo.Name == "it-IT" && x == 3) result = ". Ti auguro una splendida serata";
-                if (cultureInfo.Name == "en-US" && x == 3) result = ". Have a beautiful evening";
+                if (cultureInfo.Name == "it-IT" && x == 3) result = ". Ti auguro una splendida serata.";
+                if (cultureInfo.Name == "en-US" && x == 3) result = ". Have a beautiful evening.";
 
-                if (cultureInfo.Name == "it-IT" && x == 4) result = "Splendida serata";
-                if (cultureInfo.Name == "en-US" && x == 4) result = "Beautiful evening";
+                if (cultureInfo.Name == "it-IT" && x == 4) result = "Splendida serata.";
+                if (cultureInfo.Name == "en-US" && x == 4) result = "Beautiful evening.";
 
-                if (cultureInfo.Name == "it-IT" && x == 5) result = ". Ti auguro una meravigliosa serata";
-                if (cultureInfo.Name == "en-US" && x == 5) result = ". Have a marvelous evening";
+                if (cultureInfo.Name == "it-IT" && x == 5) result = ". Ti auguro una meravigliosa serata.";
+                if (cultureInfo.Name == "en-US" && x == 5) result = ". Have a marvelous evening.";
 
-                if (cultureInfo.Name == "it-IT" && x == 6) result = "Meravigliosa serata";
-                if (cultureInfo.Name == "en-US" && x == 6) result = "Marvelous evening";
+                if (cultureInfo.Name == "it-IT" && x == 6) result = "Meravigliosa serata.";
+                if (cultureInfo.Name == "en-US" && x == 6) result = "Marvelous evening.";
 
-                if (cultureInfo.Name == "it-IT" && x == 7) result = ". Ti auguro una stupenda serata";
-                if (cultureInfo.Name == "en-US" && x == 7) result = ". Have a stupendous evening";
+                if (cultureInfo.Name == "it-IT" && x == 7) result = ". Ti auguro una stupenda serata.";
+                if (cultureInfo.Name == "en-US" && x == 7) result = ". Have a stupendous evening.";
 
-                if (cultureInfo.Name == "it-IT" && x == 8) result = "Stupenda serata";
-                if (cultureInfo.Name == "en-US" && x == 8) result = "Stupendous evening";
+                if (cultureInfo.Name == "it-IT" && x == 8) result = "Stupenda serata.";
+                if (cultureInfo.Name == "en-US" && x == 8) result = "Stupendous evening.";
 
-                if (cultureInfo.Name == "it-IT" && x == 9) result = ". Ti auguro una strepitosa serata";
-                if (cultureInfo.Name == "en-US" && x == 9) result = ". Have a amazing evening";
+                if (cultureInfo.Name == "it-IT" && x == 9) result = ". Ti auguro una strepitosa serata.";
+                if (cultureInfo.Name == "en-US" && x == 9) result = ". Have a amazing evening.";
 
-                if (cultureInfo.Name == "it-IT" && x == 10) result = "Strepitosa serata";
-                if (cultureInfo.Name == "en-US" && x == 10) result = "Amazing evening";
+                if (cultureInfo.Name == "it-IT" && x == 10) result = "Strepitosa serata.";
+                if (cultureInfo.Name == "en-US" && x == 10) result = "Amazing evening.";
             }
 
             if (time >= 0 && time <= 559)
             {
                 int x = rnd.Next(0, 9 + 1);
-                if (cultureInfo.Name == "it-IT" && x == 0) result = "Buona notte";
-                if (cultureInfo.Name == "en-US" && x == 0) result = "Good night";
+                if (cultureInfo.Name == "it-IT" && x == 0) result = "Buona notte.";
+                if (cultureInfo.Name == "en-US" && x == 0) result = "Good night.";
 
-                if (cultureInfo.Name == "it-IT" && x == 1) result = ". Ti auguro una buona notte";
-                if (cultureInfo.Name == "en-US" && x == 1) result = ". Have a nice night";
+                if (cultureInfo.Name == "it-IT" && x == 1) result = ". Ti auguro una buona notte.";
+                if (cultureInfo.Name == "en-US" && x == 1) result = ". Have a nice night.";
 
-                if (cultureInfo.Name == "it-IT" && x == 2) result = ". Ti auguro una splendida notte";
-                if (cultureInfo.Name == "en-US" && x == 2) result = ". Have a beautiful night";
+                if (cultureInfo.Name == "it-IT" && x == 2) result = ". Ti auguro una splendida notte.";
+                if (cultureInfo.Name == "en-US" && x == 2) result = ". Have a beautiful night.";
 
-                if (cultureInfo.Name == "it-IT" && x == 3) result = "Splendida notte";
-                if (cultureInfo.Name == "en-US" && x == 3) result = "Beautiful night";
+                if (cultureInfo.Name == "it-IT" && x == 3) result = "Splendida notte.";
+                if (cultureInfo.Name == "en-US" && x == 3) result = "Beautiful night.";
 
-                if (cultureInfo.Name == "it-IT" && x == 4) result = ". Ti auguro una meravigliosa notte";
-                if (cultureInfo.Name == "en-US" && x == 4) result = ". Have a marvelous night";
+                if (cultureInfo.Name == "it-IT" && x == 4) result = ". Ti auguro una meravigliosa notte.";
+                if (cultureInfo.Name == "en-US" && x == 4) result = ". Have a marvelous night.";
 
-                if (cultureInfo.Name == "it-IT" && x == 5) result = "Meravigliosa notte";
-                if (cultureInfo.Name == "en-US" && x == 5) result = "Marvelous night";
+                if (cultureInfo.Name == "it-IT" && x == 5) result = "Meravigliosa notte.";
+                if (cultureInfo.Name == "en-US" && x == 5) result = "Marvelous night.";
 
-                if (cultureInfo.Name == "it-IT" && x == 6) result = ". Ti auguro una stupenda notte";
-                if (cultureInfo.Name == "en-US" && x == 6) result = ". Have a stupendous night";
+                if (cultureInfo.Name == "it-IT" && x == 6) result = ". Ti auguro una stupenda notte.";
+                if (cultureInfo.Name == "en-US" && x == 6) result = ". Have a stupendous night.";
 
-                if (cultureInfo.Name == "it-IT" && x == 7) result = "Stupenda notte";
-                if (cultureInfo.Name == "en-US" && x == 7) result = "Stupendous night";
+                if (cultureInfo.Name == "it-IT" && x == 7) result = "Stupenda notte.";
+                if (cultureInfo.Name == "en-US" && x == 7) result = "Stupendous night.";
 
-                if (cultureInfo.Name == "it-IT" && x == 8) result = ". Ti auguro una strepitosa notte";
-                if (cultureInfo.Name == "en-US" && x == 8) result = ". Have a amazing night";
+                if (cultureInfo.Name == "it-IT" && x == 8) result = ". Ti auguro una strepitosa notte.";
+                if (cultureInfo.Name == "en-US" && x == 8) result = ". Have a amazing night.";
 
-                if (cultureInfo.Name == "it-IT" && x == 9) result = "Strepitosa notte";
-                if (cultureInfo.Name == "en-US" && x == 9) result = "Amazing night";
+                if (cultureInfo.Name == "it-IT" && x == 9) result = "Strepitosa notte.";
+                if (cultureInfo.Name == "en-US" && x == 9) result = "Amazing night.";
             }
 
             return result;
