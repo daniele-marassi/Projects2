@@ -45,6 +45,7 @@
         var url = null;
         var application = '@Model?.Application';
         var alwaysShow = '@Model?.AlwaysShow';
+        var resetAfterLogin = '@Model?.ResetAfterLogin';
         var resetActive = false;
         var countTheTimesToReset = 0;
         var audioActive = true;
@@ -249,7 +250,7 @@
 
                     countTheTimesToReset = 0;
                     if(ehi == 1 && recognitionActive == true) resetActive = true;   
-                    if(ehi == 0 && recognitionActive == true && alwaysShow == false) Reset();
+                    if(ehi == 0 && recognitionActive == true && alwaysShow == false) Reset(true);
                     if(ehi == 0 && recognitionActive == true && alwaysShow == true) {
                         //PartialReset();
                         InitFinal();
@@ -303,7 +304,7 @@
                 hosts = JSON.parse(hostsArrayString);
             }
             catch (error) {  
-                if(recognitionActive == true) Reset(); 
+                if(recognitionActive == true) Reset(true); 
             }   
 
             try {
@@ -495,7 +496,7 @@
             if(resetActive && countTheTimesToReset == 10 && recognitionActive == true){
                 countTheTimesToReset = 0;
                 resetActive = false;
-                if(alwaysShow == false) Reset();
+                if(alwaysShow == false) Reset(true);
                 if(alwaysShow == true) PartialReset();
             }
 
@@ -565,12 +566,12 @@
             }
         }
 
-        function Reset(){
+        function Reset(reset){
             PartialReset();
             if(_reset == false){ 
                  _reset = true;
                 clearInterval(serviceInterval);
-                location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset=true' + '&_application=@Model?.Application' + '&_executionQueueId=@Model?.ExecutionQueueId' + '&_hostSelected=@Model?.HostSelected';
+                location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset='+ reset + '&_application=@Model?.Application' + '&_executionQueueId=@Model?.ExecutionQueueId' + '&_hostSelected=@Model?.HostSelected';
             }
         }
 
@@ -809,9 +810,12 @@
 
 <script>
 	window.onload = function(e){ 
-		InitPage();
-        InitSpeech();
-        InitFinal();  
-        ClearUrl();
+        if(GetBoolean(resetAfterLogin) == true) Reset(false);
+        else {
+		    InitPage();
+            InitSpeech();
+            InitFinal();  
+            ClearUrl();
+        }
 	}	
 </script>

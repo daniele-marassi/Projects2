@@ -555,6 +555,7 @@ namespace Supp.Site.Controllers
                     var rnd = new Random();
                     var application = false;
                     var reset = false;
+                    var resetAfterLogin = false;
                     var alwaysShow = false;
                     var hostSelected = "";
                     long executionQueueId = 0;
@@ -562,7 +563,7 @@ namespace Supp.Site.Controllers
                     long id = 0;
                     long.TryParse(_id?.ToString(), out id);
                     bool.TryParse(_reset?.ToString(), out reset);
-
+                    
                     var expiresInSeconds = 0;
                     var claims = new ClaimsDto() { IsAuthenticated = false };
 
@@ -570,6 +571,7 @@ namespace Supp.Site.Controllers
                     {
                         var dto = new LoginDto() { UserName = _userName, Password = _password };
                         var authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response);
+                        resetAfterLogin = true;
                     }
 
                     suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
@@ -604,6 +606,8 @@ namespace Supp.Site.Controllers
                     claims = SuppUtility.GetClaims(User);
 
                     data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims).GetAwaiter().GetResult();
+
+                    data.ResetAfterLogin = resetAfterLogin;
 
                     return View(data);
                 }
@@ -746,7 +750,7 @@ namespace Supp.Site.Controllers
 
                     if (data != null && data.Type == "Meteo")
                     {
-                        data.Answer += GetMeteoPhrase(_phrase, data.Parameters, _claims.Configuration.General.Culture.ToLower());
+                        data.Answer += GetMeteoPhrase(_phrase, data.Parameters, _claims.Configuration.General.Culture.ToLower(), true);
                     }
 
                     if (data != null && data.Type == "WebSearch")
@@ -787,7 +791,7 @@ namespace Supp.Site.Controllers
 
                         if (_claims.Configuration.Speech.MeteoParameterToTheSalutation != null && _claims.Configuration.Speech.MeteoParameterToTheSalutation != "")
                         {
-                            data.Answer += GetMeteoPhrase(String.Empty, _claims.Configuration.Speech.MeteoParameterToTheSalutation, _claims.Configuration.General.Culture.ToLower());
+                            data.Answer += GetMeteoPhrase(String.Empty, _claims.Configuration.Speech.MeteoParameterToTheSalutation, _claims.Configuration.General.Culture.ToLower(), _claims.Configuration.Speech.DescriptionMeteoToTheSalutationActive);
                         }
                     }
 
@@ -889,7 +893,7 @@ namespace Supp.Site.Controllers
             }
         }
 
-        public string GetMeteoPhrase(string request, string param, string culture)
+        public string GetMeteoPhrase(string request, string param, string culture, bool descriptionActive)
         {
             var result = "";
 
@@ -917,7 +921,7 @@ namespace Supp.Site.Controllers
                 if (param.Contains(Days.Today.ToString(), StringComparison.InvariantCultureIgnoreCase)) day = Days.Today;
                 if (param.Contains(Days.Tomorrow.ToString(), StringComparison.InvariantCultureIgnoreCase)) day = Days.Tomorrow;
 
-                var meteoToday = MeteoManage(getMeteoResult.Data, culture, partOfTheDay, day).ToString();
+                var meteoToday = MeteoManage(getMeteoResult.Data, culture, partOfTheDay, day, descriptionActive).ToString();
 
                 result = meteoToday;
             }
@@ -932,22 +936,20 @@ namespace Supp.Site.Controllers
             return result;
         }
 
-        public string MeteoManage(JObject src, string culture, dynamic partOfTheDay, Days day)
+        public string MeteoManage(JObject src, string culture, dynamic partOfTheDay, Days day, bool descriptionActive)
         {
             var result = "";
-
             var description = "";
-            
-            if (day == Days.Tomorrow) description = src["data"]["weatherReportTomorrow"]["description"].ToString();
-
-            if (day == Days.Today || description == "" || description == " ") description = src["data"]["weatherReportToday"]["description"].ToString();
-
             var now = DateTime.Now;
             var hour = now.Hour;
+            JToken details = null;
+
+            if ( descriptionActive && day == Days.Tomorrow) description = src["data"]["weatherReportTomorrow"]["description"].ToString();
+            if ( descriptionActive && (day == Days.Today || description == "" || description == " ")) description = src["data"]["weatherReportToday"]["description"].ToString();
 
             if (partOfTheDay.ToString() != PartsOfTheDayIta.NotSet.ToString()) hour = (int)partOfTheDay;
 
-            var details = src["data"]["hours"][hour];
+            details = src["data"]["hours"][hour];
 
             if (culture.Trim().ToLower() == "it-it")
             {
@@ -1059,7 +1061,6 @@ namespace Supp.Site.Controllers
                         response.Data = data;
                         response.Error = null;
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -1075,7 +1076,6 @@ namespace Supp.Site.Controllers
         public string GetSalutation(CultureInfo cultureInfo)
         {
             Random rnd = new Random();
-
             var result = "";
             var time = int.Parse(DateTime.Now.ToString("HHmm"));
 

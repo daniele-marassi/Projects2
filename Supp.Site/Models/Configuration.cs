@@ -28,6 +28,7 @@ namespace Supp.Site.Models
             public string MinSpeechWordsCoefficient { get; set; }
             public string MaxSpeechWordsCoefficient { get; set; }
             public string MeteoParameterToTheSalutation { get; set; }
+            public bool DescriptionMeteoToTheSalutationActive { get; set; }
         }
     }
 }

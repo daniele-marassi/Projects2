@@ -36,7 +36,7 @@ namespace Supp.Site.Common
                 public static string ListeningAnswer { get; set; }
                 public static string Salutation { get; set; }
                 public static string MeteoParameterToTheSalutation { get; set; }
-                
+                public static bool DescriptionMeteoToTheSalutationActive { get; set; }
                 public static decimal MinSpeechWordsCoefficient { get; set; }
                 public static decimal MaxSpeechWordsCoefficient { get; set; }
                 public static string Culture { get; set; }
@@ -62,7 +62,8 @@ namespace Supp.Site.Common
                                 Salutation = GeneralSettings.Static.Salutation,
                                 MinSpeechWordsCoefficient = GeneralSettings.Static.MinSpeechWordsCoefficient.ToString().Replace(".", ","),
                                 MaxSpeechWordsCoefficient = GeneralSettings.Static.MaxSpeechWordsCoefficient.ToString().Replace(".", ","),
-                                MeteoParameterToTheSalutation = GeneralSettings.Static.MeteoParameterToTheSalutation
+                                MeteoParameterToTheSalutation = GeneralSettings.Static.MeteoParameterToTheSalutation,
+                                DescriptionMeteoToTheSalutationActive = GeneralSettings.Static.DescriptionMeteoToTheSalutationActive
                             }
                         };
 
@@ -116,7 +117,9 @@ namespace Supp.Site.Common
                     GeneralSettings.Static.MinSpeechWordsCoefficient = decimal.Parse(configuration.GetSection("AppSettings:MinSpeechWordsCoefficient").Value);
                     GeneralSettings.Static.MaxSpeechWordsCoefficient = decimal.Parse(configuration.GetSection("AppSettings:MaxSpeechWordsCoefficient").Value);
                     GeneralSettings.Static.Culture = configuration.GetSection("AppSettings:Culture").Value;
-                    GeneralSettings.Static.MeteoParameterToTheSalutation = configuration.GetSection("AppSettings:MeteoParameterToTheSalutation").Value;              
+                    GeneralSettings.Static.MeteoParameterToTheSalutation = configuration.GetSection("AppSettings:MeteoParameterToTheSalutation").Value;
+                    GeneralSettings.Static.DescriptionMeteoToTheSalutationActive = bool.Parse(configuration.GetSection("AppSettings:DescriptionMeteoToTheSalutationActive").Value);
+                    
                 }
             }
         }
