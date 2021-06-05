@@ -13,13 +13,12 @@
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>
         //101
         var final_transcript = '';
         var recognizing = false;
         var ignore_onend = true;
-        var ehi = 0;
         var recognition = null;
         var _phrase = null;
         var _old_phrase = '';
@@ -29,12 +28,7 @@
         var animateIntervals = [];
         var recognitionActive = true;
         var speech = null;
-        var answer = '@Model?.Answer';
-        var startAnswer = '@Model?.StartAnswer';
-        var finalStep = '@Model?.FinalStep';
         var serviceInterval = null;
-        var hostsArrayString = '@Model?.HostsArray';
-        var _error = '@Model?.Error';
         var hosts = [];
         var _reset = false;
         var hosts_cmb_string ='';
@@ -43,14 +37,91 @@
         var first_char = /\S/;
         var fakeClickMilliseconds = 0;
         var url = null;
-        var application = '@Model?.Application';
-        var alwaysShow = '@Model?.AlwaysShow';
-        var resetAfterLogin = '@Model?.ResetAfterLogin';
         var resetActive = false;
         var countTheTimesToReset = 0;
         var audioActive = true;
         var shortcuts;
+        var synth = null;
+        var readOutLoudActive = false;
+        var firstLoad = true;
 
+        //@*Model Variables*@
+        var answer = '';
+        var startAnswer = '';
+        var finalStep = false;
+        var hostsArrayString = '';
+        var _error = '';
+        var application = false;
+        var alwaysShow = false;
+        var resetAfterLogin = false;
+        var culture = '';
+        var id = '';
+        var hostSelected = '';
+        var phrase = '';
+        var listeningWord1 = '';
+        var listeningWord2 = '';
+        var executionQueueId = '';
+        var shortcutsInJson = '';
+        var type = '';
+        var parameters = ''; 
+        var ehi = 0;
+        //@*Model Variables*@
+
+        function VariablesAssignmentFromJson(jsonString) {
+            //console.log('###' + jsonString + '###');
+            var model = JSON.parse(jsonString);
+
+            answer = DecodeUnicode(model['Answer']);
+            startAnswer = DecodeUnicode(model['StartAnswer']);
+            finalStep = GetBoolean(DecodeUnicode(model['FinalStep']));
+            hostsArrayString = DecodeUnicode(model['HostsArray']);
+            _error = DecodeUnicode(model['Error']);
+            application = GetBoolean(DecodeUnicode(model['Application']));
+            alwaysShow = GetBoolean(DecodeUnicode(model['AlwaysShow']));
+            resetAfterLogin = GetBoolean(DecodeUnicode(model['ResetAfterLogin']));
+            culture = DecodeUnicode(model['Culture']);
+            id = DecodeUnicode( model['Id']);
+            hostSelected =DecodeUnicode( model['HostSelected']);
+            phrase = DecodeUnicode(model['Phrase']);
+            listeningWord1 = DecodeUnicode(model['ListeningWord1']);
+            listeningWord2 = DecodeUnicode(model['ListeningWord2']);
+            executionQueueId = DecodeUnicode(model['ExecutionQueueId']);
+            shortcutsInJson = DecodeUnicode(model['ShortcutsInJson']);
+            type = DecodeUnicode(model['Type']);
+            parameters = DecodeUnicode(model['Parameters']); 
+            ehi = 0;
+            try {
+                ehi=parseInt(DecodeUnicode(model['Ehi']));
+            }
+            catch (error) { ehi = 0; }
+        }
+
+        function VariablesAssignmentFromModel() {
+            answer = '@Model?.Answer';
+            startAnswer = '@Model?.StartAnswer';
+            finalStep = GetBoolean('@Model?.FinalStep');
+            hostsArrayString = '@Model?.HostsArray';
+            _error = '@Model?.Error';
+            application = GetBoolean('@Model?.Application');
+            alwaysShow = GetBoolean('@Model?.AlwaysShow');
+            resetAfterLogin = GetBoolean('@Model?.ResetAfterLogin');
+            culture = '@Model?.Culture';
+            id = '@Model?.Id';
+            hostSelected = '@Model?.HostSelected';
+            phrase = '@Model?.Phrase';
+            listeningWord1 = '@Model?.ListeningWord1';
+            listeningWord2 = '@Model?.ListeningWord2';
+            executionQueueId = '@Model?.ExecutionQueueId';
+            shortcutsInJson = '@Model?.ShortcutsInJson';
+            type = '@Model?.Type';
+            parameters = '@Model?.Parameters'; 
+            ehi = 0;
+            try {
+                ehi=parseInt('@Model?.Ehi');
+            }
+            catch (error) { ehi = 0; }
+        }
+        
         function AddAnimateInterval(id, size, range, amount, milliseconds) {
             if (animateIntervals[id] != null) clearInterval(animateIntervals[id]);
             animateIntervals[id] = setInterval( function() { SetEllipse(id, size, range, amount, 0); }, milliseconds );
@@ -161,6 +232,7 @@
         }
 
         function ReadOutLoud(_message, _finalStep) {
+            readOutLoudActive = true;
             recognitionActive = false;
             if(recognition != null){
                 recognition.abort();
@@ -203,7 +275,6 @@
                 _message = _message.replace(message, '').trim();    
 
                 if(_message == '')_finalStep = true;
-
             }
             
             //console.log('[' + message + ']');
@@ -217,9 +288,9 @@
             speech.volume = 1;
             speech.rate = 1;
             speech.pitch = 1;
-            speech.lang = '@Model?.Culture';
+            speech.lang = culture;
 
-            var synth = window.speechSynthesis;
+            synth = window.speechSynthesis;
             var speakHasError = false;
 
             try {
@@ -237,9 +308,9 @@
             }
             
             speech.onend = function(event) {
-                if(_finalStep==true){
+                if(_finalStep==true || readOutLoudActive == false || _message == null || _message == '' || _message == 'null'){
 
-                    if(recognition != null){                  
+                    if(recognition != null && IsMobile() == false){                  
                         try {
                             recognition.start();
                         }
@@ -247,16 +318,21 @@
                     }
                     StopAnimateIntervalsListening(100);
                     recognitionActive = true;
+                    readOutLoudActive = false;
+                    answer = null;
+                    document.getElementById('final_span').innerHTML = '';
+                    document.getElementById('interim_span').innerHTML = '';
 
                     countTheTimesToReset = 0;
                     if(ehi == 1 && recognitionActive == true) resetActive = true;   
-                    if(ehi == 0 && recognitionActive == true && alwaysShow == false) Reset(true);
-                    if(ehi == 0 && recognitionActive == true && alwaysShow == true) {
-                        //PartialReset();
-                        InitFinal();
+                    if(ehi == 0 && recognitionActive == true && alwaysShow == false) {
+                        //Reset(true);
+                        PartialReset();
                     }
-
-                    document.getElementById('final_span').innerHTML = '';
+                    if(ehi == 0 && recognitionActive == true && alwaysShow == true) {
+                        PartialReset();
+                        //InitFinal();
+                    }
                 } else {
                     synth.cancel();
                     ReadOutLoud(_message, _finalStep); 
@@ -265,11 +341,11 @@
         }
 
         function ExecutionFinished(){
-            if(url != null && GetBoolean(application) == true)
+            if(url != null && application == true)
             {
-                var json = "{_id:@Model?.Id,_hostSelected:@Model?.HostSelected}";
-                var _url = url.replace("Recognition","ExecutionFinished")+'?_id=@Model?.ExecutionQueueId&_hostSelected=@Model?.HostSelected';
-                SendPostAsync("POST", _url, json, null);
+                var json = "{_id:"+id+",_hostSelected:"+hostSelected+"}";
+                var _url = url.replace("Recognition","ExecutionFinished")+'?_id='+executionQueueId+'&_hostSelected='+hostSelected;
+                SendHttpRequest("POST", _url, json, null);
             }
         }
 
@@ -280,8 +356,8 @@
         }
 
         function InitPage(){
-            //application = 'true';
-            if(GetBoolean(application) == true){
+            //application = true;
+            if(application == true){
                 document.getElementById('menu_button').style.display = 'inline';
                 document.getElementById('menu_button').style.marginLeft = '400px';
 
@@ -297,6 +373,18 @@
 
                 document.getElementById('footerContainer').style.color = '#333';  
             }
+
+            document.getElementById("sendPhrase_text")
+                .addEventListener("keyup", function(event) {
+                event.preventDefault();
+                if (event.keyCode === 13) {
+                    document.getElementById("sendPhrase_button").click();
+                }
+            });
+
+            if(IsMobile() == true){
+                document.getElementById('div_start').style.display = 'block';
+            }
                     
             hostsArrayString = hostsArrayString.replace(/&quot;/g,'"');
             if(_error != null && _error != '') console.log(_error);
@@ -307,15 +395,10 @@
                 if(recognitionActive == true) Reset(true); 
             }   
 
-            try {
-                ehi=parseInt('@Model?.Ehi');
-            }
-            catch (error) { ehi = 0; }
-
-            if(GetBoolean(finalStep) == false) {
-                if('@Model?.Phrase' != null && '@Model?.Phrase' != ''){           
+            if(finalStep == false) {
+                if(phrase != null && phrase != ''){           
                     if(_old_phrase != '') _old_phrase += ' ';
-                    _old_phrase += '@Model?.Phrase';
+                    _old_phrase += phrase;
                 }
             }
             else{
@@ -323,7 +406,7 @@
             }
 
             if(hosts != null && hosts.length > 0 ){
-                hosts_cmb_string='<select name="hosts_cmb" class="btn btn-dark" id="hosts_cmb" value="@Model?.HostSelected" style="background-color:#000; color:#333;">';
+                hosts_cmb_string='<select name="hosts_cmb" class="btn btn-dark" id="hosts_cmb" value="'+hostSelected+'" style="background-color:#000; color:#333;">';
                 for (var i = 0; i < hosts.length; i++)
                 {
                     hosts_cmb_string+='<option>'+ hosts[i]+'</option>';
@@ -337,13 +420,67 @@
             if(_reset == false){
                 _phrase = $("#sendPhrase_text").val();
                 if(_phrase != null && _phrase != ''){
-                    var phrase = _phrase;
-                    if(_old_phrase != '') phrase = _old_phrase + ' ' + _phrase;
-                    PartialReset();
-                    clearInterval(serviceInterval);
-                    location.href = '@Url.Action("Recognition", "WebSpeeches")?_phrase=' + phrase + '&_hostSelected='+$( "#hosts_cmb option:selected" ).text() + '&_application=@Model?.Application';
+                    var phraseTmp = _phrase;
+                    if(_old_phrase != '') phraseTmp = _old_phrase + ' ' + _phrase;
+
+                    CallWebSpeechDtoInJson(('_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultSendPhrase");
                 }
             }
+        }
+
+        function CallWebSpeechDtoInJson(paramString, funcName){           
+            var _url = url.replace("Recognition","GetWebSpeechDtoInJson")+'?' + paramString;
+
+            PartialReset();
+                    
+            SendHttpRequest("GET", _url, null, funcName);
+        } 
+
+        function ResultSendPhrase(result){           
+            VariablesAssignmentFromJson(result);
+            Speak();
+            Action(type, parameters);
+        }
+
+        function DecodeUnicode(str){
+            str = decodeURIComponent(str);
+            str = str.replace(new RegExp('/u0022', 'g'), '"');
+
+            str = str.replace(new RegExp('/U00E0', 'g'), "à");
+            str = str.replace(new RegExp('/U00E8', 'g'), "è");
+            str = str.replace(new RegExp('/U00F2', 'g'), "ò");
+            str = str.replace(new RegExp('/U00F9', 'g'), "ù");
+            str = str.replace(new RegExp('/U00EC', 'g'), "ì");
+
+            str = str.replace(new RegExp('/U00C0', 'g'), "à");
+            str = str.replace(new RegExp('/U00C8', 'g'), "è");
+            str = str.replace(new RegExp('/U00D2', 'g'), "ò");
+            str = str.replace(new RegExp('/U00D9', 'g'), "ù");
+            str = str.replace(new RegExp('/U00CC', 'g'), "ì");
+
+            str = str.replace(new RegExp('/U0027', 'g'), "'");
+
+            str = str.replace(new RegExp('/U00D', 'g'), " ");
+            str = str.replace(new RegExp('/U00A', 'g'), " ");
+			
+            str = str.replace(new RegExp('/u00E0', 'g'), "à");
+            str = str.replace(new RegExp('/u00E8', 'g'), "è");
+            str = str.replace(new RegExp('/u00F2', 'g'), "ò");
+            str = str.replace(new RegExp('/u00F9', 'g'), "ù");
+            str = str.replace(new RegExp('/u00EC', 'g'), "ì");
+							   
+            str = str.replace(new RegExp('/u00C0', 'g'), "à");
+            str = str.replace(new RegExp('/u00C8', 'g'), "è");
+            str = str.replace(new RegExp('/u00D2', 'g'), "ò");
+            str = str.replace(new RegExp('/u00D9', 'g'), "ù");
+            str = str.replace(new RegExp('/u00CC', 'g'), "ì");
+							   
+            str = str.replace(new RegExp('/u0027', 'g'), "'");
+							   
+            str = str.replace(new RegExp('/u00D', 'g'), " ");
+            str = str.replace(new RegExp('/u00A', 'g'), " ");		
+
+            return str;
         }
 
         function Upgrade() {
@@ -368,8 +505,8 @@
 
             if (animateIntervals['ellipse1'] == null && recognitionActive == true) StartAnimateIntervals(70);
             final_transcript = '';
-            recognition.lang = '@Model?.Culture';
-            SetAudio();
+            recognition.lang = culture;
+            //SetAudio();
 
             try {
                 recognition.start();
@@ -378,8 +515,6 @@
 
             recognitionActive = true;
             ignore_onend = false;
-            document.getElementById('final_span').innerHTML = '';
-            document.getElementById('interim_span').innerHTML = '';
         }
 
         function InitSpeech(){
@@ -436,21 +571,27 @@
                                 var _phraseSplit = _phrase.split(" ");
                                 if (_phraseSplit.length > 0 && recognitionActive == true) {
                                     if (event.results[i].isFinal){
-                                        if (_phraseSplit.length > 1 && _phraseSplit[0] == '@Model?.ListeningWord1' && _phraseSplit[1] == '@Model?.ListeningWord2' && ehi == 0 && _reset == false) {
+                                        if (_phraseSplit.length > 1 && _phraseSplit[0] == listeningWord1 && _phraseSplit[1] == listeningWord2 && ehi == 0 && _reset == false) {
 
                                             var audio = new Audio("/Files/Ehi.mp3");
                                             audio.play();
                                             
-                                            var phrase = '@Model?.ListeningWord1' + ' ' + '@Model?.ListeningWord2';
-                                            PartialReset();
+                                            var phraseTmp = listeningWord1 + ' ' + listeningWord2;
+                                           
                                             clearInterval(serviceInterval);
-                                            location.href = '@Url.Action("Recognition", "WebSpeeches")?_phrase=' + phrase + '&_hostSelected='+$( "#hosts_cmb option:selected" ).text() + '&_application=@Model?.Application';
+                                            
+                                            CallWebSpeechDtoInJson(('_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionEhi");
                                         } else if (ehi == 1 && _phrase != listeningPhrase && _phrase != null && _phrase!= '' && _reset == false) {
-                                            var phrase = _phrase;
-                                            if(_old_phrase != '') phrase = _old_phrase + ' ' + _phrase;
-                                            PartialReset();
+
+                                            var audio = new Audio("/Files/Ehi.mp3");
+                                            audio.play();
+
+                                            var phraseTmp = _phrase;
+                                            if(_old_phrase != '') phraseTmp = _old_phrase + ' ' + _phrase;
+                                           
                                             clearInterval(serviceInterval);
-                                            location.href = '@Url.Action("Recognition", "WebSpeeches")?_phrase=' + phrase + '&_hostSelected='+$( "#hosts_cmb option:selected" ).text() + '&_application=@Model?.Application';
+
+                                            CallWebSpeechDtoInJson(('_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionPhrase");
                                         }
                                     }
                                 }
@@ -480,6 +621,18 @@
             }
         }
 
+        function ResultRecognitionPhrase(result){           
+            VariablesAssignmentFromJson(result);
+            Speak();
+            Action(type, parameters);
+        }
+
+        function ResultRecognitionEhi(result){           
+            VariablesAssignmentFromJson(result);
+            Speak();
+            Action(type, parameters);
+        }
+
         function SimulateClick(control) {
             if (document.all) {
                 control.click();
@@ -496,7 +649,7 @@
             if(resetActive && countTheTimesToReset == 10 && recognitionActive == true){
                 countTheTimesToReset = 0;
                 resetActive = false;
-                if(alwaysShow == false) Reset(true);
+                if(alwaysShow == false) PartialReset(); //Reset(true);
                 if(alwaysShow == true) PartialReset();
             }
 
@@ -557,10 +710,13 @@
         }
 
         function Speak(){
-            if (answer != null && answer != '') {
+            if (answer != null && answer != '' && answer != 'null') {
+                document.getElementById('final_span').innerHTML = '';
+                document.getElementById('interim_span').innerHTML = '';
                 var _answer = HexDecode(answer);
+                
                 ReadOutLoud(_answer); 
-                answer = null;
+                //answer = null;
             } else {
                 PartialReset();
             }
@@ -571,7 +727,7 @@
             if(_reset == false){ 
                  _reset = true;
                 clearInterval(serviceInterval);
-                location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset='+ reset + '&_application=@Model?.Application' + '&_executionQueueId=@Model?.ExecutionQueueId' + '&_hostSelected=@Model?.HostSelected';
+                location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset='+ reset + '&_application='+application + '&_executionQueueId='+ executionQueueId + '&_hostSelected='+hostSelected;
             }
         }
 
@@ -589,26 +745,41 @@
         }
 
         function InitFinal(){
-            StartButton(event);
             clearInterval(serviceInterval);
             serviceInterval = setInterval( function() { Service(); }, 1000);
             
-            if(answer != startAnswer) fakeClickMilliseconds = 500;
-            else fakeClickMilliseconds = 2000;
+            if(firstLoad == false) fakeClickMilliseconds = 500;
+            else {            
+                firstLoad = false;
+                fakeClickMilliseconds = 2000;
+            }
+
+            document.getElementById('final_span').innerHTML = '';
+            document.getElementById('interim_span').innerHTML = '';
             
             setTimeout(function(){
                 SimulateClick(document.getElementById('fakeClick_button'));
 
-                var type = '@Model.Type'; 
-                var link = '@Model.Parameters';
-                Action(type, link);
+                setTimeout(function(){
+                    Action(type, parameters);
+
+                    SetAudio();
+                
+                    if(IsMobile() == false) StartButton(event);
+
+                    Speak();
+                }, 50);  
 
             }, fakeClickMilliseconds);  
 
-            var shortcutsInJson = ('@Model.ShortcutsInJson').replace(/&quot;/g, '"');
-            shortcuts = JSON.parse(shortcutsInJson);
+            var _shortcutsInJson = (shortcutsInJson).replace(/&quot;/g, '"');
+            shortcuts = JSON.parse(_shortcutsInJson);
             
             CreateShortcuts(shortcuts);
+        }
+
+        function FakeClick(){
+            console.log('FakeClick');      
         }
 
         function ClearUrl(){
@@ -616,6 +787,15 @@
             var splitUrl = _url.split('?');
             url = splitUrl[0];
             history.pushState({}, null, url);        
+        }
+
+        function IsMobile(){
+            var result = false;
+            if(/iPhone|iPad|iPod|Android|webOS|BlackBerry|Windows Phone/i.test(navigator.userAgent) || screen.availWidth <= 480){
+                result = true;
+            }
+            
+            return result;
         }
 
         function RecognitionEnableDisable(){
@@ -643,7 +823,7 @@
         }
 
         function MenuClick() {
-            if(GetBoolean(application) == true){
+            if(application == true){
                 var element = document.getElementById("menu_items");
                 if(element.style.display != 'inline') element.style.display = 'inline';
                 else element.style.display = 'none';
@@ -668,36 +848,42 @@
 
                 if(shortcut['Id'] == parseInt(id)){
 
-                    if(GetBoolean(application) == false && shortcut['Type'] == 'Link' ){
+                    if(application == false && shortcut['Type'] == 'Link' ){
                         window.open(shortcut['Action']);
                     }
 
-                    else if(GetBoolean(application) == true && shortcut['Type'] == 'Link' ){
-                        window.open(shortcut['Action'], "_blank");
+                    else if(application == true && shortcut['Type'] == 'Link' ){
+                        window.open(shortcut['Action'], "open link", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
                     } 
                     
                     else {
-                        location.href = '@Url.Action("Recognition", "WebSpeeches")?_id=' + shortcut['Id'] + '&_hostSelected='+$( "#hosts_cmb option:selected" ).text() + '&_application=@Model?.Application';
+                        CallWebSpeechDtoInJson(('_id=' + shortcut['Id'] + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultActionShortcut");
                     }  
                 }
             }
         }
 
+        function ResultActionShortcut(result){           
+            VariablesAssignmentFromJson(result);
+            Speak();
+            Action(type, parameters);
+        }
+
         function Action(type, link){
-            if(GetBoolean(application) == false && type == 'Link' ){
+            if(application == false && type == 'Link' && link != null && link != '' && link != 'null' ){
                 window.open(link);
             }
 
-            else if(GetBoolean(application) == true && type == 'Link' ){
-                window.open(link, "_blank");
+            else if(application == true && type == 'Link' && link != null && link != '' && link != 'null' ){
+                window.open(link, "open link", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
             } 
 
-            else if(GetBoolean(application) == false && type == 'WebSearch' ){
+            else if(application == false && type == 'SystemWebSearch' && link != null && link != '' && link != 'null' ){
                 window.open(link);
             }
 
-            else if(GetBoolean(application) == true && type == 'WebSearch' ){
-                window.open(link, "_blank");
+            else if(application == true && type == 'SystemWebSearch' && link != null && link != '' && link != 'null'){
+                window.open(link, "search", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
             } 
         }
 
@@ -705,7 +891,7 @@
             var element = document.getElementById("shortcutsContainer");
             var dt = '';
 
-            if(shortcut['Ico'] == null || shortcut['Ico'] == '') shortcut['Ico'] = '/Images/application.png';
+            if(shortcut['Ico'] == null || shortcut['Ico'] == '') shortcut['Ico'] = '/Images/Shortcuts/generic.png';
 
             dt += '<dt class="col-sm-3" style="">';
             dt += '<div>';
@@ -726,7 +912,7 @@
                 var shortcut = _shortcuts[i];
                 
                 if(i == 0){
-                    var _shortcut = JSON.parse('{"Id":"' + i + '", "Ico":"/Images/exit.png", "Title":"Exit", "Action":"Exit"}');
+                    var _shortcut = JSON.parse('{"Id":"' + i + '", "Ico":"/Images/Shortcuts/close.png", "Title":"Close", "Action":"Close"}');
                     AddShortcuts(_shortcut);
                 }
 
@@ -743,18 +929,16 @@
 		    var ret = eval(funcCall);		
 	    }	
 
-        function SendPostAsync(method, url, json, funcName) {
-            //var xhttp = new XMLHttpRequest();
-            //xhttp.onreadystatechange = function() {
-            //     if (this.readyState == 4 && this.status == 200) {
-            //         console.log(this.responseText);
-            //         if(funcName != undefined && funcName != null && funcName != '') ExecuteFunction(funcName, par);
-            //     }
-            //};
-            //xhttp.open(method, url, true);
-            //xhttp.setRequestHeader("Content-type", "application/json");
-            //xhttp.send(json);
+	    function EllipseClick()
+	    {
+	       if(readOutLoudActive == false) OpenShortcuts();
+           if(readOutLoudActive == true){
+                readOutLoudActive = false;
+                synth.cancel();
+            }
+	    }	
 
+        function SendHttpRequest(method, url, json, funcName) {
             var xhr = new XMLHttpRequest();
             xhr.open(method, url, true);
             xhr.onload = function(e) {
@@ -765,7 +949,8 @@
                 console.error("** An error occurred during the XMLHttpRequest");
             };
             xhr.setRequestHeader("Content-type", "application/json");
-            xhr.send(json);
+            if(json != null && json != '') xhr.send(json);
+            else xhr.send();
         }
     </script>
 }
@@ -788,7 +973,7 @@
                 <ellipse id="ellipse3" cx="100" cy="50" rx="50" ry="50" style="fill: #026aad;" filter="url(#blurMe)"/>
                 <ellipse id="ellipse4" cx="100" cy="50" rx="50" ry="50" style="fill: #7a1cc9;" filter="url(#blurMe)"/>
                 <ellipse id="ellipse5" cx="100" cy="50" rx="50" ry="50" style="fill: #c22b10;" filter="url(#blurMe)"/>
-                <ellipse id="ellipse6" cx="100" cy="50" rx="48" ry="48" style=" cursor:pointer;" onclick="OpenShortcuts();"  class="btn ellipse-dark" />
+                <ellipse id="ellipse6" cx="100" cy="50" rx="48" ry="48" style=" cursor:pointer;" onclick="EllipseClick();"  class="btn ellipse-dark" />
             </svg>
         </div>
         <div id="hosts_cmb_container" style="text-align:center; margin-top:-100px;">
@@ -799,19 +984,26 @@
             </button>
             <input type="text" id="sendPhrase_text" value="" style="height:38px; width:50%; display:inline-block; " class="btn btn-dark"/>
             <button id="sendPhrase_button" onclick="SendPhrase()" class="btn btn-dark" style="width:57px; display:inline-block; color:#333; border-width:1px; outline: 0;box-shadow: none!important; height:38px; margin-top:-1px;">Send</button>
-            <button id="fakeClick_button" onclick="Speak()" style="display:none; "></button>
+            <button id="fakeClick_button" onclick="FakeClick();" style="display:none; "></button>
         </div>
         <div id="results" style="text-align:center;">
             <span class="final" id="final_span"></span> 
             <span class="interim" id="interim_span" style="overflow:hidden;"></span>
         </div>
+        <div id="div_start" style="display: none;">
+	        <button id="start_button" onclick="StartButton(event)" style="border-width:1px; display: inline-block; outline: 0; box-shadow: none!important; height:100px; margin-top:100px; margin-right:0px;" class="btn btn-dark">
+		        <img alt="Start" id="start_img" src="/Images/voice-control.png" style="height:100%; margin:-5px;">
+	        </button>
+        </div>
     </div>
 </div>
 
 <script>
-	window.onload = function(e){ 
-        if(GetBoolean(resetAfterLogin) == true) Reset(false);
-        else {
+	window.onload = function(e){   
+        VariablesAssignmentFromModel();
+        if(resetAfterLogin == true) {
+            Reset(false);
+        } else {
 		    InitPage();
             InitSpeech();
             InitFinal();  

@@ -103,7 +103,7 @@ namespace Supp.ServiceHost.Repositories
 
                 try
                 {
-                    var webSpeech = await db.WebSpeeches.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                    var webSpeech = await db.WebSpeeches.AsNoTracking().Where(_ => _.Id == id).FirstOrDefaultAsync();
 
                     var config = new MapperConfiguration(cfg => cfg.CreateMap<WebSpeech, WebSpeechDto>());
                     var mapper = config.CreateMapper();

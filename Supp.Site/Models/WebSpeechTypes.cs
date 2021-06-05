@@ -19,6 +19,7 @@ namespace Supp.Site.Models
             list.Add(new WebSpeechType() { Id = "Chrome"       , Type = "Chrome" });
             list.Add(new WebSpeechType() { Id = "SystemWebSearch", Type = "SystemWebSearch" });
             list.Add(new WebSpeechType() { Id = "Meteo", Type = "Meteo" });
+            list.Add(new WebSpeechType() { Id = "Time", Type = "Time" });
 
             return list;
         }

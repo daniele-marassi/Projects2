@@ -26,6 +26,8 @@ using System.Web;
 using Additional;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.IO;
 
 namespace Supp.Site.Controllers
 {
@@ -252,6 +254,36 @@ namespace Supp.Site.Controllers
             }
         }
 
+        public IEnumerable<ShortcutImage> GetShortcutImages()
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                var shortcutImages = new List<ShortcutImage>() { };
+                try
+                {
+                    var path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase);
+
+                    path = path.Replace(@"file:\", "");
+                    path = path.Replace(@"bin\Debug\netcoreapp3.1", "");
+
+                    var d = new DirectoryInfo(Path.Combine(path, @"wwwroot\Images\Shortcuts"));
+                    FileInfo[] Files = d.GetFiles("*.png");
+
+                    foreach (FileInfo file in Files)
+                    {
+                        var ico = file.FullName.Replace(Path.Combine(path, "wwwroot"), "").Replace(@"\", "/");
+                        shortcutImages.Add(new ShortcutImage() { Id = ico, Name = file.Name });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.ToString());
+                }
+
+                return shortcutImages;
+            }
+        }
+
         // GET: WebSpeeches/Create
         public IActionResult Create()
         {
@@ -274,6 +306,8 @@ namespace Supp.Site.Controllers
 
                     var webSpeeches = getAllWebSpeechesResult.Data.ToList();
 
+                    var shortcutImages = GetShortcutImages();
+
                     foreach (var row in data)
                     {
                         row.Id = 0;
@@ -289,6 +323,7 @@ namespace Supp.Site.Controllers
                         row.PrivateInstruction = true;
                         row.WebSpeeches = webSpeeches;
                         row.WebSpeechIds = new long[] { };
+                        row.ShortcutImages = shortcutImages;
                     }
 
                     return View(data.FirstOrDefault());
@@ -378,7 +413,10 @@ namespace Supp.Site.Controllers
 
                     var webSpeeches = getAllWebSpeechesResult.Data.ToList();
 
+                    var shortcutImages = GetShortcutImages();
+
                     data.WebSpeeches = webSpeeches;
+                    data.ShortcutImages = shortcutImages;
 
                     return View(data);
                 }
@@ -637,6 +675,7 @@ namespace Supp.Site.Controllers
                     List<WebSpeechDto> _data = null;
                     List<ShortcutDto> shortcuts = new List<ShortcutDto>() { };
                     var rnd = new Random();
+                    var _phraseMatch = "";
 
                     string access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
 
@@ -702,10 +741,12 @@ namespace Supp.Site.Controllers
                                     countMatch = match;
                                     _data = new List<WebSpeechDto>();
                                     _data.Add(item);
+                                    _phraseMatch = phrase;
                                 }
                                 else if (match == countMatch && match >= minMatch && _wordsCount <= maxWords)
                                 {
                                     _data.Add(item);
+                                    _phraseMatch = phrase;
                                 }
                             }
                         }
@@ -750,10 +791,26 @@ namespace Supp.Site.Controllers
 
                     if (data != null && data.Type == "Meteo")
                     {
-                        data.Answer += GetMeteoPhrase(_phrase, data.Parameters, _claims.Configuration.General.Culture.ToLower(), true);
+                        var phrase = _phrase;
+                        if (phrase == null) phrase = _phraseMatch;
+                        data.Answer = GetMeteoPhrase(phrase, data.Parameters, _claims.Configuration.General.Culture.ToLower(), true);
                     }
 
-                    if (data != null && data.Type == "WebSearch")
+                    if (data != null && data.Type == "Time")
+                    {
+                        var now = DateTime.Now;
+
+                        var dayofweek = now.ToString("dddd", new CultureInfo(_claims.Configuration.General.Culture));
+                        var month = now.ToString("MMMM", new CultureInfo(_claims.Configuration.General.Culture));
+
+                        if (_claims.Configuration.General.Culture.ToLower() == "it-it")
+                            data.Answer = now.Hour.ToString() + " e " + now.Minute.ToString() + " minuti" + ", " + dayofweek + " " + now.Day.ToString() + " " + month;
+
+                        if (_claims.Configuration.General.Culture.ToLower() == "en-us")
+                            data.Answer = now.Hour.ToString() + " and " + now.Minute.ToString() + " minutes" + ", " + dayofweek + " " + now.Day.ToString() + " " + month;
+                    }
+
+                    if (data != null && data.Type == "SystemWebSearch")
                     {
                         var phrases = new List<string>() { };
                         var phrase = _phrase;
@@ -785,7 +842,7 @@ namespace Supp.Site.Controllers
 
                     var startAnswer = salutation + " " + GetSalutation(new CultureInfo(_claims.Configuration.General.Culture, false));
 
-                    if ((_phrase == null || _phrase == "") && data == null && _reset != true)
+                    if ((_phrase == null || _phrase == "") && data == null && _reset != true && _application == true)
                     {
                         data = new WebSpeechDto() { Answer = startAnswer, Ehi = 0, FinalStep = true };
 
@@ -824,7 +881,9 @@ namespace Supp.Site.Controllers
                         await ExecutionFinished(_executionQueueId, _hostSelected, _application);
                     }
 
-                    data.ShortcutsInJson = JsonConvert.SerializeObject(shortcuts);
+                    var shortcutsInJson = JsonConvert.SerializeObject(shortcuts);
+
+                    data.ShortcutsInJson = shortcutsInJson;
 
                     data.Error = null;
 
@@ -878,8 +937,11 @@ namespace Supp.Site.Controllers
 
                     var data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims).GetAwaiter().GetResult();
 
-                    if (data != null) result = JsonConvert.SerializeObject(data);
-
+                    if (data != null)
+                    {
+                        result = System.Text.Json.JsonSerializer.Serialize(data);
+                        result = result.Replace(@"\","/");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -921,9 +983,9 @@ namespace Supp.Site.Controllers
                 if (param.Contains(Days.Today.ToString(), StringComparison.InvariantCultureIgnoreCase)) day = Days.Today;
                 if (param.Contains(Days.Tomorrow.ToString(), StringComparison.InvariantCultureIgnoreCase)) day = Days.Tomorrow;
 
-                var meteoToday = MeteoManage(getMeteoResult.Data, culture, partOfTheDay, day, descriptionActive).ToString();
+                var meteo = MeteoManage(getMeteoResult.Data, culture, partOfTheDay, day, descriptionActive).ToString();
 
-                result = meteoToday;
+                result = meteo;
             }
             else
             {
@@ -946,6 +1008,8 @@ namespace Supp.Site.Controllers
 
             if ( descriptionActive && day == Days.Tomorrow) description = src["data"]["weatherReportTomorrow"]["description"].ToString();
             if ( descriptionActive && (day == Days.Today || description == "" || description == " ")) description = src["data"]["weatherReportToday"]["description"].ToString();
+
+            description = description.Replace("-"," ");
 
             if (partOfTheDay.ToString() != PartsOfTheDayIta.NotSet.ToString()) hour = (int)partOfTheDay;
 

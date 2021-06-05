@@ -68,3 +68,4 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\obj\Debug\Abou
 C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\obj\Debug\AboutBox.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\obj\Debug\AboutBox.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\obj\Debug\AboutBox.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\obj\Debug\AboutBox.csprojAssemblyReference.cache

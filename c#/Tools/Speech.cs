@@ -101,7 +101,7 @@ namespace Tools
 
         public void RemoveFocus() 
         {
-            Cursor.Position = new Point(workingAreaWidth - 320, workingAreaHeight + 20);
+            Cursor.Position = new Point(workingAreaWidth - 520, workingAreaHeight + 20);
 
             System.Threading.Thread.Sleep(1000);
 

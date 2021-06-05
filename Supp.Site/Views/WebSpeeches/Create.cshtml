@@ -44,8 +44,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="Ico" class="control-label"></label>
-                <input asp-for="Ico" class="form-control textBoxCustom" />
-                <span asp-validation-for="Ico" class="text-danger"></span>
+                @Html.DropDownListFor(x => x.Ico, new SelectList(Model.ShortcutImages, "Id", "Name", Model.Ico), "-- Select --", new {@class="select" })
+                @Html.ValidationMessageFor(x => x.Ico)
             </div>
             <div class="form-group">
                 <label asp-for="Order" class="control-label"></label>

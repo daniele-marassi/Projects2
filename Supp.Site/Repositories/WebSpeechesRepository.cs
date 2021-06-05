@@ -137,8 +137,6 @@ namespace Supp.Site.Repositories
                             keyValuePairs[prop.Name] = prop.GetValue(dto, null).ToString();
                     }
 
-
-
                     var result = await utility.CallApi(HttpMethod.Put, GeneralSettings.Static.BaseUrl, "api/WebSpeeches/UpdateWebSpeech", keyValuePairs, token);
                     var content = await result.Content.ReadAsStringAsync();
 
