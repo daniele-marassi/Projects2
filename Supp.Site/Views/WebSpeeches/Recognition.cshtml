@@ -272,9 +272,17 @@
                     if((i == actualWords) || (i <= actualWords && (words[i].indexOf('.') > -1 || words[i].indexOf(',') > -1 || words[i].indexOf(';') > -1 || words[i].indexOf(':') > -1))) isActualWord = false;
                 }  
 
-                _message = _message.replace(message, '').trim();    
+                _message = _message.replace(message, '').trim();   
 
-                if(_message == '')_finalStep = true;
+                var firstCharIndex = -1;
+                var firstNumberIndex = -1;
+                if(_message != null){
+                    var firstCharMatch = _message.match('[a-zA-Z]');
+                    if(firstCharMatch != null)firstCharIndex = firstCharMatch.index;
+                    var firstNumberMatch = _message.match('[0-9]');                   
+                    if(firstNumberMatch != null)firstNumberIndex = firstNumberMatch.index;
+                }
+                if(_message == '' || (firstCharIndex == -1 && firstNumberIndex == -1))_finalStep = true;
             }
             
             //console.log('[' + message + ']');
@@ -308,7 +316,7 @@
             }
             
             speech.onend = function(event) {
-                if(_finalStep==true || readOutLoudActive == false || _message == null || _message == '' || _message == 'null'){
+                if (_finalStep == true || readOutLoudActive == false || _message == null || _message == '' || _message == 'null'){
 
                     if(recognition != null && IsMobile() == false){                  
                         try {
@@ -316,7 +324,15 @@
                         }
                         catch (error) { } 
                     }
-                    StopAnimateIntervalsListening(100);
+
+                    if(IsMobile() == false){
+                        StopAnimateIntervalsListening(100);
+                    } else {
+                        StopAnimateIntervals();
+                        clearInterval(animateIntervals['StopAnimateIntervalsListening']);
+                        animateIntervals['StopAnimateIntervalsListening'] = null;                    
+                    }
+
                     recognitionActive = true;
                     readOutLoudActive = false;
                     answer = null;
@@ -392,7 +408,7 @@
                 hosts = JSON.parse(hostsArrayString);
             }
             catch (error) {  
-                if(recognitionActive == true) Reset(true); 
+                //if(recognitionActive == true) Reset(true); 
             }   
 
             if(finalStep == false) {
@@ -497,6 +513,11 @@
         }
 
         function StartButton(event) {
+
+            if(IsMobile() == true){
+                document.getElementById('start_img').src = "/Images/microphone.png";
+            }
+
             try {
                 recognition.abort();
                 recognition.stop();
@@ -556,6 +577,13 @@
                     if(recognitionActive == true){
                         PartialReset();
                         InitFinal();
+                    }
+
+                    if(IsMobile() == true){
+                        document.getElementById('start_img').src = "/Images/microphone.gif";
+                        StopAnimateIntervals();
+                        clearInterval(animateIntervals['StopAnimateIntervalsListening']);
+                        animateIntervals['StopAnimateIntervalsListening'] = null;
                     }
                 };
 
@@ -841,25 +869,33 @@
         }
 
         function ActionShortcut(id){
-            if(parseInt(id) == 0) CloseShortcuts();
+            if (parseInt(id) == 0) {
+                setTimeout(function () {
+                    CloseShortcuts();
+                }, 50);
+            } else {
+                for (var i = 0; i < shortcuts.length; ++i) {
+                    var shortcut = shortcuts[i];
 
-            for (var i = 0; i < shortcuts.length; ++i) {
-                var shortcut = shortcuts[i];
+                    if (shortcut['Id'] == parseInt(id)) {
 
-                if(shortcut['Id'] == parseInt(id)){
+                        if (application == false && shortcut['Type'] == 'Link') {
+                            window.open(shortcut['Action']);
+                        }
 
-                    if(application == false && shortcut['Type'] == 'Link' ){
-                        window.open(shortcut['Action']);
+                        else if (application == true && shortcut['Type'] == 'Link') {
+                            window.open(shortcut['Action'], "open link", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
+                        }
+
+                        else {
+                            CallWebSpeechDtoInJson(('_id=' + shortcut['Id'] + '&_hostSelected=' + $("#hosts_cmb option:selected").text() + '&_application=' + application), "ResultActionShortcut");
+                        }
                     }
-
-                    else if(application == true && shortcut['Type'] == 'Link' ){
-                        window.open(shortcut['Action'], "open link", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
-                    } 
-                    
-                    else {
-                        CallWebSpeechDtoInJson(('_id=' + shortcut['Id'] + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultActionShortcut");
-                    }  
                 }
+                setTimeout(function () {
+                    CloseShortcuts();
+                }, 50);
+                
             }
         }
 
@@ -991,8 +1027,8 @@
             <span class="interim" id="interim_span" style="overflow:hidden;"></span>
         </div>
         <div id="div_start" style="display: none;">
-	        <button id="start_button" onclick="StartButton(event)" style="border-width:1px; display: inline-block; outline: 0; box-shadow: none!important; height:100px; margin-top:100px; margin-right:0px;" class="btn btn-dark">
-		        <img alt="Start" id="start_img" src="/Images/voice-control.png" style="height:100%; margin:-5px;">
+	        <button id="start_button" onclick="StartButton(event);" style="border-width:1px; display: inline-block; outline: 0; box-shadow: none!important; height:100px; margin-top:100px; margin-right:0px;" class="btn btn-dark">
+		        <img alt="Start" id="start_img" src="/Images/microphone.gif" style="height:100%; margin:-5px;">
 	        </button>
         </div>
     </div>
