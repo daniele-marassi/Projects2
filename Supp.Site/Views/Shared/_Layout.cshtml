@@ -122,14 +122,20 @@
                                         @Html.ActionLink("User Role Types", "Index", "UserRoleTypes", null, new { @class = "nav-item", @style = "text-decoration: none;" })
                                     </div>
                                 </li>
+                            }
 
+                            @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
+                            {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
                                         Tools
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Execution Queue", "Index", "ExecutionQueues", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        @if (claims.Roles.Where(_ => _.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0)
+                                        {
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("Execution Queue", "Index", "ExecutionQueues", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        }
                                         <div class="dropdown-divider"></div>
                                         @Html.ActionLink("Web Speeches", "Index", "WebSpeeches", null, new { @class = "nav-item", @style = "text-decoration: none;" })
                                         <div class="dropdown-divider"></div>
@@ -155,6 +161,7 @@
                         }
                         else
                         {
+                            <div class="dropdown-divider"></div>
                             @Html.ActionLink("Login", "Login", "Home", null, new { @class = "nav-item", @style = "text-decoration: none;" })
                         }
                     </ul>

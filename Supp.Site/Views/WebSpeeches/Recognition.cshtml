@@ -37,13 +37,19 @@
         var first_char = /\S/;
         var fakeClickMilliseconds = 0;
         var url = null;
+        var partialResetActive = false;
         var resetActive = false;
+        var countTheTimesToPartialReset = 0;
         var countTheTimesToReset = 0;
         var audioActive = true;
         var shortcuts;
         var synth = null;
         var readOutLoudActive = false;
         var firstLoad = true;
+        var initFinalTimeoutStep1 = null;
+        var initFinalTimeoutStep2 = null;
+        var actionShortcutTimeout = null;
+        var sessionGuid = null;
 
         //@*Model Variables*@
         var answer = '';
@@ -65,6 +71,7 @@
         var type = '';
         var parameters = ''; 
         var ehi = 0;
+        var timesToReset = 0;
         //@*Model Variables*@
 
         function VariablesAssignmentFromJson(jsonString) {
@@ -93,7 +100,12 @@
             try {
                 ehi=parseInt(DecodeUnicode(model['Ehi']));
             }
-            catch (error) { ehi = 0; }
+            catch (error) {}
+            timesToReset = 0;
+            try {
+                timesToReset=parseInt(DecodeUnicode(model['TimesToReset']));
+            }
+            catch (error) {}
         }
 
         function VariablesAssignmentFromModel() {
@@ -119,7 +131,12 @@
             try {
                 ehi=parseInt('@Model?.Ehi');
             }
-            catch (error) { ehi = 0; }
+            catch (error) {}
+            timesToReset = 0;
+            try {
+                timesToReset=parseInt('@Model?.TimesToReset');
+            }
+            catch (error) {}
         }
         
         function AddAnimateInterval(id, size, range, amount, milliseconds) {
@@ -232,6 +249,7 @@
         }
 
         function ReadOutLoud(_message, _finalStep) {
+
             readOutLoudActive = true;
             recognitionActive = false;
             if(recognition != null){
@@ -290,6 +308,7 @@
             document.getElementById('final_span').innerHTML = message.trim();
 
             StartAnimateIntervalsListening(10);
+
             speech = new SpeechSynthesisUtterance();
             // Set the text and voice attributes.
             speech.text = message.trim();
@@ -310,13 +329,14 @@
 
             var speakIsSuccesuful = synth.speaking;
 
-            if(speakIsSuccesuful == false || speakHasError == true) {
-                //PartialReset();
-                InitFinal();
-            }
+            if(speakIsSuccesuful == false || speakHasError == true) InitFinal();
             
             speech.onend = function(event) {
                 if (_finalStep == true || readOutLoudActive == false || _message == null || _message == '' || _message == 'null'){
+
+                    synth.cancel();
+                    synth= null;
+                    speech = null;
 
                     if(recognition != null && IsMobile() == false){                  
                         try {
@@ -339,18 +359,17 @@
                     document.getElementById('final_span').innerHTML = '';
                     document.getElementById('interim_span').innerHTML = '';
 
+                    countTheTimesToPartialReset = 0;
+                    partialResetActive = false;
                     countTheTimesToReset = 0;
-                    if(ehi == 1 && recognitionActive == true) resetActive = true;   
-                    if(ehi == 0 && recognitionActive == true && alwaysShow == false) {
-                        //Reset(true);
-                        PartialReset();
-                    }
-                    if(ehi == 0 && recognitionActive == true && alwaysShow == true) {
-                        PartialReset();
-                        //InitFinal();
-                    }
+
+                    if(ehi == 1 && recognitionActive == true) partialResetActive = true;  
+                    else PartialReset();
+
                 } else {
                     synth.cancel();
+                    synth= null;
+                    speech = null;
                     ReadOutLoud(_message, _finalStep); 
                 }
             }
@@ -408,7 +427,7 @@
                 hosts = JSON.parse(hostsArrayString);
             }
             catch (error) {  
-                //if(recognitionActive == true) Reset(true); 
+                //if(recognitionActive == true) Reset(true, false); 
             }   
 
             if(finalStep == false) {
@@ -554,10 +573,18 @@
 
                 recognition.onerror = function (event) {
                     console.log('recognition.onerror: ' + event.error);
+
+                    if (IsMobile() == true) {
+                        document.getElementById('start_img').src = "/Images/microphone.gif";
+                        StopAnimateIntervals();
+                        clearInterval(animateIntervals['StopAnimateIntervalsListening']);
+                        animateIntervals['StopAnimateIntervalsListening'] = null;
+                    }
+
                     if(recognitionActive == true){
                         PartialReset();
                         StopAnimateIntervals();
-                        InitFinal();
+                        //InitFinal();
                     }
                     if (event.error == 'no-speech') {
                         console.log('info_no_speech');
@@ -576,7 +603,7 @@
                 recognition.onend = function () {     
                     if(recognitionActive == true){
                         PartialReset();
-                        InitFinal();
+                        //InitFinal();
                     }
 
                     if(IsMobile() == true){
@@ -592,7 +619,9 @@
                         if(_phrase == null){
                             _phrase = event.results[i][0].transcript.toLowerCase().trim();
                             if (_phrase != '' && _phrase != null) {
+                                countTheTimesToPartialReset = 0;
                                 countTheTimesToReset = 0;
+
                                 if(recognitionActive == true) StartAnimateIntervalsListening(10);
                                 if(recognitionActive == true) StopAnimateIntervalsListening(500);
                                 if (recognitionActive == true) console.log(_phrase);
@@ -674,11 +703,21 @@
         function Service() {
             //if(audioActive == true) SetAudio();
 
-            if(resetActive && countTheTimesToReset == 10 && recognitionActive == true){
+            // partial reset after ehi with wait countTheTimesToPartialReset
+            if(partialResetActive && countTheTimesToPartialReset == 10 && recognitionActive == true){
+                countTheTimesToPartialReset = 0;
+                partialResetActive = false;
+                PartialReset();
+            }
+
+            if(partialResetActive && recognitionActive == true) countTheTimesToPartialReset++;
+            else countTheTimesToPartialReset = 0;
+
+            // reset after idle time countTheTimesToReset
+            if(resetActive && countTheTimesToReset == timesToReset && recognitionActive == true){
                 countTheTimesToReset = 0;
                 resetActive = false;
-                if(alwaysShow == false) PartialReset(); //Reset(true);
-                if(alwaysShow == true) PartialReset();
+                Reset(false, true);
             }
 
             if(resetActive && recognitionActive == true) countTheTimesToReset++;
@@ -743,19 +782,19 @@
                 document.getElementById('interim_span').innerHTML = '';
                 var _answer = HexDecode(answer);
                 
-                ReadOutLoud(_answer); 
+                ReadOutLoud(_answer, false); 
                 //answer = null;
             } else {
                 PartialReset();
             }
         }
 
-        function Reset(reset){
+        function Reset(reset, skip){
             PartialReset();
             if(_reset == false){ 
                  _reset = true;
                 clearInterval(serviceInterval);
-                location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset='+ reset + '&_application='+application + '&_executionQueueId='+ executionQueueId + '&_hostSelected='+hostSelected;
+                location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset='+ reset + '&_application='+application + '&_executionQueueId='+ executionQueueId + '&_hostSelected='+hostSelected+ '&_skip='+skip;
             }
         }
 
@@ -764,15 +803,30 @@
             listeningPhrase = '';
             _old_phrase = '';
             _phrase = null;
-            resetActive = false;
+            partialResetActive = false;
             audioActive = true;
+            countTheTimesToPartialReset = 0;
             countTheTimesToReset = 0;
             $("#sendPhrase_text").val('');
             document.getElementById('final_span').innerHTML = '';
             document.getElementById('interim_span').innerHTML = '';
         }
 
+        function GenerateGuid() {
+          var result, i, j;
+          result = '';
+          for(j=0; j<32; j++) {
+            if( j == 8 || j == 12 || j == 16 || j == 20)
+              result = result + '-';
+            i = Math.floor(Math.random()*16).toString(16).toUpperCase();
+            result = result + i;
+          }
+          return result;
+        }
+
         function InitFinal(){
+            if(application == true) resetActive = true;
+
             clearInterval(serviceInterval);
             serviceInterval = setInterval( function() { Service(); }, 1000);
             
@@ -784,11 +838,18 @@
 
             document.getElementById('final_span').innerHTML = '';
             document.getElementById('interim_span').innerHTML = '';
+
+            clearTimeout(initFinalTimeoutStep2);
+            initFinalTimeoutStep2 = null;
+            clearTimeout(initFinalTimeoutStep1);
+            initFinalTimeoutStep1 = null;
+
+            sessionGuid = GenerateGuid();
             
-            setTimeout(function(){
+            initFinalTimeoutStep1 = setTimeout(function(){
                 SimulateClick(document.getElementById('fakeClick_button'));
 
-                setTimeout(function(){
+                initFinalTimeoutStep2 =setTimeout(function(){
                     Action(type, parameters);
 
                     SetAudio();
@@ -869,8 +930,11 @@
         }
 
         function ActionShortcut(id){
+            clearTimeout(actionShortcutTimeout);       
+            actionShortcutTimeout = null;
+
             if (parseInt(id) == 0) {
-                setTimeout(function () {
+                actionShortcutTimeout = setTimeout(function () {
                     CloseShortcuts();
                 }, 50);
             } else {
@@ -882,20 +946,18 @@
                         if (application == false && shortcut['Type'] == 'Link') {
                             window.open(shortcut['Action']);
                         }
-
                         else if (application == true && shortcut['Type'] == 'Link') {
                             window.open(shortcut['Action'], "open link", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
                         }
-
                         else {
                             CallWebSpeechDtoInJson(('_id=' + shortcut['Id'] + '&_hostSelected=' + $("#hosts_cmb option:selected").text() + '&_application=' + application), "ResultActionShortcut");
                         }
                     }
                 }
-                setTimeout(function () {
+
+                actionShortcutTimeout = setTimeout(function () {
                     CloseShortcuts();
-                }, 50);
-                
+                }, 50);          
             }
         }
 
@@ -970,7 +1032,7 @@
 	       if(readOutLoudActive == false) OpenShortcuts();
            if(readOutLoudActive == true){
                 readOutLoudActive = false;
-                synth.cancel();
+                if(synth != null) synth.cancel();
             }
 	    }	
 
@@ -1035,10 +1097,11 @@
 </div>
 
 <script>
-	window.onload = function(e){   
+	window.onload = function(e) {
         VariablesAssignmentFromModel();
+
         if(resetAfterLogin == true) {
-            Reset(false);
+            Reset(false, true);
         } else {
 		    InitPage();
             InitSpeech();

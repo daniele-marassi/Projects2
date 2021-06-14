@@ -40,6 +40,8 @@ namespace Supp.Site.Common
                 public static decimal MinSpeechWordsCoefficient { get; set; }
                 public static decimal MaxSpeechWordsCoefficient { get; set; }
                 public static string Culture { get; set; }
+                public static int TimesToReset { get; set; }
+                
 
                 public static string ConfigDefaultInJson
                 {
@@ -63,7 +65,8 @@ namespace Supp.Site.Common
                                 MinSpeechWordsCoefficient = GeneralSettings.Static.MinSpeechWordsCoefficient.ToString().Replace(".", ","),
                                 MaxSpeechWordsCoefficient = GeneralSettings.Static.MaxSpeechWordsCoefficient.ToString().Replace(".", ","),
                                 MeteoParameterToTheSalutation = GeneralSettings.Static.MeteoParameterToTheSalutation,
-                                DescriptionMeteoToTheSalutationActive = GeneralSettings.Static.DescriptionMeteoToTheSalutationActive
+                                DescriptionMeteoToTheSalutationActive = GeneralSettings.Static.DescriptionMeteoToTheSalutationActive,
+                                TimesToReset = GeneralSettings.Static.TimesToReset,
                             }
                         };
 
@@ -96,6 +99,8 @@ namespace Supp.Site.Common
                 public const string SuppSiteApplicationCookieName = "SuppSiteApplication";
                 public const string SuppSiteAlwaysShowCookieName = "SuppSiteAlwaysShow";
                 public const string SuppSiteClaimsCookieName = "SuppSiteClaims";
+                public const string SuppSiteLoadDateCookieName = "SuppSiteLoadDate";
+                
             }
 
             public static void SetGeneralSettings(IConfiguration configuration)
@@ -119,6 +124,7 @@ namespace Supp.Site.Common
                     GeneralSettings.Static.Culture = configuration.GetSection("AppSettings:Culture").Value;
                     GeneralSettings.Static.MeteoParameterToTheSalutation = configuration.GetSection("AppSettings:MeteoParameterToTheSalutation").Value;
                     GeneralSettings.Static.DescriptionMeteoToTheSalutationActive = bool.Parse(configuration.GetSection("AppSettings:DescriptionMeteoToTheSalutationActive").Value);
+                    GeneralSettings.Static.TimesToReset = int.Parse(configuration.GetSection("AppSettings:TimesToReset").Value);
                     
                 }
             }

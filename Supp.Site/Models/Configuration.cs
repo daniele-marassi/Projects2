@@ -29,6 +29,7 @@ namespace Supp.Site.Models
             public string MaxSpeechWordsCoefficient { get; set; }
             public string MeteoParameterToTheSalutation { get; set; }
             public bool DescriptionMeteoToTheSalutationActive { get; set; }
+            public int TimesToReset { get; set; }
         }
     }
 }
