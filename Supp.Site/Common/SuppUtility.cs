@@ -109,9 +109,13 @@ namespace Supp.Site.Common
         /// </summary>
         /// <param name="response"></param>
         /// <param name="key"></param>
-        public void RemoveCookie(HttpResponse response, string key)
+        public void RemoveCookie(HttpResponse response, HttpRequest request, string key)
         {
             response.Cookies.Delete(key);
+            if (ReadCookie(request, key) != String.Empty)
+            {
+                SetCookie(response, key, String.Empty, 0);
+            }         
         }
 
         /// <summary>

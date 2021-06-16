@@ -59,7 +59,7 @@
         var _error = '';
         var application = false;
         var alwaysShow = false;
-        var resetAfterLogin = false;
+        var resetAfterLoad = false;
         var culture = '';
         var id = '';
         var hostSelected = '';
@@ -85,11 +85,22 @@
             _error = DecodeUnicode(model['Error']);
             application = GetBoolean(DecodeUnicode(model['Application']));
             alwaysShow = GetBoolean(DecodeUnicode(model['AlwaysShow']));
-            resetAfterLogin = GetBoolean(DecodeUnicode(model['ResetAfterLogin']));
+            resetAfterLoad = GetBoolean(DecodeUnicode(model['ResetAfterLoad']));
             culture = DecodeUnicode(model['Culture']);
             id = DecodeUnicode( model['Id']);
             hostSelected =DecodeUnicode( model['HostSelected']);
             phrase = DecodeUnicode(model['Phrase']);
+
+            if(finalStep == false) {
+                if(phrase != null && phrase != ''){           
+                    if(_old_phrase != '') _old_phrase += ' ';
+                    _old_phrase += phrase;
+                }
+            }
+            else{
+                _old_phrase = '';
+            }
+
             listeningWord1 = DecodeUnicode(model['ListeningWord1']);
             listeningWord2 = DecodeUnicode(model['ListeningWord2']);
             executionQueueId = DecodeUnicode(model['ExecutionQueueId']);
@@ -116,11 +127,22 @@
             _error = '@Model?.Error';
             application = GetBoolean('@Model?.Application');
             alwaysShow = GetBoolean('@Model?.AlwaysShow');
-            resetAfterLogin = GetBoolean('@Model?.ResetAfterLogin');
+            resetAfterLoad = GetBoolean('@Model?.ResetAfterLoad');
             culture = '@Model?.Culture';
             id = '@Model?.Id';
             hostSelected = '@Model?.HostSelected';
             phrase = '@Model?.Phrase';
+
+            if(finalStep == false) {
+                if(phrase != null && phrase != ''){           
+                    if(_old_phrase != '') _old_phrase += ' ';
+                    _old_phrase += phrase;
+                }
+            }
+            else{
+                _old_phrase = '';
+            }
+
             listeningWord1 = '@Model?.ListeningWord1';
             listeningWord2 = '@Model?.ListeningWord2';
             executionQueueId = '@Model?.ExecutionQueueId';
@@ -257,6 +279,8 @@
                 recognition.stop();
             }
 
+            var messageBCK = _message;
+
             //console.log('[' + _message + ']');
 
             _message = _message.replace(/\./g, '. ');
@@ -319,60 +343,73 @@
 
             synth = window.speechSynthesis;
             var speakHasError = false;
+            var _error = '';
 
             try {
                synth.speak(speech);
             }
             catch (error) { 
                 speakHasError=true;
+                _error = error;
             }
 
             var speakIsSuccesuful = synth.speaking;
 
-            if(speakIsSuccesuful == false || speakHasError == true) InitFinal();
+            if(speakIsSuccesuful == false || speakHasError == true) {
+                console.log('speakIsSuccesuful:' + speakIsSuccesuful + ' - speakHasError:' + speakHasError + ' _error:'+_error);
+                EndReadOutLoud();
+
+                setTimeout(function () {
+                    ReadOutLoud(messageBCK, _finalStep);
+                }, 50);        
+
+                return 0;
+            }
             
             speech.onend = function(event) {
                 if (_finalStep == true || readOutLoudActive == false || _message == null || _message == '' || _message == 'null'){
-
-                    synth.cancel();
-                    synth= null;
-                    speech = null;
-
-                    if(recognition != null && IsMobile() == false){                  
-                        try {
-                            recognition.start();
-                        }
-                        catch (error) { } 
-                    }
-
-                    if(IsMobile() == false){
-                        StopAnimateIntervalsListening(100);
-                    } else {
-                        StopAnimateIntervals();
-                        clearInterval(animateIntervals['StopAnimateIntervalsListening']);
-                        animateIntervals['StopAnimateIntervalsListening'] = null;                    
-                    }
-
-                    recognitionActive = true;
-                    readOutLoudActive = false;
-                    answer = null;
-                    document.getElementById('final_span').innerHTML = '';
-                    document.getElementById('interim_span').innerHTML = '';
-
-                    countTheTimesToPartialReset = 0;
-                    partialResetActive = false;
-                    countTheTimesToReset = 0;
-
-                    if(ehi == 1 && recognitionActive == true) partialResetActive = true;  
-                    else PartialReset();
-
+                    EndReadOutLoud();
                 } else {
-                    synth.cancel();
+                    if(synth != null) synth.cancel();
                     synth= null;
                     speech = null;
                     ReadOutLoud(_message, _finalStep); 
                 }
             }
+        }
+
+        function EndReadOutLoud(){
+            if(synth != null) synth.cancel();
+            synth= null;
+            speech = null;
+
+            if(recognition != null && IsMobile() == false){                  
+                try {
+                    recognition.start();
+                }
+                catch (error) { } 
+            }
+
+            if(IsMobile() == false){
+                StopAnimateIntervalsListening(100);
+            } else {
+                StopAnimateIntervals();
+                clearInterval(animateIntervals['StopAnimateIntervalsListening']);
+                animateIntervals['StopAnimateIntervalsListening'] = null;                    
+            }
+
+            recognitionActive = true;
+            readOutLoudActive = false;
+                    
+            document.getElementById('final_span').innerHTML = '';
+            document.getElementById('interim_span').innerHTML = '';
+
+            countTheTimesToPartialReset = 0;
+            partialResetActive = false;
+            countTheTimesToReset = 0;
+
+            if(ehi == 1 && recognitionActive == true) partialResetActive = true;  
+            else PartialReset();
         }
 
         function ExecutionFinished(){
@@ -427,18 +464,8 @@
                 hosts = JSON.parse(hostsArrayString);
             }
             catch (error) {  
-                //if(recognitionActive == true) Reset(true, false); 
+                //if(recognitionActive == true) Reset(true); 
             }   
-
-            if(finalStep == false) {
-                if(phrase != null && phrase != ''){           
-                    if(_old_phrase != '') _old_phrase += ' ';
-                    _old_phrase += phrase;
-                }
-            }
-            else{
-                _old_phrase = '';
-            }
 
             if(hosts != null && hosts.length > 0 ){
                 hosts_cmb_string='<select name="hosts_cmb" class="btn btn-dark" id="hosts_cmb" value="'+hostSelected+'" style="background-color:#000; color:#333;">';
@@ -563,8 +590,10 @@
             } else {
                 recognition = new webkitSpeechRecognition('No warning should arise');
 
-                recognition.continuous = true;
-                recognition.interimResults = true;
+                if (IsMobile() == false){
+                    recognition.continuous = true;
+                    recognition.interimResults = true;
+                }
 
                 recognition.onstart = function () {
                     recognizing = true;
@@ -584,7 +613,7 @@
                     if(recognitionActive == true){
                         PartialReset();
                         StopAnimateIntervals();
-                        //InitFinal();
+                        InitFinal();
                     }
                     if (event.error == 'no-speech') {
                         console.log('info_no_speech');
@@ -717,7 +746,7 @@
             if(resetActive && countTheTimesToReset == timesToReset && recognitionActive == true){
                 countTheTimesToReset = 0;
                 resetActive = false;
-                Reset(false, true);
+                Reset(false);
             }
 
             if(resetActive && recognitionActive == true) countTheTimesToReset++;
@@ -781,20 +810,19 @@
                 document.getElementById('final_span').innerHTML = '';
                 document.getElementById('interim_span').innerHTML = '';
                 var _answer = HexDecode(answer);
-                
+                answer = null;
                 ReadOutLoud(_answer, false); 
-                //answer = null;
             } else {
                 PartialReset();
             }
         }
 
-        function Reset(reset, skip){
+        function Reset(reset){
             PartialReset();
             if(_reset == false){ 
                  _reset = true;
                 clearInterval(serviceInterval);
-                location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset='+ reset + '&_application='+application + '&_executionQueueId='+ executionQueueId + '&_hostSelected='+hostSelected+ '&_skip='+skip;
+                location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset='+ reset + '&_application='+application + '&_executionQueueId='+ executionQueueId + '&_hostSelected='+hostSelected;
             }
         }
 
@@ -849,13 +877,13 @@
             initFinalTimeoutStep1 = setTimeout(function(){
                 SimulateClick(document.getElementById('fakeClick_button'));
 
-                initFinalTimeoutStep2 =setTimeout(function(){
+                initFinalTimeoutStep2 = setTimeout(function(){
                     Action(type, parameters);
 
                     SetAudio();
                 
                     if(IsMobile() == false) StartButton(event);
-
+                    EndReadOutLoud();
                     Speak();
                 }, 50);  
 
@@ -1100,9 +1128,17 @@
 	window.onload = function(e) {
         VariablesAssignmentFromModel();
 
-        if(resetAfterLogin == true) {
-            Reset(false, true);
-        } else {
+        if(resetAfterLoad == true) {
+            clearTimeout(initFinalTimeoutStep2);
+            initFinalTimeoutStep2 = null;
+            clearTimeout(initFinalTimeoutStep1);
+            initFinalTimeoutStep1 = null;
+            if(synth != null) synth.cancel();
+            answer = null;
+            synth= null;
+            speech = null;
+            Reset(false);
+        } else { 
 		    InitPage();
             InitSpeech();
             InitFinal();  

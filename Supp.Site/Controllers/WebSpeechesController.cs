@@ -28,6 +28,7 @@ using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using System.Text.Json;
 using System.IO;
+using NLog.Time;
 
 namespace Supp.Site.Controllers
 {
@@ -580,7 +581,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/Recognition
-        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _skip)
+        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -593,7 +594,7 @@ namespace Supp.Site.Controllers
                     var rnd = new Random();
                     var application = false;
                     var reset = false;
-                    var resetAfterLogin = false;
+                    var resetAfterLoad = false;
                     var alwaysShow = false;
                     var hostSelected = "";
                     long executionQueueId = 0;
@@ -601,44 +602,42 @@ namespace Supp.Site.Controllers
                     long id = 0;
                     long.TryParse(_id?.ToString(), out id);
                     bool.TryParse(_reset?.ToString(), out reset);
-                    var skip = false;
-                    bool.TryParse(_skip?.ToString(), out skip);
+
                     var expiresInSeconds = 0;
                     var claims = new ClaimsDto() { IsAuthenticated = false };
 
                     if (_userName != null && _password != null)
                     {
                         var dto = new LoginDto() { UserName = _userName, Password = _password };
-                        var authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response);
-                        resetAfterLogin = true;
+                        var authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response, Request);
+                        resetAfterLoad = true;
                     }
 
                     int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName), out expiresInSeconds);
 
                     var loadDateString = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
 
-                    if (loadDateString != null && resetAfterLogin== false)
+                    if (loadDateString == null && resetAfterLoad == false) resetAfterLoad = true;
+
+                    if (loadDateString != null && resetAfterLoad== false)
                     {
                         DateTime loadDate;
                         DateTime.TryParse(loadDateString, out loadDate);
 
-                        DateTime now = DateTime.UtcNow;
+                        DateTime now = DateTime.Now;
                         TimeSpan difference = now.Subtract(loadDate); 
-                        if (difference.TotalSeconds <= 15 && difference.TotalSeconds >= 0) 
+                        if (difference.TotalSeconds >= 2 ) 
                         {
-                            suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
-                            suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteLoadDateCookieName, DateTime.UtcNow.ToString(), expiresInSeconds);
-
-                            skip = true;
+                            resetAfterLoad = true;
                         }
                     }
 
-                    suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
-                    suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
-                    suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteApplicationCookieName);
-                    suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteApplicationCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName);
 
-                    suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteLoadDateCookieName, DateTime.UtcNow.ToString(), expiresInSeconds);
+                    suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteLoadDateCookieName, DateTime.Now.ToString(), expiresInSeconds);
 
                     if (_hostSelected != null && _hostSelected != "")
                     {
@@ -665,9 +664,19 @@ namespace Supp.Site.Controllers
 
                     claims = SuppUtility.GetClaims(User);
 
-                    data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, skip).GetAwaiter().GetResult();
+                    if (resetAfterLoad == false) data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims).GetAwaiter().GetResult();
+                    else
+                    {
+                        data = new WebSpeechDto() { };
 
-                    data.ResetAfterLogin = resetAfterLogin;
+                        data.Id = id;
+                        data.HostSelected = hostSelected;
+                        data.Application = application;
+                        data.AlwaysShow = alwaysShow;
+                        data.ExecutionQueueId = executionQueueId;
+                    }
+
+                    data.ResetAfterLoad = resetAfterLoad;
 
                     return View(data);
                 }
@@ -683,7 +692,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/RecognitionInJson
-        public async Task<WebSpeechDto> GetWebSpeechDto(string _phrase, string _hostSelected, bool _reset, bool _application, long _executionQueueId, bool _alwaysShow, long _id, ClaimsDto _claims, bool _skip)
+        public async Task<WebSpeechDto> GetWebSpeechDto(string _phrase, string _hostSelected, bool _reset, bool _application, long _executionQueueId, bool _alwaysShow, long _id, ClaimsDto _claims)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -711,198 +720,196 @@ namespace Supp.Site.Controllers
 
                     result.Data = getDataResult.WebSpeeches;
                     shortcuts = getDataResult.Shortcuts.OrderBy(_ => _.Order).ToList();
-                    if (!_skip)
+
+                    if (_phrase != "" && _phrase != null)
                     {
+                        var _words = _phrase.Split(" ");
+                        _wordsCount = _words.Count();
+                        var countMatch = 0;
+                        var match = 0;
 
-                        if (_phrase != "" && _phrase != null)
-                        {
-                            var _words = _phrase.Split(" ");
-                            _wordsCount = _words.Count();
-                            var countMatch = 0;
-                            var match = 0;
-
-                            foreach (var item in result.Data.ToList())
-                            {
-                                var phrases = new List<string>() { };
-
-                                try
-                                {
-                                    phrases = JsonConvert.DeserializeObject<List<string>>(item.Phrase);
-                                }
-                                catch (Exception)
-                                {
-                                    phrases.Add(item.Phrase);
-                                }
-
-                                for (int i = 0; i < phrases.Count; i++)
-                                {
-                                    if (item.PreviousPhrase != null && item.PreviousPhrase != String.Empty)
-                                        phrases[i] = item.PreviousPhrase + " " + phrases[i];
-                                }
-
-                                foreach (var phrase in phrases)
-                                {
-                                    var words = phrase.Split(" ");
-                                    var wordsCount = words.Count();
-                                    var minMatch = 0;
-                                    var maxWords = 0;
-
-                                    if (_wordsCount > wordsCount)
-                                    {
-                                        minMatch = (int)(_wordsCount - Math.Ceiling(_wordsCount * decimal.Parse(_claims.Configuration.Speech.MinSpeechWordsCoefficient)));
-                                        maxWords = (int)(_wordsCount + Math.Ceiling(_wordsCount * decimal.Parse(_claims.Configuration.Speech.MaxSpeechWordsCoefficient)));
-                                    }
-                                    else 
-                                    {
-                                        minMatch = (int)(wordsCount - Math.Ceiling(wordsCount * decimal.Parse(_claims.Configuration.Speech.MinSpeechWordsCoefficient)));
-                                        maxWords = (int)(wordsCount + Math.Ceiling(wordsCount * decimal.Parse(_claims.Configuration.Speech.MaxSpeechWordsCoefficient)));
-
-                                        if (wordsCount == 2) minMatch = 2;
-                                    }
-
-                                    if (minMatch == 0) minMatch = 1;
-
-                                    if (item.Type == "WebSearch") maxWords = _wordsCount;
-
-                                    match = 0;
-                                    for (int x = 0; x < words.Length; x++)
-                                    {
-                                        for (int y = 0; y < _words.Length; y++)
-                                        {
-                                            if (_words[y].Trim().ToLower() == words[x].Trim().ToLower() && words[x] != "")
-                                            {
-                                                match++;
-                                                words[x] = "";
-                                            }
-                                        }
-                                    }
-
-                                    if (match > countMatch && match >= minMatch && _wordsCount <= maxWords)
-                                    {
-                                        countMatch = match;
-                                        _data = new List<WebSpeechDto>();
-                                        _data.Add(item);
-                                        _phraseMatch = phrase;
-                                    }
-                                    else if (match == countMatch && match >= minMatch && _wordsCount <= maxWords)
-                                    {
-                                        _data.Add(item);
-                                        _phraseMatch = phrase;
-                                    }
-                                }
-                            }
-
-                            if (_data != null)
-                            {
-                                int x = rnd.Next(0, _data.Count());
-
-                                data = _data[x];
-
-                                var answers = new List<string>() { };
-
-                                try
-                                {
-                                    answers = JsonConvert.DeserializeObject<List<string>>(data.Answer);
-                                }
-                                catch (Exception)
-                                {
-                                    answers.Add(data.Answer);
-                                }
-
-                                x = rnd.Next(0, answers.Count());
-
-                                data.Answer = answers[x];
-                            }
-                        }
-                        else if (_id != 0)
-                        {
-                            data = result.Data.Where(_ => _.Id == _id).FirstOrDefault();
-                        }
-
-                        if (data != null && (data.Type == "SystemRunExe" || data.Type == "RunExe"))
-                        {
-                            var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = _hostSelected, Type = data.Type };
-                            var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
-
-                            if (addExecutionQueueResult.Successful)
-                            {
-                                _executionQueueId = addExecutionQueueResult.Data.FirstOrDefault().Id;
-                            }
-                        }
-
-                        if (data != null && data.Type == "Meteo")
-                        {
-                            var phrase = _phrase;
-                            if (phrase == null) phrase = _phraseMatch;
-                            data.Answer = GetMeteoPhrase(phrase, data.Parameters, _claims.Configuration.General.Culture.ToLower(), true);
-                        }
-
-                        if (data != null && data.Type == "Time")
-                        {
-                            var now = DateTime.Now;
-
-                            var dayofweek = now.ToString("dddd", new CultureInfo(_claims.Configuration.General.Culture));
-                            var month = now.ToString("MMMM", new CultureInfo(_claims.Configuration.General.Culture));
-
-                            if (_claims.Configuration.General.Culture.ToLower() == "it-it")
-                                data.Answer = now.Hour.ToString() + " e " + now.Minute.ToString() + " minuti" + ", " + dayofweek + " " + now.Day.ToString() + " " + month;
-
-                            if (_claims.Configuration.General.Culture.ToLower() == "en-us")
-                                data.Answer = now.Hour.ToString() + " and " + now.Minute.ToString() + " minutes" + ", " + dayofweek + " " + now.Day.ToString() + " " + month;
-                        }
-
-                        if (data != null && data.Type == "SystemWebSearch")
+                        foreach (var item in result.Data.ToList())
                         {
                             var phrases = new List<string>() { };
-                            var phrase = _phrase;
 
                             try
                             {
-                                phrases = JsonConvert.DeserializeObject<List<string>>(data.Phrase);
+                                phrases = JsonConvert.DeserializeObject<List<string>>(item.Phrase);
                             }
                             catch (Exception)
                             {
-                                phrases.Add(data.Phrase);
+                                phrases.Add(item.Phrase);
                             }
 
-                            foreach (var item in phrases)
+                            for (int i = 0; i < phrases.Count; i++)
                             {
-                                phrase = phrase.Replace(item, "");
+                                if (item.PreviousPhrase != null && item.PreviousPhrase != String.Empty)
+                                    phrases[i] = item.PreviousPhrase + " " + phrases[i];
                             }
-                            //HttpUtility.UrlEncode(phrase.Replace(" ", "+"));
-                            string url = "http://www.google.com/search?q=" + phrase.Trim().Replace(" ", "+");
-                            data.Parameters = url;
+
+                            foreach (var phrase in phrases)
+                            {
+                                var words = phrase.Split(" ");
+                                var wordsCount = words.Count();
+                                var minMatch = 0;
+                                var maxWords = 0;
+
+                                if (_wordsCount > wordsCount)
+                                {
+                                    minMatch = (int)(_wordsCount - Math.Ceiling(_wordsCount * decimal.Parse(_claims.Configuration.Speech.MinSpeechWordsCoefficient)));
+                                    maxWords = (int)(_wordsCount + Math.Ceiling(_wordsCount * decimal.Parse(_claims.Configuration.Speech.MaxSpeechWordsCoefficient)));
+                                }
+                                else 
+                                {
+                                    minMatch = (int)(wordsCount - Math.Ceiling(wordsCount * decimal.Parse(_claims.Configuration.Speech.MinSpeechWordsCoefficient)));
+                                    maxWords = (int)(wordsCount + Math.Ceiling(wordsCount * decimal.Parse(_claims.Configuration.Speech.MaxSpeechWordsCoefficient)));
+
+                                    if (wordsCount == 2) minMatch = 2;
+                                }
+
+                                if (minMatch == 0) minMatch = 1;
+
+                                if (item.Type == "WebSearch") maxWords = _wordsCount;
+
+                                match = 0;
+                                for (int x = 0; x < words.Length; x++)
+                                {
+                                    for (int y = 0; y < _words.Length; y++)
+                                    {
+                                        if (_words[y].Trim().ToLower() == words[x].Trim().ToLower() && words[x] != "")
+                                        {
+                                            match++;
+                                            words[x] = "";
+                                        }
+                                    }
+                                }
+
+                                if (match > countMatch && match >= minMatch && _wordsCount <= maxWords)
+                                {
+                                    countMatch = match;
+                                    _data = new List<WebSpeechDto>();
+                                    _data.Add(item);
+                                    _phraseMatch = phrase;
+                                }
+                                else if (match == countMatch && match >= minMatch && _wordsCount <= maxWords)
+                                {
+                                    _data.Add(item);
+                                    _phraseMatch = phrase;
+                                }
+                            }
                         }
 
-                        var salutation = _claims.Configuration.Speech.Salutation;
-                        if (_claims.Name == null && _claims.Configuration.General.Culture.ToLower() == "it-it") _claims.Name = "tu";
-                        if (_claims.Name == null && _claims.Configuration.General.Culture.ToLower() == "en-us") _claims.Name = "you";
-                        if (_claims.Surname == null) _claims.Surname = String.Empty;
-                        salutation = salutation.Replace("NAME", _claims.Name);
-                        salutation = salutation.Replace("SURNAME", _claims.Surname);
-
-                        startAnswer = salutation + " " + SuppUtility.GetSalutation(new CultureInfo(_claims.Configuration.General.Culture, false));
-
-                        if ((_phrase == null || _phrase == "") && data == null && _reset != true)
+                        if (_data != null)
                         {
-                            data = new WebSpeechDto() { Answer = startAnswer, Ehi = 0, FinalStep = true };
+                            int x = rnd.Next(0, _data.Count());
 
-                            var now = DateTime.Now;
+                            data = _data[x];
 
-                            if (_claims.Configuration.Speech.MeteoParameterToTheSalutation != null && _claims.Configuration.Speech.MeteoParameterToTheSalutation != "" && _application == true && SuppUtility.GetPartOfTheDay(now) == PartsOfTheDayEng.Morning)
+                            var answers = new List<string>() { };
+
+                            try
                             {
-                                data.Answer += GetMeteoPhrase(String.Empty, _claims.Configuration.Speech.MeteoParameterToTheSalutation, _claims.Configuration.General.Culture.ToLower(), _claims.Configuration.Speech.DescriptionMeteoToTheSalutationActive);
+                                answers = JsonConvert.DeserializeObject<List<string>>(data.Answer);
                             }
-                        }
+                            catch (Exception)
+                            {
+                                answers.Add(data.Answer);
+                            }
 
-                        if (_phrase != null && _phrase != "" && data == null && result != null && _wordsCount > 1)
-                        {
-                            data = new WebSpeechDto() { };
+                            x = rnd.Next(0, answers.Count());
 
-                            data = result.Data.Where(_ => _.Name == "RequestNotImplemented_1").FirstOrDefault();
-                            data.Implementation = true;
+                            data.Answer = answers[x];
                         }
                     }
+                    else if (_id != 0)
+                    {
+                        data = result.Data.Where(_ => _.Id == _id).FirstOrDefault();
+                    }
+
+                    if (data != null && (data.Type == "SystemRunExe" || data.Type == "RunExe"))
+                    {
+                        var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = _hostSelected, Type = data.Type };
+                        var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
+
+                        if (addExecutionQueueResult.Successful)
+                        {
+                            _executionQueueId = addExecutionQueueResult.Data.FirstOrDefault().Id;
+                        }
+                    }
+
+                    if (data != null && data.Type == "Meteo")
+                    {
+                        var phrase = _phrase;
+                        if (phrase == null) phrase = _phraseMatch;
+                        data.Answer = GetMeteoPhrase(phrase, data.Parameters, _claims.Configuration.General.Culture.ToLower(), true);
+                    }
+
+                    if (data != null && data.Type == "Time")
+                    {
+                        var now = DateTime.Now;
+
+                        var dayofweek = now.ToString("dddd", new CultureInfo(_claims.Configuration.General.Culture));
+                        var month = now.ToString("MMMM", new CultureInfo(_claims.Configuration.General.Culture));
+
+                        if (_claims.Configuration.General.Culture.ToLower() == "it-it")
+                            data.Answer = now.Hour.ToString() + " e " + now.Minute.ToString() + " minuti" + ", " + dayofweek + " " + now.Day.ToString() + " " + month;
+
+                        if (_claims.Configuration.General.Culture.ToLower() == "en-us")
+                            data.Answer = now.Hour.ToString() + " and " + now.Minute.ToString() + " minutes" + ", " + dayofweek + " " + now.Day.ToString() + " " + month;
+                    }
+
+                    if (data != null && data.Type == "SystemWebSearch")
+                    {
+                        var phrases = new List<string>() { };
+                        var phrase = _phrase;
+
+                        try
+                        {
+                            phrases = JsonConvert.DeserializeObject<List<string>>(data.Phrase);
+                        }
+                        catch (Exception)
+                        {
+                            phrases.Add(data.Phrase);
+                        }
+
+                        foreach (var item in phrases)
+                        {
+                            phrase = phrase.Replace(item, "");
+                        }
+                        //HttpUtility.UrlEncode(phrase.Replace(" ", "+"));
+                        string url = "http://www.google.com/search?q=" + phrase.Trim().Replace(" ", "+");
+                        data.Parameters = url;
+                    }
+
+                    var salutation = _claims.Configuration.Speech.Salutation;
+                    if (_claims.Name == null && _claims.Configuration.General.Culture.ToLower() == "it-it") _claims.Name = "tu";
+                    if (_claims.Name == null && _claims.Configuration.General.Culture.ToLower() == "en-us") _claims.Name = "you";
+                    if (_claims.Surname == null) _claims.Surname = String.Empty;
+                    salutation = salutation.Replace("NAME", _claims.Name);
+                    salutation = salutation.Replace("SURNAME", _claims.Surname);
+
+                    startAnswer = salutation + " " + SuppUtility.GetSalutation(new CultureInfo(_claims.Configuration.General.Culture, false));
+
+                    if ((_phrase == null || _phrase == "") && data == null && _reset != true)
+                    {
+                        data = new WebSpeechDto() { Answer = startAnswer, Ehi = 0, FinalStep = true };
+
+                        var now = DateTime.Now;
+
+                        if (_claims.Configuration.Speech.MeteoParameterToTheSalutation != null && _claims.Configuration.Speech.MeteoParameterToTheSalutation != "" && _application == true && SuppUtility.GetPartOfTheDay(now) == PartsOfTheDayEng.Morning)
+                        {
+                            data.Answer += GetMeteoPhrase(String.Empty, _claims.Configuration.Speech.MeteoParameterToTheSalutation, _claims.Configuration.General.Culture.ToLower(), _claims.Configuration.Speech.DescriptionMeteoToTheSalutationActive);
+                        }
+                    }
+
+                    if (_phrase != null && _phrase != "" && data == null && result != null && _wordsCount > 1)
+                    {
+                        data = new WebSpeechDto() { };
+
+                        data = result.Data.Where(_ => _.Name == "RequestNotImplemented_1").FirstOrDefault();
+                        data.Implementation = true;
+                    }
+
 
                     if (data == null) data = new WebSpeechDto() { Answer = "", Ehi = 0 };
 
@@ -942,7 +949,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/RecognitionInJson
-        public async Task<string> GetWebSpeechDtoInJson(string _phrase, string _hostSelected, bool? _reset, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _skip)
+        public async Task<string> GetWebSpeechDtoInJson(string _phrase, string _hostSelected, bool? _reset, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -957,8 +964,6 @@ namespace Supp.Site.Controllers
                     long executionQueueId = 0;
                     long.TryParse(_executionQueueId?.ToString(), out executionQueueId);
                     long id = 0;
-                    var skip = false;
-                    bool.TryParse(_skip?.ToString(), out skip);
                     long.TryParse(_id?.ToString(), out id);
                     bool.TryParse(_reset?.ToString(), out reset);
                     var claims = new ClaimsDto() { IsAuthenticated = false };
@@ -982,7 +987,7 @@ namespace Supp.Site.Controllers
                         claims = SuppUtility.GetClaims(User);
                     }
 
-                    var data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, skip).GetAwaiter().GetResult();
+                    var data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims).GetAwaiter().GetResult();
 
                     if (data != null)
                     {

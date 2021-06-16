@@ -40,7 +40,7 @@ namespace Supp.Site.Models
         public IEnumerable<WebSpeechDto> WebSpeeches { get; set; }
         public long[] WebSpeechIds { get; set; }
         public string ShortcutsInJson { get; set; }
-        public bool ResetAfterLogin { get; set; }
+        public bool ResetAfterLoad { get; set; }
         public int TimesToReset { get; set; }
         public IEnumerable<WebSpeechType> WebSpeechTypes { get { return Supp.Site.Models.WebSpeechTypes.Get(); } }
 

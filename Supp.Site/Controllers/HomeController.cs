@@ -98,7 +98,7 @@ namespace Supp.Site.Controllers
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var result = Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response);
+                var result = Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response, Request);
 
                 if(result.Error == null)
                 {
@@ -122,7 +122,7 @@ namespace Supp.Site.Controllers
             }
         }
 
-        public static (bool IsValidUser, TokenDto Data, Exception Error) Authentication(LoginDto dto, NLogUtility nLogUtility, AuthenticationsRepository authenticationRepo, HttpContext httpContext, ClaimsPrincipal user, HttpResponse response)
+        public static (bool IsValidUser, TokenDto Data, Exception Error) Authentication(LoginDto dto, NLogUtility nLogUtility, AuthenticationsRepository authenticationRepo, HttpContext httpContext, ClaimsPrincipal user, HttpResponse response, HttpRequest request)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -149,10 +149,10 @@ namespace Supp.Site.Controllers
                         var properties = new AuthenticationProperties() { AllowRefresh = true, ExpiresUtc = option.Expires, IsPersistent = true };
                         httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, properties);
 
-                        suppUtility.RemoveCookie(response, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
-                        suppUtility.RemoveCookie(response, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
-                        suppUtility.RemoveCookie(response, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName);
-                        suppUtility.RemoveCookie(response, GeneralSettings.Constants.SuppSiteClaimsCookieName);
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName);
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteClaimsCookieName);
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName, data.ExpiresInSeconds.ToString(), data.ExpiresInSeconds);
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAccessTokenCookieName, data.Token, data.ExpiresInSeconds);
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName, dto.UserName, data.ExpiresInSeconds);
@@ -210,11 +210,11 @@ namespace Supp.Site.Controllers
             {
                 try
                 {
-                    suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
-                    suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
-                    suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName);
-                    suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteErrorsCookieName);
-                    suppUtility.RemoveCookie(Response, GeneralSettings.Constants.SuppSiteClaimsCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteErrorsCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteClaimsCookieName);
 
                     HttpContext.SignOutAsync();
                     return RedirectToAction("Login");
