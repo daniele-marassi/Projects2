@@ -37,7 +37,7 @@
                     <div style="/*background-image: url('../../Images/logo.png');*/ background-repeat: no-repeat; background-size: 100px 50px; position:relative; ">
                         <a class="navbar-brand" href="#" style="/*margin-left:70px;*/">
                             @Html.ActionLink("Supp", "Index", "Home", null,
-                            new { @id="navbarBrand", @style = "font-size:24px; text-decoration: none; color:#999;" })
+                            new { @id="navbarBrand", @style = "font-size:24px; text-decoration: none; color:#999; background-color:black;" })
                         </a>
                     </div>
                 </div>
@@ -76,20 +76,20 @@
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
                                         <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Get Structure Media", "GetStructureMedia", "Media", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        @Html.ActionLink("Get Structure Media", "GetStructureMedia", "Media", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                         <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Media Box", "MediaBox", "Media", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        @Html.ActionLink("Media Box", "MediaBox", "Media", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
 
                                         @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0)
                                         {
                                             <div class="dropdown-divider"></div>
-                                            @Html.ActionLink("List Media", "Index", "Media", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                            @Html.ActionLink("List Media", "Index", "Media", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                             <div class="dropdown-divider"></div>
-                                            @Html.ActionLink("List Media Configurations", "Index", "MediaConfigurations", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                            @Html.ActionLink("List Media Configurations", "Index", "MediaConfigurations", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                             <div class="dropdown-divider"></div>
-                                            @Html.ActionLink("List GoogleDrive Authorizations", "Index", "GoogleDriveAuths", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                            @Html.ActionLink("List GoogleDrive Authorizations", "Index", "GoogleDriveAuths", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                             <div class="dropdown-divider"></div>
-                                            @Html.ActionLink("List GoogleDrive Accounts", "Index", "GoogleDriveAccounts", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                            @Html.ActionLink("List GoogleDrive Accounts", "Index", "GoogleDriveAccounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                         }
                                     </div>
                                 </li>
@@ -103,23 +103,23 @@
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
                                         <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Create Account", "Create", "Accounts", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        @Html.ActionLink("Create Account", "Create", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                         <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Reset Password", "ResetPassword", "Accounts", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        @Html.ActionLink("Reset Password", "ResetPassword", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                         <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Disable Account", "DisableAccount", "Accounts", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        @Html.ActionLink("Disable Account", "DisableAccount", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                         <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Enable Account", "EnableAccount", "Accounts", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        @Html.ActionLink("Enable Account", "EnableAccount", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                         <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Remove Account", "RemoveAccount", "Accounts", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        @Html.ActionLink("Remove Account", "RemoveAccount", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                         <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Authentications", "Index", "Authentications", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        @Html.ActionLink("Authentications", "Index", "Authentications", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                         <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Users", "Index", "Users", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        @Html.ActionLink("Users", "Index", "Users", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                         <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("User Roles", "Index", "UserRoles", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        @Html.ActionLink("User Roles", "Index", "UserRoles", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                         <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("User Role Types", "Index", "UserRoleTypes", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        @Html.ActionLink("User Role Types", "Index", "UserRoleTypes", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                     </div>
                                 </li>
                             }
@@ -134,12 +134,12 @@
                                         @if (claims.Roles.Where(_ => _.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0)
                                         {
                                             <div class="dropdown-divider"></div>
-                                            @Html.ActionLink("Execution Queue", "Index", "ExecutionQueues", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                            @Html.ActionLink("Execution Queue", "Index", "ExecutionQueues", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                         }
                                         <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Web Speeches", "Index", "WebSpeeches", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        @Html.ActionLink("Web Speeches", "Index", "WebSpeeches", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                         <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Web Speeches Recognition", "Recognition", "WebSpeeches", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        @Html.ActionLink("Web Speeches Recognition", "Recognition", "WebSpeeches", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                     </div>
                                 </li>
                             }
@@ -150,19 +150,18 @@
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
                                     <div class="dropdown-divider"></div>
-                                    @Html.ActionLink("Logout", "Logout", "Home", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                    @Html.ActionLink("Logout", "Logout", "Home", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                     @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
                                     {
                                         <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Change Password", "ChangePassword", "Accounts", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                                        @Html.ActionLink("Change Password", "ChangePassword", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                     }
                                 </div>
                             </li>
                         }
                         else
                         {
-                            <div class="dropdown-divider"></div>
-                            @Html.ActionLink("Login", "Login", "Home", null, new { @class = "nav-item", @style = "text-decoration: none;" })
+                            @Html.ActionLink("Login", "Login", "Home", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; margin-top:20px; width:65px;" })
                         }
                     </ul>
                 </div>

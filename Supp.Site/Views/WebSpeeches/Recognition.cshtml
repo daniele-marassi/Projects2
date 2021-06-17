@@ -744,6 +744,9 @@
             if(partialResetActive && recognitionActive == true) countTheTimesToPartialReset++;
             else countTheTimesToPartialReset = 0;
 
+            //timesToReset = 20;
+            //console.log(countTheTimesToReset);
+
             // reset after idle time countTheTimesToReset
             if(resetActive && countTheTimesToReset == timesToReset && recognitionActive == true){
                 countTheTimesToReset = 0;
@@ -860,13 +863,13 @@
             clearInterval(serviceInterval);
             serviceInterval = setInterval( function() { Service(); }, 1000);
             
-            if(firstLoad == false) fakeClickMilliseconds = 500;
+            if(firstLoad == false) fakeClickMilliseconds = 50;
             else {            
                 firstLoad = false;
                 fakeClickMilliseconds = 5000;
             }
 
-            console.log(fakeClickMilliseconds);
+            //console.log(fakeClickMilliseconds);
 
             document.getElementById('final_span').innerHTML = '';
             document.getElementById('interim_span').innerHTML = '';

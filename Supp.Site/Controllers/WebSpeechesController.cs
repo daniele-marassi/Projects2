@@ -605,7 +605,6 @@ namespace Supp.Site.Controllers
                     bool.TryParse(_reset?.ToString(), out reset);
                     bool.TryParse(_onlyRefresh?.ToString(), out onlyRefresh);
                     
-
                     var expiresInSeconds = 0;
                     var claims = new ClaimsDto() { IsAuthenticated = false };
 
@@ -620,9 +619,9 @@ namespace Supp.Site.Controllers
 
                     var loadDateString = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
 
-                    if (loadDateString == null && resetAfterLoad == false) resetAfterLoad = true;
+                    if (_onlyRefresh == null) resetAfterLoad = true;
 
-                    if (loadDateString != null && resetAfterLoad== false && onlyRefresh == false)
+                    if (loadDateString != null && loadDateString != "" && resetAfterLoad== false && onlyRefresh == false)
                     {
                         DateTime loadDate;
                         DateTime.TryParse(loadDateString, out loadDate);
@@ -640,7 +639,7 @@ namespace Supp.Site.Controllers
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteApplicationCookieName);
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName);
 
-                    suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteLoadDateCookieName, DateTime.Now.ToString(), expiresInSeconds);
+                    if(_onlyRefresh != null) suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteLoadDateCookieName, DateTime.Now.ToString(), expiresInSeconds);
 
                     if (_hostSelected != null && _hostSelected != "")
                     {
@@ -667,7 +666,7 @@ namespace Supp.Site.Controllers
 
                     claims = SuppUtility.GetClaims(User);
 
-                    if (resetAfterLoad == false && onlyRefresh == false) data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims).GetAwaiter().GetResult();
+                    if (resetAfterLoad == false) data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh).GetAwaiter().GetResult();
                     else
                     {
                         data = new WebSpeechDto() { };
@@ -695,7 +694,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/RecognitionInJson
-        public async Task<WebSpeechDto> GetWebSpeechDto(string _phrase, string _hostSelected, bool _reset, bool _application, long _executionQueueId, bool _alwaysShow, long _id, ClaimsDto _claims)
+        public async Task<WebSpeechDto> GetWebSpeechDto(string _phrase, string _hostSelected, bool _reset, bool _application, long _executionQueueId, bool _alwaysShow, long _id, ClaimsDto _claims, bool _onlyRefresh)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -893,7 +892,7 @@ namespace Supp.Site.Controllers
 
                     startAnswer = salutation + " " + SuppUtility.GetSalutation(new CultureInfo(_claims.Configuration.General.Culture, false));
 
-                    if ((_phrase == null || _phrase == "") && data == null && _reset != true)
+                    if ((_phrase == null || _phrase == "") && data == null && _reset == false && _onlyRefresh ==false)
                     {
                         data = new WebSpeechDto() { Answer = startAnswer, Ehi = 0, FinalStep = true };
 
@@ -912,7 +911,6 @@ namespace Supp.Site.Controllers
                         data = result.Data.Where(_ => _.Name == "RequestNotImplemented_1").FirstOrDefault();
                         data.Implementation = true;
                     }
-
 
                     if (data == null) data = new WebSpeechDto() { Answer = "", Ehi = 0 };
 
@@ -952,7 +950,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/RecognitionInJson
-        public async Task<string> GetWebSpeechDtoInJson(string _phrase, string _hostSelected, bool? _reset, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id)
+        public async Task<string> GetWebSpeechDtoInJson(string _phrase, string _hostSelected, bool? _reset, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -963,12 +961,15 @@ namespace Supp.Site.Controllers
                     var reset = false;
                     var application = false;
                     var alwaysShow = false;
+                    var onlyRefresh = false;
                     var hostSelected = "";
                     long executionQueueId = 0;
                     long.TryParse(_executionQueueId?.ToString(), out executionQueueId);
                     long id = 0;
                     long.TryParse(_id?.ToString(), out id);
                     bool.TryParse(_reset?.ToString(), out reset);
+                    bool.TryParse(_onlyRefresh?.ToString(), out onlyRefresh);
+
                     var claims = new ClaimsDto() { IsAuthenticated = false };
 
                     if (_hostSelected == null) hostSelected = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
@@ -990,7 +991,7 @@ namespace Supp.Site.Controllers
                         claims = SuppUtility.GetClaims(User);
                     }
 
-                    var data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims).GetAwaiter().GetResult();
+                    var data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh).GetAwaiter().GetResult();
 
                     if (data != null)
                     {
@@ -1066,7 +1067,6 @@ namespace Supp.Site.Controllers
 
             description = description.Replace("-"," ");
             description = description.Replace(System.Environment.NewLine, " ");
-
 
             if (partOfTheDay.ToString() != PartsOfTheDayIta.NotSet.ToString()) hour = (int)partOfTheDay;
 
