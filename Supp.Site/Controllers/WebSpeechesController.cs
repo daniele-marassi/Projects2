@@ -581,7 +581,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/Recognition
-        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id)
+        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -596,12 +596,15 @@ namespace Supp.Site.Controllers
                     var reset = false;
                     var resetAfterLoad = false;
                     var alwaysShow = false;
+                    var onlyRefresh = false;
                     var hostSelected = "";
                     long executionQueueId = 0;
                     long.TryParse(_executionQueueId?.ToString(), out executionQueueId);
                     long id = 0;
                     long.TryParse(_id?.ToString(), out id);
                     bool.TryParse(_reset?.ToString(), out reset);
+                    bool.TryParse(_onlyRefresh?.ToString(), out onlyRefresh);
+                    
 
                     var expiresInSeconds = 0;
                     var claims = new ClaimsDto() { IsAuthenticated = false };
@@ -619,7 +622,7 @@ namespace Supp.Site.Controllers
 
                     if (loadDateString == null && resetAfterLoad == false) resetAfterLoad = true;
 
-                    if (loadDateString != null && resetAfterLoad== false)
+                    if (loadDateString != null && resetAfterLoad== false && onlyRefresh == false)
                     {
                         DateTime loadDate;
                         DateTime.TryParse(loadDateString, out loadDate);
@@ -664,7 +667,7 @@ namespace Supp.Site.Controllers
 
                     claims = SuppUtility.GetClaims(User);
 
-                    if (resetAfterLoad == false) data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims).GetAwaiter().GetResult();
+                    if (resetAfterLoad == false && onlyRefresh == false) data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims).GetAwaiter().GetResult();
                     else
                     {
                         data = new WebSpeechDto() { };

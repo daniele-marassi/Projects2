@@ -464,7 +464,7 @@
                 hosts = JSON.parse(hostsArrayString);
             }
             catch (error) {  
-                //if(recognitionActive == true) Reset(true); 
+                //if(recognitionActive == true) Reset(true, false); 
             }   
 
             if(hosts != null && hosts.length > 0 ){
@@ -602,6 +602,8 @@
 
                 recognition.onerror = function (event) {
                     console.log('recognition.onerror: ' + event.error);
+
+                    firstLoad = true;
 
                     if (IsMobile() == true) {
                         document.getElementById('start_img').src = "/Images/microphone.gif";
@@ -746,7 +748,7 @@
             if(resetActive && countTheTimesToReset == timesToReset && recognitionActive == true){
                 countTheTimesToReset = 0;
                 resetActive = false;
-                Reset(false);
+                Reset(false, true);
             }
 
             if(resetActive && recognitionActive == true) countTheTimesToReset++;
@@ -817,12 +819,12 @@
             }
         }
 
-        function Reset(reset){
+        function Reset(reset, onlyRefresh){
             PartialReset();
             if(_reset == false){ 
                  _reset = true;
                 clearInterval(serviceInterval);
-                location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset='+ reset + '&_application='+application + '&_executionQueueId='+ executionQueueId + '&_hostSelected='+hostSelected;
+                location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset='+ reset + '&_application='+application + '&_executionQueueId='+ executionQueueId + '&_hostSelected='+hostSelected+ '&_onlyRefresh='+onlyRefresh;
             }
         }
 
@@ -861,8 +863,10 @@
             if(firstLoad == false) fakeClickMilliseconds = 500;
             else {            
                 firstLoad = false;
-                fakeClickMilliseconds = 2000;
+                fakeClickMilliseconds = 5000;
             }
+
+            console.log(fakeClickMilliseconds);
 
             document.getElementById('final_span').innerHTML = '';
             document.getElementById('interim_span').innerHTML = '';
@@ -1137,7 +1141,7 @@
             answer = null;
             synth= null;
             speech = null;
-            Reset(false);
+            Reset(false, false);
         } else { 
 		    InitPage();
             InitSpeech();
