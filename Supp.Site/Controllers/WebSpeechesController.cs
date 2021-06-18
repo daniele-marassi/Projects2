@@ -581,7 +581,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/Recognition
-        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh)
+        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -604,7 +604,9 @@ namespace Supp.Site.Controllers
                     long.TryParse(_id?.ToString(), out id);
                     bool.TryParse(_reset?.ToString(), out reset);
                     bool.TryParse(_onlyRefresh?.ToString(), out onlyRefresh);
-                    
+                    int step = 0;
+                    int.TryParse(_step?.ToString(), out step);
+
                     var expiresInSeconds = 0;
                     var claims = new ClaimsDto() { IsAuthenticated = false };
 
@@ -666,7 +668,7 @@ namespace Supp.Site.Controllers
 
                     claims = SuppUtility.GetClaims(User);
 
-                    if (resetAfterLoad == false) data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh).GetAwaiter().GetResult();
+                    if (resetAfterLoad == false) data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step).GetAwaiter().GetResult();
                     else
                     {
                         data = new WebSpeechDto() { };
@@ -694,7 +696,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/RecognitionInJson
-        public async Task<WebSpeechDto> GetWebSpeechDto(string _phrase, string _hostSelected, bool _reset, bool _application, long _executionQueueId, bool _alwaysShow, long _id, ClaimsDto _claims, bool _onlyRefresh)
+        public async Task<WebSpeechDto> GetWebSpeechDto(string _phrase, string _hostSelected, bool _reset, bool _application, long _executionQueueId, bool _alwaysShow, long _id, ClaimsDto _claims, bool _onlyRefresh, string _subType, int _step)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -723,7 +725,7 @@ namespace Supp.Site.Controllers
                     result.Data = getDataResult.WebSpeeches;
                     shortcuts = getDataResult.Shortcuts.OrderBy(_ => _.Order).ToList();
 
-                    if (_phrase != "" && _phrase != null)
+                    if (_phrase != "" && _phrase != null && (_subType == null || _subType == "" || _subType == "null"))
                     {
                         var _words = _phrase.Split(" ");
                         _wordsCount = _words.Count();
@@ -904,12 +906,18 @@ namespace Supp.Site.Controllers
                         }
                     }
 
-                    if (_phrase != null && _phrase != "" && data == null && result != null && _wordsCount > 1)
+                    if ((_phrase != null && _phrase != "" && data == null && result != null && _wordsCount > 1) || _subType == "RequestNotImplemented")
                     {
                         data = new WebSpeechDto() { };
+                        if (_step < 1) _step = 1;
+                        if (_subType == null || _subType == "" || _subType == "null") _subType = "RequestNotImplemented";
+                        data = result.Data.Where(_ => _.Name == _subType +"_"+_step.ToString()).FirstOrDefault();
+                    }
 
-                        data = result.Data.Where(_ => _.Name == "RequestNotImplemented_1").FirstOrDefault();
-                        data.Implementation = true;
+                    if (data != null && data.Name != null && data.Name.Contains("RequestNotImplemented"))
+                    {
+                        data.SubType = data.Name.Split("_")[0].ToString();
+                        data.Step = int.Parse(data.Name.Split("_")[1].ToString());
                     }
 
                     if (data == null) data = new WebSpeechDto() { Answer = "", Ehi = 0 };
@@ -950,7 +958,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/RecognitionInJson
-        public async Task<string> GetWebSpeechDtoInJson(string _phrase, string _hostSelected, bool? _reset, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh)
+        public async Task<string> GetWebSpeechDtoInJson(string _phrase, string _hostSelected, bool? _reset, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -969,6 +977,8 @@ namespace Supp.Site.Controllers
                     long.TryParse(_id?.ToString(), out id);
                     bool.TryParse(_reset?.ToString(), out reset);
                     bool.TryParse(_onlyRefresh?.ToString(), out onlyRefresh);
+                    int step = 0;
+                    int.TryParse(_step?.ToString(), out step);
 
                     var claims = new ClaimsDto() { IsAuthenticated = false };
 
@@ -991,7 +1001,7 @@ namespace Supp.Site.Controllers
                         claims = SuppUtility.GetClaims(User);
                     }
 
-                    var data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh).GetAwaiter().GetResult();
+                    var data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step).GetAwaiter().GetResult();
 
                     if (data != null)
                     {

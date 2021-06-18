@@ -28,7 +28,6 @@ namespace Supp.Site.Models
         public string ListeningWord2 { get; set; }
         public string ListeningAnswer { get; set; }
         public string StartAnswer { get; set; }
-        public bool Implementation { get; set; }
         public int Ehi { get; set; }
         public string Culture { get; set; }
         public bool Application { get; set; }
@@ -42,6 +41,9 @@ namespace Supp.Site.Models
         public string ShortcutsInJson { get; set; }
         public bool ResetAfterLoad { get; set; }
         public int TimesToReset { get; set; }
+
+        public string SubType { get; set; }
+        public int Step { get; set; }
         public IEnumerable<WebSpeechType> WebSpeechTypes { get { return Supp.Site.Models.WebSpeechTypes.Get(); } }
 
         public IEnumerable<ShortcutImage> ShortcutImages { get; set; }

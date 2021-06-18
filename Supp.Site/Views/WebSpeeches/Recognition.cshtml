@@ -72,6 +72,8 @@
         var parameters = ''; 
         var ehi = 0;
         var timesToReset = 0;
+        var subType = ''; 
+        var step = 0
         //@*Model Variables*@
 
         function VariablesAssignmentFromJson(jsonString) {
@@ -117,6 +119,12 @@
                 timesToReset=parseInt(DecodeUnicode(model['TimesToReset']));
             }
             catch (error) {}
+            subType = DecodeUnicode(model['SubType']);
+            step = -1;
+            try {
+                step=parseInt(DecodeUnicode(model['Step']));
+            }
+            catch (error) {}
         }
 
         function VariablesAssignmentFromModel() {
@@ -157,6 +165,13 @@
             timesToReset = 0;
             try {
                 timesToReset=parseInt('@Model?.TimesToReset');
+            }
+            catch (error) {}
+
+            subType = '@Model?.SubType';
+            step = -1;
+            try {
+                step=parseInt('@Model?.Step');
             }
             catch (error) {}
         }
@@ -634,7 +649,7 @@
                 recognition.onend = function () {     
                     if(recognitionActive == true){
                         PartialReset();
-                        //InitFinal();
+                         if (IsMobile() == false) InitFinal();
                     }
 
                     if(IsMobile() == true){
@@ -679,7 +694,12 @@
                                            
                                             clearInterval(serviceInterval);
 
-                                            CallWebSpeechDtoInJson(('_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionPhrase");
+                                            if(subType == "RequestNotImplemented") {
+                                                if(step == 1) step=3;
+                                                else step++;
+                                            }
+
+                                            CallWebSpeechDtoInJson(('_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application + '&_subType='+subType + '&_step='+step), "ResultRecognitionPhrase");
                                         }
                                     }
                                 }
