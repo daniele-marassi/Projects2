@@ -607,10 +607,16 @@ namespace Supp.Site.Controllers
                     int step = 0;
                     int.TryParse(_step?.ToString(), out step);
 
+                    if (_userName == "null") _userName = null;
+                    if (_password == "null") _password = null;
+                    if (_phrase == "null") _phrase = null;
+                    if (_hostSelected == "null") _hostSelected = null;
+                    if (_subType == "null") _subType = null;
+
                     var expiresInSeconds = 0;
                     var claims = new ClaimsDto() { IsAuthenticated = false };
 
-                    if (_userName != null && _password != null)
+                    if (_userName != null && _userName != "" && _password != null && _password != "")
                     {
                         var dto = new LoginDto() { UserName = _userName, Password = _password };
                         var authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response, Request);
@@ -668,7 +674,7 @@ namespace Supp.Site.Controllers
 
                     claims = SuppUtility.GetClaims(User);
 
-                    if (resetAfterLoad == false) data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step).GetAwaiter().GetResult();
+                    if (resetAfterLoad == false) data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds).GetAwaiter().GetResult();
                     else
                     {
                         data = new WebSpeechDto() { };
@@ -696,7 +702,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/RecognitionInJson
-        public async Task<WebSpeechDto> GetWebSpeechDto(string _phrase, string _hostSelected, bool _reset, bool _application, long _executionQueueId, bool _alwaysShow, long _id, ClaimsDto _claims, bool _onlyRefresh, string _subType, int _step)
+        public async Task<WebSpeechDto> GetWebSpeechDto(string _phrase, string _hostSelected, bool _reset, bool _application, long _executionQueueId, bool _alwaysShow, long _id, ClaimsDto _claims, bool _onlyRefresh, string _subType, int _step, int expiresInSeconds)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -725,7 +731,7 @@ namespace Supp.Site.Controllers
                     result.Data = getDataResult.WebSpeeches;
                     shortcuts = getDataResult.Shortcuts.OrderBy(_ => _.Order).ToList();
 
-                    if (_phrase != "" && _phrase != null && (_subType == null || _subType == "" || _subType == "null"))
+                    if (_phrase != "" && _phrase != null && _step <=3)
                     {
                         var _words = _phrase.Split(" ");
                         _wordsCount = _words.Count();
@@ -750,6 +756,8 @@ namespace Supp.Site.Controllers
                                 if (item.PreviousPhrase != null && item.PreviousPhrase != String.Empty)
                                     phrases[i] = item.PreviousPhrase + " " + phrases[i];
                             }
+
+                            var perferctMatch = false;
 
                             foreach (var phrase in phrases)
                             {
@@ -776,6 +784,7 @@ namespace Supp.Site.Controllers
                                 if (item.Type == "WebSearch") maxWords = _wordsCount;
 
                                 match = 0;
+                                
                                 for (int x = 0; x < words.Length; x++)
                                 {
                                     for (int y = 0; y < _words.Length; y++)
@@ -788,15 +797,16 @@ namespace Supp.Site.Controllers
                                     }
                                 }
 
-                                if (match > countMatch && match >= minMatch && _wordsCount <= maxWords)
+                                if ((match > countMatch || match == _wordsCount) && perferctMatch == false)
                                 {
+                                    if (match == _wordsCount) perferctMatch = true;
                                     countMatch = match;
-                                    _data = new List<WebSpeechDto>();
-                                    _data.Add(item);
-                                    _phraseMatch = phrase;
+                                    _data = null;
                                 }
-                                else if (match == countMatch && match >= minMatch && _wordsCount <= maxWords)
+
+                                if (((match > countMatch && perferctMatch == false) || (match == countMatch && perferctMatch == true)) && match >= minMatch && _wordsCount <= maxWords)
                                 {
+                                    if(_data == null) _data = new List<WebSpeechDto>();
                                     _data.Add(item);
                                     _phraseMatch = phrase;
                                 }
@@ -823,6 +833,8 @@ namespace Supp.Site.Controllers
                             x = rnd.Next(0, answers.Count());
 
                             data.Answer = answers[x];
+
+                            if (data.Answer == null) data.Answer = "";
                         }
                     }
                     else if (_id != 0)
@@ -894,7 +906,7 @@ namespace Supp.Site.Controllers
 
                     startAnswer = salutation + " " + SuppUtility.GetSalutation(new CultureInfo(_claims.Configuration.General.Culture, false));
 
-                    if ((_phrase == null || _phrase == "") && data == null && _reset == false && _onlyRefresh ==false)
+                    if ((_phrase == null || _phrase == "") && data == null && _reset == false && _onlyRefresh == false && (_subType == null || _subType == ""))
                     {
                         data = new WebSpeechDto() { Answer = startAnswer, Ehi = 0, FinalStep = true };
 
@@ -905,12 +917,28 @@ namespace Supp.Site.Controllers
                             data.Answer += GetMeteoPhrase(String.Empty, _claims.Configuration.Speech.MeteoParameterToTheSalutation, _claims.Configuration.General.Culture.ToLower(), _claims.Configuration.Speech.DescriptionMeteoToTheSalutationActive);
                         }
                     }
-
-                    if ((_phrase != null && _phrase != "" && data == null && result != null && _wordsCount > 1) || _subType == "RequestNotImplemented")
+                    
+                    if (
+                        (_phrase != null && _phrase != "" && data == null && result != null && _wordsCount > 1)
+                        || ((data == null || (data != null && data.Answer == "")) && result != null && _subType == "RequestNotImplemented")       
+                    )
                     {
                         data = new WebSpeechDto() { };
-                        if (_step < 1) _step = 1;
-                        if (_subType == null || _subType == "" || _subType == "null") _subType = "RequestNotImplemented";
+                        if (_step < 1)
+                        { 
+                            _step = 1;
+                            suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
+
+                            var newWebSpeech = new WebSpeechDto() {Name = "NewImplemented_"+DateTime.Now.ToString("yyyyMMddhhmmss"), Phrase = _phrase };
+
+                            var newWebSpeechString = JsonConvert.SerializeObject(newWebSpeech);
+
+                            suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName, newWebSpeechString, expiresInSeconds);
+                        }
+                        if (_subType == null || _subType == "") _subType = "RequestNotImplemented";
+
+                        if (data != null && (data.Answer == "" || data.Answer == null) && _step > 1) _step++;
+
                         data = result.Data.Where(_ => _.Name == _subType +"_"+_step.ToString()).FirstOrDefault();
                     }
 
@@ -918,6 +946,38 @@ namespace Supp.Site.Controllers
                     {
                         data.SubType = data.Name.Split("_")[0].ToString();
                         data.Step = int.Parse(data.Name.Split("_")[1].ToString());
+
+                        var newWebSpeech = new WebSpeechDto() { };
+
+                        if (_step >= 4 && data?.FinalStep != true)
+                        {
+                            var newWebSpeechString = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
+
+                            if (newWebSpeechString != "")
+                            {
+                                try
+                                {
+                                    newWebSpeech = JsonConvert.DeserializeObject<WebSpeechDto>(newWebSpeechString);
+                                }
+                                catch (Exception)
+                                {
+                                }
+
+                                if (_step == 4) newWebSpeech.Answer = _phrase;
+
+                                newWebSpeechString = JsonConvert.SerializeObject(newWebSpeech);
+                                suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
+                                suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName, newWebSpeechString, expiresInSeconds);
+
+                            }
+                            else if (_step >= 4 && data?.FinalStep == true)
+                            {
+                                suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
+
+
+
+                            }
+                        }
                     }
 
                     if (data == null) data = new WebSpeechDto() { Answer = "", Ehi = 0 };
@@ -980,6 +1040,13 @@ namespace Supp.Site.Controllers
                     int step = 0;
                     int.TryParse(_step?.ToString(), out step);
 
+                    if (_phrase == "null") _phrase = null;
+                    if (_hostSelected == "null") _hostSelected = null;
+                    if (_subType == "null") _subType = null; 
+
+                    var expiresInSeconds = 0;
+                    int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName), out expiresInSeconds);
+
                     var claims = new ClaimsDto() { IsAuthenticated = false };
 
                     if (_hostSelected == null) hostSelected = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
@@ -1001,7 +1068,7 @@ namespace Supp.Site.Controllers
                         claims = SuppUtility.GetClaims(User);
                     }
 
-                    var data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step).GetAwaiter().GetResult();
+                    var data = GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds).GetAwaiter().GetResult();
 
                     if (data != null)
                     {

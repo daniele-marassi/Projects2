@@ -100,7 +100,7 @@ namespace Supp.Site.Common
                 public const string SuppSiteAlwaysShowCookieName = "SuppSiteAlwaysShow";
                 public const string SuppSiteClaimsCookieName = "SuppSiteClaims";
                 public const string SuppSiteLoadDateCookieName = "SuppSiteLoadDate";
-                
+                public const string SuppSiteNewWebSpeechCookieName = "SuppSiteNewWebSpeech";
             }
 
             public static void SetGeneralSettings(IConfiguration configuration)

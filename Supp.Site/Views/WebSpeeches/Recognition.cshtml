@@ -105,6 +105,11 @@
 
             listeningWord1 = DecodeUnicode(model['ListeningWord1']);
             listeningWord2 = DecodeUnicode(model['ListeningWord2']);
+
+            listeningPhrase = listeningWord1.trim().toLowerCase();
+            if(listeningPhrase != '') listeningPhrase += ' ';
+            listeningPhrase += listeningWord2.trim().toLowerCase();
+
             executionQueueId = DecodeUnicode(model['ExecutionQueueId']);
             shortcutsInJson = DecodeUnicode(model['ShortcutsInJson']);
             type = DecodeUnicode(model['Type']);
@@ -153,6 +158,11 @@
 
             listeningWord1 = '@Model?.ListeningWord1';
             listeningWord2 = '@Model?.ListeningWord2';
+
+            listeningPhrase = listeningWord1.trim().toLowerCase();
+            if(listeningPhrase != '') listeningPhrase += ' ';
+            listeningPhrase += listeningWord2.trim().toLowerCase();
+
             executionQueueId = '@Model?.ExecutionQueueId';
             shortcutsInJson = '@Model?.ShortcutsInJson';
             type = '@Model?.Type';
@@ -167,7 +177,6 @@
                 timesToReset=parseInt('@Model?.TimesToReset');
             }
             catch (error) {}
-
             subType = '@Model?.SubType';
             step = -1;
             try {
@@ -382,7 +391,7 @@
             }
             
             speech.onend = function(event) {
-                if (_finalStep == true || readOutLoudActive == false || _message == null || _message == '' || _message == 'null'){
+                if (_finalStep == true || readOutLoudActive == false || _message == null || _message == ''){
                     EndReadOutLoud();
                 } else {
                     if(synth != null) synth.cancel();
@@ -557,6 +566,8 @@
             str = str.replace(new RegExp('/u00D', 'g'), " ");
             str = str.replace(new RegExp('/u00A', 'g'), " ");		
 
+            tr = str.replace(new RegExp('null', 'g'), "");
+
             return str;
         }
 
@@ -672,20 +683,18 @@
                                 if(recognitionActive == true) StopAnimateIntervalsListening(500);
                                 if (recognitionActive == true) console.log(_phrase);
                                 var _phraseSplit = _phrase.split(" ");
-                                if (_phraseSplit.length > 0 && recognitionActive == true) {
+                                if (_phraseSplit.length > 0 && recognitionActive == true) {;
                                     if (event.results[i].isFinal){
-                                        if (_phraseSplit.length > 1 && _phraseSplit[0] == listeningWord1 && _phraseSplit[1] == listeningWord2 && ehi == 0 && _reset == false) {
-
+                                        if (_phrase === listeningPhrase && ehi == 0 && _reset == false) {
                                             var audio = new Audio("/Files/Ehi.mp3");
                                             audio.play();
                                             
-                                            var phraseTmp = listeningWord1 + ' ' + listeningWord2;
+                                            var phraseTmp = _phrase;
                                            
                                             clearInterval(serviceInterval);
                                             
                                             CallWebSpeechDtoInJson(('_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionEhi");
-                                        } else if (ehi == 1 && _phrase != listeningPhrase && _phrase != null && _phrase!= '' && _reset == false) {
-
+                                        } else if (ehi == 1 && _phrase != listeningPhrase && _phrase != null && _phrase != '' && _reset == false) {
                                             var audio = new Audio("/Files/Ehi.mp3");
                                             audio.play();
 
@@ -695,7 +704,24 @@
                                             clearInterval(serviceInterval);
 
                                             if(subType == "RequestNotImplemented") {
-                                                if(step == 1) step=3;
+                                                if(step == 1)step=3;
+                                                else step++;
+                                                if(step >= 4)  phraseTmp = _phrase;
+                                            }
+
+                                            CallWebSpeechDtoInJson(('_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application + '&_subType='+subType + '&_step='+step), "ResultRecognitionPhrase");
+                                        } else if (ehi == 0 && _phrase != listeningPhrase && _phrase.includes(listeningPhrase) && _phrase != null && _phrase != '' && _reset == false) {
+                                            var audio = new Audio("/Files/Ehi.mp3");
+                                            audio.play();
+
+                                            var phraseTmp = _phrase;
+                                            phraseTmp = phraseTmp.replace(listeningPhrase, '');
+                                            phraseTmp = phraseTmp.trim();
+
+                                            clearInterval(serviceInterval);
+
+                                            if(subType == "RequestNotImplemented") {
+                                                if(step == 1)step=3;
                                                 else step++;
                                             }
 
@@ -831,11 +857,12 @@
         }
 
         function Speak(){
-            if (answer != null && answer != '' && answer != 'null') {
+            if (answer != null && answer != '') {
                 document.getElementById('final_span').innerHTML = '';
                 document.getElementById('interim_span').innerHTML = '';
                 var _answer = HexDecode(answer);
                 answer = null;
+                
                 ReadOutLoud(_answer, false); 
             } else {
                 PartialReset();
@@ -853,7 +880,6 @@
 
         function PartialReset(){
             ehi = 0;
-            listeningPhrase = '';
             _old_phrase = '';
             _phrase = null;
             partialResetActive = false;
@@ -910,7 +936,8 @@
                     SetAudio();
                 
                     if(IsMobile() == false) StartButton(event);
-                    EndReadOutLoud();
+                    //EndReadOutLoud();
+                    
                     Speak();
                 }, 50);  
 
@@ -1023,19 +1050,19 @@
         }
 
         function Action(type, link){
-            if(application == false && type == 'Link' && link != null && link != '' && link != 'null' ){
+            if(application == false && type == 'Link' && link != null && link != '' ){
                 window.open(link);
             }
 
-            else if(application == true && type == 'Link' && link != null && link != '' && link != 'null' ){
+            else if(application == true && type == 'Link' && link != null && link != ''){
                 window.open(link, "open link", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
             } 
 
-            else if(application == false && type == 'SystemWebSearch' && link != null && link != '' && link != 'null' ){
+            else if(application == false && type == 'SystemWebSearch' && link != null && link != ''){
                 window.open(link);
             }
 
-            else if(application == true && type == 'SystemWebSearch' && link != null && link != '' && link != 'null'){
+            else if(application == true && type == 'SystemWebSearch' && link != null && link != ''){
                 window.open(link, "search", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
             } 
         }
