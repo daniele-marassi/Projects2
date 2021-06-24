@@ -28,6 +28,11 @@
                 <input asp-for="Operation" class="form-control textBoxCustom" />
                 <span asp-validation-for="Operation" class="text-danger"></span>
             </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="OperationEnable" /> @Html.DisplayNameFor(model => model.OperationEnable)
+                </label>
+            </div>
             <div class="form-group">
                 <label asp-for="Parameters" class="control-label"></label>
                 <input asp-for="Parameters" class="form-control textBoxCustom" />

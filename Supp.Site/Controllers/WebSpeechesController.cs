@@ -146,6 +146,7 @@ namespace Supp.Site.Controllers
                     else if (searchString != null && (searchString.Trim().ToLower() == "true" || searchString.Trim().ToLower() == "false"))
                     {
                         data = data.Where(_ => _.FinalStep == bool.Parse(searchString.Trim().ToLower()));
+                        data = data.Where(_ => _.OperationEnable == bool.Parse(searchString.Trim().ToLower()));    
                     }
                     else if (!String.IsNullOrEmpty(searchString))
                     {
@@ -167,6 +168,9 @@ namespace Supp.Site.Controllers
                             break;
                         case "Operation":
                             data = data.OrderBy(_ => _.Operation);
+                            break;
+                        case "OperationEnable":
+                            data = data.OrderBy(_ => _.OperationEnable);
                             break;
                         case "Parameters":
                             data = data.OrderBy(_ => _.Parameters);
@@ -315,10 +319,11 @@ namespace Supp.Site.Controllers
                         row.Name = String.Empty;
                         row.Phrase = String.Empty;
                         row.Operation = String.Empty;
+                        row.OperationEnable = true;
                         row.Parameters = String.Empty;
                         row.Host = String.Empty;
                         row.Answer = String.Empty;
-                        row.FinalStep = true;
+                        row.FinalStep = true;     
                         row.UserId = 0;
                         row.ParentIds = String.Empty;
                         row.PrivateInstruction = true;
@@ -343,7 +348,7 @@ namespace Supp.Site.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Phrase,Operation,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,InsDateTime")] WebSpeechDto dto)
+        public async Task<IActionResult> Create([Bind("Id,Name,Phrase,Operation,OperationEnable,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,InsDateTime")] WebSpeechDto dto)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -435,7 +440,7 @@ namespace Supp.Site.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Phrase,Operation,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,InsDateTime")] WebSpeechDto dto)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Phrase,Operation,OperationEnable,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,InsDateTime")] WebSpeechDto dto)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -581,7 +586,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/Recognition
-        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step)
+        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step, bool? _login)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -594,6 +599,7 @@ namespace Supp.Site.Controllers
                     var rnd = new Random();
                     var application = false;
                     var reset = false;
+                    var login = false;
                     var resetAfterLoad = false;
                     var alwaysShow = false;
                     var onlyRefresh = false;
@@ -603,6 +609,7 @@ namespace Supp.Site.Controllers
                     long id = 0;
                     long.TryParse(_id?.ToString(), out id);
                     bool.TryParse(_reset?.ToString(), out reset);
+                    bool.TryParse(_login?.ToString(), out login);
                     bool.TryParse(_onlyRefresh?.ToString(), out onlyRefresh);
                     int step = 0;
                     int.TryParse(_step?.ToString(), out step);
@@ -616,7 +623,7 @@ namespace Supp.Site.Controllers
                     var expiresInSeconds = 0;
                     var claims = new ClaimsDto() { IsAuthenticated = false };
 
-                    if (_userName != null && _userName != "" && _password != null && _password != "")
+                    if (_userName != null && _userName != "" && _password != null && _password != "" && login == true)
                     {
                         var dto = new LoginDto() { UserName = _userName, Password = _password };
                         var authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response, Request);
@@ -737,6 +744,8 @@ namespace Supp.Site.Controllers
                         _wordsCount = _words.Count();
                         var countMatch = 0;
                         var match = 0;
+                        var perferctMatch = false;
+                        var skipMatch = false;
 
                         foreach (var item in result.Data.ToList())
                         {
@@ -757,8 +766,6 @@ namespace Supp.Site.Controllers
                                     phrases[i] = item.PreviousPhrase + " " + phrases[i];
                             }
 
-                            var perferctMatch = false;
-
                             foreach (var phrase in phrases)
                             {
                                 var words = phrase.Split(" ");
@@ -766,49 +773,48 @@ namespace Supp.Site.Controllers
                                 var minMatch = 0;
                                 var maxWords = 0;
 
-                                if (_wordsCount > wordsCount)
-                                {
-                                    minMatch = (int)(_wordsCount - Math.Ceiling(_wordsCount * decimal.Parse(_claims.Configuration.Speech.MinSpeechWordsCoefficient)));
-                                    maxWords = (int)(_wordsCount + Math.Ceiling(_wordsCount * decimal.Parse(_claims.Configuration.Speech.MaxSpeechWordsCoefficient)));
-                                }
-                                else 
-                                {
-                                    minMatch = (int)(wordsCount - Math.Ceiling(wordsCount * decimal.Parse(_claims.Configuration.Speech.MinSpeechWordsCoefficient)));
-                                    maxWords = (int)(wordsCount + Math.Ceiling(wordsCount * decimal.Parse(_claims.Configuration.Speech.MaxSpeechWordsCoefficient)));
+                                minMatch = (int)(_wordsCount - Math.Ceiling(_wordsCount * decimal.Parse(_claims.Configuration.Speech.MinSpeechWordsCoefficient)));
+                                maxWords = (int)(_wordsCount + Math.Ceiling(_wordsCount * decimal.Parse(_claims.Configuration.Speech.MaxSpeechWordsCoefficient)));
 
-                                    if (wordsCount == 2) minMatch = 2;
-                                }
-
+                                if (_wordsCount == 2) minMatch = 2;
                                 if (minMatch == 0) minMatch = 1;
 
-                                if (item.Type == "WebSearch") maxWords = _wordsCount;
-
-                                match = 0;
-                                
-                                for (int x = 0; x < words.Length; x++)
+                                if (item.Type == "SystemWebSearch" && _phrase.Trim().StartsWith(phrase) && skipMatch == false)
                                 {
-                                    for (int y = 0; y < _words.Length; y++)
+                                    skipMatch = true;
+                                    _data = new List<WebSpeechDto>();
+                                    _data.Add(item);
+                                }
+
+                                if (skipMatch == false)
+                                {
+                                    match = 0;
+
+                                    for (int x = 0; x < words.Length; x++)
                                     {
-                                        if (_words[y].Trim().ToLower() == words[x].Trim().ToLower() && words[x] != "")
+                                        for (int y = 0; y < _words.Length; y++)
                                         {
-                                            match++;
-                                            words[x] = "";
+                                            if (_words[y].Trim().ToLower() == words[x].Trim().ToLower() && words[x] != "")
+                                            {
+                                                match++;
+                                                words[x] = "";
+                                            }
                                         }
                                     }
-                                }
 
-                                if ((match > countMatch || match == _wordsCount) && perferctMatch == false)
-                                {
-                                    if (match == _wordsCount) perferctMatch = true;
-                                    countMatch = match;
-                                    _data = null;
-                                }
+                                    if ((match > countMatch || match == _wordsCount) && perferctMatch == false && wordsCount <= maxWords)
+                                    {
+                                        countMatch = match;
+                                        _data = null;
+                                    }
 
-                                if (((match > countMatch && perferctMatch == false) || (match == countMatch && perferctMatch == true)) && match >= minMatch && _wordsCount <= maxWords)
-                                {
-                                    if(_data == null) _data = new List<WebSpeechDto>();
-                                    _data.Add(item);
-                                    _phraseMatch = phrase;
+                                    if (match >= minMatch && wordsCount <= maxWords && (perferctMatch == false || (perferctMatch == true && match == _wordsCount && match == wordsCount)))
+                                    {
+                                        if (match == _wordsCount && match == wordsCount) perferctMatch = true;
+                                        if (_data == null) _data = new List<WebSpeechDto>();
+                                        _data.Add(item);
+                                        _phraseMatch = phrase;
+                                    }
                                 }
                             }
                         }
@@ -842,7 +848,7 @@ namespace Supp.Site.Controllers
                         data = result.Data.Where(_ => _.Id == _id).FirstOrDefault();
                     }
 
-                    if (data != null && (data.Type == "SystemRunExe" || data.Type == "RunExe"))
+                    if (data != null && (data.Type == "SystemRunExe" || data.Type == "RunExe") && data.OperationEnable == true)
                     {
                         var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = _hostSelected, Type = data.Type };
                         var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);

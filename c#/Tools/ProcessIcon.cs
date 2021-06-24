@@ -65,6 +65,7 @@ namespace Tools
 				HookKeyActive = true;
 
 				//HookManager.EnableKeyDownHook();
+				System.Threading.Thread.Sleep(50);
 				Hook.Start();
 			}
 			else
@@ -78,6 +79,7 @@ namespace Tools
 
 				_QueueService = new QueueService();
 
+				System.Threading.Thread.Sleep(50);
 				Task.Run(() => _QueueService.Start());
 			}
 			else
@@ -91,6 +93,7 @@ namespace Tools
 
 				_SyncIpService = new SyncIpService();
 
+				System.Threading.Thread.Sleep(50);
 				Task.Run(() => _SyncIpService.Start());
 			}
 			else
@@ -105,6 +108,7 @@ namespace Tools
 				_Speech = new Speech();
 				//_SpeechService = new SpeechService();
 
+				System.Threading.Thread.Sleep(50);
 				Task.Run(() => _Speech.Start());
 				//Task.Run(() => _SpeechService.Start());
 			}

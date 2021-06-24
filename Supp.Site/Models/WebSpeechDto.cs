@@ -12,6 +12,7 @@ namespace Supp.Site.Models
         public string Name { get; set; }
         public string Phrase { get; set; }
         public string Operation { get; set; }
+        public bool OperationEnable { get; set; }
         public string Parameters { get; set; }
         public string Host { get; set; }
         public string Answer { get; set; }

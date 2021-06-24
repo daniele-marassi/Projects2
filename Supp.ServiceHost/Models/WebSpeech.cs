@@ -17,6 +17,7 @@ namespace Supp.ServiceHost.Models
         public string Phrase { get; set; }
 
         public string Operation { get; set; }
+        public bool OperationEnable { get; set; }
 
         public string Parameters { get; set; }
 

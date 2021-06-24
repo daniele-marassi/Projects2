@@ -29,3 +29,10 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\obj\Debug\Executio
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\Resources\About.ico
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\Resources\About.png
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\Resources\Fonts\Cafed_v2.ttf
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\Resources\Fonts\PAPYRUS.TTF
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\Resources\Fonts\We Spray.ttf
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\Resources\Fonts\Byom-Icons-Trial.ttf
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\Resources\Fonts\WEBDINGS.TTF

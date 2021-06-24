@@ -41,6 +41,9 @@
                         @Html.ActionLink("Operation", "Index", new { sortOrder = "Operation", currentFilter = ViewBag.CurrentFilter })
                     </th>
                     <th id="selectable">
+                        @Html.ActionLink("OperationEnable", "Index", new { sortOrder = "OperationEnable", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
                         @Html.ActionLink("Parameters", "Index", new { sortOrder = "Parameters", currentFilter = ViewBag.CurrentFilter })
                     </th>
                     <th id="selectable">
@@ -84,6 +87,9 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Operation)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OperationEnable)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Parameters)

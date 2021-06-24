@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
+using AudioSwitcher.AudioApi.CoreAudio;
 
 namespace Tools
 {
@@ -39,6 +40,7 @@ namespace Tools
         bool fullScreen;
         int showTimeout;
         bool alwaysShow;
+        double volumePercent;
 
         public Speech()
         {
@@ -65,6 +67,49 @@ namespace Tools
             screenWidth = Screen.PrimaryScreen.Bounds.Width;
             screenHeight = Screen.PrimaryScreen.Bounds.Height;
             showTimeout = int.Parse(appSettings["ShowTimeout"]);
+            volumePercent = double.Parse(appSettings["VolumePercent"]);
+
+            SetVolume(volumePercent);
+        }
+
+        private enum TaskBarLocation { TOP, BOTTOM, LEFT, RIGHT }
+
+        private (TaskBarLocation Position, int Amount) GetTaskBarInfo()
+        {
+            (TaskBarLocation Position, int Amount) result;
+            result.Position = TaskBarLocation.BOTTOM;
+            result.Amount = 0;
+
+            TaskBarLocation taskBarLocation = TaskBarLocation.BOTTOM;
+            bool taskBarOnTopOrBottom = (Screen.PrimaryScreen.WorkingArea.Width == Screen.PrimaryScreen.Bounds.Width);
+            if (taskBarOnTopOrBottom)
+            {
+                if (Screen.PrimaryScreen.WorkingArea.Top > 0) taskBarLocation = TaskBarLocation.TOP;
+                result.Amount = Screen.PrimaryScreen.Bounds.Height - Screen.PrimaryScreen.WorkingArea.Height;
+            }
+            else
+            {
+                if (Screen.PrimaryScreen.WorkingArea.Left > 0)
+                {
+                    taskBarLocation = TaskBarLocation.LEFT;
+                }
+                else
+                {
+                    taskBarLocation = TaskBarLocation.RIGHT;
+                }
+                result.Amount = Screen.PrimaryScreen.Bounds.Width - Screen.PrimaryScreen.WorkingArea.Width;
+            }
+
+            result.Position = taskBarLocation;
+            
+
+            return result;
+        }
+
+        public void SetVolume(double percent)
+        {
+            CoreAudioDevice defaultPlaybackDevice = new CoreAudioController().DefaultPlaybackDevice;
+            defaultPlaybackDevice.Volume = percent;
         }
 
         public void Start(bool removeFocus = true)
@@ -90,7 +135,14 @@ namespace Tools
             //windowWidth = 10;
             //windowHeight = 10;
 
-            if (fullScreen && alwaysShow) result = utilty.RunAS(browserPath, browserExeName, $"--chrome-frame --enable-speech-dispatcher --window-size={workingAreaWidth + 20},{workingAreaHeight + 50} --window-position={-10},{-40} --app={webAddress}", host, username, password, true, true, false);
+            var taskBarInfo = GetTaskBarInfo();
+            var taskBarHeight = 0;
+            var taskBarWidth = 0;
+
+            if (taskBarInfo.Position == TaskBarLocation.TOP || taskBarInfo.Position == TaskBarLocation.BOTTOM) taskBarHeight = taskBarInfo.Amount;
+            if (taskBarInfo.Position == TaskBarLocation.LEFT || taskBarInfo.Position == TaskBarLocation.RIGHT) taskBarWidth = taskBarInfo.Amount;
+
+            if (fullScreen && alwaysShow) result = utilty.RunAS(browserPath, browserExeName, $"--chrome-frame --enable-speech-dispatcher --window-size={workingAreaWidth + 20},{workingAreaHeight + taskBarHeight+10} --window-position={-10},{-(taskBarHeight)} --app={webAddress}", host, username, password, true, true, false);
             else if (!fullScreen && alwaysShow) result = utilty.RunAS(browserPath, browserExeName, $"--chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={(workingAreaWidth - windowWidth) + 10},{(workingAreaHeight - windowHeight) + 10} --app={webAddress}", host, username, password, true, true, false);
             else result = utilty.RunAS(browserPath, browserExeName, $"--chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={windowX},{windowY} --app={webAddress}", host, username, password, true, true, false);
 
@@ -126,8 +178,11 @@ namespace Tools
 
                 if (result == default(IntPtr)) Start(false);
 
-                var speechService = new SpeechService();
-                Task.Run(() => speechService.Start(true));
+                if (!alwaysShow)
+                {
+                    var speechService = new SpeechService();
+                    Task.Run(() => speechService.Start(true));
+                }
             }
             catch (Exception)
             {

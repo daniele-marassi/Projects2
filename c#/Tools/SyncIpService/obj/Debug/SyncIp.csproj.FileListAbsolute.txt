@@ -26,3 +26,10 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\obj\Debug\SyncIp.cs
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\obj\Debug\SyncIp.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\obj\Debug\SyncIp.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\obj\Debug\SyncIp.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Resources\About.ico
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Resources\About.png
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Resources\Fonts\Cafed_v2.ttf
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Resources\Fonts\PAPYRUS.TTF
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Resources\Fonts\We Spray.ttf
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Resources\Fonts\Byom-Icons-Trial.ttf
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Resources\Fonts\WEBDINGS.TTF

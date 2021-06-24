@@ -73,7 +73,7 @@
         var ehi = 0;
         var timesToReset = 0;
         var subType = ''; 
-        var step = 0
+        var step = 0;
         //@*Model Variables*@
 
         function VariablesAssignmentFromJson(jsonString) {
@@ -508,8 +508,16 @@
                 if(_phrase != null && _phrase != ''){
                     var phraseTmp = _phrase;
                     if(_old_phrase != '') phraseTmp = _old_phrase + ' ' + _phrase;
+                                           
+                    clearInterval(serviceInterval);
 
-                    CallWebSpeechDtoInJson(('_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultSendPhrase");
+                    if(subType == "RequestNotImplemented") {
+                        if(step == 1)step=3;
+                        else step++;
+                        if(step >= 4)  phraseTmp = _phrase;
+                    }
+
+                    CallWebSpeechDtoInJson(('_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application + '&_subType='+subType + '&_step='+step), "ResultSendPhrase");
                 }
             }
         }
@@ -565,6 +573,9 @@
 							   
             str = str.replace(new RegExp('/u00D', 'g'), " ");
             str = str.replace(new RegExp('/u00A', 'g'), " ");		
+
+            str = str.replace(new RegExp('/u002B', 'g'), "+");
+            
 
             tr = str.replace(new RegExp('null', 'g'), "");
 
@@ -880,6 +891,8 @@
 
         function PartialReset(){
             ehi = 0;
+            step = 0;
+            subType = "";
             _old_phrase = '';
             _phrase = null;
             partialResetActive = false;
@@ -1050,6 +1063,8 @@
         }
 
         function Action(type, link){
+            link = DecodeUnicode(link);
+
             if(application == false && type == 'Link' && link != null && link != '' ){
                 window.open(link);
             }
