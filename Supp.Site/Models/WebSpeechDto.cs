@@ -48,5 +48,7 @@ namespace Supp.Site.Models
         public IEnumerable<WebSpeechType> WebSpeechTypes { get { return Supp.Site.Models.WebSpeechTypes.Get(); } }
 
         public IEnumerable<ShortcutImage> ShortcutImages { get; set; }
+
+        public string NewWebSpeechDtoInJson { get; set; }
     }
 }

@@ -74,24 +74,25 @@
         var timesToReset = 0;
         var subType = ''; 
         var step = 0;
+        var newWebSpeechDtoInJson= '';
         //@*Model Variables*@
 
         function VariablesAssignmentFromJson(jsonString) {
             //console.log('###' + jsonString + '###');
             var model = JSON.parse(jsonString);
 
-            answer = DecodeUnicode(model['Answer']);
-            startAnswer = DecodeUnicode(model['StartAnswer']);
-            finalStep = GetBoolean(DecodeUnicode(model['FinalStep']));
-            hostsArrayString = DecodeUnicode(model['HostsArray']);
-            _error = DecodeUnicode(model['Error']);
-            application = GetBoolean(DecodeUnicode(model['Application']));
-            alwaysShow = GetBoolean(DecodeUnicode(model['AlwaysShow']));
-            resetAfterLoad = GetBoolean(DecodeUnicode(model['ResetAfterLoad']));
-            culture = DecodeUnicode(model['Culture']);
-            id = DecodeUnicode( model['Id']);
-            hostSelected =DecodeUnicode( model['HostSelected']);
-            phrase = DecodeUnicode(model['Phrase']);
+            answer = DecodeUnicodeExtended(model['Answer']);
+            startAnswer = DecodeUnicodeExtended(model['StartAnswer']);
+            finalStep = GetBoolean(DecodeUnicodeExtended(model['FinalStep']));
+            hostsArrayString = DecodeUnicodeExtended(model['HostsArray']);
+            _error = DecodeUnicodeExtended(model['Error']);
+            application = GetBoolean(DecodeUnicodeExtended(model['Application']));
+            alwaysShow = GetBoolean(DecodeUnicodeExtended(model['AlwaysShow']));
+            resetAfterLoad = GetBoolean(DecodeUnicodeExtended(model['ResetAfterLoad']));
+            culture = DecodeUnicodeExtended(model['Culture']);
+            id = DecodeUnicodeExtended( model['Id']);
+            hostSelected =DecodeUnicodeExtended( model['HostSelected']);
+            phrase = DecodeUnicodeExtended(model['Phrase']);
 
             if(finalStep == false) {
                 if(phrase != null && phrase != ''){           
@@ -103,31 +104,33 @@
                 _old_phrase = '';
             }
 
-            listeningWord1 = DecodeUnicode(model['ListeningWord1']);
-            listeningWord2 = DecodeUnicode(model['ListeningWord2']);
+            listeningWord1 = DecodeUnicodeExtended(model['ListeningWord1']);
+            listeningWord2 = DecodeUnicodeExtended(model['ListeningWord2']);
 
             listeningPhrase = listeningWord1.trim().toLowerCase();
             if(listeningPhrase != '') listeningPhrase += ' ';
             listeningPhrase += listeningWord2.trim().toLowerCase();
 
-            executionQueueId = DecodeUnicode(model['ExecutionQueueId']);
-            shortcutsInJson = DecodeUnicode(model['ShortcutsInJson']);
-            type = DecodeUnicode(model['Type']);
-            parameters = DecodeUnicode(model['Parameters']); 
+            executionQueueId = DecodeUnicodeExtended(model['ExecutionQueueId']);
+            shortcutsInJson = DecodeUnicodeExtended(model['ShortcutsInJson']);
+            newWebSpeechDtoInJson = DecodeUnicode(model['NewWebSpeechDtoInJson']);
+
+            type = DecodeUnicodeExtended(model['Type']);
+            parameters = DecodeUnicodeExtended(model['Parameters']); 
             ehi = 0;
             try {
-                ehi=parseInt(DecodeUnicode(model['Ehi']));
+                ehi=parseInt(DecodeUnicodeExtended(model['Ehi']));
             }
             catch (error) {}
             timesToReset = 0;
             try {
-                timesToReset=parseInt(DecodeUnicode(model['TimesToReset']));
+                timesToReset=parseInt(DecodeUnicodeExtended(model['TimesToReset']));
             }
             catch (error) {}
-            subType = DecodeUnicode(model['SubType']);
+            subType = DecodeUnicodeExtended(model['SubType']);
             step = -1;
             try {
-                step=parseInt(DecodeUnicode(model['Step']));
+                step=parseInt(DecodeUnicodeExtended(model['Step']));
             }
             catch (error) {}
         }
@@ -165,6 +168,7 @@
 
             executionQueueId = '@Model?.ExecutionQueueId';
             shortcutsInJson = '@Model?.ShortcutsInJson';
+            newWebSpeechDtoInJson = '@Model?.NewWebSpeechDtoInJson';
             type = '@Model?.Type';
             parameters = '@Model?.Parameters'; 
             ehi = 0;
@@ -511,12 +515,6 @@
                                            
                     clearInterval(serviceInterval);
 
-                    if(subType == "RequestNotImplemented") {
-                        if(step == 1)step=3;
-                        else step++;
-                        if(step >= 4)  phraseTmp = _phrase;
-                    }
-
                     CallWebSpeechDtoInJson(('_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application + '&_subType='+subType + '&_step='+step), "ResultSendPhrase");
                 }
             }
@@ -534,7 +532,20 @@
             VariablesAssignmentFromJson(result);
             Speak();
             Action(type, parameters);
+
+            if(newWebSpeechDtoInJson != null && newWebSpeechDtoInJson != '' && newWebSpeechDtoInJson != 'null')  CallCreateWithParam(newWebSpeechDtoInJson);
         }
+
+        function CallCreateWithParam(_newWebSpeechDtoInJson){           
+            var _url = url.replace("Recognition","Create")+'?_newWebSpeechDtoInJson='+ _newWebSpeechDtoInJson;
+
+            if(application == false){
+                window.open(_url);
+            }
+            else if(application == true){
+                window.open(_url, "Create WebSpeech", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
+            } 
+        } 
 
         function DecodeUnicode(str){
             str = decodeURIComponent(str);
@@ -575,9 +586,15 @@
             str = str.replace(new RegExp('/u00A', 'g'), " ");		
 
             str = str.replace(new RegExp('/u002B', 'g'), "+");
-            
 
-            tr = str.replace(new RegExp('null', 'g'), "");
+            return str;
+        }
+
+        function DecodeUnicodeExtended(str){
+
+            str = DecodeUnicode(str);
+
+            str = str.replace(new RegExp('null', 'g'), "");
 
             return str;
         }
@@ -714,27 +731,18 @@
                                            
                                             clearInterval(serviceInterval);
 
-                                            if(subType == "RequestNotImplemented") {
-                                                if(step == 1)step=3;
-                                                else step++;
-                                                if(step >= 4)  phraseTmp = _phrase;
-                                            }
-
                                             CallWebSpeechDtoInJson(('_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application + '&_subType='+subType + '&_step='+step), "ResultRecognitionPhrase");
                                         } else if (ehi == 0 && _phrase != listeningPhrase && _phrase.includes(listeningPhrase) && _phrase != null && _phrase != '' && _reset == false) {
                                             var audio = new Audio("/Files/Ehi.mp3");
                                             audio.play();
 
                                             var phraseTmp = _phrase;
-                                            phraseTmp = phraseTmp.replace(listeningPhrase, '');
+                                            var start = phraseTmp.indexOf(listeningPhrase); 
+                                            start = start + listeningPhrase.length;
+                                            phraseTmp = phraseTmp.substring(start, phraseTmp.length);
                                             phraseTmp = phraseTmp.trim();
 
                                             clearInterval(serviceInterval);
-
-                                            if(subType == "RequestNotImplemented") {
-                                                if(step == 1)step=3;
-                                                else step++;
-                                            }
 
                                             CallWebSpeechDtoInJson(('_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application + '&_subType='+subType + '&_step='+step), "ResultRecognitionPhrase");
                                         }
@@ -770,6 +778,8 @@
             VariablesAssignmentFromJson(result);
             Speak();
             Action(type, parameters);
+
+            if(newWebSpeechDtoInJson != null && newWebSpeechDtoInJson != '' && newWebSpeechDtoInJson != 'null')  CallCreateWithParam(newWebSpeechDtoInJson);
         }
 
         function ResultRecognitionEhi(result){           
