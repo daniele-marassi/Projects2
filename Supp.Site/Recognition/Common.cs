@@ -352,7 +352,6 @@ namespace Supp.Site.Recognition
         public WebSpeechDto GetAnswer(WebSpeechDto data)
         {
             var rnd = new Random();
-
             var answers = new List<string>() { };
 
             try
@@ -376,7 +375,6 @@ namespace Supp.Site.Recognition
         public string GetMeteoPhrase(string request, string param, string culture, bool descriptionActive)
         {
             var result = "";
-
             var getMeteoResult = GetMeteo(param).GetAwaiter().GetResult();
 
             if (getMeteoResult.Error == null)

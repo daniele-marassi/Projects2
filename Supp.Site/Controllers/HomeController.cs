@@ -145,9 +145,6 @@ namespace Supp.Site.Controllers
 
                         var principal = CreatePrincipal(data, nLogUtility, user);
 
-                        logger.Info("principal:"+principal.ToString());
-                        logger.Info("SuppSiteAccessTokenCookieName:" + GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
-
                         CookieOptions option = new CookieOptions();
                         option.Expires = DateTime.Now.AddSeconds((double)data.ExpiresInSeconds);
                         var properties = new AuthenticationProperties() { AllowRefresh = true, ExpiresUtc = option.Expires, IsPersistent = true };

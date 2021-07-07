@@ -210,6 +210,7 @@ namespace Supp.Site.Controllers
                 {
                     logger.Error(ex.ToString());
                     ModelState.AddModelError("ModelStateErrors", ex.Message);
+
                     return View();
                 }
             }
@@ -315,7 +316,6 @@ namespace Supp.Site.Controllers
                             if (newWebSpeech.PrivateInstruction == true) row.UserId = claims.UserId;
                             else row.UserId = 0;
                         }
-
                     }
 
                     return View(data.FirstOrDefault());
@@ -324,6 +324,7 @@ namespace Supp.Site.Controllers
                 {
                     logger.Error(ex.ToString());
                     ModelState.AddModelError("ModelStateErrors", ex.Message);
+
                     return View(data);
                 }
             }
@@ -365,6 +366,7 @@ namespace Supp.Site.Controllers
                     {
                         logger.Error(ex.ToString());
                         ModelState.AddModelError("ModelStateErrors", ex.Message);
+
                         return View(dto);
                     }
                 }
@@ -416,6 +418,7 @@ namespace Supp.Site.Controllers
                 {
                     logger.Error(ex.ToString());
                     ModelState.AddModelError("ModelStateErrors", ex.Message);
+
                     return View();
                 }
             }
@@ -462,10 +465,13 @@ namespace Supp.Site.Controllers
                     {
                         logger.Error(ex.ToString());
                         ModelState.AddModelError("ModelStateErrors", ex.Message);
+
                         return View(dto);
                     }
+
                     return RedirectToAction(nameof(Index));
                 }
+
                 return View(dto);
             }
         }
@@ -500,6 +506,7 @@ namespace Supp.Site.Controllers
                 {
                     logger.Error(ex.ToString());
                     ModelState.AddModelError("ModelStateErrors", ex.Message);
+
                     return View();
                 }
             }
@@ -534,9 +541,11 @@ namespace Supp.Site.Controllers
                     {
                         logger.Error(ex.ToString());
                         ModelState.AddModelError("ModelStateErrors", ex.Message);
+
                         return View();
                     }
                 }
+
                 return View();
             }
         }
@@ -611,16 +620,6 @@ namespace Supp.Site.Controllers
 
                     if (_userName != null && _userName != "" && _password != null && _password != "" && login == true)
                     {
-                        logger.Info("_userName:"+_userName);
-                        logger.Info("_password:" + _password);
-                        logger.Info("nLogUtility:" + nLogUtility.ToString());
-                        logger.Info("authenticationRepo:" + authenticationRepo.ToString());
-                        logger.Info("HttpContext:" + HttpContext.ToString());
-                        logger.Info("User:" + User.ToString());
-                        logger.Info("User.Claims:" + User?.Claims.ToString());
-                        logger.Info("Response:" + Response.ToString());
-                        logger.Info("Request:" + Request.ToString());
-
                         var dto = new LoginDto() { UserName = _userName, Password = _password };
                         var authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response, Request);
                         resetAfterLoad = true;
@@ -678,7 +677,8 @@ namespace Supp.Site.Controllers
                     claims = SuppUtility.GetClaims(User);
 
                     if (resetAfterLoad == false) data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request).GetAwaiter().GetResult();
-                    else
+
+                    if (resetAfterLoad == true || data == null)
                     {
                         data = new WebSpeechDto() { };
 
