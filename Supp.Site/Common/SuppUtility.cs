@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Additional.NLog;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
+using NLog;
 using Supp.Site.Models;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -19,6 +22,9 @@ namespace Supp.Site.Common
 {
     public class SuppUtility
     {
+        private readonly static Logger classLogger = LogManager.GetCurrentClassLogger();
+        private readonly NLogUtility nLogUtility = new NLogUtility();
+
         /// <summary>
         /// Call Api
         /// </summary>
@@ -68,6 +74,11 @@ namespace Supp.Site.Common
             return response;
         }
 
+        /// <summary>
+        /// JsonToQuery
+        /// </summary>
+        /// <param name="jsonQuery"></param>
+        /// <returns></returns>
         public string JsonToQuery(string jsonQuery)
         {
             string str = "?";
@@ -170,6 +181,12 @@ namespace Supp.Site.Common
             }
         }
 
+        /// <summary>
+        /// AddErrorToCookie
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="response"></param>
+        /// <param name="error"></param>
         public void AddErrorToCookie(HttpRequest request, HttpResponse response, string error)
         {
             var errorsFromCookie = ReadCookie(request, GeneralSettings.Constants.SuppSiteErrorsCookieName);
@@ -183,6 +200,11 @@ namespace Supp.Site.Common
             SetCookie(response, GeneralSettings.Constants.SuppSiteErrorsCookieName, errorsToJson, 600);
         }
 
+        /// <summary>
+        /// SplitCamelCase
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static string SplitCamelCase(string str)
         {
             return Regex.Replace(
@@ -196,49 +218,63 @@ namespace Supp.Site.Common
             );
         }
 
+        /// <summary>
+        /// GetClaims
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public static ClaimsDto GetClaims(ClaimsPrincipal user)
         {
-            var dto = new ClaimsDto() { IsAuthenticated = false, Roles = new List<string>() { } };
-
-            try
+            var nLogUtility = new NLogUtility();
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var claims = user.Claims.ToList();
+                var dto = new ClaimsDto() { IsAuthenticated = false, Roles = new List<string>() { } };
 
-                if (claims != null && claims.Count > 0)
+                try
                 {
-                    dto.IsAuthenticated = true;
+                    var claims = user.Claims.ToList();
 
-                    dto.UserName = claims.Where(_ => _.Type == nameof(ClaimsDto.UserName)).Select(_ => _.Value).FirstOrDefault();
-
-                    var configInJson = claims.Where(_ => _.Type == "ConfigInJson").Select(_ => _.Value).FirstOrDefault();
-                    if (configInJson != null && configInJson != String.Empty)
+                    if (claims != null && claims.Count > 0)
                     {
-                        var obj = JsonConvert.DeserializeObject<Configuration>(configInJson);
-                        dto.Configuration = obj;
+                        dto.IsAuthenticated = true;
+
+                        dto.UserName = claims.Where(_ => _.Type == nameof(ClaimsDto.UserName)).Select(_ => _.Value).FirstOrDefault();
+
+                        var configInJson = claims.Where(_ => _.Type == "ConfigInJson").Select(_ => _.Value).FirstOrDefault();
+                        if (configInJson != null && configInJson != String.Empty)
+                        {
+                            var obj = JsonConvert.DeserializeObject<Configuration>(configInJson);
+                            dto.Configuration = obj;
+                        }
+                        else dto.Configuration = JsonConvert.DeserializeObject<Configuration>(GeneralSettings.Static.ConfigDefaultInJson);
+
+                        dto.Name = claims.Where(_ => _.Type == nameof(ClaimsDto.Name)).Select(_ => _.Value).FirstOrDefault();
+                        dto.Surname = claims.Where(_ => _.Type == nameof(ClaimsDto.Surname)).Select(_ => _.Value).FirstOrDefault();
+                        dto.UserId = long.Parse(claims.Where(_ => _.Type == nameof(ClaimsDto.UserId)).Select(_ => _.Value).FirstOrDefault());
+
+                        var rolesInString = claims.Where(_ => _.Type == nameof(ClaimsDto.Roles)).Select(_ => _.Value).FirstOrDefault();
+                        if (rolesInString != null && rolesInString != String.Empty)
+                        {
+                            var obj = rolesInString.Split(",");
+                            dto.Roles.AddRange(obj);
+                        }
                     }
-                    else dto.Configuration = JsonConvert.DeserializeObject<Configuration>(GeneralSettings.Static.ConfigDefaultInJson);
-
-                    dto.Name = claims.Where(_ => _.Type == nameof(ClaimsDto.Name)).Select(_ => _.Value).FirstOrDefault();
-                    dto.Surname = claims.Where(_ => _.Type == nameof(ClaimsDto.Surname)).Select(_ => _.Value).FirstOrDefault();
-                    dto.UserId = long.Parse(claims.Where(_ => _.Type == nameof(ClaimsDto.UserId)).Select(_ => _.Value).FirstOrDefault());
-
-                    var rolesInString = claims.Where(_ => _.Type == nameof(ClaimsDto.Roles)).Select(_ => _.Value).FirstOrDefault();
-                    if (rolesInString != null && rolesInString != String.Empty)
-                    {
-                        var obj = rolesInString.Split(",");
-                        dto.Roles.AddRange(obj);
-                    }
-
                 }
-            }
-            catch (Exception)
-            {
+                catch (Exception ex)
+                {
+                    logger.Error(ex.ToString());
+                    throw ex;
+                }
 
+                return dto;
             }
-
-            return dto;
         }
 
+        /// <summary>
+        /// GetSalutation
+        /// </summary>
+        /// <param name="cultureInfo"></param>
+        /// <returns></returns>
         public static string GetSalutation(CultureInfo cultureInfo)
         {
             Random rnd = new Random();
@@ -390,6 +426,11 @@ namespace Supp.Site.Common
             return result;
         }
 
+        /// <summary>
+        /// GetPartOfTheDay
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
         public static PartsOfTheDayEng GetPartOfTheDay(DateTime dateTime)
         {
             var time = int.Parse(DateTime.Now.ToString("HHmm"));

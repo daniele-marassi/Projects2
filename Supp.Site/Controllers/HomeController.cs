@@ -131,9 +131,11 @@ namespace Supp.Site.Controllers
                 result.Data = new TokenDto() { };
                 result.Error = null;
 
+                suppUtility = new SuppUtility();
+
                 try
                 {
-                    var loginResult = authenticationRepo.Login(dto.UserName, dto.Password).Result;
+                    var loginResult = authenticationRepo.Login(dto.UserName, dto.Password, dto.PasswordAlreadyEncrypted).Result;
 
                     result.IsValidUser = loginResult.IsAuthenticated;
 
@@ -150,21 +152,34 @@ namespace Supp.Site.Controllers
                         var properties = new AuthenticationProperties() { AllowRefresh = true, ExpiresUtc = option.Expires, IsPersistent = true };
                         httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, properties);
 
+                        logger.Info("RemoveCookies - STARTED");
                         suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                         suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
                         suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName);
                         suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteClaimsCookieName);
+                        logger.Info("RemoveCookies - ENDED");
+
+                        logger.Info("SetCookies - STARTED");
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName, data.ExpiresInSeconds.ToString(), data.ExpiresInSeconds);
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAccessTokenCookieName, data.Token, data.ExpiresInSeconds);
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName, dto.UserName, data.ExpiresInSeconds);
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName, data.UserId.ToString(), data.ExpiresInSeconds);
+                        logger.Info("SetCookies - ENDED");
 
+                        logger.Info("GetClaims - STARTED");
                         var claims = SuppUtility.GetClaims(principal);
+                        logger.Info("GetClaims - ENDED");
+
+                        logger.Info("SetCookie SuppSiteClaimsCookieName - STARTED");
                         suppUtility.SetCookie(response, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName, JsonConvert.SerializeObject(claims), data.ExpiresInSeconds);
+                        logger.Info("SetCookie SuppSiteClaimsCookieName - ENDED");
                     }
                     else
                     {
-                        throw new Exception(loginResult.Message + " - " + loginResult.OriginalException?.Message);
+                        var ex = new Exception(loginResult.Message + " - " + loginResult.OriginalException?.Message);
+                        logger.Error(ex.ToString());
+                        result.Error = ex;
+                        //throw new Exception(loginResult.Message + " - " + loginResult.OriginalException?.Message);
                     }
                 }
                 catch (Exception ex)

@@ -108,11 +108,11 @@ namespace Supp.ServiceHost.Controllers
 
         [AllowAnonymous]
         [HttpGet("GetToken")] //<host>/api/Authentications/GetToken
-        public async Task<IActionResult> GetToken(string userName, string password)
+        public async Task<IActionResult> GetToken(string userName, string password, bool passwordAlreadyEncrypted)
         {
             GrantCredentials grantCredentials = new GrantCredentials(_context);
 
-            var result = await grantCredentials.GetToken(userName, password);
+            var result = await grantCredentials.GetToken(userName, password, passwordAlreadyEncrypted);
 			
             return Ok(result);
         }

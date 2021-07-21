@@ -33,6 +33,11 @@ namespace Supp.Site.Recognition
             executionQueueRepo = new ExecutionQueuesRepository();
         }
 
+        /// <summary>
+        /// GetData
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public (List<WebSpeechDto> Data, List<ShortcutDto> Shortcuts) GetData(List<WebSpeechDto> data)
         {
             (List<WebSpeechDto> Data, List<ShortcutDto> Shortcuts) result;
@@ -80,6 +85,24 @@ namespace Supp.Site.Recognition
             return result;
         }
 
+        /// <summary>
+        /// GetWebSpeechDto
+        /// </summary>
+        /// <param name="_phrase"></param>
+        /// <param name="_hostSelected"></param>
+        /// <param name="_reset"></param>
+        /// <param name="_application"></param>
+        /// <param name="_executionQueueId"></param>
+        /// <param name="_alwaysShow"></param>
+        /// <param name="_id"></param>
+        /// <param name="_claims"></param>
+        /// <param name="_onlyRefresh"></param>
+        /// <param name="_subType"></param>
+        /// <param name="_step"></param>
+        /// <param name="expiresInSeconds"></param>
+        /// <param name="response"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public async Task<WebSpeechDto> GetWebSpeechDto(string _phrase, string _hostSelected, bool _reset, bool _application, long _executionQueueId, bool _alwaysShow, long _id, ClaimsDto _claims, bool _onlyRefresh, string _subType, int _step, int expiresInSeconds, HttpResponse response, HttpRequest request)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
@@ -94,6 +117,10 @@ namespace Supp.Site.Recognition
                     var _phraseMatched = "";
                     List<ShortcutDto> shortcuts = new List<ShortcutDto>() { };
                     var startAnswer = "";
+
+                    logger.Info("response:" + response?.ToString());
+                    logger.Info("request:" + request?.ToString());
+                    logger.Info("SuppSiteAccessTokenCookieName:" + GeneralSettings.Constants.SuppSiteAccessTokenCookieName?.ToString());
 
                     string access_token_cookie = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
 
@@ -222,6 +249,7 @@ namespace Supp.Site.Recognition
                     data.AlwaysShow = _alwaysShow;
                     data.ExecutionQueueId = _executionQueueId;
                     data.TimesToReset = _claims.Configuration.Speech.TimesToReset;
+                    data.OnlyRefresh = _onlyRefresh;
 
                     if ((_phrase != null && _phrase != "") && (data.FinalStep == false || _phrase == (data.ListeningWord1 + " " + data.ListeningWord2))) data.Ehi = 1;
 
@@ -241,11 +269,19 @@ namespace Supp.Site.Recognition
                 }
                 catch (Exception ex)
                 {
+                    logger.Error(ex.ToString());
                     throw ex;
                 }
             }
         }
 
+        /// <summary>
+        /// MatchPhrase
+        /// </summary>
+        /// <param name="_phrase"></param>
+        /// <param name="WebSpeechlist"></param>
+        /// <param name="_claims"></param>
+        /// <returns></returns>
         public (WebSpeechDto Data, string PhraseMatched) MatchPhrase(string _phrase, List<WebSpeechDto> WebSpeechlist, ClaimsDto _claims)
         {
             WebSpeechDto data = null;
@@ -349,6 +385,11 @@ namespace Supp.Site.Recognition
             return result;
         }
 
+        /// <summary>
+        /// GetAnswer
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public WebSpeechDto GetAnswer(WebSpeechDto data)
         {
             var rnd = new Random();
@@ -372,6 +413,14 @@ namespace Supp.Site.Recognition
             return data;
         }
 
+        /// <summary>
+        /// GetMeteoPhrase
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="param"></param>
+        /// <param name="culture"></param>
+        /// <param name="descriptionActive"></param>
+        /// <returns></returns>
         public string GetMeteoPhrase(string request, string param, string culture, bool descriptionActive)
         {
             var result = "";
@@ -414,6 +463,15 @@ namespace Supp.Site.Recognition
             return result;
         }
 
+        /// <summary>
+        /// MeteoManage
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="culture"></param>
+        /// <param name="partOfTheDay"></param>
+        /// <param name="day"></param>
+        /// <param name="descriptionActive"></param>
+        /// <returns></returns>
         public string MeteoManage(JObject src, string culture, dynamic partOfTheDay, Days day, bool descriptionActive)
         {
             var result = "";
@@ -471,6 +529,11 @@ namespace Supp.Site.Recognition
             return result;
         }
 
+        /// <summary>
+        /// GetMeteo
+        /// </summary>
+        /// <param name="_value"></param>
+        /// <returns></returns>
         public async Task<(JObject Data, string Error)> GetMeteo(string _value)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
@@ -514,6 +577,14 @@ namespace Supp.Site.Recognition
             }
         }
 
+        /// <summary>
+        /// ExecutionFinished
+        /// </summary>
+        /// <param name="_id"></param>
+        /// <param name="_hostSelected"></param>
+        /// <param name="_application"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public async Task ExecutionFinished(long _id, string _hostSelected, bool _application, HttpRequest request)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))

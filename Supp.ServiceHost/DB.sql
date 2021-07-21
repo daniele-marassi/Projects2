@@ -224,6 +224,26 @@ PRIMARY KEY CLUSTERED
 ) ON [PRIMARY]
 GO
 
+/****** Object:  Table [dbo].[Songs]    Script Date: 07/07/2021 22:02:21 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Songs](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[FullPath] [nvarchar](max) NULL,
+	[Position] [nvarchar](4000) NULL,
+	[Order] [int] NOT NULL,
+	[Listened] [bit] NOT NULL,
+	[InsDateTime] [datetime] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
 
 ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED 
 (
@@ -308,6 +328,9 @@ ALTER TABLE [dbo].[MediaConfigurations] ADD  DEFAULT (getdate()) FOR [InsDateTim
 GO
 
 ALTER TABLE [dbo].[Media] ADD  DEFAULT (getdate()) FOR [InsDateTime]
+GO
+
+ALTER TABLE [dbo].[Songs] ADD  DEFAULT (getdate()) FOR [InsDateTime]
 GO
 
 SET IDENTITY_INSERT [auth].[UserRoleTypes] ON 

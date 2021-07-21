@@ -30,6 +30,7 @@ using System.Text.Json;
 using System.IO;
 using NLog.Time;
 using System.Security.Cryptography.Xml;
+using System.Security.Cryptography;
 
 namespace Supp.Site.Controllers
 {
@@ -608,6 +609,7 @@ namespace Supp.Site.Controllers
                     bool.TryParse(_onlyRefresh?.ToString(), out onlyRefresh);
                     int step = 0;
                     int.TryParse(_step?.ToString(), out step);
+                    var passwordAlreadyEncrypted = false;
 
                     if (_userName == "null") _userName = null;
                     if (_password == "null") _password = null;
@@ -618,38 +620,12 @@ namespace Supp.Site.Controllers
                     var expiresInSeconds = 0;
                     var claims = new ClaimsDto() { IsAuthenticated = false };
 
-                    if (_userName != null && _userName != "" && _password != null && _password != "" && login == true)
-                    {
-                        var dto = new LoginDto() { UserName = _userName, Password = _password };
-                        var authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response, Request);
-                        resetAfterLoad = true;
-                    }
-
                     int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName), out expiresInSeconds);
 
-                    var loadDateString = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
-
-                    if (_onlyRefresh == null) resetAfterLoad = true;
-
-                    if (loadDateString != null && loadDateString != "" && resetAfterLoad == false && onlyRefresh == false)
-                    {
-                        DateTime loadDate;
-                        DateTime.TryParse(loadDateString, out loadDate);
-
-                        DateTime now = DateTime.Now;
-                        TimeSpan difference = now.Subtract(loadDate);
-                        if (difference.TotalSeconds >= 2)
-                        {
-                            resetAfterLoad = true;
-                        }
-                    }
-
-                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
+                    
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteApplicationCookieName);
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName);
-
-                    if (_onlyRefresh != null) suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteLoadDateCookieName, DateTime.Now.ToString(), expiresInSeconds);
 
                     if (_hostSelected != null && _hostSelected != "")
                     {
@@ -674,6 +650,61 @@ namespace Supp.Site.Controllers
                         bool.TryParse(_alwaysShow?.ToString(), out application);
                     }
 
+                    if (_password != null && _password != "" && login == true)
+                    {
+                        suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName);
+
+                        var passwordMd5 = "";
+
+                        using (MD5 md5Hash = MD5.Create())
+                        {
+                            passwordMd5 = Common.SuppUtility.GetMd5Hash(md5Hash, _password);
+                        }
+
+                        suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName, passwordMd5, expiresInSeconds);
+                    }
+
+                    if ((_password == null || _password == "") && User?.Claims?.ToList()?.Count() == 0 && application == true)
+                    {
+                        login = true;
+                        onlyRefresh = true;
+                        passwordAlreadyEncrypted = true;
+                        _userName = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
+                        _password = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName);
+                    }
+
+                    if (User?.Claims?.ToList()?.Count() == 0 && application == false)
+                    {
+                        throw new Exception("Authentication expired! login again");
+                    }
+
+                    if (_userName != null && _userName != "" && _password != null && _password != "" && login == true)
+                    {
+                        var dto = new LoginDto() { UserName = _userName, Password = _password, PasswordAlreadyEncrypted = passwordAlreadyEncrypted };
+                        var authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response, Request);
+                        resetAfterLoad = true;
+                    } 
+
+                    var loadDateString = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
+
+                    if (_onlyRefresh == null) resetAfterLoad = true;
+
+                    if (loadDateString != null && loadDateString != "" && resetAfterLoad == false && onlyRefresh == false)
+                    {
+                        DateTime loadDate;
+                        DateTime.TryParse(loadDateString, out loadDate);
+
+                        DateTime now = DateTime.Now;
+                        TimeSpan difference = now.Subtract(loadDate);
+                        if (difference.TotalSeconds >= 2)
+                        {
+                            resetAfterLoad = true;
+                        }
+                    }
+
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
+                    if (_onlyRefresh != null) suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteLoadDateCookieName, DateTime.Now.ToString(), expiresInSeconds);
+
                     claims = SuppUtility.GetClaims(User);
 
                     if (resetAfterLoad == false) data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request).GetAwaiter().GetResult();
@@ -687,10 +718,11 @@ namespace Supp.Site.Controllers
                         data.Application = application;
                         data.AlwaysShow = alwaysShow;
                         data.ExecutionQueueId = executionQueueId;
+                        data.OnlyRefresh = onlyRefresh;
                     }
 
                     data.ResetAfterLoad = resetAfterLoad;
-
+                    
                     return View(data);
                 }
                 catch (Exception ex)

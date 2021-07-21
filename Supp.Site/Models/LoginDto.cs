@@ -14,5 +14,9 @@ namespace Supp.Site.Models
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
+
+        [Required]
+        [Display(Name = "PasswordAlreadyEncrypted")]
+        public bool PasswordAlreadyEncrypted { get; set; }       
     }
 }

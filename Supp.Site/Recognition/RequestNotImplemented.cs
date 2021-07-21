@@ -20,6 +20,17 @@ namespace Supp.Site.Recognition
             suppUtility = new SuppUtility();
         }
 
+        /// <summary>
+        /// ManageRequestNotImplemented
+        /// </summary>
+        /// <param name="_subType"></param>
+        /// <param name="_step"></param>
+        /// <param name="expiresInSeconds"></param>
+        /// <param name="_phrase"></param>
+        /// <param name="_claims"></param>
+        /// <param name="response"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public static WebSpeechDto ManageRequestNotImplemented(string _subType, int _step, int expiresInSeconds, string _phrase, ClaimsDto _claims, HttpResponse response, HttpRequest request)
         {
             WebSpeechDto newWebSpeech = null;
@@ -114,6 +125,11 @@ namespace Supp.Site.Recognition
             return data;
         }
 
+        /// <summary>
+        /// GetRequestNotImplemented
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public static List<WebSpeechDto> GetRequestNotImplemented(string culture)
         {
             var result = new List<WebSpeechDto>() { };
@@ -308,6 +324,14 @@ namespace Supp.Site.Recognition
             return result;
         }
 
+
+        /// <summary>
+        /// GetRequestNotImplementedInsertIta
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="step"></param>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
         public static List<WebSpeechDto> GetRequestNotImplementedInsertIta(int id, int step, int parentId)
         {
             var result = new List<WebSpeechDto>() { };
@@ -396,6 +420,13 @@ namespace Supp.Site.Recognition
             return result;
         }
 
+        /// <summary>
+        /// GetRequestNotImplementedAnswerIta
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="step"></param>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
         public static List<WebSpeechDto> GetRequestNotImplementedAnswerIta(int id, int step, int parentId)
         {
             var result = new List<WebSpeechDto>() { };
@@ -422,6 +453,13 @@ namespace Supp.Site.Recognition
             return result;
         }
 
+        /// <summary>
+        /// GetRequestNotImplementedOtherIta
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="step"></param>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
         public static List<WebSpeechDto> GetRequestNotImplementedOtherIta(int id, int step, int parentId)
         {
             var result = new List<WebSpeechDto>() { };
@@ -448,6 +486,13 @@ namespace Supp.Site.Recognition
             return result;
         }
 
+        /// <summary>
+        /// GetRequestNotImplementedInsertEng
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="step"></param>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
         public static List<WebSpeechDto> GetRequestNotImplementedInsertEng(int id, int step, int parentId)
         {
             var result = new List<WebSpeechDto>() { };
@@ -536,6 +581,13 @@ namespace Supp.Site.Recognition
             return result;
         }
 
+        /// <summary>
+        /// GetRequestNotImplementedAnswerEng
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="step"></param>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
         public static List<WebSpeechDto> GetRequestNotImplementedAnswerEng(int id, int step, int parentId)
         {
             var result = new List<WebSpeechDto>() { };
@@ -562,6 +614,13 @@ namespace Supp.Site.Recognition
             return result;
         }
 
+        /// <summary>
+        /// GetRequestNotImplementedOtherEng
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="step"></param>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
         public static List<WebSpeechDto> GetRequestNotImplementedOtherEng(int id, int step, int parentId)
         {
             var result = new List<WebSpeechDto>() { };

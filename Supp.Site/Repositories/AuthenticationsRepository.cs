@@ -26,7 +26,7 @@ namespace Supp.Site.Repositories
             utility = new Utility();
         }
 
-        public async Task<TokenResult> Login(string userName, string password)
+        public async Task<TokenResult> Login(string userName, string password, bool passwordAlreadyEncrypted)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -37,6 +37,7 @@ namespace Supp.Site.Repositories
                     var keyValuePairs = new Dictionary<string, string>() { };
                     keyValuePairs["UserName"] = userName;
                     keyValuePairs["Password"] = password;
+                    keyValuePairs["PasswordAlreadyEncrypted"] = passwordAlreadyEncrypted.ToString();
 
                     var result = await utility.CallApi(HttpMethod.Get, GeneralSettings.Static.BaseUrl, "api/Authentications/GetToken", keyValuePairs, null);
 

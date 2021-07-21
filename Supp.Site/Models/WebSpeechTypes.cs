@@ -7,6 +7,10 @@ namespace Supp.Site.Models
 {
     public class WebSpeechTypes
     {
+        /// <summary>
+        /// Get WebSpeechTypes
+        /// </summary>
+        /// <returns></returns>
         public static IEnumerable<WebSpeechType> Get()
         {
             var list = new List<WebSpeechType>() { };

@@ -60,6 +60,7 @@
         var application = false;
         var alwaysShow = false;
         var resetAfterLoad = false;
+        var onlyRefresh = false;
         var culture = '';
         var id = '';
         var hostSelected = '';
@@ -89,6 +90,7 @@
             application = GetBoolean(DecodeUnicodeExtended(model['Application']));
             alwaysShow = GetBoolean(DecodeUnicodeExtended(model['AlwaysShow']));
             resetAfterLoad = GetBoolean(DecodeUnicodeExtended(model['ResetAfterLoad']));
+            onlyRefresh = GetBoolean(DecodeUnicodeExtended(model['OnlyRefresh']));
             culture = DecodeUnicodeExtended(model['Culture']);
             id = DecodeUnicodeExtended( model['Id']);
             hostSelected =DecodeUnicodeExtended( model['HostSelected']);
@@ -144,6 +146,7 @@
             application = GetBoolean('@Model?.Application');
             alwaysShow = GetBoolean('@Model?.AlwaysShow');
             resetAfterLoad = GetBoolean('@Model?.ResetAfterLoad');
+            onlyRefresh = GetBoolean('@Model?.OnlyRefresh');
             culture = '@Model?.Culture';
             id = '@Model?.Id';
             hostSelected = '@Model?.HostSelected';
@@ -172,17 +175,22 @@
             type = '@Model?.Type';
             parameters = '@Model?.Parameters'; 
             ehi = 0;
+
             try {
                 ehi=parseInt('@Model?.Ehi');
             }
             catch (error) {}
+            
             timesToReset = 0;
+            
             try {
                 timesToReset=parseInt('@Model?.TimesToReset');
             }
             catch (error) {}
+            
             subType = '@Model?.SubType';
             step = -1;
+            
             try {
                 step=parseInt('@Model?.Step');
             }
@@ -299,7 +307,6 @@
         }
 
         function ReadOutLoud(_message, _finalStep) {
-
             readOutLoudActive = true;
             recognitionActive = false;
             if(recognition != null){
@@ -890,12 +897,12 @@
             }
         }
 
-        function Reset(reset, onlyRefresh){
+        function Reset(reset, _onlyRefresh){
             PartialReset();
             if(_reset == false){ 
                  _reset = true;
                 clearInterval(serviceInterval);
-                location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset='+ reset + '&_application='+application + '&_executionQueueId='+ executionQueueId + '&_hostSelected='+hostSelected+ '&_onlyRefresh='+onlyRefresh;
+                location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset='+ reset + '&_application='+application + '&_executionQueueId='+ executionQueueId + '&_hostSelected='+hostSelected+ '&_onlyRefresh='+_onlyRefresh;
             }
         }
 
@@ -1025,11 +1032,13 @@
         function OpenShortcuts(){
             var element = document.getElementById("div_shortcuts");
             element.style.display = "block";
+            recognitionActive = false;
         }
 
         function CloseShortcuts(){
             var element = document.getElementById("div_shortcuts");
             element.style.display = "none";
+            recognitionActive = true;
         }
 
         function ActionShortcut(id){
@@ -1155,6 +1164,10 @@
             if(json != null && json != '') xhr.send(json);
             else xhr.send();
         }
+
+        function SendPhraseTextKeyDown() {
+            countTheTimesToReset = 0;
+        }
     </script>
 }
     
@@ -1185,7 +1198,7 @@
             <button id="recognitionEnableDisable_button" onclick="RecognitionEnableDisable()"  class="btn btn-dark" style="width:57px; border-width:1px; display: inline-block; outline: 0; box-shadow: none!important; height:38px; margin-top:-1px; margin-right:0px;">
                 <img id="recognitionEnableDisable_image" src="/Images/micOn.png" alt="Microphone" style="height:34px; opacity:0.2; margin-top:-5px;">
             </button>
-            <input type="text" id="sendPhrase_text" value="" style="height:38px; width:50%; display:inline-block; " class="btn btn-dark"/>
+            <input type="text" id="sendPhrase_text" value="" style="height:38px; width:50%; display:inline-block;" onkeydown="SendPhraseTextKeyDown();" class="btn btn-dark"/>
             <button id="sendPhrase_button" onclick="SendPhrase()" class="btn btn-dark" style="width:57px; display:inline-block; color:#333; border-width:1px; outline: 0;box-shadow: none!important; height:38px; margin-top:-1px;">Send</button>
             <button id="fakeClick_button" onclick="FakeClick();" style="display:none; "></button>
         </div>
@@ -1214,7 +1227,7 @@
             answer = null;
             synth= null;
             speech = null;
-            Reset(false, false);
+            Reset(false, onlyRefresh);
         } else { 
 		    InitPage();
             InitSpeech();

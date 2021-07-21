@@ -44,8 +44,9 @@ namespace Supp.ServiceHost.Services.Token
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="password"></param>
+        /// <param name="passwordAlreadyEncrypted"></param>
         /// <returns></returns>
-        public async Task<TokenResult> GetToken(string userName, string password)
+        public async Task<TokenResult> GetToken(string userName, string password, bool passwordAlreadyEncrypted)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -94,10 +95,14 @@ namespace Supp.ServiceHost.Services.Token
 
                     var now = DateTime.Now.Date;
 
-                    using (MD5 md5Hash = MD5.Create())
+                    if (passwordAlreadyEncrypted == false)
                     {
-                        passwordMd5 = Common.SuppUtility.GetMd5Hash(md5Hash, password);
+                        using (MD5 md5Hash = MD5.Create())
+                        {
+                            passwordMd5 = Common.SuppUtility.GetMd5Hash(md5Hash, password);
+                        }
                     }
+                    else passwordMd5 = password;
 
                     var createdAt = authentication.CreatedAt;
                     createdAt = new DateTime(createdAt.Year, createdAt.Month, createdAt.Day, 0, 0, 0);
