@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Tools.Properties;
+using Tools.Songs;
 
 namespace Tools
 {
@@ -21,12 +22,15 @@ namespace Tools
 		public static SyncIpService _SyncIpService;
 		public static Speech _Speech;
 		public static SpeechService _SpeechService;
+		public static SongsManager _SongsManager;
+		
 		public static bool HookKeyActive = true;
 		public static bool QueueServiceActive = true;
 		public static bool SyncIpServiceActive = true;
 		public static bool SpeechServiceActive = true;
 		public static bool SpeechShowHideActive = false;
-
+		public static bool SongsManagerActive = true;
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ProcessIcon"/> class.
 		/// </summary>
@@ -115,6 +119,19 @@ namespace Tools
 			else
 			{
 				ContextMenus.SetMenuItem("SpeechServiceMenuItem");
+			}
+
+			if (bool.Parse(ConfigurationManager.AppSettings["SongsManager"]))
+			{
+				SongsManagerActive = true;
+
+				//_SongsManager = new SongsManager();
+
+				System.Threading.Thread.Sleep(50);
+			}
+			else
+			{
+				ContextMenus.SetMenuItem("SongsManagerMenuItem");
 			}
 		}
 

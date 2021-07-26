@@ -3,6 +3,7 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\bin\Debug\MessagesP
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\bin\Debug\MessagesPopUp.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\bin\Debug\Newtonsoft.Json.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\bin\Debug\Newtonsoft.Json.xml
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.csprojAssemblyReference.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\Tools.MessagesPopUp.PopUp.resources
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.Properties.Resources.resources
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.csproj.GenerateResource.cache
@@ -10,4 +11,3 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\MessagesP
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.pdb
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.csprojAssemblyReference.cache

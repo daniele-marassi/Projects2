@@ -7,6 +7,7 @@ using Tools.Properties;
 using System.Threading.Tasks;
 using System.Configuration;
 using Tools.AboutBox;
+using Tools.Songs;
 
 namespace Tools
 {
@@ -61,6 +62,18 @@ namespace Tools
 			item.Name = "QueueServiceMenuItem";
 			item.Click += new EventHandler(QueueService_Click);
 			item.Image = Resources.ServiceActive;
+			Common.ContextMenus.Menu.Items.Add(item);
+
+			// Separator.
+			sep = new ToolStripSeparator();
+			Common.ContextMenus.Menu.Items.Add(sep);
+
+			// SongsManager.
+			item = new ToolStripMenuItem();
+			item.Text = "Songs Manager";
+			item.Name = "SongsManagerMenuItem";
+			item.Click += new EventHandler(SongsManager_Click);
+			item.Image = Resources.SongsManagerActive;
 			Common.ContextMenus.Menu.Items.Add(item);
 
 			// Separator.
@@ -161,6 +174,11 @@ namespace Tools
 			SetMenuItem("QueueServiceMenuItem");
 		}
 
+		void SongsManager_Click(object sender, EventArgs e)
+		{
+			SetMenuItem("SongsManagerMenuItem");
+		}
+
 		void SyncIpService_Click(object sender, EventArgs e)
 		{
 			SetMenuItem("SyncIpServiceMenuItem");
@@ -178,6 +196,13 @@ namespace Tools
 
 		public static void SetMenuItem(string itemName)
 		{
+			var utilty = new Utility();
+			string windowCaption;
+
+			var appSettings = ConfigurationManager.AppSettings;
+
+			windowCaption = appSettings["WindowCaption"];
+
 			if (itemName == "HookKeyMenuItem")
 			{
 				var item = Common.ContextMenus.Menu.Items[itemName];
@@ -290,7 +315,7 @@ namespace Tools
 			if (itemName == "SpeechShowHideMenuItem" && ProcessIcon.SpeechServiceActive)
 			{
 				var item = Common.ContextMenus.Menu.Items[itemName];
-				if (ProcessIcon.SpeechShowHideActive)
+				if (utilty.ProcessIsActiveByWindowCaption(windowCaption))
 				{
 					ProcessIcon.SpeechShowHideActive = false;
 					item.Image = Resources.SuppHide;
@@ -307,6 +332,12 @@ namespace Tools
 					ProcessIcon._Speech = new Speech();
 					Task.Run(() => ProcessIcon._Speech.Show());
 				}
+			}
+
+			if (itemName == "SongsManagerMenuItem" && ProcessIcon.SongsManagerActive)
+			{
+				ProcessIcon._SongsManager = new SongsManager();
+				Task.Run(() => ProcessIcon._SongsManager.Start());
 			}
 		}
 

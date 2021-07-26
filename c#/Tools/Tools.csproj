@@ -188,6 +188,12 @@
     <Content Include="Resources\ServicesError.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\SongsManagerActive.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SongsManagerDisable.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Supp.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -268,6 +274,10 @@
     <ProjectReference Include="MessagesPopUp\MessagesPopUp.csproj">
       <Project>{55c3206f-a2d0-47fc-968e-834fd5896e1f}</Project>
       <Name>MessagesPopUp</Name>
+    </ProjectReference>
+    <ProjectReference Include="Songs\Songs.csproj">
+      <Project>{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}</Project>
+      <Name>Songs</Name>
     </ProjectReference>
     <ProjectReference Include="SyncIpService\SyncIp.csproj">
       <Project>{0ecca25e-d738-40a1-b00b-d7750115ee67}</Project>

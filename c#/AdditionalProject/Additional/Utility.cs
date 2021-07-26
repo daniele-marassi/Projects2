@@ -1302,6 +1302,31 @@ namespace Additional
         }
 
         /// <summary>
+        /// Process Is Active By Window Caption
+        /// </summary>
+        /// <param name="windowCaption"></param>
+        /// <returns></returns>
+        public bool ProcessIsActiveByWindowCaption(string windowCaption)
+        {
+            var result = false;
+            try
+            {
+                Process[] processes = Process.GetProcesses();
+
+                foreach (Process proc in processes)
+                {
+                    if (proc.MainWindowTitle.ToLower().Trim().Contains(windowCaption.ToLower().Trim()))
+                        result = true;
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            return result;
+        }
+
+        /// <summary>
         ///  Move Ext Window
         /// </summary>
         /// <param name="windowCaption"></param>

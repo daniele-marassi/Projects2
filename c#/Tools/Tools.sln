@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepositionSpeech", "RepositionSpeech\RepositionSpeech.csproj", "{86504C23-3127-45C9-B568-CE2AF5257B01}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Songs", "Songs\Songs.csproj", "{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,18 @@ Global
 		{86504C23-3127-45C9-B568-CE2AF5257B01}.Release|x64.Build.0 = Release|Any CPU
 		{86504C23-3127-45C9-B568-CE2AF5257B01}.Release|x86.ActiveCfg = Release|Any CPU
 		{86504C23-3127-45C9-B568-CE2AF5257B01}.Release|x86.Build.0 = Release|Any CPU
+		{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}.Debug|x64.Build.0 = Debug|Any CPU
+		{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}.Debug|x86.Build.0 = Debug|Any CPU
+		{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}.Release|x64.ActiveCfg = Release|Any CPU
+		{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}.Release|x64.Build.0 = Release|Any CPU
+		{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}.Release|x86.ActiveCfg = Release|Any CPU
+		{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
