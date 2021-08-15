@@ -736,7 +736,7 @@ namespace Supp.Site.Controllers
             }
         }
 
-        // GET: WebSpeeches/RecognitionInJson
+        // GET: WebSpeeches/GetWebSpeechDtoInJson
         public async Task<string> GetWebSpeechDtoInJson(string _phrase, string _hostSelected, bool? _reset, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))

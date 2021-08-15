@@ -102,6 +102,9 @@ namespace Supp.Site.Common
                 public const string SuppSiteLoadDateCookieName = "SuppSiteLoadDate";
                 public const string SuppSiteAuthenticatedPasswordCookieName = "SuppSiteAuthenticatedPassword";
                 public const string SuppSiteNewWebSpeechCookieName = "SuppSiteNewWebSpeech";
+                public const string SuppSiteSongsPositionCookieName = "SuppSiteSongsPosition";
+                public const string SuppSiteSongIdCookieName = "SuppSiteSongId";
+                public const string SuppSitePlayListSelectedCookieName = "SuppSitePlayListSelected";
             }
 
             public static void SetGeneralSettings(IConfiguration configuration)

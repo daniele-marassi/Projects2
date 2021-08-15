@@ -66,6 +66,7 @@ namespace Supp.ServiceHost
             services.AddScoped<IGoogleDriveAuthsRepository, GoogleDriveAuthsRepository>();
             services.AddScoped<IWebSpeechesRepository, WebSpeechesRepository>();
             services.AddScoped<IExecutionQueuesRepository, ExecutionQueuesRepository>();
+            services.AddScoped<ISongsRepository, SongsRepository>();
 
             //services.AddHostedService<HubWorker>();
 

@@ -237,6 +237,7 @@ CREATE TABLE [dbo].[Songs](
 	[Position] [nvarchar](4000) NULL,
 	[Order] [int] NOT NULL,
 	[Listened] [bit] NOT NULL,
+	[DurationInMilliseconds] [bigint] NOT NULL,
 	[InsDateTime] [datetime] NOT NULL,
 PRIMARY KEY CLUSTERED 
 (

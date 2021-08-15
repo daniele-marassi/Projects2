@@ -7,6 +7,7 @@
         public string Position { get; set; }
         public int Order { get; set; }
         public bool Listened { get; set; }
+        public long DurationInMilliseconds { get; set; }
         public System.DateTime InsDateTime { get; }
     }
 }

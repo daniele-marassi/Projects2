@@ -50,6 +50,7 @@
         var initFinalTimeoutStep2 = null;
         var actionShortcutTimeout = null;
         var sessionGuid = null;
+        var voices;
 
         //@*Model Variables*@
         var answer = '';
@@ -369,12 +370,18 @@
             StartAnimateIntervalsListening(10);
 
             speech = new SpeechSynthesisUtterance();
+
+            //console.log(voices);
+            
             // Set the text and voice attributes.
             speech.text = message.trim();
             speech.volume = 1;
             speech.rate = 1;
             speech.pitch = 1;
             speech.lang = culture;
+
+            if(culture.toLowerCase() == "it-it") speech.voice = FindInArrayOfObject(voices, "name", "Google italiano");
+            if(culture.toLowerCase() == "en-us") speech.voice = FindInArrayOfObject(voices, "name", "Google UK English Female");
 
             synth = window.speechSynthesis;
             var speakHasError = false;
@@ -456,12 +463,6 @@
             }
         }
 
-        function GetBoolean(value){
-            var result = false;
-            if(value == '1' || value == 1 || value == "True" || value == "true" || value == true ) result = true;
-            return result;
-        }
-
         function InitPage(){
             //application = true;
             if(application == true){
@@ -510,6 +511,8 @@
                 }  
                 hosts_cmb_string+='</select>';
                 $("#hosts_cmb_container").html(hosts_cmb_string);
+
+                document.getElementById('hosts_cmb').value = hostSelected;
             }
         }
 
@@ -552,71 +555,11 @@
             else if(application == true){
                 window.open(_url, "Create WebSpeech", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
             } 
-        } 
-
-        function DecodeUnicode(str){
-            str = decodeURIComponent(str);
-            str = str.replace(new RegExp('/u0022', 'g'), '"');
-
-            str = str.replace(new RegExp('/U00E0', 'g'), "à");
-            str = str.replace(new RegExp('/U00E8', 'g'), "è");
-            str = str.replace(new RegExp('/U00F2', 'g'), "ò");
-            str = str.replace(new RegExp('/U00F9', 'g'), "ù");
-            str = str.replace(new RegExp('/U00EC', 'g'), "ì");
-
-            str = str.replace(new RegExp('/U00C0', 'g'), "à");
-            str = str.replace(new RegExp('/U00C8', 'g'), "è");
-            str = str.replace(new RegExp('/U00D2', 'g'), "ò");
-            str = str.replace(new RegExp('/U00D9', 'g'), "ù");
-            str = str.replace(new RegExp('/U00CC', 'g'), "ì");
-
-            str = str.replace(new RegExp('/U0027', 'g'), "'");
-
-            str = str.replace(new RegExp('/U00D', 'g'), " ");
-            str = str.replace(new RegExp('/U00A', 'g'), " ");
-			
-            str = str.replace(new RegExp('/u00E0', 'g'), "à");
-            str = str.replace(new RegExp('/u00E8', 'g'), "è");
-            str = str.replace(new RegExp('/u00F2', 'g'), "ò");
-            str = str.replace(new RegExp('/u00F9', 'g'), "ù");
-            str = str.replace(new RegExp('/u00EC', 'g'), "ì");
-							   
-            str = str.replace(new RegExp('/u00C0', 'g'), "à");
-            str = str.replace(new RegExp('/u00C8', 'g'), "è");
-            str = str.replace(new RegExp('/u00D2', 'g'), "ò");
-            str = str.replace(new RegExp('/u00D9', 'g'), "ù");
-            str = str.replace(new RegExp('/u00CC', 'g'), "ì");
-							   
-            str = str.replace(new RegExp('/u0027', 'g'), "'");
-							   
-            str = str.replace(new RegExp('/u00D', 'g'), " ");
-            str = str.replace(new RegExp('/u00A', 'g'), " ");		
-
-            str = str.replace(new RegExp('/u002B', 'g'), "+");
-
-            return str;
-        }
-
-        function DecodeUnicodeExtended(str){
-
-            str = DecodeUnicode(str);
-
-            str = str.replace(new RegExp('null', 'g'), "");
-
-            return str;
         }
 
         function Upgrade() {
             if(recognitionActive == true) StopAnimateIntervals();
             console.log('info_upgrade');
-        }
-
-        function Linebreak(s) {
-            return s.replace(two_line, '<p></p>').replace(one_line, '<br>');
-        }
-
-        function Capitalize(s) {
-            return s.replace(first_char, function (m) { return m.toUpperCase(); });
         }
 
         function StartButton(event) {
@@ -718,7 +661,7 @@
                                 if(recognitionActive == true) StopAnimateIntervalsListening(500);
                                 if (recognitionActive == true) console.log(_phrase);
                                 var _phraseSplit = _phrase.split(" ");
-                                if (_phraseSplit.length > 0 && recognitionActive == true) {;
+                                if (_phraseSplit.length > 0 && recognitionActive == true) {
                                     if (event.results[i].isFinal){
                                         if (_phrase === listeningPhrase && ehi == 0 && _reset == false) {
                                             var audio = new Audio("/Files/Ehi.mp3");
@@ -806,6 +749,8 @@
         }
 
         function Service() {
+            if(voices == undefined || voices == null || voices.length == 0) voices = window.speechSynthesis.getVoices();
+
             //if(audioActive == true) SetAudio();
 
             // partial reset after ehi with wait countTheTimesToPartialReset
@@ -851,39 +796,6 @@
             }
         }
 
-        function HexDecode(str) {
-            str = str.replace(/&aacute;/g, "à");
-            str = str.replace(/&eacute;/g, "è");
-            str = str.replace(/&oacute;/g, "ò");
-            str = str.replace(/&uacute;/g, "ù");
-            str = str.replace(/&iacute;/g, "ì");
-
-            str = str.replace(/&Aacute;/g, "à");
-            str = str.replace(/&Eacute;/g, "è");
-            str = str.replace(/&Oacute;/g, "ò");
-            str = str.replace(/&Uacute;/g, "ù");
-            str = str.replace(/&Iacute;/g, "ì");
-
-            str = str.replace(/&#xE0;/g, "à");
-            str = str.replace(/&#xE8;/g, "è");
-            str = str.replace(/&#xF2;/g, "ò");
-            str = str.replace(/&#xF9;/g, "ù");
-            str = str.replace(/&#xEC;/g, "ì");
-
-            str = str.replace(/&#xC0;/g, "à");
-            str = str.replace(/&#xC8;/g, "è");
-            str = str.replace(/&#xD2;/g, "ò");
-            str = str.replace(/&#xD9;/g, "ù");
-            str = str.replace(/&#xCC;/g, "ì");
-
-            str = str.replace(/&#x27;/g, "'");
-
-            str = str.replace(/&#xD;/g, " ");
-            str = str.replace(/&#xA;/g, " ");
-
-            return str;
-        }
-
         function Speak(){
             if (answer != null && answer != '') {
                 document.getElementById('final_span').innerHTML = '';
@@ -902,7 +814,7 @@
             if(_reset == false){ 
                  _reset = true;
                 clearInterval(serviceInterval);
-                location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset='+ reset + '&_application='+application + '&_executionQueueId='+ executionQueueId + '&_hostSelected='+hostSelected+ '&_onlyRefresh='+_onlyRefresh;
+                location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset='+ reset + '&_application='+application + '&_executionQueueId='+ executionQueueId + '&_hostSelected=' + $("#hosts_cmb option:selected").text() + '&_onlyRefresh='+_onlyRefresh;
             }
         }
 
@@ -919,18 +831,6 @@
             $("#sendPhrase_text").val('');
             document.getElementById('final_span').innerHTML = '';
             document.getElementById('interim_span').innerHTML = '';
-        }
-
-        function GenerateGuid() {
-          var result, i, j;
-          result = '';
-          for(j=0; j<32; j++) {
-            if( j == 8 || j == 12 || j == 16 || j == 20)
-              result = result + '-';
-            i = Math.floor(Math.random()*16).toString(16).toUpperCase();
-            result = result + i;
-          }
-          return result;
         }
 
         function InitFinal(){
@@ -979,22 +879,6 @@
 
         function FakeClick(){
             console.log('FakeClick');      
-        }
-
-        function ClearUrl(){
-            var _url = window.location.toString();
-            var splitUrl = _url.split('?');
-            url = splitUrl[0];
-            history.pushState({}, null, url);        
-        }
-
-        function IsMobile(){
-            var result = false;
-            if(/iPhone|iPad|iPod|Android|webOS|BlackBerry|Windows Phone/i.test(navigator.userAgent) || screen.availWidth <= 480){
-                result = true;
-            }
-            
-            return result;
         }
 
         function RecognitionEnableDisable(){
@@ -1056,10 +940,16 @@
                     if (shortcut['Id'] == parseInt(id)) {
 
                         if (application == false && shortcut['Type'] == 'Link') {
-                            window.open(shortcut['Action']);
+                            var _url = shortcut['Action'].replace(/&amp;/g,'&');
+                            _url = DecodeUnicodeExtended(_url);
+
+                            window.open(_url);
                         }
                         else if (application == true && shortcut['Type'] == 'Link') {
-                            window.open(shortcut['Action'], "open link", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
+                            var _url = shortcut['Action'].replace(/&amp;/g,'&');
+                            _url = DecodeUnicodeExtended(_url);
+
+                            window.open(_url, "open link", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
                         }
                         else {
                             CallWebSpeechDtoInJson(('_id=' + shortcut['Id'] + '&_hostSelected=' + $("#hosts_cmb option:selected").text() + '&_application=' + application), "ResultActionShortcut");
@@ -1083,19 +973,32 @@
             link = DecodeUnicode(link);
 
             if(application == false && type == 'Link' && link != null && link != '' ){
-                window.open(link);
+                var _url = link.replace(/&amp;/g,'&');
+                _url = DecodeUnicodeExtended(_url);
+
+                console.log(_url);
+                window.open(_url);
             }
 
             else if(application == true && type == 'Link' && link != null && link != ''){
-                window.open(link, "open link", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
+                var _url = link.replace(/&amp;/g,'&');
+                _url = DecodeUnicodeExtended(_url);
+
+                window.open(_url, "open link", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
             } 
 
             else if(application == false && type == 'SystemWebSearch' && link != null && link != ''){
-                window.open(link);
+                var _url = link.replace(/&amp;/g,'&');
+                _url = DecodeUnicodeExtended(_url);
+
+                window.open(_url);
             }
 
             else if(application == true && type == 'SystemWebSearch' && link != null && link != ''){
-                window.open(link, "search", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
+                var _url = link.replace(/&amp;/g,'&');
+                _url = DecodeUnicodeExtended(_url);
+
+                window.open(_url, "search", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
             } 
         }
 
@@ -1132,15 +1035,6 @@
             }
         }
 
-	    function ExecuteFunction(funcName, par)
-	    {
-		    var funcCall = funcName;
-            if(par != undefined && par != null && par != '') funcCall += "('" + par + "');";
-            else funcCall += "();";
-
-		    var ret = eval(funcCall);		
-	    }	
-
 	    function EllipseClick()
 	    {
 	       if(readOutLoudActive == false) OpenShortcuts();
@@ -1148,22 +1042,7 @@
                 readOutLoudActive = false;
                 if(synth != null) synth.cancel();
             }
-	    }	
-
-        function SendHttpRequest(method, url, json, funcName) {
-            var xhr = new XMLHttpRequest();
-            xhr.open(method, url, true);
-            xhr.onload = function(e) {
-                code = xhr.response;
-                if(funcName != undefined && funcName != null && funcName != '') ExecuteFunction(funcName, code);
-            };
-            xhr.onerror = function () {
-                console.error("** An error occurred during the XMLHttpRequest");
-            };
-            xhr.setRequestHeader("Content-type", "application/json");
-            if(json != null && json != '') xhr.send(json);
-            else xhr.send();
-        }
+	    }
 
         function SendPhraseTextKeyDown() {
             countTheTimesToReset = 0;

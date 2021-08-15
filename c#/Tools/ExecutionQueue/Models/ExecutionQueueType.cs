@@ -5,6 +5,7 @@ namespace Tools.ExecutionQueue.Models
     {
         RunExe = 0,
         SystemRunExe = 1,
-        Other = 2
+        Other = 2,
+        SongsPlayer = 3
     }
 }

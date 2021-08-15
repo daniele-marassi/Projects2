@@ -1,3 +1,4 @@
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\NLog.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Resources\About.ico
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Resources\About.png
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Resources\Fonts\Cafed_v2.ttf
@@ -16,6 +17,7 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\AutoMapper.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Common.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\EntityFramework.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\MediaToolkit.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\MessagesPopUp.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\NLog.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\System.ValueTuple.dll
@@ -31,6 +33,8 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\EntityFramework.x
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\NLog.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\System.ValueTuple.xml
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\it\EntityFramework.resources.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\it\EntityFramework.SqlServer.resources.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Debug\Songs.csprojAssemblyReference.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Debug\Songs.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Debug\Songs.csproj.CopyComplete

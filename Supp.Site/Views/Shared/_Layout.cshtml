@@ -18,15 +18,23 @@
     <link rel="stylesheet" href="~/css/PagedList.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-multiselect.css" />
     <link rel="stylesheet" href="~/css/bootstrap.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    
     <link rel="stylesheet" href="~/css/bootstrap-select.min.css" />
     <link rel="stylesheet" href="~/css/bootstrap-select.css" />
+    <link rel="stylesheet" href="~/bootstrap-slider/bootstrap-slider.min.css" />
+    <link rel="stylesheet" href="~/bootstrap-slider/bootstrap-slider.css" />
+    
+    <link rel="stylesheet" href="~/css/site.css" />
+    
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/Utility.js" asp-append-version="true"></script>
+    <script src="~/js/Common.js" asp-append-version="true"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap-multiselect.js"></script>
+    <script src="~/bootstrap-slider/bootstrap-slider.js"></script>
+    <script src="~/bootstrap-slider/bootstrap-slider.min.js"></script>
 
 </head>
 <body style="background-color:#000;">
@@ -140,6 +148,10 @@
                                         @Html.ActionLink("Web Speeches", "Index", "WebSpeeches", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                         <div class="dropdown-divider"></div>
                                         @Html.ActionLink("Web Speeches Recognition", "Recognition", "WebSpeeches", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("Songs", "Index", "Songs", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("Songs player", "SongsPlayer", "Songs", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
                                     </div>
                                 </li>
                             }

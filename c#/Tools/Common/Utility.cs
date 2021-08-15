@@ -34,7 +34,7 @@ namespace Tools.Common
             _json = _json.Replace(@"""", @"@DOUBLEQUOTES@");
             _json = _json.Replace(@" ", @"@SPACE@");
 
-            var result = RunExeAsync(Path.Combine(rootPath, "External_tools", "MessagesPopUp.exe"), _json).GetAwaiter().GetResult();
+            var result = RunExe(Path.Combine(rootPath, "External_tools", "MessagesPopUp.exe"), _json, true).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Tools.Common
         /// <param name="fullPath"></param>
         /// <param name="arguments"></param>
         /// <returns></returns>
-        public static async Task<(string Output, string Error)> RunExeAsync(string fullPath, string arguments)
+        public static async Task<(string Output, string Error)> RunExe(string fullPath, string arguments, bool async)
         {
             (string Output, string Error) result;
             result.Output = null;
@@ -55,14 +55,17 @@ namespace Tools.Common
                 process.StartInfo.FileName = fullPath;
                 process.StartInfo.Arguments = arguments;
                 process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.RedirectStandardOutput = async;
+                process.StartInfo.RedirectStandardError = async;
                 process.Start();
 
-                result.Output = process.StandardOutput.ReadToEnd();
+                if (async)
+                {
+                    result.Output = process.StandardOutput.ReadToEnd();
 
-                result.Error = process.StandardError.ReadToEnd();
-                process.WaitForExit();
+                    result.Error = process.StandardError.ReadToEnd();
+                    process.WaitForExit();
+                }
             }
             catch (Exception ex)
             {

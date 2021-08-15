@@ -16,6 +16,7 @@ using System.Windows.Forms;
 using Additional;
 using System.Collections.Generic;
 using System.IO;
+using MediaToolkit;
 
 namespace Tools.Songs
 {
@@ -127,14 +128,27 @@ namespace Tools.Songs
 
                         oldPosition = position;
 
-                        var song = new SongDto() { 
-                            FullPath = item,
-                            Listened = false, 
-                            Position = position,
-                            Order = order    
-                        };
+                        var inputFile = new MediaToolkit.Model.MediaFile { Filename = item };
+                        using (var engine = new Engine())
+                        {
+                            engine.GetMetadata(inputFile);
+                        }
 
-                        await AddSongsDbAsync(song);
+                        var totalMilliseconds = inputFile?.Metadata?.Duration != null ? (long)inputFile?.Metadata?.Duration.TotalMilliseconds : 0;
+
+                        if (totalMilliseconds > 0)
+                        {
+                            var song = new SongDto()
+                            {
+                                FullPath = item,
+                                Listened = false,
+                                Position = position,
+                                Order = order,
+                                DurationInMilliseconds = totalMilliseconds
+                            };
+
+                            await AddSongsDbAsync(song);
+                        }
                     }
                 }
                 catch (Exception ex)

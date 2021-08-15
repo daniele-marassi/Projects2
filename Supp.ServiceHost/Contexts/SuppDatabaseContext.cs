@@ -23,6 +23,7 @@ namespace Supp.ServiceHost.Contexts
         public DbSet<Models.Media> Media { get; set; }
         public DbSet<Models.WebSpeech> WebSpeeches { get; set; }
         public DbSet<Models.ExecutionQueue> ExecutionQueues { get; set; }
+        public DbSet<Models.Song> Songs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -63,6 +64,10 @@ namespace Supp.ServiceHost.Contexts
                 .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<Models.ExecutionQueue>()
+                .Property(b => b.InsDateTime)
+                .HasDefaultValueSql("getdate()");
+
+            modelBuilder.Entity<Models.Song>()
                 .Property(b => b.InsDateTime)
                 .HasDefaultValueSql("getdate()");
 

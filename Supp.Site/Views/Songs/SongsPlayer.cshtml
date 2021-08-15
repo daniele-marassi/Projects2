@@ -1,0 +1,316 @@
+﻿@model Supp.Site.Models.SongDto
+
+@using Supp.Site.Controllers;
+@using Supp.Site.Common;
+
+@{
+    ViewData["Title"] = "Songs player";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = HomeController.Culture;
+}
+
+@using (Html.BeginForm("SongsPlayer", "Songs", FormMethod.Get))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script>
+        //101
+
+        var load = true;
+        var setVolumeTimeout = null;
+        var playNextInterval = null;
+        var playNextCount = 0;
+        var url = '';
+        var hosts = [];
+        var hostSelected = '';
+        var hosts_cmb_string ='';
+        var hostsArrayString = '';
+
+        var playList = [];
+        var playListSelected = '';
+        var playList_cmb_string ='';
+        var playListArrayString = '';
+        var durationInMilliseconds =0;
+        var command = '';
+        var volume=0;
+        var noAction= true;
+        var shuffle = false;
+
+        function Service() {
+            if(IsMobile() == false) document.getElementById('volumeSlider').style.width = (window.innerWidth * 70 / 100 ) + 'px';
+            else document.getElementById('volumeSlider').style.width = (window.innerWidth * 50 / 100 ) + 'px';
+        }
+
+        function InitFinal(){
+            setInterval( function() { Service(); }, 100);
+
+            load = false;
+        }
+
+        function CallManageSongsPlayer(paramString, funcName){           
+            var _url = url.replace("SongsPlayer","ManageSongsPlayer")+'?' + paramString;
+                    
+            SendHttpRequest("GET", _url, null, funcName);
+        }
+
+        function ActionPlayer(command){
+            console.log(command);
+
+            var el = document.getElementById('playerCommand_play');
+            if(command == 'play' || command == 'forward' || command == 'previous') el.src = '/Images/Player/play_selected.png';
+            if(command == 'stop') el.src = '/Images/Player/play.png';
+
+            CallManageSongsPlayer('_command=' + command + '&_hostSelected=' + $("#hosts_cmb option:selected").text() + '&_shuffle=' + shuffle + '&_playListSelected=' + $("#playList_cmb option:selected").text(), "ResultActionPlayer");
+        }
+
+        function ResultActionPlayer(result){
+            var model = JSON.parse(result);
+
+            var command = DecodeUnicodeExtended(model['Command']);
+
+            var title = DecodeUnicodeExtended(model['Title']);
+            var successful = GetBoolean(DecodeUnicodeExtended(model['Successful']));
+
+            document.getElementById('songTitle').innerHTML = "";
+
+            if(command != 'stop') document.getElementById('songTitle').innerHTML = title;
+
+            if(command == 'stop' || command == 'reset'){
+                clearTimeout(playNextInterval);
+                playNextInterval = null;  
+                playNextCount =0;
+                durationInMilliseconds =0;
+
+                var percent = 0;
+
+                $("#progress").attr("data-percentage", parseInt(percent).toString());
+                document.getElementById('progress_value').innerHTML = parseInt(percent)+'%';
+
+                if(command == 'reset') alert('Reset executed!');
+            }
+
+            if(successful==false && (command == 'play' || command == 'forward' || command == 'previous')) ActionPlayer('reset');
+
+            if(successful==true) {
+                durationInMilliseconds = parseInt(DecodeUnicodeExtended(model['DurationInMilliseconds']) / 1000);
+
+                if(command == 'play' || command == 'forward' || command == 'previous'){
+                    clearTimeout(playNextInterval);
+                    playNextInterval = null;
+                    playNextCount =0;
+
+                    var percent = 0;
+
+                    $("#progress").attr("data-percentage", parseInt(percent).toString());
+                    document.getElementById('progress_value').innerHTML = parseInt(percent)+'%';
+
+                    playNextInterval = setInterval( function() { CirlceProgressBar(); }, 1000);
+                }
+            }
+        }
+
+        function CirlceProgressBar(){
+            var percent = playNextCount / durationInMilliseconds * 100;
+
+            $("#progress").attr("data-percentage", parseInt(percent).toString());
+            document.getElementById('progress_value').innerHTML = parseInt(percent)+'%'; 
+            playNextCount++;
+
+            if(playNextCount > durationInMilliseconds && durationInMilliseconds != 0){
+                clearTimeout(playNextInterval);
+                playNextInterval = null;
+                playNextCount = 0;
+
+                ActionPlayer('forward');
+            }   
+        }
+
+        function InitPage(){
+            hostsArrayString = '@Model?.HostsArray';
+            hostSelected = '@Model?.HostSelected';
+
+            hostsArrayString = hostsArrayString.replace(/&quot;/g,'"');
+            
+            try {
+                hosts = JSON.parse(hostsArrayString);
+            }
+            catch (error) {  
+ 
+            }   
+
+            if(hosts != null && hosts.length > 0 ){
+                hosts_cmb_string='<select name="hosts_cmb" class="btn btn-dark" id="hosts_cmb" value="'+hostSelected+'" style="background-color:#000; color:#333;">';
+                for (var i = 0; i < hosts.length; i++)
+                {
+                    hosts_cmb_string+='<option>'+ hosts[i]+'</option>';
+                }  
+                hosts_cmb_string+='</select>';
+                $("#hosts_cmb_container").html(hosts_cmb_string);
+
+                document.getElementById('hosts_cmb').value = hostSelected;
+            }
+
+            playListArrayString = '@Model?.PlayListArray';
+            playListSelected = '@Model?.PlayListSelected';
+            command = '@Model?.Command';
+            shuffle = GetBoolean('@Model?.Shuffle');
+            volume = parseInt('@Model?.Volume');
+
+            playListArrayString = playListArrayString.replace(/&quot;/g,'"');
+            
+            try {
+                playList = JSON.parse(playListArrayString);
+            }
+            catch (error) {  
+ 
+            }
+
+            if(playList != null && playList.length > 0 ){
+                playList_cmb_string='<select name="playList_cmb" class="btn btn-dark" id="playList_cmb" value="'+playListSelected+'" style="background-color:#000; color:#333;">';
+                for (var i = 0; i < playList.length; i++)
+                {
+                    playList_cmb_string+='<option>'+ playList[i]+'</option>';
+                }  
+                playList_cmb_string+='</select>';
+                $("#playList_cmb_container").html(playList_cmb_string);
+
+                document.getElementById('playList_cmb').value = playListSelected;
+            }
+
+            setTimeout(function(){
+                noAction = true;
+                var el = document.getElementById('playerCommand_play');
+
+                if(command == 'play' || command == 'forward' || command == 'previous') el.src = '/Images/Player/play_selected.png';
+                if(command == 'stop') el.src = '/Images/Player/play.png';
+
+                el = document.getElementById('playerCommand_shuffle');
+
+                if(shuffle == false) {
+                    el.src = '/Images/Player/shuffle.png';
+                } else {
+                    el.src = '/Images/Player/shuffle_selected.png';
+                }
+
+                var actions ='';
+
+                if(command == 'play') actions +='play';
+
+                if(actions != '') actions += ',';
+
+                actions +='volume:'+volume;
+
+                console.log(actions);
+                ActionPlayer(actions);
+
+                noAction = false;
+            }, 500);
+        }
+
+        function SetShuffle(){
+            var el = document.getElementById('playerCommand_shuffle');
+
+            if(GetBoolean(shuffle) == false) {
+                shuffle = true;
+                el.src = '/Images/Player/shuffle_selected.png';
+            }
+            else {
+                shuffle = false;
+                el.src = '/Images/Player/shuffle.png';
+            }
+        }
+    </script>
+}
+    
+<div id="main" style="">
+    <div id="player" style="margin: 0; position: absolute; top: 50%; left: 50%; -ms-transform: translate(-50%, -50%); transform: translate(-50%, -50%); display:inline-block;">
+        <div id="hosts_cmb_container" style="text-align:center;"> 
+        </div>
+        <div id="playList_cmb_container" style="text-align:center;"> 
+        </div>
+        <div id="songTitle" style="margin:20px; font-size:30px; color:#555;"></div>
+        <dl id="playerCommandsContainer" class="row" style="max-height:600px; overflow-y:auto; ">
+	        <dt class="col-sm-3" style="">
+		        <div>
+			        <img class="playerCommand-dark" id="playerCommand_previous" src="/Images/Player/previous.png" alt="Previous" style="width:70%; margin:5%; cursor:pointer;" onclick="ActionPlayer('previous');">
+		        </div>
+	        </dt>
+	        <dt class="col-sm-3" style="">
+		        <div>
+			        <img class="playerCommand-dark" id="playerCommand_play" src="/Images/Player/play.png" alt="Play" style="width:70%; margin:5%; cursor:pointer;" onclick="ActionPlayer('play');">
+		        </div>
+	        </dt>
+            <dt class="col-sm-3" style="">
+		        <div>
+			        <img class="playerCommand-dark" id="playerCommand_stop" src="/Images/Player/stop.png" alt="Stop" style="width:70%; margin:5%; cursor:pointer;" onclick="ActionPlayer('stop');">
+		        </div>
+	        </dt>
+            <dt class="col-sm-3" style="">
+		        <div>
+			        <img class="playerCommand-dark" id="playerCommand_forward" src="/Images/Player/forward.png" alt="Forward" style="width:70%; margin:5%; cursor:pointer;" onclick="ActionPlayer('forward');">
+		        </div>
+	        </dt>
+            <dt class="col-sm-3" style="">
+		        <div>
+			        <img class="playerCommand-dark" id="playerCommand_shuffle" src="/Images/Player/shuffle.png" alt="Shuffle" style="width:70%; margin:5%; cursor:pointer;" onclick="SetShuffle();">
+		        </div>
+	        </dt>
+            <dt class="col-sm-3" style="">
+		        <div>
+			        <img class="playerCommand-dark" id="playerCommand_reset" src="/Images/Player/reset.png" alt="Reset" style="width:70%; margin:5%; cursor:pointer;" onclick="ActionPlayer('reset');">
+		        </div>
+	        </dt>
+            <dt class="col-sm-6" style="">
+                <div class="container p-5">
+	                <div class="progress" data-percentage="0" id="progress">
+		                <span class="progress-left">
+			                <span class="progress-bar"></span>
+		                </span>
+		                <span class="progress-right">
+			                <span class="progress-bar"></span>
+		                </span>
+		                <div class="progress-value">
+			                <div id="progress_value" style="font-size:50px;">
+				                0%
+			                </div>
+		                </div>
+	                </div>
+                </div>
+	        </dt>
+        </dl>
+
+        <input id="volume" data-slider-id='volumeSlider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0"/>
+    </div>
+</div>
+
+<script>  
+	window.onload = function(e) {
+
+        InitPage();
+
+        var slider = new Slider('#volume', {
+            value: volume,
+	        formatter: function(value) {
+                if(load == false){ 
+                    clearTimeout(setVolumeTimeout);
+                    setVolumeTimeout = null;
+                    volume = value;
+
+                    if(noAction==false){
+                        setVolumeTimeout = setTimeout(function(){
+                            ActionPlayer('volume:'+ value);
+                        }, 500); 
+                    }
+ 
+                }
+		        return 'Volume: ' + value + '%';
+	        }
+        });
+
+        
+        InitFinal();
+        ClearUrl();
+	}	
+</script>

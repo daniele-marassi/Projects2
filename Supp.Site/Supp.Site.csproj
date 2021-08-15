@@ -52,6 +52,7 @@
     <Folder Include="Resources\" />
     <Folder Include="Services\" />
     <Folder Include="wwwroot\Files\" />
+    <Folder Include="wwwroot\Images\Player\" />
   </ItemGroup>
 
   <ItemGroup>

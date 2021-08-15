@@ -14,6 +14,13 @@ using System.ServiceProcess;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Additional;
+using System.Runtime.InteropServices;
+using Tools.Songs.Contracts;
+using Tools.Songs.Repositories;
+using System.Web.Script.Serialization;
+using Newtonsoft.Json;
+using System.Diagnostics;
+using System.IO;
 
 namespace Tools.ExecutionQueue
 {
@@ -21,6 +28,7 @@ namespace Tools.ExecutionQueue
     {
         bool serviceActive = true;
         private IExecutionQueuesRepository _repo;
+        private ISongsRepository _songsRepo;
         string oldServiceError = null;
         string oldRunExeError = null;
         string oldUpdateError = null;
@@ -41,6 +49,7 @@ namespace Tools.ExecutionQueue
         string windowCaption;
         int workingAreaHeight;
         bool alwaysShow;
+        string songsPlayer;
 
         public QueueService()
         {
@@ -51,6 +60,7 @@ namespace Tools.ExecutionQueue
             windowHeight = int.Parse(appSettings["WindowHeight"]);
             windowCaption = appSettings["WindowCaption"];
             alwaysShow = bool.Parse(appSettings["AlwaysShow"]);
+            songsPlayer = appSettings["SongsPlayer"];
             workingAreaHeight = Screen.PrimaryScreen.WorkingArea.Height;
             windowX = 0;
             windowY = 0;
@@ -61,6 +71,7 @@ namespace Tools.ExecutionQueue
             suppDatabaseConnection = ConfigurationManager.AppSettings["SuppDatabaseConnection"];
             limitLogFileInMB = int.Parse(ConfigurationManager.AppSettings["LimitLogFileInMB"]);
             _repo = new ExecutionQueuesRepository(suppDatabaseConnection);
+            _songsRepo = new SongsRepository(suppDatabaseConnection);
             Database.SetInitializer<SuppDatabaseContext>(null);
             rootPath = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
         }
@@ -131,6 +142,11 @@ namespace Tools.ExecutionQueue
                                 item.StateQueue = ExecutionQueueStateQueue.AttemptToStart.ToString();
                             }
 
+                            if (item.Type == ExecutionQueueType.SongsPlayer.ToString())
+                            {
+                                item.StateQueue = ExecutionQueueStateQueue.AttemptToStart.ToString();
+                            }
+
                             var updateExecutionQueueResult = await _repo.UpdateExecutionQueue(item);
 
                             if (!updateExecutionQueueResult.Successful)
@@ -149,10 +165,39 @@ namespace Tools.ExecutionQueue
                             }
                             else
                             {
+                                if (item.Type == ExecutionQueueType.SongsPlayer.ToString())
+                                {
+                                    var arguments = JsonConvert.DeserializeObject<(string Command, long Id, string FullPath)>(item.Arguments);
+
+                                    if (arguments.Command == "play" || arguments.Command == "forward" || arguments.Command == "previous")
+                                    {
+                                        var getSongsByIdResult = await _songsRepo.GetSongsById(arguments.Id);
+
+                                        if (getSongsByIdResult.Successful)
+                                        {
+                                            var song = getSongsByIdResult.Data.FirstOrDefault();
+
+                                            item.FullPath = songsPlayer;
+                                            item.Arguments = @""""+ arguments.FullPath + @"""";
+
+                                            await RunExeAndUpdateDbAsync(item, false);
+
+                                            song.Listened = true;
+
+                                            var updateSongsResult = await _songsRepo.UpdateSongs(song);
+                                        }
+                                    }
+
+                                    if (arguments.Command == "stop")
+                                    {
+                                        EndTask(Path.GetFileName(songsPlayer));
+                                    }
+                                }
+
                                 if (item.Type == ExecutionQueueType.RunExe.ToString() || item.Type == ExecutionQueueType.SystemRunExe.ToString())
                                 {
                                     //Task.Run(() => RunExeAndUpdateDbAsync(item));
-                                    await RunExeAndUpdateDbAsync(item);
+                                    await RunExeAndUpdateDbAsync(item, true);
                                 }
 
                                 if (item.Type == ExecutionQueueType.Other.ToString())
@@ -218,14 +263,28 @@ namespace Tools.ExecutionQueue
             }
         }
 
+        public void EndTask(string taskname)
+        {
+            string processName = taskname.Replace(".exe", "");
+
+            foreach (Process process in Process.GetProcessesByName(processName))
+            {
+                process.Kill();
+            }
+        }
+
         /// <summary>
         /// RunExeAsync
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public async Task RunExeAndUpdateDbAsync(ExecutionQueueDto item)
+        public async Task RunExeAndUpdateDbAsync(ExecutionQueueDto item, bool async)
         {
-            var result = Common.Utility.RunExeAsync(item.FullPath, item.Arguments).GetAwaiter().GetResult();
+            (string Output, string Error) result;
+            result.Output = null;
+            result.Error = null;
+
+            result = Common.Utility.RunExe(item.FullPath, item.Arguments, async).GetAwaiter().GetResult();
 
             if (result.Error != null && result.Error != String.Empty)
             {
