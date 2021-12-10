@@ -57,11 +57,11 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\bin\Debug\Abou
 C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\bin\Debug\AboutBox.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\bin\Debug\Additional.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\bin\Debug\NLog.dll
-C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\bin\Debug\System.ValueTuple.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\bin\Debug\Additional.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\bin\Debug\Additional.dll.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\bin\Debug\NLog.xml
-C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\obj\Debug\AboutBox.csprojAssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\obj\Debug\AboutBox.csproj.AssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\obj\Debug\AboutBox.csproj.SuggestedBindingRedirects.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\obj\Debug\Tools.AboutBox.AboutBoxFrm.resources
 C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\obj\Debug\AboutBox.Properties.Resources.resources
 C:\Users\ev\GoogleDriveShare\Projects\c#\AboutBoxProject\AboutBox\obj\Debug\AboutBox.csproj.GenerateResource.cache

@@ -4,7 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using Supp.ServiceHost.Repositories;
-using Supp.ServiceHost.Models;
+using SuppModels;
 using Supp.ServiceHost.Services.Token;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

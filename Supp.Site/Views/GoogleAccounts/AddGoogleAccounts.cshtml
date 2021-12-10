@@ -1,0 +1,34 @@
+﻿@model SuppModels.GoogleAccountDto
+
+@using Supp.Site.Controllers;
+
+@{
+    ViewData["Title"] = "Add Google Accounts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = HomeController.Culture;
+}
+
+@using (Html.BeginForm("AddGoogleAccounts", "GoogleAccounts", FormMethod.Get))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <h1>@ViewData["Title"]</h1>
+
+    <hr />
+
+    <div>
+        @if (Model != null)
+        {
+
+        }
+        <div class="form-group">
+            <a href="Downloads/GoogleCreateCredentialsTool.zip" download class = "btn btn-primary" style = "text-decoration: none;">Download Google Create Credentials Tool</a>
+        </div>
+
+    </div>
+
+    <div class="text-danger" style="padding:30px;">
+        @Html.ValidationSummary(false)
+    </div>
+}

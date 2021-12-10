@@ -14,10 +14,12 @@
         "outputPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.ServiceHost\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
           "C:\\Users\\ev\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -30,7 +32,11 @@
         "frameworks": {
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\ev\\GoogleDriveShare\\Projects\\SuppModels\\SuppModels.csproj": {
+                "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\SuppModels\\SuppModels.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -138,8 +144,23 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.206\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
         }
+      }
+    },
+    "C:\\Users\\ev\\GoogleDriveShare\\Projects\\SuppModels\\SuppModels.csproj": {
+      "restore": {
+        "projectUniqueName": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\SuppModels\\SuppModels.csproj",
+        "projectName": "SuppModels",
+        "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\SuppModels\\SuppModels.csproj",
+        "frameworks": {
+          "net472": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net472": {}
       }
     }
   }

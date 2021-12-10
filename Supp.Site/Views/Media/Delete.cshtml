@@ -1,4 +1,4 @@
-﻿@model Supp.Site.Models.MediaDto
+﻿@model SuppModels.MediaDto
 
 @{
     ViewData["Title"] = "Delete Media";
@@ -12,10 +12,10 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.GoogleDriveAccounts.FirstOrDefault().Account)
+            @Html.DisplayNameFor(model => model.GoogleAccounts.FirstOrDefault().Account)
         </dt>
         <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.GoogleDriveAccounts.Where(_ => _.Id == model.GoogleDriveAccountId).FirstOrDefault().Account)
+            @Html.DisplayFor(model => model.GoogleAccounts.Where(_ => _.Id == model.GoogleAccountId).FirstOrDefault().Account)
         </dd>
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.FileId)

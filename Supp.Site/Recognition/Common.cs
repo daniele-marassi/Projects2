@@ -1,11 +1,13 @@
 ﻿using Additional;
 using Additional.NLog;
+using GoogleCalendar;
+using GoogleManagerModels;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 using Supp.Site.Common;
-using Supp.Site.Models;
+using SuppModels;
 using Supp.Site.Repositories;
 using System;
 using System.Collections.Generic;
@@ -122,7 +124,9 @@ namespace Supp.Site.Recognition
                     logger.Info("request:" + request?.ToString());
                     logger.Info("SuppSiteAccessTokenCookieName:" + GeneralSettings.Constants.SuppSiteAccessTokenCookieName?.ToString());
 
-                    string access_token_cookie = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var userName = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
+                    var userId = long.Parse(suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName).ToString());
 
                     result = await webSpeecheRepo.GetAllWebSpeeches(access_token_cookie);
 
@@ -152,7 +156,86 @@ namespace Supp.Site.Recognition
                         data = GetAnswer(data);
                     }
 
-                    if (data != null && (data.Type == "SystemRunExe" || data.Type == "RunExe") && data.OperationEnable == true)
+                    if (data != null && (data.Type == WebSpeechTypes.ReadRemindersToday.ToString() || data.Type == WebSpeechTypes.ReadRemindersTomorrow.ToString()))
+                    {
+                        var timeMin = DateTime.Now;
+                        var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
+
+                        var webSpeechTypes = WebSpeechTypes.ReadRemindersToday;
+                        if (data.Type == WebSpeechTypes.ReadRemindersToday.ToString()) webSpeechTypes = WebSpeechTypes.ReadRemindersToday;
+                        if (data.Type == WebSpeechTypes.ReadRemindersTomorrow.ToString()) webSpeechTypes = WebSpeechTypes.ReadRemindersTomorrow;
+
+                        if (webSpeechTypes == WebSpeechTypes.ReadRemindersTomorrow)
+                        {
+                            timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00").AddDays(1);
+                            timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59").AddDays(1);
+                        }
+
+                        var getRemindersResult = await webSpeecheRepo.GetReminders(access_token_cookie, userName, userId, timeMin, timeMax, webSpeechTypes);
+
+                        var answer = "";
+
+                        if (_claims.Configuration.General.Culture.ToLower() == "it-it") answer = "Ecco gli appuntamenti:";
+                        if (_claims.Configuration.General.Culture.ToLower() == "en-us") answer = "Here are the appointments:";
+
+                        if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
+                        {
+                            foreach (var item in getRemindersResult.Data)
+                            {
+                                if (answer != "") answer += " ";
+                                answer += item.Summary + ".";
+                            }
+                        }
+
+                        data.Answer = answer;
+                    }
+
+                    if (data != null && data.Type == WebSpeechTypes.ReadNotes.ToString())
+                    {
+                        var phrases = new List<string>() { };
+                        var phrase = _phrase;
+
+                        try
+                        {
+                            phrases = JsonConvert.DeserializeObject<List<string>>(data.Phrase);
+                        }
+                        catch (Exception)
+                        {
+                            phrases.Add(data.Phrase);
+                        }
+
+                        foreach (var item in phrases)
+                        {
+                            phrase = phrase.Replace(item, "");
+                        }
+
+                        var timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00");
+                        var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
+
+                        var webSpeechTypes = WebSpeechTypes.ReadNotes;
+
+                        var getRemindersResult = await webSpeecheRepo.GetReminders(access_token_cookie, userName, userId, timeMin, timeMax, webSpeechTypes, phrase);
+
+                        var answer = "";
+
+                        if (_claims.Configuration.General.Culture.ToLower() == "it-it") answer = "";
+                        if (_claims.Configuration.General.Culture.ToLower() == "en-us") answer = "";
+
+                        if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
+                        {
+                            foreach (var item in getRemindersResult.Data)
+                            {
+                                if (answer != "") answer += " ";
+                                answer += item.Summary.Replace("#Note ","") + ",";
+                                if (answer != "") answer += " ";
+                                answer += item.Description + ".";
+                            }
+                        }
+
+                        data.Answer = answer;
+                    }
+
+                    if (data != null && (data.Type == WebSpeechTypes.SystemRunExe.ToString() || data.Type == WebSpeechTypes.RunExe.ToString()) && data.OperationEnable == true)
                     {
                         var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = _hostSelected, Type = data.Type };
                         var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
@@ -163,14 +246,14 @@ namespace Supp.Site.Recognition
                         }
                     }
 
-                    if (data != null && data.Type == "Meteo")
+                    if (data != null && data.Type == WebSpeechTypes.Meteo.ToString())
                     {
                         var phrase = _phrase;
                         if (phrase == null) phrase = _phraseMatched;
                         data.Answer = GetMeteoPhrase(phrase, data.Parameters, _claims.Configuration.General.Culture.ToLower(), true);
                     }
 
-                    if (data != null && data.Type == "Time")
+                    if (data != null && data.Type == WebSpeechTypes.Time.ToString())
                     {
                         var now = DateTime.Now;
 
@@ -184,7 +267,7 @@ namespace Supp.Site.Recognition
                             data.Answer = now.Hour.ToString() + " and " + now.Minute.ToString() + " minutes" + ", " + dayofweek + " " + now.Day.ToString() + " " + month;
                     }
 
-                    if (data != null && data.Type == "SystemWebSearch")
+                    if (data != null && data.Type == WebSpeechTypes.SystemWebSearch.ToString())
                     {
                         var phrases = new List<string>() { };
                         var phrase = _phrase;
@@ -225,12 +308,80 @@ namespace Supp.Site.Recognition
                         if (_claims.Configuration.Speech.MeteoParameterToTheSalutation != null && _claims.Configuration.Speech.MeteoParameterToTheSalutation != "" && _application == true && SuppUtility.GetPartOfTheDay(now) == PartsOfTheDayEng.Morning)
                         {
                             data.Answer += GetMeteoPhrase(String.Empty, _claims.Configuration.Speech.MeteoParameterToTheSalutation, _claims.Configuration.General.Culture.ToLower(), _claims.Configuration.Speech.DescriptionMeteoToTheSalutationActive);
+
+                            if (_claims.Configuration.Speech.RemindersActive)
+                            {
+                                var timeMin = DateTime.Now;
+                                var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
+
+                                var getRemindersResult = await webSpeecheRepo.GetReminders(access_token_cookie, userName, userId, timeMin, timeMax, WebSpeechTypes.ReadRemindersToday);
+
+                                if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
+                                {
+                                    var reminders = "";
+                                    if (_claims.Configuration.General.Culture.ToLower() == "it-it") reminders = " Gli appuntamenti di oggi: ";
+                                    if (_claims.Configuration.General.Culture.ToLower() == "en-us") reminders = " Today's appointments: ";
+                                    foreach (var item in getRemindersResult.Data)
+                                    {
+                                        reminders += item.Summary;
+
+                                        if (_claims.Configuration.General.Culture.ToLower() == "it-it") reminders += " alle " + item.EventDateStart.Value.Hour.ToString() + " e " + item.EventDateStart.Value.Minute.ToString() + " minuti.";
+                                        if (_claims.Configuration.General.Culture.ToLower() == "en-us") reminders += " at " + item.EventDateStart.Value.Hour.ToString() + " and " + item.EventDateStart.Value.Minute.ToString() + " minutes.";
+                                    }
+
+                                    data.Answer += reminders;
+                                }
+
+                                if (!getRemindersResult.Successful)
+                                {
+                                    if (_claims.Configuration.General.Culture.ToLower() == "it-it") data.Answer += " Attenzione! probabilmente il token google è scaduto.";
+                                    if (_claims.Configuration.General.Culture.ToLower() == "en-us") data.Answer += " Attention! probably the google token has expired.";
+                                }
+
+                                timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00");
+                                timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
+
+                                var getHolidaysTodayResult = await webSpeecheRepo.GetHolidays(access_token_cookie, userName, userId, timeMin, timeMax, _claims.Configuration.General.Culture);
+
+                                if (getHolidaysTodayResult.Successful && getHolidaysTodayResult.Data.Count > 0)
+                                {
+                                    var holidays = "";
+                                    if (_claims.Configuration.General.Culture.ToLower() == "it-it") holidays = " Le festività di oggi: ";
+                                    if (_claims.Configuration.General.Culture.ToLower() == "en-us") holidays = " Today's holidays: ";
+
+                                    foreach (var item in getHolidaysTodayResult.Data)
+                                    {
+                                        holidays += item.Summary;
+                                    }
+
+                                    data.Answer += holidays;
+                                }
+
+                                timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00").AddDays(1);
+                                timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59").AddDays(1);
+
+                                var getHolidaysTomorrowResult = await webSpeecheRepo.GetHolidays(access_token_cookie, userName, userId, timeMin, timeMax, _claims.Configuration.General.Culture);
+
+                                if (getHolidaysTomorrowResult.Successful && getHolidaysTomorrowResult.Data.Count > 0)
+                                {
+                                    var holidays = "";
+                                    if (_claims.Configuration.General.Culture.ToLower() == "it-it") holidays = " Le festività di domani: ";
+                                    if (_claims.Configuration.General.Culture.ToLower() == "en-us") holidays = " Tomorrow's holidays: ";
+
+                                    foreach (var item in getHolidaysTodayResult.Data)
+                                    {
+                                        holidays += item.Summary;
+                                    }
+
+                                    data.Answer += holidays;
+                                }
+                            }
                         }
                     }
 
                     if (
                         (_phrase != null && _phrase != "" && data == null && result != null && _phrase.Split(" ").Count() > 1)
-                        || (data == null && _subType == "RequestNotImplemented")
+                        || (data == null && _subType == WebSpeechTypes.RequestNotImplemented.ToString())
                     )
                     {
                         data = Recognition.RequestNotImplemented.ManageRequestNotImplemented(_subType, _step, expiresInSeconds, _phrase, _claims, response, request);
@@ -330,7 +481,23 @@ namespace Supp.Site.Recognition
                     if (_wordsCount == 2) minMatch = 2;
                     if (minMatch == 0) minMatch = 1;
 
-                    if (item.Type == "SystemWebSearch" && _phrase.Trim().StartsWith(phrase) && skipMatch == false)
+                    if (item.Type == WebSpeechTypes.SystemWebSearch.ToString() && _phrase.Trim().StartsWith(phrase) && skipMatch == false)
+                    {
+                        skipMatch = true;
+                        _data = new List<WebSpeechDto>();
+                        _data.Add(item);
+                    }
+
+                    if (
+                        (
+                            item.Type == WebSpeechTypes.ReadNotes.ToString() 
+                            || item.Type == WebSpeechTypes.EditNote.ToString() 
+                            || item.Type == WebSpeechTypes.DeleteNote.ToString()
+
+                            || item.Type == WebSpeechTypes.EditReminder.ToString()
+                            || item.Type == WebSpeechTypes.DeleteReminder.ToString()
+                        ) 
+                            && _phrase.Trim().StartsWith(phrase) && skipMatch == false)
                     {
                         skipMatch = true;
                         _data = new List<WebSpeechDto>();
@@ -480,8 +647,12 @@ namespace Supp.Site.Recognition
             var hour = now.Hour;
             JToken details = null;
 
-            if (descriptionActive && day == Days.Tomorrow) description = src["data"]["weatherReportTomorrow"]["description"].ToString();
-            if (descriptionActive && (day == Days.Today || description == "" || description == " ")) description = src["data"]["weatherReportToday"]["description"].ToString();
+            //if (descriptionActive && day == Days.Tomorrow) description = src["data"]["weatherReportTomorrow"]["description"].ToString();
+            //if (descriptionActive && (day == Days.Today || description == "" || description == " ")) description = src["data"]["weatherReportToday"]["description"].ToString();
+
+            if (descriptionActive) description = src["data"]["previsionAbstract"]["description"].ToString();
+
+            if (description != String.Empty) description += ".";
 
             description = description.Replace("-", " ");
             description = description.Replace(System.Environment.NewLine, " ");
@@ -490,13 +661,33 @@ namespace Supp.Site.Recognition
 
             details = src["data"]["hours"][hour];
 
+            var previsions = new Dictionary<int, int>() { }; 
+
+            for (int i = hour; i <= 24; i++)
+            {
+                var _details = src["data"]["hours"][i];
+
+                int x = int.Parse(_details["prevision"].ToString());
+
+                if (previsions.ContainsKey(x)) previsions[x] += 1;
+                else previsions[x] = 1;
+            }
+
+            var prevailingPrevision = previsions.OrderByDescending(_ => _.Value).FirstOrDefault();
+
+            var prevailingPrevisionIndex = prevailingPrevision.Key;
+
+            var pervision = GetPrevisionPrhase(culture, prevailingPrevisionIndex);
+
             if (culture.Trim().ToLower() == "it-it")
             {
                 result = " Ecco le previsioni: ";
 
+                result += " Giornata " + pervision;
+
                 result += description;
 
-                result += " Temperatura " + details["temperature"].ToString().Replace(",", " e ") + " gradi";
+                result += " Ora ci sono " + details["temperature"].ToString().Replace(",", " e ") + " gradi";
 
                 result += ", umidità " + details["umidity"].ToString().Replace(",", " e ") + " percento";
 
@@ -507,9 +698,11 @@ namespace Supp.Site.Recognition
             {
                 result = " Here are the forecasts: ";
 
+                result += " Day " + pervision;
+
                 result += description;
 
-                result += " Temperature " + details["temperature"].ToString().Replace(",", " and ") + " degrees";
+                result += " There are now " + details["temperature"].ToString().Replace(",", " and ") + " degrees";
 
                 result += ", umidity " + details["umidity"].ToString().Replace(",", " and ") + " percent";
 
@@ -525,6 +718,105 @@ namespace Supp.Site.Recognition
             result = result.Replace("o'", "ò");
             result = result.Replace("u'", "ù");
             result = result.Replace("i'", "ì");
+
+            return result;
+        }
+
+        public string GetPrevisionPrhase(string culture, int previsionIndex)
+        {
+            var result = "";
+
+            if (culture.Trim().ToLower() == "it-it")
+            {
+                result = "PrevisionIndex: " + previsionIndex.ToString() + " non implementato.";
+                //if (previsionIndex == 0) result = "";
+                if (previsionIndex == 1) result = "con cielo coperto.";
+                if (previsionIndex == 2) result = "serena.";
+                //if (previsionIndex == 3) result = "";
+                if (previsionIndex == 4) result = "con nebbia fitta.";
+                if (previsionIndex == 5) result = "soleggiata.";
+                if (previsionIndex == 6) result = "con banchi di nebbia.";
+                if (previsionIndex == 7) result = "con neve debole.";
+                if (previsionIndex == 8) result = "con neve moderata.";
+                if (previsionIndex == 9) result = "con neve forte.";
+                if (previsionIndex == 10) result = "con cielo in gran parte nuvoloso.";
+                if (previsionIndex == 11) result = "con cielo in gran parte nuvoloso.";
+                if (previsionIndex == 12) result = "nuvolosa con pioggia leggera.";
+                if (previsionIndex == 13) result = "nuvolosa con pioggia media.";
+                if (previsionIndex == 14) result = "nuvolosa con pioggia forte.";
+                if (previsionIndex == 15) result = "nuvolosa con pioggia leggera.";
+                if (previsionIndex == 16) result = "nuvolosa con pioggia media.";
+                if (previsionIndex == 17) result = "nuvolosa con pioggia forte.";
+                if (previsionIndex == 18) result = "con pioggia debole.";
+                if (previsionIndex == 19) result = "con pioggia moderata.";
+                if (previsionIndex == 20) result = "con pioggia forte.";
+                if (previsionIndex == 21) result = "prevalentemente soleggiata.";
+                if (previsionIndex == 22) result = "poco nuvolosa.";
+                if (previsionIndex == 23) result = "con temporale.";
+                if (previsionIndex == 24) result = "nuvolosa con temporale.";
+                if (previsionIndex == 25) result = "nuvolosa con temporale.";
+                if (previsionIndex == 26) result = "con cielo in gran parte nuvoloso.";
+                if (previsionIndex == 27) result = "con cielo in gran parte nuvoloso.";
+                if (previsionIndex == 28) result = "con cielo coperto.";
+                //if (previsionIndex == 29) result = "";
+                if (previsionIndex == 30) result = "con neve debole.";
+                if (previsionIndex == 31) result = "con neve moderata.";
+                if (previsionIndex == 32) result = "con neve forte.";
+                if (previsionIndex == 33) result = "con pioggia debole.";
+                if (previsionIndex == 34) result = "con pioggia moderata.";
+                if (previsionIndex == 35) result = "con pioggia forte.";
+                if (previsionIndex == 36) result = "con temporale.";
+                //if (previsionIndex == 37) result = "";
+                //if (previsionIndex == 38) result = "";
+                //if (previsionIndex == 39) result = "";
+                //if (previsionIndex == 40) result = "";
+            }
+
+            if (culture.Trim().ToLower() == "en-us")
+            {
+                result = "PrevisionIndex: " + previsionIndex.ToString() + " not implemented.";
+                // if (previsionIndex == 0) result = "";
+                if (previsionIndex == 1) result = "with cloudy sky.";
+                if (previsionIndex == 2) result = "serena.";
+                // if (previsionIndex == 3) result = "";
+                if (previsionIndex == 4) result = "with thick fog.";
+                if (previsionIndex == 5) result = "sunny.";
+                if (previsionIndex == 6) result = "with fog banks.";
+                if (previsionIndex == 7) result = "with light snow.";
+                if (previsionIndex == 8) result = "with moderate snow.";
+                if (previsionIndex == 9) result = "with heavy snow.";
+                if (previsionIndex == 10) result = "with mostly cloudy skies.";
+                if (previsionIndex == 11) result = "with mostly cloudy skies.";
+                if (previsionIndex == 12) result = "cloudy with light rain.";
+                if (previsionIndex == 13) result = "cloudy with average rain.";
+                if (previsionIndex == 14) result = "cloudy with heavy rain.";
+                if (previsionIndex == 15) result = "cloudy with light rain.";
+                if (previsionIndex == 16) result = "cloudy with average rain.";
+                if (previsionIndex == 17) result = "cloudy with heavy rain.";
+                if (previsionIndex == 18) result = "with light rain.";
+                if (previsionIndex == 19) result = "with moderate rain.";
+                if (previsionIndex == 20) result = "with heavy rain.";
+                if (previsionIndex == 21) result = "mostly sunny.";
+                if (previsionIndex == 22) result = "slightly cloudy.";
+                if (previsionIndex == 23) result = "with temporal.";
+                if (previsionIndex == 24) result = "cloudy with thunderstorm.";
+                if (previsionIndex == 25) result = "cloudy with thunderstorm.";
+                if (previsionIndex == 26) result = "with mostly cloudy skies.";
+                if (previsionIndex == 27) result = "with mostly cloudy skies.";
+                if (previsionIndex == 28) result = "with cloudy sky.";
+                // if (previsionIndex == 29) result = "";
+                if (previsionIndex == 30) result = "with light snow.";
+                if (previsionIndex == 31) result = "with moderate snow.";
+                if (previsionIndex == 32) result = "with heavy snow.";
+                if (previsionIndex == 33) result = "with light rain.";
+                if (previsionIndex == 34) result = "with moderate rain.";
+                if (previsionIndex == 35) result = "with heavy rain.";
+                if (previsionIndex == 36) result = "with temporal.";
+                // if (previsionIndex == 37) result = "";
+                // if (previsionIndex == 38) result = "";
+                // if (previsionIndex == 39) result = "";
+                // if (previsionIndex == 40) result = "";
+            }
 
             return result;
         }
@@ -595,7 +887,7 @@ namespace Supp.Site.Recognition
                     {
                         string access_token_cookie = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
 
-                        var executionQueue = new ExecutionQueueDto() { FullPath = "*", Arguments = "*", Host = _hostSelected, Type = "ForceHideApplication", StateQueue = ExecutionQueueStateQueue.RunningStep2.ToString() };
+                        var executionQueue = new ExecutionQueueDto() { FullPath = "*", Arguments = "*", Host = _hostSelected, Type = ExecutionQueueType.ForceHideApplication.ToString(), StateQueue = ExecutionQueueStateQueue.RunningStep2.ToString() };
                         var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
                     }
                     catch (Exception ex)

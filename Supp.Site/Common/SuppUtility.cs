@@ -1,9 +1,8 @@
 ﻿using Additional.NLog;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using NLog;
-using Supp.Site.Models;
+using SuppModels;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -24,69 +23,6 @@ namespace Supp.Site.Common
     {
         private readonly static Logger classLogger = LogManager.GetCurrentClassLogger();
         private readonly NLogUtility nLogUtility = new NLogUtility();
-
-        /// <summary>
-        /// Call Api
-        /// </summary>
-        /// <param name="methodType"></param>
-        /// <param name="baseUrl"></param>
-        /// <param name="apiUrl"></param>
-        /// <param name="parametersJsonString"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public async Task<HttpResponseMessage> CallApi(HttpMethod methodType, string baseUrl, string apiUrl, string parametersJsonString, string token)
-        {
-            HttpResponseMessage response = new HttpResponseMessage();
-            using (HttpClient client = new HttpClient())
-            {
-                //init
-                client.BaseAddress = new Uri(baseUrl);
-                client.Timeout = TimeSpan.FromMinutes(10);
-
-                var par = "";
-
-                if ((parametersJsonString != null && parametersJsonString != String.Empty) && (methodType == HttpMethod.Get || methodType == HttpMethod.Delete))
-                {
-                    par = JsonToQuery(parametersJsonString);
-                }
-
-                //create request
-                var request = new HttpRequestMessage(methodType, client.BaseAddress + apiUrl + par);
-
-                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                if (token != null && token != String.Empty)
-                {
-                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                }
-
-                request.Content = null;
-                //add parameters
-                if ((parametersJsonString != null && parametersJsonString != String.Empty) && (methodType == HttpMethod.Post || methodType == HttpMethod.Put))
-                {
-                    request.Content = new StringContent(parametersJsonString);
-                }
-                //Console.WriteLine(request);
-                //call
-                response = await client.SendAsync(request);
-            }
-
-            return response;
-        }
-
-        /// <summary>
-        /// JsonToQuery
-        /// </summary>
-        /// <param name="jsonQuery"></param>
-        /// <returns></returns>
-        public string JsonToQuery(string jsonQuery)
-        {
-            string str = "?";
-            str += jsonQuery.Replace(":", "=").Replace("{", "").
-                        Replace("}", "").Replace(",", "&").
-                            Replace("\"", "");
-            return str;
-        }
 
         /// <summary>  
         /// Set Cookie 

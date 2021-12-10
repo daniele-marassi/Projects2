@@ -1,4 +1,4 @@
-﻿@model Supp.Site.Models.SongDto
+﻿@model SuppModels.SongDto
 
 @using Supp.Site.Controllers;
 @using Supp.Site.Common;
@@ -37,6 +37,7 @@
         var volume=0;
         var noAction= true;
         var shuffle = false;
+        var repeat = false;
 
         function Service() {
             if(IsMobile() == false) document.getElementById('volumeSlider').style.width = (window.innerWidth * 70 / 100 ) + 'px';
@@ -62,10 +63,11 @@
             if(command == 'play' || command == 'forward' || command == 'previous') el.src = '/Images/Player/play_selected.png';
             if(command == 'stop') el.src = '/Images/Player/play.png';
 
-            CallManageSongsPlayer('_command=' + command + '&_hostSelected=' + $("#hosts_cmb option:selected").text() + '&_shuffle=' + shuffle + '&_playListSelected=' + $("#playList_cmb option:selected").text(), "ResultActionPlayer");
+            CallManageSongsPlayer('_command=' + command + '&_hostSelected=' + $("#hosts_cmb option:selected").text() + '&_shuffle=' + shuffle + '&_repeat=' + repeat + '&_playListSelected=' + $("#playList_cmb option:selected").text(), "ResultActionPlayer");
         }
 
         function ResultActionPlayer(result){
+            console.log('***' + result);
             var model = JSON.parse(result);
 
             var command = DecodeUnicodeExtended(model['Command']);
@@ -76,6 +78,10 @@
             document.getElementById('songTitle').innerHTML = "";
 
             if(command != 'stop') document.getElementById('songTitle').innerHTML = title;
+
+            var el = document.getElementById('playerCommand_play');
+            if(command == 'play' || command == 'forward' || command == 'previous') el.src = '/Images/Player/play_selected.png';
+            if(command == 'stop') el.src = '/Images/Player/play.png';
 
             if(command == 'stop' || command == 'reset'){
                 clearTimeout(playNextInterval);
@@ -141,7 +147,7 @@
             }   
 
             if(hosts != null && hosts.length > 0 ){
-                hosts_cmb_string='<select name="hosts_cmb" class="btn btn-dark" id="hosts_cmb" value="'+hostSelected+'" style="background-color:#000; color:#333;">';
+                hosts_cmb_string='<select name="hosts_cmb" class="btn btn-dark" id="hosts_cmb" value="'+hostSelected+'" style="background-color:#000; color:#555;">';
                 for (var i = 0; i < hosts.length; i++)
                 {
                     hosts_cmb_string+='<option>'+ hosts[i]+'</option>';
@@ -156,6 +162,7 @@
             playListSelected = '@Model?.PlayListSelected';
             command = '@Model?.Command';
             shuffle = GetBoolean('@Model?.Shuffle');
+            repeat = GetBoolean('@Model?.Repeat');
             volume = parseInt('@Model?.Volume');
 
             playListArrayString = playListArrayString.replace(/&quot;/g,'"');
@@ -168,10 +175,10 @@
             }
 
             if(playList != null && playList.length > 0 ){
-                playList_cmb_string='<select name="playList_cmb" class="btn btn-dark" id="playList_cmb" value="'+playListSelected+'" style="background-color:#000; color:#333;">';
+                playList_cmb_string='<select name="playList_cmb" class="btn btn-dark" id="playList_cmb" value="'+playListSelected+'" style="background-color:#000; color:#555;">';
                 for (var i = 0; i < playList.length; i++)
                 {
-                    playList_cmb_string+='<option>'+ playList[i]+'</option>';
+                    playList_cmb_string+='<option>'+ playList[i] + '</option>';
                 }  
                 playList_cmb_string+='</select>';
                 $("#playList_cmb_container").html(playList_cmb_string);
@@ -192,6 +199,14 @@
                     el.src = '/Images/Player/shuffle.png';
                 } else {
                     el.src = '/Images/Player/shuffle_selected.png';
+                }
+
+                el = document.getElementById('playerCommand_repeat');
+
+                if(repeat == false) {
+                    el.src = '/Images/Player/repeat.png';
+                } else {
+                    el.src = '/Images/Player/repeat_selected.png';
                 }
 
                 var actions ='';
@@ -219,6 +234,19 @@
             else {
                 shuffle = false;
                 el.src = '/Images/Player/shuffle.png';
+            }
+        }
+
+        function SetRepeat(){
+            var el = document.getElementById('playerCommand_repeat');
+
+            if(GetBoolean(repeat) == false) {
+                repeat = true;
+                el.src = '/Images/Player/repeat_selected.png';
+            }
+            else {
+                repeat = false;
+                el.src = '/Images/Player/repeat.png';
             }
         }
     </script>
@@ -259,10 +287,15 @@
 	        </dt>
             <dt class="col-sm-3" style="">
 		        <div>
+			        <img class="playerCommand-dark" id="playerCommand_repeat" src="/Images/Player/repeat.png" alt="Repeat" style="width:70%; margin:5%; cursor:pointer;" onclick="SetRepeat();">
+		        </div>
+	        </dt>
+            <dt class="col-sm-3" style="">
+		        <div>
 			        <img class="playerCommand-dark" id="playerCommand_reset" src="/Images/Player/reset.png" alt="Reset" style="width:70%; margin:5%; cursor:pointer;" onclick="ActionPlayer('reset');">
 		        </div>
 	        </dt>
-            <dt class="col-sm-6" style="">
+            <dt class="col-sm-3" style="">
                 <div class="container p-5">
 	                <div class="progress" data-percentage="0" id="progress">
 		                <span class="progress-left">
@@ -309,7 +342,6 @@
 	        }
         });
 
-        
         InitFinal();
         ClearUrl();
 	}	

@@ -1,5 +1,5 @@
 ﻿using Supp.ServiceHost.Contracts;
-using Supp.ServiceHost.Models;
+using SuppModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System;

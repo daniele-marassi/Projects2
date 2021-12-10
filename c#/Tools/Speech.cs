@@ -29,10 +29,13 @@ namespace Tools
         string browserPath;
         string browserExeName;
         string host;
-        string username;
-        string password;
-        string webAddress;
-        string[] webAddressParamsArray;
+        string windowsUsername;
+        string windowsPassword;
+        string suppUsername;
+        string suppPassword;
+        string suppSiteSpeechAppUrl;
+        string suppSiteBaseUrl;
+        string[] suppSiteSpeechAppUrlParamsArray;
         int workingAreaWidth;
         int workingAreaHeight;
         int screenWidth;
@@ -54,10 +57,17 @@ namespace Tools
             browserPath = appSettings["BrowserPath"];
             browserExeName = appSettings["BrowserExeName"];
             host = appSettings["Host"];
-            username = appSettings["Username"];
-            password = appSettings["Password"];
-            webAddress = appSettings["WebAddress"];
-            webAddressParamsArray = appSettings["WebAddressParamsSeparatedWithComma"].Split(',');
+            windowsUsername = appSettings["WindowsUsername"];
+            windowsPassword = appSettings["WindowsPassword"];
+            suppUsername = appSettings["SuppUsername"];
+            suppPassword = appSettings["SuppPassword"];
+            suppSiteBaseUrl = appSettings["SuppSiteBaseUrl"];
+            suppSiteSpeechAppUrl = appSettings["SuppSiteSpeechAppUrl"];
+            var suppSiteSpeechAppUrlParamsSeparatedWithCommaString = appSettings["SuppSiteSpeechAppUrlParamsSeparatedWithComma"];
+            suppSiteSpeechAppUrlParamsSeparatedWithCommaString = suppSiteSpeechAppUrlParamsSeparatedWithCommaString.Replace("#USERNAME#", suppUsername);
+            suppSiteSpeechAppUrlParamsSeparatedWithCommaString = suppSiteSpeechAppUrlParamsSeparatedWithCommaString.Replace("#PASSWORD#", suppPassword);
+
+            suppSiteSpeechAppUrlParamsArray = suppSiteSpeechAppUrlParamsSeparatedWithCommaString.Split(',');
 
             fullScreen = bool.Parse(appSettings["FullScreen"]);
             alwaysShow = bool.Parse(appSettings["AlwaysShow"]);
@@ -114,17 +124,17 @@ namespace Tools
 
         public void Start(bool removeFocus = true)
         {
-            var webAddressParamsString = "";
+            var suppSiteSpeechAppUrlParamsString = "";
             (int? ProcessId, string Error) result;
-            if (webAddressParamsArray.Count() > 0) webAddress += "?";
+            if (suppSiteSpeechAppUrlParamsArray.Count() > 0) suppSiteSpeechAppUrl += "?";
 
-            foreach (var item in webAddressParamsArray)
+            foreach (var item in suppSiteSpeechAppUrlParamsArray)
             {
-                if (webAddressParamsString != "") webAddressParamsString += "&";
-                webAddressParamsString += item;
+                if (suppSiteSpeechAppUrlParamsString != "") suppSiteSpeechAppUrlParamsString += "&";
+                suppSiteSpeechAppUrlParamsString += item;
             }
 
-            webAddress += webAddressParamsString;
+            suppSiteSpeechAppUrl += suppSiteSpeechAppUrlParamsString;
 
             utilty.KillProcessByWindowCaption(windowCaption);
 
@@ -142,9 +152,9 @@ namespace Tools
             if (taskBarInfo.Position == TaskBarLocation.TOP || taskBarInfo.Position == TaskBarLocation.BOTTOM) taskBarHeight = taskBarInfo.Amount;
             if (taskBarInfo.Position == TaskBarLocation.LEFT || taskBarInfo.Position == TaskBarLocation.RIGHT) taskBarWidth = taskBarInfo.Amount;
 
-            if (fullScreen && alwaysShow) result = utilty.RunAS(browserPath, browserExeName, $"--chrome-frame --enable-speech-dispatcher --window-size={workingAreaWidth + 20},{workingAreaHeight + taskBarHeight+10} --window-position={-10},{-(taskBarHeight)} --app={webAddress}", host, username, password, true, true, false);
-            else if (!fullScreen && alwaysShow) result = utilty.RunAS(browserPath, browserExeName, $"--chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={(workingAreaWidth - windowWidth) + 10},{(workingAreaHeight - windowHeight) + 10} --app={webAddress}", host, username, password, true, true, false);
-            else result = utilty.RunAS(browserPath, browserExeName, $"--chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={windowX},{windowY} --app={webAddress}", host, username, password, true, true, false);
+            if (fullScreen && alwaysShow) result = utilty.RunAS(browserPath, browserExeName, $"--chrome-frame --enable-speech-dispatcher --window-size={workingAreaWidth + 20},{workingAreaHeight + taskBarHeight+10} --window-position={-10},{-(taskBarHeight)} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
+            else if (!fullScreen && alwaysShow) result = utilty.RunAS(browserPath, browserExeName, $"--chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={(workingAreaWidth - windowWidth) + 10},{(workingAreaHeight - windowHeight) + 10} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
+            else result = utilty.RunAS(browserPath, browserExeName, $"--chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={windowX},{windowY} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
 
             var _processId = (int)result.ProcessId;
 

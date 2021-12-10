@@ -4,7 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using Supp.ServiceHost.Repositories;
-using Supp.ServiceHost.Models;
+using SuppModels;
 using Supp.ServiceHost.Services.Token;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -98,6 +98,15 @@ namespace Supp.ServiceHost.Controllers
         public async Task<IActionResult> DeleteMedia(long id)
         {
             var result = await _repo.DeleteMediaById(id);
+
+            return Ok(result);
+        }
+
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [HttpDelete("ClearStructureMedia")] //<host>/api/Media/ClearStructureMedia
+        public async Task<IActionResult> ClearStructureMedia(string path)
+        {
+            var result = await _repo.ClearStructureMedia(path);
 
             return Ok(result);
         }

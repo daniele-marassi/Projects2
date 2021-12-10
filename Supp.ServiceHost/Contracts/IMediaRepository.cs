@@ -1,4 +1,4 @@
-﻿using Supp.ServiceHost.Models;
+﻿using SuppModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,5 +19,7 @@ namespace Supp.ServiceHost.Contracts
         Task<MediaResult> AddRangeMedia(string dataJsonString);
 
         Task<MediaResult> DeleteMediaById(long id);
+
+        Task<SongResult> ClearStructureMedia(string path);
     }
 }

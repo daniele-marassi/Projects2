@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Supp.ServiceHost.Common;
 using Supp.ServiceHost.Repositories;
-using Supp.ServiceHost.Models;
+using SuppModels;
 using Microsoft.IdentityModel.Tokens;
 using NLog;
 using System;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Supp.Site.Common;
-using Supp.Site.Models;
+using SuppModels;
 using Supp.Site.Repositories;
 using System;
 using System.Collections.Generic;
@@ -44,14 +44,14 @@ namespace Supp.Site.Recognition
             {
                 suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
 
-                newWebSpeech = new WebSpeechDto() { Name = "NewImplemented_" + DateTime.Now.ToString("yyyyMMddhhmmss"), Phrase = _phrase, Host = "all", Type = "Request", FinalStep = true, OperationEnable = true, PrivateInstruction = true, Ico = "/Images/Shortcuts/generic.png" };
+                newWebSpeech = new WebSpeechDto() { Name = "NewImplemented" + "_" + DateTime.Now.ToString("yyyyMMddhhmmss"), Phrase = _phrase, Host = "all", Type = WebSpeechTypes.Request.ToString(), FinalStep = true, OperationEnable = true, PrivateInstruction = true, Ico = " /Images/Shortcuts/generic.png" };
 
                 newWebSpeechString = JsonConvert.SerializeObject(newWebSpeech);
 
                 suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName, newWebSpeechString, expiresInSeconds);
             }
 
-            if (_subType == null || _subType == "") _subType = "RequestNotImplemented";
+            if (_subType == null || _subType == "") _subType = WebSpeechTypes.RequestNotImplemented.ToString();
 
             _step++;
 
@@ -142,15 +142,15 @@ namespace Supp.Site.Recognition
                     new WebSpeechDto()
                     {
                         Id = id,
-                        Name = "RequestNotImplemented_" + id.ToString(),
+                        Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                         Phrase = @"Mi dispiace, non conosco! Mi insegni?",
                         Answer = @"Mi dispiace, non conosco! Mi insegni?",
                         Host = "all",
                         FinalStep = false,
                         UserId = 0,
                         Order = 0,
-                        Type = "SystemRequest",
-                        SubType = "RequestNotImplemented",
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                         Step = 1,
                         OperationEnable = true,
                         ParentIds = ""
@@ -162,15 +162,15 @@ namespace Supp.Site.Recognition
                     new WebSpeechDto()
                     {
                         Id = id,
-                        Name = "RequestNotImplemented_" + id.ToString(),
+                        Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                         Phrase = @"[""no"", ""non ora"", ""no grazie""]",
                         Answer = @"[""ok"",""va bene"",""certo"",""bene""]",
                         Host = "all",
                         FinalStep = true,
                         UserId = 0,
                         Order = 0,
-                        Type = "SystemRequest",
-                        SubType = "RequestNotImplemented",
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                         Step = 2,
                         OperationEnable = true,
                         ParentIds = "[1]"
@@ -182,15 +182,15 @@ namespace Supp.Site.Recognition
                     new WebSpeechDto()
                     {
                         Id = id,
-                        Name = "RequestNotImplemented_" + id.ToString(),
+                        Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                         Phrase = @"[""sì"",""ok"",""sì va bene"",""si"",""ok"",""si va bene"", ""ok va bene""]",
                         Answer = null,
                         Host = "all",
                         FinalStep = false,
                         UserId = 0,
                         Order = 0,
-                        Type = "SystemRequest",
-                        SubType = "RequestNotImplemented",
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                         Step = 2,
                         OperationEnable = true,
                         ParentIds = "[1]"
@@ -202,15 +202,15 @@ namespace Supp.Site.Recognition
                     new WebSpeechDto()
                     {
                         Id = id,
-                        Name = "RequestNotImplemented_" + id.ToString(),
+                        Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                         Phrase = @"Cosa devo fare?",
                         Answer = @"[""Cosa devo fare?, Rispondere?, Altro?"",""Dimmi, cosa faccio?, Rispondere?, Altro? ""]",
                         Host = "all",
                         FinalStep = false,
                         UserId = 0,
                         Order = 0,
-                        Type = "SystemRequest",
-                        SubType = "RequestNotImplemented",
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                         Step = 3,
                         OperationEnable = true,
                         ParentIds = ""
@@ -236,15 +236,15 @@ namespace Supp.Site.Recognition
                     new WebSpeechDto()
                     {
                         Id = id,
-                        Name = "RequestNotImplemented_" + id.ToString(),
+                        Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                         Phrase = @"I'm sorry, I don't know! Teach me?",
                         Answer = @"I'm sorry, I don't know! Teach me?",
                         Host = "all",
                         FinalStep = false,
                         UserId = 0,
                         Order = 0,
-                        Type = "SystemRequest",
-                        SubType = "RequestNotImplemented",
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                         Step = 1,
                         OperationEnable = true,
                         ParentIds = ""
@@ -256,15 +256,15 @@ namespace Supp.Site.Recognition
                     new WebSpeechDto()
                     {
                         Id = id,
-                        Name = "RequestNotImplemented_" + id.ToString(),
+                        Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                         Phrase = @"[""no"", ""not now"", ""no thanks""]",
                         Answer = @"[""ok"",""all right"",""of course"",""well""]",
                         Host = "all",
                         FinalStep = true,
                         UserId = 0,
                         Order = 0,
-                        Type = "SystemRequest",
-                        SubType = "RequestNotImplemented",
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                         Step = 2,
                         OperationEnable = true,
                         ParentIds = "[1]"
@@ -276,15 +276,15 @@ namespace Supp.Site.Recognition
                     new WebSpeechDto()
                     {
                         Id = id,
-                        Name = "RequestNotImplemented_" + id.ToString(),
+                        Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                         Phrase = @"[""yes"",""ok"",""yes that's fine"", ""ok it's good""]",
                         Answer = null,
                         Host = "all",
                         FinalStep = false,
                         UserId = 0,
                         Order = 0,
-                        Type = "SystemRequest",
-                        SubType = "RequestNotImplemented",
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                         Step = 2,
                         OperationEnable = true,
                         ParentIds = "[1]"
@@ -296,15 +296,15 @@ namespace Supp.Site.Recognition
                     new WebSpeechDto()
                     {
                         Id = id,
-                        Name = "RequestNotImplemented_" + id.ToString(),
+                        Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                         Phrase = @"What should I do?",
                         Answer = @"[""What should I do?"",""Tell me, what do I do?""]",
                         Host = "all",
                         FinalStep = false,
                         UserId = 0,
                         Order = 0,
-                        Type = "SystemRequest",
-                        SubType = "RequestNotImplemented",
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                         Step = 3,
                         OperationEnable = true,
                         ParentIds = "[1]"
@@ -340,15 +340,15 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = "RequestNotImplemented_" + id.ToString(),
+                    Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                     Phrase = @"Inserisco",
                     Answer = @"[""Inserisco subito?"", ""Inserisco ora?"", ""Aggiungo subito?"", ""Aggiungo ora?""]",
                     Host = "all",
                     FinalStep = false,
                     UserId = 0,
                     Order = 0,
-                    Type = "SystemRequest",
-                    SubType = "RequestNotImplemented",
+                    Type = WebSpeechTypes.SystemRequest.ToString(),
+                    SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = ""
@@ -361,15 +361,15 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = "RequestNotImplemented_" + id.ToString(),
+                    Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                     Phrase = @"[""no"", ""non ora"", ""no grazie""]",
                     Answer = @"[""ok"",""va bene"",""certo"",""bene""]",
                     Host = "all",
                     FinalStep = true,
                     UserId = 0,
                     Order = 0,
-                    Type = "SystemRequest",
-                    SubType = "RequestNotImplemented",
+                    Type = WebSpeechTypes.SystemRequest.ToString(),
+                    SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + parentId.ToString() + "]"
@@ -381,15 +381,15 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = "RequestNotImplemented_" + id.ToString(),
+                    Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                     Phrase = @"[""sì"",""ok"",""sì va bene"",""si"",""ok"",""si va bene"", ""ok va bene""]",
                     Answer = @"[""ok"",""va bene"",""certo"",""bene""]",
                     Host = "all",
                     FinalStep = false,
                     UserId = 0,
                     Order = 0,
-                    Type = "SystemRequest",
-                    SubType = "RequestNotImplemented",
+                    Type = WebSpeechTypes.SystemRequest.ToString(),
+                    SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + parentId.ToString() + "]"
@@ -402,15 +402,15 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = "RequestNotImplemented_" + id.ToString(),
+                    Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                     Phrase = @"EMPTY",
                     Answer = @"[""Inserito""]",
                     Host = "all",
                     FinalStep = true,
                     UserId = 0,
                     Order = 0,
-                    Type = "SystemRequest",
-                    SubType = "RequestNotImplemented",
+                    Type = WebSpeechTypes.SystemRequest.ToString(),
+                    SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = ""
@@ -435,15 +435,15 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = "RequestNotImplemented_" + id.ToString(),
+                    Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                     Phrase = @"Rispondere",
                     Answer = @"[""Cosa devo rispondere?""]",
                     Host = "all",
                     FinalStep = false,
                     UserId = 0,
                     Order = 0,
-                    Type = "SystemRequest",
-                    SubType = "RequestNotImplemented",
+                    Type = WebSpeechTypes.SystemRequest.ToString(),
+                    SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + parentId.ToString() + "]"
@@ -468,15 +468,15 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = "RequestNotImplemented_" + id.ToString(),
+                    Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                     Phrase = @"Altro",
                     Answer = @"[""Ora preparo""]",
                     Host = "all",
                     FinalStep = true,
                     UserId = 0,
                     Order = 0,
-                    Type = "SystemRequest",
-                    SubType = "RequestNotImplemented",
+                    Type = WebSpeechTypes.SystemRequest.ToString(),
+                    SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + parentId.ToString() + "]"
@@ -501,15 +501,15 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = "RequestNotImplemented_" + id.ToString(),
+                    Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                     Phrase = @"I insert",
                     Answer = @"[""Do I post immediately?"", ""Do I post now?"", ""Do I add immediately?"", ""Add now?""]",
                     Host = "all",
                     FinalStep = false,
                     UserId = 0,
                     Order = 0,
-                    Type = "SystemRequest",
-                    SubType = "RequestNotImplemented",
+                    Type = WebSpeechTypes.SystemRequest.ToString(),
+                    SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = ""
@@ -522,15 +522,15 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = "RequestNotImplemented_" + id.ToString(),
+                    Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                     Phrase = @"[""no"", ""not now"", ""no thanks""]",
                     Answer = @"[""ok"",""all right"",""of course"",""well""]",
                     Host = "all",
                     FinalStep = true,
                     UserId = 0,
                     Order = 0,
-                    Type = "SystemRequest",
-                    SubType = "RequestNotImplemented",
+                    Type = WebSpeechTypes.SystemRequest.ToString(),
+                    SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + parentId.ToString() + "]"
@@ -542,15 +542,15 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = "RequestNotImplemented_" + id.ToString(),
+                    Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                     Phrase = @"[""yes"",""ok"",""yes that's fine"", ""ok it's good""]",
                     Answer = @"[""ok"",""all right"",""of course"",""well""]",
                     Host = "all",
                     FinalStep = false,
                     UserId = 0,
                     Order = 0,
-                    Type = "SystemRequest",
-                    SubType = "RequestNotImplemented",
+                    Type = WebSpeechTypes.SystemRequest.ToString(),
+                    SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + parentId.ToString() + "]"
@@ -563,15 +563,15 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = "RequestNotImplemented_" + id.ToString(),
+                    Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                     Phrase = @"EMPTY",
                     Answer = @"[""Inserted!""]",
                     Host = "all",
                     FinalStep = true,
                     UserId = 0,
                     Order = 0,
-                    Type = "SystemRequest",
-                    SubType = "RequestNotImplemented",
+                    Type = WebSpeechTypes.SystemRequest.ToString(),
+                    SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = ""
@@ -596,15 +596,15 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = "RequestNotImplemented_" + id.ToString(),
+                    Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                     Phrase = @"Answer",
                     Answer = @"[""What I have to answer?""]",
                     Host = "all",
                     FinalStep = false,
                     UserId = 0,
                     Order = 0,
-                    Type = "SystemRequest",
-                    SubType = "RequestNotImplemented",
+                    Type = WebSpeechTypes.SystemRequest.ToString(),
+                    SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + parentId.ToString() + "]"
@@ -629,15 +629,15 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = "RequestNotImplemented_" + id.ToString(),
+                    Name = WebSpeechTypes.RequestNotImplemented.ToString() + "_" + id.ToString(),
                     Phrase = @"Other",
                     Answer = @"[""Now I prepare""]",
                     Host = "all",
                     FinalStep = true,
                     UserId = 0,
                     Order = 0,
-                    Type = "SystemRequest",
-                    SubType = "RequestNotImplemented",
+                    Type = WebSpeechTypes.SystemRequest.ToString(),
+                    SubType = WebSpeechTypes.RequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + parentId.ToString() + "]"

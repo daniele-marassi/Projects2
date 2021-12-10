@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30317.65
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools", "Tools.csproj", "{F317AF2E-9704-4A2A-BDAE-B4662ED9483B}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepositionSpeech", "RepositionSpeech\RepositionSpeech.csproj", "{86504C23-3127-45C9-B568-CE2AF5257B01}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Songs", "Songs\Songs.csproj", "{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenewNotes", "RenewNotesService\RenewNotes.csproj", "{0D06903F-D4AA-430D-A58B-F81AA899CB8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,6 +127,18 @@ Global
 		{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}.Release|x64.Build.0 = Release|Any CPU
 		{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}.Release|x86.ActiveCfg = Release|Any CPU
 		{BA4F1D4B-0503-416A-B77B-32B2EE44EFE7}.Release|x86.Build.0 = Release|Any CPU
+		{0D06903F-D4AA-430D-A58B-F81AA899CB8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D06903F-D4AA-430D-A58B-F81AA899CB8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D06903F-D4AA-430D-A58B-F81AA899CB8C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0D06903F-D4AA-430D-A58B-F81AA899CB8C}.Debug|x64.Build.0 = Debug|Any CPU
+		{0D06903F-D4AA-430D-A58B-F81AA899CB8C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0D06903F-D4AA-430D-A58B-F81AA899CB8C}.Debug|x86.Build.0 = Debug|Any CPU
+		{0D06903F-D4AA-430D-A58B-F81AA899CB8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D06903F-D4AA-430D-A58B-F81AA899CB8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D06903F-D4AA-430D-A58B-F81AA899CB8C}.Release|x64.ActiveCfg = Release|Any CPU
+		{0D06903F-D4AA-430D-A58B-F81AA899CB8C}.Release|x64.Build.0 = Release|Any CPU
+		{0D06903F-D4AA-430D-A58B-F81AA899CB8C}.Release|x86.ActiveCfg = Release|Any CPU
+		{0D06903F-D4AA-430D-A58B-F81AA899CB8C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

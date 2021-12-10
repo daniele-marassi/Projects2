@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Supp.ServiceHost.Common;
 using Supp.ServiceHost.Repositories;
-using Supp.ServiceHost.Models;
+using SuppModels;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using System;
@@ -296,6 +296,40 @@ namespace Supp.ServiceHost.Repositories
                         response.Message = "";
                         response.Data.Add(dto);
                     }
+                }
+                catch (Exception ex)
+                {
+                    response.Successful = false;
+                    response.ResultState = ResultType.Error;
+                    response.Message = ex.Message;
+                    response.OriginalException = null;
+                    logger.Error(ex.ToString());
+                    //throw ex;
+                }
+                return response;
+            }
+        }
+
+        /// <summary>
+        /// Clear Structure Media
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public async Task<SongResult> ClearStructureMedia(string path)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                var response = new SongResult() { Data = new List<SongDto>(), ResultState = new ResultType() };
+
+                try
+                {
+                    if(path == null || path == String.Empty) db.Database.ExecuteSqlCommand("TRUNCATE TABLE [dbo].[Media]");
+                    else db.Database.ExecuteSqlCommand("DELETE FROM [dbo].[Media] WHERE [Path] LIKE '%"+ path + "%'");
+
+                    response.Successful = true;
+                    response.ResultState = ResultType.Deleted;
+                    response.Message = "";
+
                 }
                 catch (Exception ex)
                 {

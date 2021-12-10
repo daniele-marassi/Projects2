@@ -92,6 +92,18 @@ namespace Tools
 			sep = new ToolStripSeparator();
 			Common.ContextMenus.Menu.Items.Add(sep);
 
+			//RenewNotesService
+			item = new ToolStripMenuItem();
+			item.Text = "Renew Notes Service";
+			item.Name = "RenewNotesServiceMenuItem";
+			item.Click += new EventHandler(RenewNotesService_Click);
+			item.Image = Resources.ServiceActive;
+			Common.ContextMenus.Menu.Items.Add(item);
+
+			// Separator.
+			sep = new ToolStripSeparator();
+			Common.ContextMenus.Menu.Items.Add(sep);
+
 			// Speech Service.
 			item = new ToolStripMenuItem();
 			item.Text = "Speech Service";
@@ -182,6 +194,11 @@ namespace Tools
 		void SyncIpService_Click(object sender, EventArgs e)
 		{
 			SetMenuItem("SyncIpServiceMenuItem");
+		}
+		
+		void RenewNotesService_Click(object sender, EventArgs e)
+		{
+			SetMenuItem("RenewNotesServiceMenuItem");
 		}
 
 		void SpeechService_Click(object sender, EventArgs e)
@@ -275,6 +292,33 @@ namespace Tools
 					item.Image = Resources.ServiceActive;
 					ProcessIcon._SyncIpService = new SyncIp.SyncIpService();
 					Task.Run(() => ProcessIcon._SyncIpService.Start());
+				}
+			}
+
+			if (itemName == "RenewNotesServiceMenuItem")
+			{
+				var item = Common.ContextMenus.Menu.Items[itemName];
+
+				if (ProcessIcon.RenewNotesServiceActive)
+				{
+					ProcessIcon.RenewNotesServiceActive = false;
+
+					AddOrUpdateAppSettings("RenewNotesService", ProcessIcon.RenewNotesServiceActive.ToString());
+
+					item.Image = Resources.ServiceDisable;
+					if (ProcessIcon._RenewNotesService != null)
+					{
+						ProcessIcon._RenewNotesService.Stop();
+						ProcessIcon._RenewNotesService = null;
+					}
+				}
+				else
+				{
+					ProcessIcon.RenewNotesServiceActive = true;
+					AddOrUpdateAppSettings("RenewNotesService", ProcessIcon.RenewNotesServiceActive.ToString());
+					item.Image = Resources.ServiceActive;
+					ProcessIcon._RenewNotesService = new RenewNotes.RenewNotesService();
+					Task.Run(() => ProcessIcon._RenewNotesService.Start());
 				}
 			}
 

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Supp.ServiceHost.Common;
-using Supp.ServiceHost.Models;
+using SuppModels;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using System;

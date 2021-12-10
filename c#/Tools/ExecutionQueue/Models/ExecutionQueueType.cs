@@ -6,6 +6,7 @@ namespace Tools.ExecutionQueue.Models
         RunExe = 0,
         SystemRunExe = 1,
         Other = 2,
-        SongsPlayer = 3
+        SongsPlayer = 3,
+        ForceHideApplication = 4
     }
 }

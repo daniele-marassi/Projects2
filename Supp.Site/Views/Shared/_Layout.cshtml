@@ -9,192 +9,216 @@
 <!DOCTYPE html>
 <link rel="icon" href="/Images/supp.png" type="image/gif" />
 <html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"]</title>
 
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/PagedList.css" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-multiselect.css" />
-    <link rel="stylesheet" href="~/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/PagedList.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-multiselect.css" />
+        <link rel="stylesheet" href="~/css/bootstrap.css" /> 
+        <link rel="stylesheet" href="~/css/bootstrap-select.min.css" />
+        <link rel="stylesheet" href="~/css/bootstrap-select.css" />
+        <link rel="stylesheet" href="~/bootstrap-slider/bootstrap-slider.min.css" />
+        <link rel="stylesheet" href="~/bootstrap-slider/bootstrap-slider.css" />  
+        <link rel="stylesheet" href="~/css/site.css" />
     
-    <link rel="stylesheet" href="~/css/bootstrap-select.min.css" />
-    <link rel="stylesheet" href="~/css/bootstrap-select.css" />
-    <link rel="stylesheet" href="~/bootstrap-slider/bootstrap-slider.min.css" />
-    <link rel="stylesheet" href="~/bootstrap-slider/bootstrap-slider.css" />
-    
-    <link rel="stylesheet" href="~/css/site.css" />
-    
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/Utility.js" asp-append-version="true"></script>
+        <script src="~/js/Common.js" asp-append-version="true"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap-multiselect.js"></script>
+        <script src="~/bootstrap-slider/bootstrap-slider.js"></script>
+        <script src="~/bootstrap-slider/bootstrap-slider.min.js"></script>
+    </head>
+    <body style="background-color:#000;">
+        <header>
+            <nav id="navbar" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-black menuCustom" style="border-bottom-color:#222; position:absolute; z-index:999;">
+                <div class="container">
+                    <div style="width:230px; overflow:hidden; position:relative;">
+                        <div style="/*background-image: url('../../Images/logo.png');*/ background-repeat: no-repeat; background-size: 100px 50px; position:relative; ">
+                            <a class="navbar-brand" href="#" style="/*margin-left:70px;*/">
+                                @Html.ActionLink("Supp", "Index", "Home", null,
+                                new { @id="navbarBrand", @style = "font-size:24px; text-decoration: none; color:#999; background-color:black;" })
+                            </a>
+                        </div>
+                    </div>
+                    <button id="menu_button" class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation" style="color:#999; border: 1px solid #222;" onclick="MenuClick()">
+                        <span class="navbar-toggler-icon" style="background-color:#222;"></span>
+                    </button>
+                    <div id="menu_items" class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse" style="margin-left:30px;">
+                        <ul class="navbar-nav flex-grow-1">
+                            @{
+                                ClaimsDto claims = null;
+                                var suppUtility = new SuppUtility();
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/Utility.js" asp-append-version="true"></script>
-    <script src="~/js/Common.js" asp-append-version="true"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap-multiselect.js"></script>
-    <script src="~/bootstrap-slider/bootstrap-slider.js"></script>
-    <script src="~/bootstrap-slider/bootstrap-slider.min.js"></script>
+                                try
+                                {
+                                    var claimsString = suppUtility.ReadCookie(HttpContextAccessor.HttpContext.Request, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName);
+                                    claims = JsonConvert.DeserializeObject<ClaimsDto>(claimsString);
+                                }
+                                catch (Exception)
+                                {
 
-</head>
-<body style="background-color:#000;">
-    <header>
-        <nav id="navbar" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-black menuCustom" style="border-bottom-color:#222; position:absolute; z-index:999;">
-            <div class="container">
-                <div style="width:230px; overflow:hidden; position:relative;">
-                    <div style="/*background-image: url('../../Images/logo.png');*/ background-repeat: no-repeat; background-size: 100px 50px; position:relative; ">
-                        <a class="navbar-brand" href="#" style="/*margin-left:70px;*/">
-                            @Html.ActionLink("Supp", "Index", "Home", null,
-                            new { @id="navbarBrand", @style = "font-size:24px; text-decoration: none; color:#999; background-color:black;" })
-                        </a>
+                                }
+                                if(claims == null) claims = new ClaimsDto(){ IsAuthenticated=false};
+                            }
+
+                            @if (claims.IsAuthenticated)
+                            {
+                                var nLogUtility = new NLogUtility();
+                                nLogUtility.ClearNLogFile("mainLog", Config.GeneralSettings.Static.LimitLogFileInMB);
+
+                                @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
+                                {
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
+                                            Media
+                                        </a>
+                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("Structure Media", "StructureMedia", "Media", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("Media Box", "MediaBox", "Media", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+
+                                            @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0)
+                                            {
+                                                <div class="dropdown-divider"></div>
+                                                @Html.ActionLink("List Media", "Index", "Media", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                                <div class="dropdown-divider"></div>
+                                                @Html.ActionLink("List Media Configuration", "Index", "MediaConfigurations", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                            }
+                                        </div>
+                                    </li>
+                                }
+
+                                @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
+                                {
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
+                                            Google
+                                        </a>
+                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("Add Google Accounts", "AddGoogleAccounts", "GoogleAccounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+
+                                            @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0)
+                                            {
+                                                <div class="dropdown-divider"></div>
+                                                @Html.ActionLink("List Google Authorization", "Index", "GoogleAuths", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                                <div class="dropdown-divider"></div>
+                                                @Html.ActionLink("List Google Account", "Index", "GoogleAccounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                            }
+                                        </div>
+                                    </li>
+                                }
+
+                                @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0)
+                                {
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
+                                            Account
+                                        </a>
+                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("Create Account", "Create", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("Reset Password", "ResetPassword", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("Disable Account", "DisableAccount", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("Enable Account", "EnableAccount", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("Remove Account", "RemoveAccount", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("List Authentication", "Index", "Authentications", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("List User", "Index", "Users", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("List User Role", "Index", "UserRoles", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("List User Role Type", "Index", "UserRoleTypes", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                        </div>
+                                    </li>
+                                }
+
+                                @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
+                                {
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
+                                            Web Speech
+                                        </a>
+                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
+                                            @if (claims.Roles.Where(_ => _.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0)
+                                            {
+                                                <div class="dropdown-divider"></div>
+                                                @Html.ActionLink("List Execution Queue", "Index", "ExecutionQueues", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                            }
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("List Web Speech", "Index", "WebSpeeches", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("Cortana", "Recognition", "WebSpeeches", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                        </div>
+                                    </li>
+                                }
+
+                                @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
+                                {
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
+                                            Song
+                                        </a>
+                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("List Song", "Index", "Songs", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("Songs player", "SongsPlayer", "Songs", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                        </div>
+                                    </li>
+                                }
+
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-center bg-black menuCustom text-uppercase" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
+                                        @claims.Name
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
+                                        <div class="dropdown-divider"></div>
+                                        @Html.ActionLink("Logout", "Logout", "Home", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                        @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
+                                        {
+                                            <div class="dropdown-divider"></div>
+                                            @Html.ActionLink("Change Password", "ChangePassword", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
+                                        }
+                                    </div>
+                                </li>
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Login", "Login", "Home", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; margin-top:20px; width:65px;" })
+                            }
+                        </ul>
                     </div>
                 </div>
-                <button id="menu_button" class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation" style="color:#999; border: 1px solid #222;" onclick="MenuClick()">
-                    <span class="navbar-toggler-icon" style="background-color:#222;"></span>
-                </button>
-                <div id="menu_items" class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse" style="margin-left:30px;">
-                    <ul class="navbar-nav flex-grow-1">
-                        @{
-                            ClaimsDto claims = null;
-                            var suppUtility = new SuppUtility();
+            </nav>
+        </header>
 
-                            try
-                            {
-                                var claimsString = suppUtility.ReadCookie(HttpContextAccessor.HttpContext.Request, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName);
-                                claims = JsonConvert.DeserializeObject<ClaimsDto>(claimsString);
-                            }
-                            catch (Exception)
-                            {
-
-                            }
-                            if(claims == null) claims = new ClaimsDto(){ IsAuthenticated=false};
-                        }
-
-                        @if (claims.IsAuthenticated)
-                        {
-                            var nLogUtility = new NLogUtility();
-                            nLogUtility.ClearNLogFile("mainLog", Config.GeneralSettings.Static.LimitLogFileInMB);
-
-                            @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
-                            {
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
-                                        Media
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Get Structure Media", "GetStructureMedia", "Media", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Media Box", "MediaBox", "Media", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-
-                                        @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0)
-                                        {
-                                            <div class="dropdown-divider"></div>
-                                            @Html.ActionLink("List Media", "Index", "Media", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                            <div class="dropdown-divider"></div>
-                                            @Html.ActionLink("List Media Configurations", "Index", "MediaConfigurations", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                            <div class="dropdown-divider"></div>
-                                            @Html.ActionLink("List GoogleDrive Authorizations", "Index", "GoogleDriveAuths", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                            <div class="dropdown-divider"></div>
-                                            @Html.ActionLink("List GoogleDrive Accounts", "Index", "GoogleDriveAccounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                        }
-                                    </div>
-                                </li>
-                            }
-
-                            @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0)
-                            {
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
-                                        Accounts
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Create Account", "Create", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Reset Password", "ResetPassword", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Disable Account", "DisableAccount", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Enable Account", "EnableAccount", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Remove Account", "RemoveAccount", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Authentications", "Index", "Authentications", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Users", "Index", "Users", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("User Roles", "Index", "UserRoles", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("User Role Types", "Index", "UserRoleTypes", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                    </div>
-                                </li>
-                            }
-
-                            @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
-                            {
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
-                                        Tools
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
-                                        @if (claims.Roles.Where(_ => _.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0)
-                                        {
-                                            <div class="dropdown-divider"></div>
-                                            @Html.ActionLink("Execution Queue", "Index", "ExecutionQueues", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                        }
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Web Speeches", "Index", "WebSpeeches", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Web Speeches Recognition", "Recognition", "WebSpeeches", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Songs", "Index", "Songs", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Songs player", "SongsPlayer", "Songs", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                    </div>
-                                </li>
-                            }
-
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-center bg-black menuCustom text-uppercase" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
-                                    @claims.Name
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
-                                    <div class="dropdown-divider"></div>
-                                    @Html.ActionLink("Logout", "Logout", "Home", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                    @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
-                                    {
-                                        <div class="dropdown-divider"></div>
-                                        @Html.ActionLink("Change Password", "ChangePassword", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                    }
-                                </div>
-                            </li>
-                        }
-                        else
-                        {
-                            @Html.ActionLink("Login", "Login", "Home", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; margin-top:20px; width:65px;" })
-                        }
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <div class="container" id="mainContainer" style="overflow:auto; height:auto;">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="footer text-muted" id="footer" style="border-top: 1px solid #111; ">
-        <div id="footerContainer" class="container">
-            &copy; @DateTime.Now.Year - Supp Site
+        <div class="container" id="mainContainer" style="overflow:auto; height:auto;">
+            <main role="main" class="pb-3" style="margin-top:15px;">
+                @RenderBody()
+            </main>
         </div>
-    </footer>
 
-    <base href="~/" />
+        <footer class="footer text-muted" id="footer" style="border-top: 1px solid #111; ">
+            <div id="footerContainer" class="container">
+                &copy; @DateTime.Now.Year - Supp Site
+            </div>
+        </footer>
 
-    @RenderSection("Scripts", required: false)
-</body>
+        <base href="~/" />
+
+        @RenderSection("Scripts", required: false)
+    </body>
 </html>

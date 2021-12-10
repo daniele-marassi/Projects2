@@ -1,6 +1,0 @@
-C:\Users\eV\GoogleDriveShare\Projects\c#\GoogleDriveManagerProject\GoogleDriveManagerModels\bin\Debug\GoogleDriveManagerModels.dll
-C:\Users\eV\GoogleDriveShare\Projects\c#\GoogleDriveManagerProject\GoogleDriveManagerModels\bin\Debug\GoogleDriveManagerModels.pdb
-C:\Users\eV\GoogleDriveShare\Projects\c#\GoogleDriveManagerProject\GoogleDriveManagerModels\obj\Debug\GoogleDriveManagerModels.csprojAssemblyReference.cache
-C:\Users\eV\GoogleDriveShare\Projects\c#\GoogleDriveManagerProject\GoogleDriveManagerModels\obj\Debug\GoogleDriveManagerModels.csproj.CoreCompileInputs.cache
-C:\Users\eV\GoogleDriveShare\Projects\c#\GoogleDriveManagerProject\GoogleDriveManagerModels\obj\Debug\GoogleDriveManagerModels.dll
-C:\Users\eV\GoogleDriveShare\Projects\c#\GoogleDriveManagerProject\GoogleDriveManagerModels\obj\Debug\GoogleDriveManagerModels.pdb

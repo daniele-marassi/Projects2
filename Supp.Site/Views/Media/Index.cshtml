@@ -1,4 +1,4 @@
-﻿@model X.PagedList.IPagedList<Supp.Site.Models.MediaDto>
+﻿@model X.PagedList.IPagedList<SuppModels.MediaDto>
 
 @using Supp.Site.Controllers;
 @using X.PagedList.Mvc.Core
@@ -32,7 +32,7 @@
             <thead>
                 <tr>
                     <th id="selectable">
-                        @Html.ActionLink("GoogleDriveAccount", "Index", new { sortOrder = "GoogleDriveAccount", currentFilter = ViewBag.CurrentFilter })
+                        @Html.ActionLink("GoogleAccount", "Index", new { sortOrder = "GoogleAccount", currentFilter = ViewBag.CurrentFilter })
                     </th>
                     <th id="selectable">
                         @Html.ActionLink("FileId", "Index", new { sortOrder = "FileId", currentFilter = ViewBag.CurrentFilter })
@@ -113,7 +113,7 @@
                     {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.GoogleDriveAccounts.Where(_ => _.Id == item.GoogleDriveAccountId).FirstOrDefault().Account)
+                        @Html.DisplayFor(modelItem => item.GoogleAccounts.Where(_ => _.Id == item.GoogleAccountId).FirstOrDefault().Account)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FileId)

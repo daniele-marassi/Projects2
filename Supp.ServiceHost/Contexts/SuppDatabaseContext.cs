@@ -13,61 +13,61 @@ namespace Supp.ServiceHost.Contexts
 
         }
 
-        public DbSet<Models.User> Users { get; set; }
-        public DbSet<Models.Authentication> Authentications { get; set; }
-        public DbSet<Models.UserRoleType> UserRoleTypes { get; set; }
-        public DbSet<Models.UserRole> UserRoles { get; set; }
-        public DbSet<Models.GoogleDriveAccount> GoogleDriveAccounts { get; set; }
-        public DbSet<Models.GoogleDriveAuth> GoogleDriveAuths { get; set; }
-        public DbSet<Models.MediaConfiguration> MediaConfigurations { get; set; }
-        public DbSet<Models.Media> Media { get; set; }
-        public DbSet<Models.WebSpeech> WebSpeeches { get; set; }
-        public DbSet<Models.ExecutionQueue> ExecutionQueues { get; set; }
-        public DbSet<Models.Song> Songs { get; set; }
+        public DbSet<SuppModels.User> Users { get; set; }
+        public DbSet<SuppModels.Authentication> Authentications { get; set; }
+        public DbSet<SuppModels.UserRoleType> UserRoleTypes { get; set; }
+        public DbSet<SuppModels.UserRole> UserRoles { get; set; }
+        public DbSet<SuppModels.GoogleAccount> GoogleAccounts { get; set; }
+        public DbSet<SuppModels.GoogleAuth> GoogleAuths { get; set; }
+        public DbSet<SuppModels.MediaConfiguration> MediaConfigurations { get; set; }
+        public DbSet<SuppModels.Media> Media { get; set; }
+        public DbSet<SuppModels.WebSpeech> WebSpeeches { get; set; }
+        public DbSet<SuppModels.ExecutionQueue> ExecutionQueues { get; set; }
+        public DbSet<SuppModels.Song> Songs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Models.User>()
+            modelBuilder.Entity<SuppModels.User>()
                 .Property(b => b.InsDateTime)
                 .HasDefaultValueSql("getdate()");
 
-            modelBuilder.Entity<Models.Authentication>()
+            modelBuilder.Entity<SuppModels.Authentication>()
                 .Property(b => b.InsDateTime)
                 .HasDefaultValueSql("getdate()");
 
-            modelBuilder.Entity<Models.UserRoleType>()
+            modelBuilder.Entity<SuppModels.UserRoleType>()
                 .Property(b => b.InsDateTime)
                 .HasDefaultValueSql("getdate()");
 
-            modelBuilder.Entity<Models.UserRole>()
+            modelBuilder.Entity<SuppModels.UserRole>()
                 .Property(b => b.InsDateTime)
                 .HasDefaultValueSql("getdate()");
 
-            modelBuilder.Entity<Models.GoogleDriveAccount>()
+            modelBuilder.Entity<SuppModels.GoogleAccount>()
                 .Property(b => b.InsDateTime)
                 .HasDefaultValueSql("getdate()");
 
-            modelBuilder.Entity<Models.GoogleDriveAuth>()
+            modelBuilder.Entity<SuppModels.GoogleAuth>()
                 .Property(b => b.InsDateTime)
                 .HasDefaultValueSql("getdate()");
 
-            modelBuilder.Entity<Models.MediaConfiguration>()
+            modelBuilder.Entity<SuppModels.MediaConfiguration>()
                 .Property(b => b.InsDateTime)
                 .HasDefaultValueSql("getdate()");
 
-            modelBuilder.Entity<Models.Media>()
+            modelBuilder.Entity<SuppModels.Media>()
                 .Property(b => b.InsDateTime)
                 .HasDefaultValueSql("getdate()");
 
-            modelBuilder.Entity<Models.WebSpeech>()
+            modelBuilder.Entity<SuppModels.WebSpeech>()
                 .Property(b => b.InsDateTime)
                 .HasDefaultValueSql("getdate()");
 
-            modelBuilder.Entity<Models.ExecutionQueue>()
+            modelBuilder.Entity<SuppModels.ExecutionQueue>()
                 .Property(b => b.InsDateTime)
                 .HasDefaultValueSql("getdate()");
 
-            modelBuilder.Entity<Models.Song>()
+            modelBuilder.Entity<SuppModels.Song>()
                 .Property(b => b.InsDateTime)
                 .HasDefaultValueSql("getdate()");
 

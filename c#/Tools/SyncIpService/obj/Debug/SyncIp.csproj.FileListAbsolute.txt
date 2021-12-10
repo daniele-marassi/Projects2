@@ -1,3 +1,4 @@
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\NLog.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Resources\About.ico
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Resources\About.png
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Resources\Fonts\Cafed_v2.ttf
@@ -18,7 +19,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Common.dl
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\MessagesPopUp.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Newtonsoft.Json.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\NLog.dll
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\System.ValueTuple.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Common.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Common.dll.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\MessagesPopUp.pdb
@@ -27,8 +27,8 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Additiona
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Additional.dll.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Newtonsoft.Json.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\NLog.xml
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\System.ValueTuple.xml
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\obj\Debug\SyncIp.csprojAssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\obj\Debug\SyncIp.csproj.AssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\obj\Debug\SyncIp.csproj.SuggestedBindingRedirects.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\obj\Debug\SyncIp.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\obj\Debug\SyncIp.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\obj\Debug\SyncIp.exe

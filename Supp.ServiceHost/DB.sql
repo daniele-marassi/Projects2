@@ -130,17 +130,18 @@ PRIMARY KEY CLUSTERED
 ) ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[GoogleDriveAccounts]    Script Date: 22/02/2020 16:18:38 ******/
+/****** Object:  Table [dbo].[GoogleAccounts]    Script Date: 22/02/2020 16:18:38 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[GoogleDriveAccounts](
+CREATE TABLE [dbo].[GoogleAccounts](
 	[Id] [bigint] IDENTITY(1,1) NOT NULL,
 	[Account] [nvarchar](256) NULL,
 	[FolderToFilter] [nvarchar](256) NULL,
-	[GoogleDriveAuthId] [bigint] NULL,
+	[GoogleAuthId] [bigint] NULL,
 	[UserId] [bigint] NULL,
+	[AccountType] [nvarchar](256) NULL,
 	[InsDateTime] [datetime] NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
@@ -149,16 +150,18 @@ PRIMARY KEY CLUSTERED
 ) ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[GoogleDriveAuths]    Script Date: 22/02/2020 16:18:38 ******/
+/****** Object:  Table [dbo].[GoogleAuths]    Script Date: 22/02/2020 16:18:38 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[GoogleDriveAuths](
+CREATE TABLE [dbo].[GoogleAuths](
 	[Id] [bigint] IDENTITY(1,1) NOT NULL,
 	[Client_id] [nvarchar](MAX) NULL,
 	[Project_id] [nvarchar](MAX) NULL,
 	[Client_secret] [nvarchar](MAX) NULL,
+	[TokenFileInJson] [nvarchar](MAX) NULL,
+	[GooglePublicKey] [nvarchar](MAX) NULL,
 	[InsDateTime] [datetime] NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
@@ -192,7 +195,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Media](
 	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-	[GoogleDriveAccountId] [bigint] NULL,
+	[GoogleAccountId] [bigint] NULL,
 	[FileId] [nvarchar](MAX) NULL,
 	[Name] [nvarchar](256) NULL,
 	[Path] [nvarchar](MAX) NULL,
@@ -319,10 +322,10 @@ GO
 ALTER TABLE [dbo].[ExecutionQueues] ADD  DEFAULT (getdate()) FOR [InsDateTime]
 GO
 
-ALTER TABLE [dbo].[GoogleDriveAccounts] ADD  DEFAULT (getdate()) FOR [InsDateTime]
+ALTER TABLE [dbo].[GoogleAccounts] ADD  DEFAULT (getdate()) FOR [InsDateTime]
 GO
 
-ALTER TABLE [dbo].[GoogleDriveAuths] ADD  DEFAULT (getdate()) FOR [InsDateTime]
+ALTER TABLE [dbo].[GoogleAuths] ADD  DEFAULT (getdate()) FOR [InsDateTime]
 GO
 
 ALTER TABLE [dbo].[MediaConfigurations] ADD  DEFAULT (getdate()) FOR [InsDateTime]
@@ -345,7 +348,7 @@ SET IDENTITY_INSERT [auth].[Users] ON
 INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [InsDateTime], [CustomizeParams]) VALUES (1, N'Admin', N'Admin', N'Admin', CAST(N'2020-01-10T13:42:42.153' AS DateTime), NULL)
 INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [InsDateTime], [CustomizeParams]) VALUES (2, N'SuperUser', N'SuperUser', N'SuperUser', CAST(N'2020-01-27T14:20:42.970' AS DateTime), NULL)
 INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [InsDateTime], [CustomizeParams]) VALUES (3, N'Guest', N'Guest', N'Guest', CAST(N'2020-01-27T14:20:55.193' AS DateTime), NULL)
-INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [InsDateTime], [CustomizeParams]) VALUES (4, N'daniele.marassi@gmail.com', N'Daniele', N'Marassi', CAST(N'2021-04-28T22:15:21.000' AS DateTime), N'{"General":{"PageSize":"3","Culture":"it-IT"},"Speech":{"HostsArray":"[\"EV-PC\",\"EV-TB\"]","HostDefault":"EV-PC","ListeningWord1":"ehi","ListeningWord2":"box","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME","MinSpeechWordsCoefficient":"0,05","MaxSpeechWordsCoefficient":"0,05",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"trieste-oggi-32006","DescriptionMeteoToTheSalutationActive": "True", "TimesToReset": 600}}')
+INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [InsDateTime], [CustomizeParams]) VALUES (4, N'daniele.marassi@gmail.com', N'Daniele', N'Marassi', CAST(N'2021-04-28T22:15:21.000' AS DateTime), N'{"General":{"PageSize":"3","Culture":"it-IT"},"Speech":{"HostsArray":"[\"EV-PC\",\"EV-TB\"]","HostDefault":"EV-PC","ListeningWord1":"ehi","ListeningWord2":"box","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME","MinSpeechWordsCoefficient":"0,05","MaxSpeechWordsCoefficient":"0,05",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"trieste-oggi-32006","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "True", "TimesToReset": 600}}')
 SET IDENTITY_INSERT [auth].[Users] OFF
 
 SET IDENTITY_INSERT [auth].[UserRoles] ON 

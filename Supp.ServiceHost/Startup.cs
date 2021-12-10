@@ -60,10 +60,10 @@ namespace Supp.ServiceHost
             services.AddScoped<IUserRolesRepository, UserRolesRepository>();
             services.AddScoped<IUserRoleTypesRepository, UserRoleTypesRepository>();
             services.AddScoped<IHomeRepository, HomeRepository>();
-            services.AddScoped<IGoogleDriveAccountsRepository, GoogleDriveAccountsRepository>();
+            services.AddScoped<IGoogleAccountsRepository, GoogleAccountsRepository>();
             services.AddScoped<IMediaRepository, MediaRepository>();
             services.AddScoped<IMediaConfigurationsRepository, MediaConfigurationsRepository>();
-            services.AddScoped<IGoogleDriveAuthsRepository, GoogleDriveAuthsRepository>();
+            services.AddScoped<IGoogleAuthsRepository, GoogleAuthsRepository>();
             services.AddScoped<IWebSpeechesRepository, WebSpeechesRepository>();
             services.AddScoped<IExecutionQueuesRepository, ExecutionQueuesRepository>();
             services.AddScoped<ISongsRepository, SongsRepository>();

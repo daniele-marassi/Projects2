@@ -1,4 +1,4 @@
-﻿@model Supp.Site.Models.WebSpeechDto
+﻿@model SuppModels.WebSpeechDto
 
 @using Supp.Site.Controllers;
 @using Supp.Site.Common;
@@ -51,6 +51,7 @@
         var actionShortcutTimeout = null;
         var sessionGuid = null;
         var voices;
+        var tmp_phrase  = '';
 
         //@*Model Variables*@
         var answer = '';
@@ -80,7 +81,7 @@
         //@*Model Variables*@
 
         function VariablesAssignmentFromJson(jsonString) {
-            //console.log('###' + jsonString + '###');
+            //console.warn('###' + jsonString + '###');
             var model = JSON.parse(jsonString);
 
             answer = DecodeUnicodeExtended(model['Answer']);
@@ -317,7 +318,7 @@
 
             var messageBCK = _message;
 
-            //console.log('[' + _message + ']');
+            //console.warn('[' + _message + ']');
 
             _message = _message.replace(/\./g, '. ');
             _message = _message.replace(/:/g, ': ');
@@ -363,7 +364,7 @@
                 if(_message == '' || (firstCharIndex == -1 && firstNumberIndex == -1))_finalStep = true;
             }
             
-            //console.log('[' + message + ']');
+            //console.warn('[' + message + ']');
 
             document.getElementById('final_span').innerHTML = message.trim();
 
@@ -371,7 +372,7 @@
 
             speech = new SpeechSynthesisUtterance();
 
-            //console.log(voices);
+            //console.warn(voices);
             
             // Set the text and voice attributes.
             speech.text = message.trim();
@@ -398,7 +399,7 @@
             var speakIsSuccesuful = synth.speaking;
 
             if(speakIsSuccesuful == false || speakHasError == true) {
-                console.log('speakIsSuccesuful:' + speakIsSuccesuful + ' - speakHasError:' + speakHasError + ' _error:'+_error);
+                console.warn('speakIsSuccesuful:' + speakIsSuccesuful + ' - speakHasError:' + speakHasError + ' _error:'+_error);
                 EndReadOutLoud();
 
                 setTimeout(function () {
@@ -495,7 +496,7 @@
             }
                     
             hostsArrayString = hostsArrayString.replace(/&quot;/g,'"');
-            if(_error != null && _error != '') console.log(_error);
+            if(_error != null && _error != '') console.warn(_error);
             try {
                 hosts = JSON.parse(hostsArrayString);
             }
@@ -559,7 +560,7 @@
 
         function Upgrade() {
             if(recognitionActive == true) StopAnimateIntervals();
-            console.log('info_upgrade');
+            console.warn('info_upgrade');
         }
 
         function StartButton(event) {
@@ -601,11 +602,11 @@
 
                 recognition.onstart = function () {
                     recognizing = true;
-                    console.log('info_speak_now');
+                    console.warn('info_speak_now');
                 };
 
                 recognition.onerror = function (event) {
-                    console.log('recognition.onerror: ' + event.error);
+                    console.warn('recognition.onerror: ' + event.error);
 
                     firstLoad = true;
 
@@ -622,15 +623,15 @@
                         InitFinal();
                     }
                     if (event.error == 'no-speech') {
-                        console.log('info_no_speech');
+                        console.warn('info_no_speech');
                         ignore_onend = true;
                     }
                     if (event.error == 'audio-capture') {
-                        console.log('info_no_microphone');
+                        console.warn('info_no_microphone');
                         ignore_onend = true;
                     }
                     if (event.error == 'not-allowed') {
-                        console.log('not-allowed');
+                        console.warn('not-allowed');
                         ignore_onend = true;
                     }
                 };
@@ -653,16 +654,26 @@
                     for (var i = event.resultIndex; i < event.results.length; ++i) {
                         if(_phrase == null){
                             _phrase = event.results[i][0].transcript.toLowerCase().trim();
+
+                            if((_phrase == '' || _phrase == null) && recognitionActive == true && tmp_phrase != ''){  
+                                console.log(tmp_phrase);
+                                tmp_phrase = '';
+                            }
+                            if(tmp_phrase != '') tmp_phrase += ' ';
+                            tmp_phrase += _phrase;
+
                             if (_phrase != '' && _phrase != null) {
                                 countTheTimesToPartialReset = 0;
                                 countTheTimesToReset = 0;
 
                                 if(recognitionActive == true) StartAnimateIntervalsListening(10);
                                 if(recognitionActive == true) StopAnimateIntervalsListening(500);
-                                if (recognitionActive == true) console.log(_phrase);
+                                //if (recognitionActive == true) console.log(_phrase);
                                 var _phraseSplit = _phrase.split(" ");
                                 if (_phraseSplit.length > 0 && recognitionActive == true) {
                                     if (event.results[i].isFinal){
+                                        console.log(_phrase);
+                                        tmp_phrase = '';
                                         if (_phrase === listeningPhrase && ehi == 0 && _reset == false) {
                                             var audio = new Audio("/Files/Ehi.mp3");
                                             audio.play();
@@ -717,6 +728,7 @@
                     final_transcript = Capitalize(final_transcript);
                     document.getElementById('final_span').innerHTML = Linebreak(final_transcript);
                     document.getElementById('interim_span').innerHTML = Linebreak(interim_transcript);
+
                     if (final_transcript || interim_transcript) {
                         document.getElementById('final_span').innerHTML = '';
                     }
@@ -764,7 +776,7 @@
             else countTheTimesToPartialReset = 0;
 
             //timesToReset = 20;
-            //console.log(countTheTimesToReset);
+            //console.warn(countTheTimesToReset);
 
             // reset after idle time countTheTimesToReset
             if(resetActive && countTheTimesToReset == timesToReset && recognitionActive == true){
@@ -782,15 +794,15 @@
                 navigator.mediaDevices.getUserMedia({ audio: true })
                 .then(function (stream) {
                     window.localStream = stream;
-                    console.log('You let me use your mic!')
+                    console.warn('You let me use your mic!')
                 })
                 .catch(function (err) {
-                    console.log('No mic for you!')
+                    console.warn('No mic for you!')
                 });
             } else {
                 window.localStream.getTracks().forEach( (track) => {
                     track.stop();
-                     console.log('mic off')
+                     console.warn('mic off')
                 });
                 window.localStream.getAudioTracks()[0].stop();
             }
@@ -878,7 +890,7 @@
         }
 
         function FakeClick(){
-            console.log('FakeClick');      
+            console.warn('FakeClick');      
         }
 
         function RecognitionEnableDisable(){
@@ -976,7 +988,7 @@
                 var _url = link.replace(/&amp;/g,'&');
                 _url = DecodeUnicodeExtended(_url);
 
-                console.log(_url);
+                console.warn(_url);
                 window.open(_url);
             }
 
@@ -1027,8 +1039,8 @@
                 var shortcut = _shortcuts[i];
                 
                 if(i == 0){
-                    var _shortcut = JSON.parse('{"Id":"' + i + '", "Ico":"/Images/Shortcuts/close.png", "Title":"Close", "Action":"Close"}');
-                    AddShortcuts(_shortcut);
+                    //var _shortcut = JSON.parse('{"Id":"' + i + '", "Ico":"/Images/Shortcuts/close.png", "Title":"Close", "Action":"Close"}');
+                    //AddShortcuts(_shortcut);
                 }
 
                 AddShortcuts(shortcut);
@@ -1052,7 +1064,10 @@
     
 <div id="main">
     <div style="text-align:center;">
-        <div id="div_shortcuts" style="display: none; z-index: 999; width: 70%; position: absolute; background-color: rgb(50, 50, 50); left: 0; right: 0; margin:auto; box-shadow: 0 0rem 1rem rgba(150, 150, 150, 0.95) !important;">
+        <div id="div_shortcuts" style="display: none; z-index: 999; width: 70%; position: absolute; background-color: rgb(50, 50, 50); left: 0; right: 0; margin:auto; box-shadow: 0 0rem 1rem rgba(150, 150, 150, 0.95) !important; border-radius: 25px;">
+            <div style="background-color: rgba(70, 70, 70, 0.95);  text-align:right; box-shadow: rgba(150, 150, 150, 0.25) 0 14px 12px -2px; border-radius: 25px;">
+                <img class="btn shortcut-dark" id="shortcut_0" src="/Images/Shortcuts/close.png" alt="Close" style="height:50px; margin:5px;" onclick="ActionShortcut(0);">
+            </div>
             <dl id="shortcutsContainer" class="row" style="max-height:600px; overflow-y:auto; " >
             </dl>
         </div>

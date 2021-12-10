@@ -1,4 +1,4 @@
-﻿using Supp.Site.Models;
+﻿using SuppModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,50 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Downloads\GoogleDriveCreateCredentials.zip" />
+    <None Remove="ExternalLibraries\GoogleCalendar\GoogleCalendar.dll" />
+    <None Remove="ExternalLibraries\GoogleCalendar\GoogleCalendar.pdb" />
+    <None Remove="ExternalLibraries\GoogleDrive\GoogleDrive.dll" />
+    <None Remove="ExternalLibraries\GoogleDrive\GoogleDrive.pdb" />
+    <None Remove="ExternalLibraries\GoogleManagerModels.dll" />
+    <None Remove="ExternalLibraries\GoogleManagerModels.pdb" />
+    <None Remove="wwwroot\Downloads\GoogleCreateCredentials.zip" />
     <None Remove="ExternalLibraries\Additional.dll" />
     <None Remove="ExternalLibraries\Additional.pdb" />
-    <None Remove="ExternalLibraries\GoogleDriveManagerModels.dll" />
-    <None Remove="ExternalLibraries\GoogleDriveManagerModels.pdb" />
-    <None Remove="GoogleDriveManager\Additional.dll" />
-    <None Remove="GoogleDriveManager\Additional.pdb" />
-    <None Remove="GoogleDriveManager\AutoMapper.dll" />
-    <None Remove="GoogleDriveManager\AutoMapper.pdb" />
-    <None Remove="GoogleDriveManager\AutoMapper.xml" />
-    <None Remove="GoogleDriveManager\External_library\Additional.dll" />
-    <None Remove="GoogleDriveManager\External_library\Additional.pdb" />
-    <None Remove="GoogleDriveManager\Google.Apis.Auth.dll" />
-    <None Remove="GoogleDriveManager\Google.Apis.Auth.pdb" />
-    <None Remove="GoogleDriveManager\Google.Apis.Auth.PlatformServices.dll" />
-    <None Remove="GoogleDriveManager\Google.Apis.Auth.xml" />
-    <None Remove="GoogleDriveManager\Google.Apis.Core.dll" />
-    <None Remove="GoogleDriveManager\Google.Apis.Core.pdb" />
-    <None Remove="GoogleDriveManager\Google.Apis.Core.xml" />
-    <None Remove="GoogleDriveManager\Google.Apis.dll" />
-    <None Remove="GoogleDriveManager\Google.Apis.Drive.v3.dll" />
-    <None Remove="GoogleDriveManager\Google.Apis.Drive.v3.pdb" />
-    <None Remove="GoogleDriveManager\Google.Apis.Drive.v3.xml" />
-    <None Remove="GoogleDriveManager\Google.Apis.pdb" />
-    <None Remove="GoogleDriveManager\Google.Apis.PlatformServices.dll" />
-    <None Remove="GoogleDriveManager\Google.Apis.xml" />
-    <None Remove="GoogleDriveManager\GoogleDriveManager.exe" />
-    <None Remove="GoogleDriveManager\GoogleDriveManager.pdb" />
-    <None Remove="GoogleDriveManager\GoogleDriveManagerModels.dll" />
-    <None Remove="GoogleDriveManager\GoogleDriveManagerModels.pdb" />
-    <None Remove="GoogleDriveManager\GoogleDriveService.dll" />
-    <None Remove="GoogleDriveManager\GoogleDriveService.pdb" />
-    <None Remove="GoogleDriveManager\MediaToolkit.dll" />
-    <None Remove="GoogleDriveManager\Newtonsoft.Json.dll" />
-    <None Remove="GoogleDriveManager\Newtonsoft.Json.xml" />
-    <None Remove="GoogleDriveManager\NLog.dll" />
-    <None Remove="GoogleDriveManager\NLog.xml" />
-    <None Remove="GoogleDriveManager\NReco.VideoConverter.dll" />
-    <None Remove="GoogleDriveManager\NReco.VideoConverter.xml" />
-    <None Remove="GoogleDriveManager\Resources\AudioThumbnail.gif" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,6 +26,9 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="Google.Apis.Calendar.v3" Version="1.55.0.2500" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.55.0.2502" />
+    <PackageReference Include="Google.Apis.Keep.v1" Version="1.55.0.2371" />
     <PackageReference Include="JSconsoleExtensionsLib" Version="5.0.2" />
     <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.11" />
@@ -66,9 +38,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog" Version="4.6.8" />
     <PackageReference Include="NLog.Schema" Version="4.6.8" />
+    <PackageReference Include="System.Linq" Version="4.3.0" />
     <PackageReference Include="System.Management" Version="5.0.0" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="7.9.1" />
   </ItemGroup>
@@ -83,167 +56,57 @@
     <Content Include="ExternalLibraries\Additional.pdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="GoogleDriveManager\Additional.dll">
+    <Content Include="ExternalLibraries\GoogleCalendar\GoogleCalendar.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="GoogleDriveManager\Additional.pdb">
+    <Content Include="ExternalLibraries\GoogleCalendar\GoogleCalendar.pdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="GoogleDriveManager\AutoMapper.dll">
+    <Content Include="ExternalLibraries\GoogleDrive\GoogleDrive.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="GoogleDriveManager\AutoMapper.pdb">
+    <Content Include="ExternalLibraries\GoogleDrive\GoogleDrive.pdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="GoogleDriveManager\AutoMapper.xml">
+    <Content Include="ExternalLibraries\GoogleManagerModels.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="GoogleDriveManager\External_library\Additional.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\External_library\Additional.pdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\Google.Apis.Auth.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\Google.Apis.Auth.pdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\Google.Apis.Auth.PlatformServices.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\Google.Apis.Auth.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\Google.Apis.Core.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\Google.Apis.Core.pdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\Google.Apis.Core.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\Google.Apis.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\Google.Apis.Drive.v3.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\Google.Apis.Drive.v3.pdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\Google.Apis.Drive.v3.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\Google.Apis.pdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\Google.Apis.PlatformServices.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\Google.Apis.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\GoogleDriveManager.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\GoogleDriveManager.pdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\GoogleDriveManagerModels.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\GoogleDriveManagerModels.pdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\MediaToolkit.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\Newtonsoft.Json.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\Newtonsoft.Json.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\NLog.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GoogleDriveManager\NLog.xml">
+    <Content Include="ExternalLibraries\GoogleManagerModels.pdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="ExternalLibraries\GoogleDriveManagerModels.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="ExternalLibraries\GoogleDriveManagerModels.pdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\SuppModels\SuppModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="Additional">
       <HintPath>ExternalLibraries\Additional.dll</HintPath>
     </Reference>
-    <Reference Include="GoogleDriveManagerModels">
-      <HintPath>ExternalLibraries\GoogleDriveManagerModels.dll</HintPath>
+    <Reference Include="GoogleCalendar">
+      <HintPath>ExternalLibraries\GoogleCalendar\GoogleCalendar.dll</HintPath>
+    </Reference>
+    <Reference Include="GoogleDrive">
+      <HintPath>ExternalLibraries\GoogleDrive\GoogleDrive.dll</HintPath>
+    </Reference>
+    <Reference Include="GoogleManagerModels">
+      <HintPath>ExternalLibraries\GoogleManagerModels.dll</HintPath>
     </Reference>
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="GoogleDriveManager\GoogleDriveService.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="GoogleDriveManager\GoogleDriveService.pdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="GoogleDriveManager\NReco.VideoConverter.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="GoogleDriveManager\NReco.VideoConverter.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="GoogleDriveManager\Resources\AudioThumbnail.gif">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Downloads\GoogleDriveCreateCredentials.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="GoogleDriveManager\NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Update="GoogleDriveManager\Output\Result.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="GoogleDriveManager\Resources\GoogleDriveAuthList.json">
+    <Content Update="GoogleDriveManager\Resources\GoogleDriveAuthGoogleAuthList.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Downloads\GoogleCreateCredentials.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Downloads\GoogleCreateCredentialsTool.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
-
-
 </Project>

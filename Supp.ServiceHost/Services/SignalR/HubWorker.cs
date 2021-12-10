@@ -10,7 +10,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using static Supp.ServiceHost.Common.Config;
-using Supp.ServiceHost.Models;
+using SuppModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Supp.ServiceHost.Services.Token;
 using System.Collections.Generic;

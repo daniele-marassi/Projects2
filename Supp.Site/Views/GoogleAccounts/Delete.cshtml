@@ -1,0 +1,55 @@
+﻿@model SuppModels.GoogleAccountDto
+
+@{
+    ViewData["Title"] = "Delete Google Drive Account";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Account)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Account)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.FolderToFilter)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.FolderToFilter)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.GoogleAuths.FirstOrDefault().Client_id)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.GoogleAuths.Where(_ => _.Id == model.GoogleAuthId).FirstOrDefault().Client_id)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Users.FirstOrDefault().UserFullName)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Users.Where(_ => _.Id == model.UserId).FirstOrDefault().UserFullName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.AccountType)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.AccountType)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" /><input type="hidden" asp-for="InsDateTime" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
+
+<div class="text-danger" style="padding:30px;">
+    @Html.ValidationSummary(false)
+</div>

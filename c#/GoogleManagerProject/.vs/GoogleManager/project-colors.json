@@ -1,0 +1,61 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "d64267f5-200f-4a28-afe6-67a1eeb8e5ec": {
+      "ProjectGuid": "d64267f5-200f-4a28-afe6-67a1eeb8e5ec",
+      "DisplayName": "_GoogleDrive",
+      "ColorIndex": 0
+    },
+    "8aa5a93d-99a1-4732-b3b4-6f701f822931": {
+      "ProjectGuid": "8aa5a93d-99a1-4732-b3b4-6f701f822931",
+      "DisplayName": "GoogleService",
+      "ColorIndex": 1
+    },
+    "86ca0a5a-9a3e-4135-9ad1-2f9e17ff418e": {
+      "ProjectGuid": "86ca0a5a-9a3e-4135-9ad1-2f9e17ff418e",
+      "DisplayName": "GoogleCreateCredentialsTool",
+      "ColorIndex": 2
+    },
+    "6c716cd1-d5b3-4df3-a43b-012587b0e2de": {
+      "ProjectGuid": "6c716cd1-d5b3-4df3-a43b-012587b0e2de",
+      "DisplayName": "GoogleManagerModels",
+      "ColorIndex": 3
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "File esterni",
+      "ColorIndex": -1
+    },
+    "fc0a4da8-9b65-40b9-8c79-d3737b30ce39": {
+      "ProjectGuid": "fc0a4da8-9b65-40b9-8c79-d3737b30ce39",
+      "DisplayName": "GoogleCalendar",
+      "ColorIndex": 4
+    },
+    "b4dcce6e-592a-4ed2-ab81-5071be0e9110": {
+      "ProjectGuid": "b4dcce6e-592a-4ed2-ab81-5071be0e9110",
+      "DisplayName": "ConsoleApp1",
+      "ColorIndex": 5
+    },
+    "15e2bd15-6917-4bfa-afe4-f2e24296680b": {
+      "ProjectGuid": "15e2bd15-6917-4bfa-afe4-f2e24296680b",
+      "DisplayName": "GoogleNote",
+      "ColorIndex": 6
+    },
+    "9c14e978-ab25-4557-ac4d-421d4539ea43": {
+      "ProjectGuid": "9c14e978-ab25-4557-ac4d-421d4539ea43",
+      "DisplayName": "WindowsFormsApp1",
+      "ColorIndex": 7
+    },
+    "d71cf554-2a29-4e25-9985-0fc382e141a9": {
+      "ProjectGuid": "d71cf554-2a29-4e25-9985-0fc382e141a9",
+      "DisplayName": "WindowsFormsApp2",
+      "ColorIndex": 8
+    },
+    "4f591496-bc6b-4416-be72-9e9921b6317f": {
+      "ProjectGuid": "4f591496-bc6b-4416-be72-9e9921b6317f",
+      "DisplayName": "GoogleDrive",
+      "ColorIndex": 9
+    }
+  },
+  "NextColorIndex": 10
+}

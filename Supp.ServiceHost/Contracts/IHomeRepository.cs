@@ -1,4 +1,4 @@
-﻿using Supp.ServiceHost.Models;
+﻿using SuppModels;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;

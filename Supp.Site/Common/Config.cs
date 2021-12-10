@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using Supp.Site.Models;
+using SuppModels;
 using System;
 using System.Collections.Generic;
 
@@ -37,6 +37,7 @@ namespace Supp.Site.Common
                 public static string Salutation { get; set; }
                 public static string MeteoParameterToTheSalutation { get; set; }
                 public static bool DescriptionMeteoToTheSalutationActive { get; set; }
+                public static bool RemindersActive { get; set; }
                 public static decimal MinSpeechWordsCoefficient { get; set; }
                 public static decimal MaxSpeechWordsCoefficient { get; set; }
                 public static string Culture { get; set; }
@@ -47,14 +48,14 @@ namespace Supp.Site.Common
                 {
                     get
                     {
-                        var config = new Models.Configuration()
+                        var config = new Configuration()
                         {
-                            General = new Models.Configuration._General()
+                            General = new Configuration._General()
                             {
                                 PageSize = GeneralSettings.Static.PageSize.ToString(),
                                 Culture = GeneralSettings.Static.Culture
                             },
-                            Speech = new Models.Configuration._Speech()
+                            Speech = new Configuration._Speech()
                             {
                                 HostsArray = GeneralSettings.Static.HostsArray,
                                 HostDefault = GeneralSettings.Static.HostDefault,
@@ -66,6 +67,7 @@ namespace Supp.Site.Common
                                 MaxSpeechWordsCoefficient = GeneralSettings.Static.MaxSpeechWordsCoefficient.ToString().Replace(".", ","),
                                 MeteoParameterToTheSalutation = GeneralSettings.Static.MeteoParameterToTheSalutation,
                                 DescriptionMeteoToTheSalutationActive = GeneralSettings.Static.DescriptionMeteoToTheSalutationActive,
+                                RemindersActive = GeneralSettings.Static.RemindersActive,
                                 TimesToReset = GeneralSettings.Static.TimesToReset,
                             }
                         };
@@ -128,6 +130,7 @@ namespace Supp.Site.Common
                     GeneralSettings.Static.Culture = configuration.GetSection("AppSettings:Culture").Value;
                     GeneralSettings.Static.MeteoParameterToTheSalutation = configuration.GetSection("AppSettings:MeteoParameterToTheSalutation").Value;
                     GeneralSettings.Static.DescriptionMeteoToTheSalutationActive = bool.Parse(configuration.GetSection("AppSettings:DescriptionMeteoToTheSalutationActive").Value);
+                    GeneralSettings.Static.RemindersActive = bool.Parse(configuration.GetSection("AppSettings:RemindersActive").Value);
                     GeneralSettings.Static.TimesToReset = int.Parse(configuration.GetSection("AppSettings:TimesToReset").Value);
                     
                 }

@@ -80,7 +80,6 @@ namespace Tools.SyncIp
                                 showError = message;
                                 logger.Error(message);
                             }
-
                         }
                         else if (state == "Successful" && showError != null)
                         {

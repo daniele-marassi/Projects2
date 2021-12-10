@@ -1,5 +1,6 @@
 ﻿using Tools.ExecutionQueue;
 using Tools.SyncIp;
+using Tools.RenewNotes;
 using System;
 using System.Configuration;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace Tools
         NotifyIcon ni;
 		public static QueueService _QueueService;
 		public static SyncIpService _SyncIpService;
+		public static RenewNotesService _RenewNotesService;		
 		public static Speech _Speech;
 		public static SpeechService _SpeechService;
 		public static SongsManager _SongsManager;
@@ -27,6 +29,7 @@ namespace Tools
 		public static bool HookKeyActive = true;
 		public static bool QueueServiceActive = true;
 		public static bool SyncIpServiceActive = true;
+		public static bool RenewNotesServiceActive = true;
 		public static bool SpeechServiceActive = true;
 		public static bool SpeechShowHideActive = false;
 		public static bool SongsManagerActive = true;
@@ -103,6 +106,20 @@ namespace Tools
 			else
 			{
 				ContextMenus.SetMenuItem("SyncIpServiceMenuItem");
+			}
+			
+			if (bool.Parse(ConfigurationManager.AppSettings["RenewNotesService"]))
+			{
+				RenewNotesServiceActive = true;
+
+				_RenewNotesService = new RenewNotesService();
+
+				System.Threading.Thread.Sleep(50);
+				Task.Run(() => _RenewNotesService.Start());
+			}
+			else
+			{
+				ContextMenus.SetMenuItem("RenewNotesServiceMenuItem");
 			}
 
 			if (bool.Parse(ConfigurationManager.AppSettings["Speech"]))

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Supp.Site.Models;
+using SuppModels;
 using Supp.Site.Repositories;
 using Supp.Site.Common;
 using System.Reflection;
@@ -11,9 +11,9 @@ using NLog;
 using X.PagedList;
 using static Supp.Site.Common.Config;
 using Additional.NLog;
-using GoogleDriveManagerModels;
 using AutoMapper;
 using Newtonsoft.Json;
+using GoogleManagerModels;
 
 namespace Supp.Site.Controllers
 {
@@ -23,13 +23,13 @@ namespace Supp.Site.Controllers
         private readonly  NLogUtility nLogUtility = new NLogUtility();
         private readonly MediaRepository mediaRepo;
         private readonly SuppUtility suppUtility;
-        private readonly GoogleDriveAccountsRepository googleDriveAccountRepo;
+        private readonly GoogleAccountsRepository googleAccountRepo;
         
 
         public MediaController()
         {
             mediaRepo = new MediaRepository();
-            googleDriveAccountRepo = new GoogleDriveAccountsRepository();
+            googleAccountRepo = new GoogleAccountsRepository();
             suppUtility = new SuppUtility();
         }
 
@@ -71,11 +71,11 @@ namespace Supp.Site.Controllers
                     data = from s in result.Data
                            select s;
 
-                    var googleDriveAccounts = googleDriveAccountRepo.GetAllGoogleDriveAccounts(access_token_cookie).Result.Data.ToList();
+                    var googleAccounts = googleAccountRepo.GetAllGoogleAccounts(access_token_cookie).Result.Data.ToList();
 
                     foreach (var row in data)
                     {
-                        row.GoogleDriveAccounts = googleDriveAccounts;
+                        row.GoogleAccounts = googleAccounts;
                     }
 
                     long val = 0;
@@ -87,11 +87,11 @@ namespace Supp.Site.Controllers
                     }
                     else if (!String.IsNullOrEmpty(searchString))
                     {
-                        var _googleDriveAccountIds = googleDriveAccounts.Where(_ => _.Account.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())).Select(_ => _.Id).ToList();
+                        var _googleAccountIds = googleAccounts.Where(_ => _.Account.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())).Select(_ => _.Id).ToList();
                         data = data.Where(_ => _.UserName.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                             || _.Name.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                             || _.FileId.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
-                            || _googleDriveAccountIds.Contains(_.GoogleDriveAccountId)
+                            || _googleAccountIds.Contains(_.GoogleAccountId)
                         );
                     }
 
@@ -100,8 +100,8 @@ namespace Supp.Site.Controllers
                         case "Id":
                             data = data.OrderBy(_ => _.Id);
                             break;
-                        case "GoogleDriveAccount":
-                            data = data.OrderBy(_ => _.GoogleDriveAccounts.Where(x => x.Id== _.GoogleDriveAccountId).Select(_ => _.Account).FirstOrDefault());
+                        case "GoogleAccount":
+                            data = data.OrderBy(_ => _.GoogleAccounts.Where(x => x.Id== _.GoogleAccountId).Select(_ => _.Account).FirstOrDefault());
                             break;
                         case "FileId":
                             data = data.OrderBy(_ => _.FileId);
@@ -218,11 +218,11 @@ namespace Supp.Site.Controllers
                     var result = await mediaRepo.GetMediaById((long)id, access_token_cookie);
                     var data = result.Data.ToList();
 
-                    var googleDriveAccounts = googleDriveAccountRepo.GetAllGoogleDriveAccounts(access_token_cookie).Result.Data.ToList();
+                    var googleAccounts = googleAccountRepo.GetAllGoogleAccounts(access_token_cookie).Result.Data.ToList();
 
                     foreach (var row in data)
                     {
-                        row.GoogleDriveAccounts = googleDriveAccounts;
+                        row.GoogleAccounts = googleAccounts;
                     }
 
                     if (result.Successful == false || data == null)
@@ -255,11 +255,11 @@ namespace Supp.Site.Controllers
 
                     data.Add(new MediaDto() { });
 
-                    var googleDriveAccounts = googleDriveAccountRepo.GetAllGoogleDriveAccounts(access_token_cookie).Result.Data.ToList();
+                    var googleAccounts = googleAccountRepo.GetAllGoogleAccounts(access_token_cookie).Result.Data.ToList();
 
                     foreach (var row in data)
                     {
-                        row.GoogleDriveAccounts = googleDriveAccounts;
+                        row.GoogleAccounts = googleAccounts;
                     }
 
                     return View(data.FirstOrDefault());
@@ -278,7 +278,7 @@ namespace Supp.Site.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,GoogleDriveAccountId,FileId,Name,Path,ModifiedTime,CreatedTime,Size,FileExtension,MimeType,VideoDurationMillis,VideoHeight,VideoWidth,ImageTime,ImageWidth,ImageHeight,ImageLocationAltitude,ImageLocationLatitude,ImageLocationLongitude,UserName,Type,File,Thumbnail,ThumbnailWidth,ThumbnailHeight,InsDateTime")] MediaDto dto)
+        public async Task<IActionResult> Create([Bind("Id,GoogleAccountId,FileId,Name,Path,ModifiedTime,CreatedTime,Size,FileExtension,MimeType,VideoDurationMillis,VideoHeight,VideoWidth,ImageTime,ImageWidth,ImageHeight,ImageLocationAltitude,ImageLocationLatitude,ImageLocationLongitude,UserName,Type,File,Thumbnail,ThumbnailWidth,ThumbnailHeight,InsDateTime")] MediaDto dto)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -329,11 +329,11 @@ namespace Supp.Site.Controllers
                     var result = await mediaRepo.GetMediaById((long)id, access_token_cookie);
                     var data = result.Data.ToList();
 
-                    var googleDriveAccounts = googleDriveAccountRepo.GetAllGoogleDriveAccounts(access_token_cookie).Result.Data.ToList();
+                    var googleAccounts = googleAccountRepo.GetAllGoogleAccounts(access_token_cookie).Result.Data.ToList();
 
                     foreach (var row in data)
                     {
-                        row.GoogleDriveAccounts = googleDriveAccounts;
+                        row.GoogleAccounts = googleAccounts;
                     }
 
                     if (result.Successful == false || data == null)
@@ -355,7 +355,7 @@ namespace Supp.Site.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,GoogleDriveAccountId,FileId,Name,Path,ModifiedTime,CreatedTime,Size,FileExtension,MimeType,VideoDurationMillis,VideoHeight,VideoWidth,ImageTime,ImageWidth,ImageHeight,ImageLocationAltitude,ImageLocationLatitude,ImageLocationLongitude,UserName,Type,File,Thumbnail,ThumbnailWidth,ThumbnailHeight,InsDateTime")] MediaDto dto)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,GoogleAccountId,FileId,Name,Path,ModifiedTime,CreatedTime,Size,FileExtension,MimeType,VideoDurationMillis,VideoHeight,VideoWidth,ImageTime,ImageWidth,ImageHeight,ImageLocationAltitude,ImageLocationLatitude,ImageLocationLongitude,UserName,Type,File,Thumbnail,ThumbnailWidth,ThumbnailHeight,InsDateTime")] MediaDto dto)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -409,11 +409,11 @@ namespace Supp.Site.Controllers
                     var result = await mediaRepo.GetMediaById((long)id, access_token_cookie);
                     var data = result.Data.ToList();
 
-                    var googleDriveAccounts = googleDriveAccountRepo.GetAllGoogleDriveAccounts(access_token_cookie).Result.Data.ToList();
+                    var googleAccounts = googleAccountRepo.GetAllGoogleAccounts(access_token_cookie).Result.Data.ToList();
 
                     foreach (var row in data)
                     {
-                        row.GoogleDriveAccounts = googleDriveAccounts;
+                        row.GoogleAccounts = googleAccounts;
                     }
                     if (result.Successful == false || data == null)
                         throw new Exception($"Error [Data not found!] - Class: [{className}, Method: [{method}], Operation: [{nameof(mediaRepo.GetMediaById)}] - Message: [{result.Message}]");
@@ -465,6 +465,71 @@ namespace Supp.Site.Controllers
             }
         }
 
+        // GET: Media/ClearStructureMedia
+        public async Task<IActionResult> ClearStructureMedia()
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                try
+                {
+                    var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
+                    var method = currentMethod.Name;
+                    var className = currentMethod.DeclaringType.Name;
+
+                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var result = await mediaRepo.GetAllMedia(access_token_cookie);
+                    var data = result.Data.FirstOrDefault();
+
+                    if (result.Successful == false || data == null)
+                        throw new Exception($"Error [Data not found!] - Class: [{className}, Method: [{method}], Operation: [{nameof(mediaRepo.GetMediaById)}] - Message: [{result.Message}]");
+
+                    return View(data);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.ToString());
+                    ModelState.AddModelError("ModelStateErrors", ex.Message);
+                    return View();
+                }
+            }
+        }
+
+        // POST: Media/ClearStructureMedia
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ClearStructureMediaConfirmed([Bind("Path")] MediaDto dto)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                if (ModelState.IsValid)
+                {
+                    var data = new List<MediaDto>() { };
+                    try
+                    {
+                        var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
+                        var method = currentMethod.Name;
+                        var className = currentMethod.DeclaringType.Name;
+                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var result = await mediaRepo.ClearStructureMedia(access_token_cookie, dto.Path);
+
+                        data.AddRange(result.Data);
+
+                        if (!result.Successful)
+                            throw new Exception($"Error [Clear Structure Media failed!] - Class: [{className}, Method: [{method}], Operation: [{nameof(mediaRepo.ClearStructureMedia)}] - Message: [{result.Message}]");
+
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex.ToString());
+                        ModelState.AddModelError("ModelStateErrors", ex.Message);
+                        return View();
+                    }
+                }
+                return View();
+            }
+        }
+
         private bool MediaExists(long id)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
@@ -495,26 +560,36 @@ namespace Supp.Site.Controllers
             }
         }
 
-        public async Task<IActionResult> GetStructureMedia(bool mediaRequested)
+        public async Task<IActionResult> StructureMedia(bool mediaRequested, bool clear)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var result = new ManagerResult() { Data = new List<RequestResult>(), ResultState = GoogleDriveManagerModels.ResultType.None, Message = "No message!" };
-                var resultMedia = new MediaResult() { Data = new List<MediaDto>(), ResultState = Models.ResultType.Created };
-                
-                if (mediaRequested)
+                var result = new RequestResult() { Data = new List<Request>(), ResultState = GoogleManagerModels.ResultType.None, Message = "No message!" };
+                var resultMedia = new MediaResult() { Data = new List<MediaDto>(), ResultState = SuppModels.ResultType.Created };
+
+                var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
+                var method = currentMethod.Name;
+                var className = currentMethod.DeclaringType.Name;
+
+                var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+
+                if (mediaRequested && clear == true)
+                {
+                    resultMedia = await mediaRepo.ClearStructureMedia(access_token_cookie, "");
+
+                    if (resultMedia.Message == null || resultMedia.Message == String.Empty) resultMedia.Message = "No message!";
+
+                    result.Message = resultMedia.Message;
+                }
+
+                if (mediaRequested && clear == false)
                 {
                     try
                     {
-                        var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
-                        var method = currentMethod.Name;
-                        var className = currentMethod.DeclaringType.Name;
-
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                         var userName = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
                         var userId = long.Parse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName).ToString());
 
-                        result = await mediaRepo.GetStructureMedia(access_token_cookie, userName, userId);
+                        result = await mediaRepo.StructureMedia(access_token_cookie, userName, userId);
 
                         if (result.Message == null || result.Message == String.Empty) result.Message = "No message!";
 
@@ -538,13 +613,13 @@ namespace Supp.Site.Controllers
 
                                     }
                                 }
-                                result.ResultState = GoogleDriveManagerModels.ResultType.Executed;
+                                result.ResultState = GoogleManagerModels.ResultType.Executed;
                             }
                             catch (Exception ex)
                             {
                                 result.Message = resultMedia.Message;
                                 result.Successful = false;
-                                result.ResultState = GoogleDriveManagerModels.ResultType.Error;
+                                result.ResultState = GoogleManagerModels.ResultType.Error;
                             }
                         }
                     }
@@ -576,11 +651,11 @@ namespace Supp.Site.Controllers
                     var result = await mediaRepo.GetAllMedia(access_token_cookie);
                     var data = result.Data.ToList();
 
-                    //var googleDriveAccounts = googleDriveAccountRepo.GetAllGoogleDriveAccounts(access_token_cookie).Result.Data.ToList();
+                    //var googleAccounts = googleAccountRepo.GetAllGoogleAccounts(access_token_cookie).Result.Data.ToList();
 
                     //foreach (var row in data)
                     //{
-                    //    row.GoogleDriveAccounts = googleDriveAccounts;
+                    //    row.GoogleAccounts = googleAccounts;
                     //}
 
                     if (result.Successful == false || data == null)

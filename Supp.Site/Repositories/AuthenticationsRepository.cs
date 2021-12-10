@@ -1,5 +1,5 @@
 ﻿using Supp.Site.Common;
-using Supp.Site.Models;
+using SuppModels;
 using Newtonsoft.Json;
 using NLog;
 using System;

@@ -1,4 +1,4 @@
-﻿using AboutBox;
+﻿using Tools.AboutBox;
 using Additional;
 using Microsoft.Win32;
 using System;
@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using Tools.AboutBox;
 
 namespace Shut
 {
@@ -86,7 +86,7 @@ namespace Shut
 
         private static bool exit = false;
 
-        public Shut()
+        public Shut(string param)
         {
             if (utility.ProgramRunningCount(nameof(Shut)) > 1)
                 exit = true;
@@ -105,6 +105,14 @@ namespace Shut
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None); 
             style = config.AppSettings.Settings["Style"].Value;
             StartHook();
+
+            if (param.ToLower() == "ShutDown".ToLower()) ShutDown_Click();
+            if (param.ToLower() == "Exit".ToLower()) Exit_Click();
+            if (param.ToLower() == "Lock".ToLower()) Lock_Click();
+            if (param.ToLower() == "Restart".ToLower()) Restart_Click();
+            if (param.ToLower() == "Info".ToLower()) Info_Click();
+            if (param.ToLower() == "Hibernate".ToLower()) Hibernate_Click();
+            if (param.ToLower() == "LogOff".ToLower()) LogOff_Click();
         }
 
         private void ForceExit()

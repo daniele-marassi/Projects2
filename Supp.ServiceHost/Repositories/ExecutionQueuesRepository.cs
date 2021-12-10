@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Supp.ServiceHost.Models;
+using SuppModels;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using System;
@@ -61,7 +61,7 @@ namespace Supp.ServiceHost.Repositories
                 {
                     var executionQueues = await db.ExecutionQueues.ToListAsync();
 
-                    var config = new MapperConfiguration(cfg => cfg.CreateMap<Models.ExecutionQueue, ExecutionQueueDto>());
+                    var config = new MapperConfiguration(cfg => cfg.CreateMap<SuppModels.ExecutionQueue, ExecutionQueueDto>());
                     var mapper = config.CreateMapper();
                     var dto = mapper.Map<List<ExecutionQueueDto>>(executionQueues);
 
@@ -102,7 +102,7 @@ namespace Supp.ServiceHost.Repositories
                 {
                     var executionQueue = await db.ExecutionQueues.Where(_ => _.Id == id).FirstOrDefaultAsync();
 
-                    var config = new MapperConfiguration(cfg => cfg.CreateMap<Models.ExecutionQueue, ExecutionQueueDto>());
+                    var config = new MapperConfiguration(cfg => cfg.CreateMap<SuppModels.ExecutionQueue, ExecutionQueueDto>());
                     var mapper = config.CreateMapper();
                     var dto = mapper.Map<ExecutionQueueDto>(executionQueue);
 
@@ -141,15 +141,15 @@ namespace Supp.ServiceHost.Repositories
 
                 try
                 {
-                    var config = new MapperConfiguration(cfg => cfg.CreateMap<ExecutionQueueDto, Models.ExecutionQueue>());
+                    var config = new MapperConfiguration(cfg => cfg.CreateMap<ExecutionQueueDto, SuppModels.ExecutionQueue>());
                     var mapper = config.CreateMapper();
-                    var data = mapper.Map<Models.ExecutionQueue>(dto);
+                    var data = mapper.Map<SuppModels.ExecutionQueue>(dto);
 
                     db.Entry(data).State = EntityState.Modified;
 
                     //if (db.Entry(data).State == EntityState.Detached)
                     //{
-                    //    db.Set<Models.ExecutionQueue>().Attach(data);
+                    //    db.Set<SuppModels.ExecutionQueue>().Attach(data);
                     //    db.Entry(data).State = EntityState.Modified;
                     //}
 
@@ -194,9 +194,9 @@ namespace Supp.ServiceHost.Repositories
 
                 try
                 {
-                    var config = new MapperConfiguration(cfg => cfg.CreateMap<ExecutionQueueDto, Models.ExecutionQueue>());
+                    var config = new MapperConfiguration(cfg => cfg.CreateMap<ExecutionQueueDto, SuppModels.ExecutionQueue>());
                     var mapper = config.CreateMapper();
-                    var data = mapper.Map<Models.ExecutionQueue>(dto);
+                    var data = mapper.Map<SuppModels.ExecutionQueue>(dto);
 
                     db.ExecutionQueues.Add(data);
                     await db.SaveChangesAsync();
@@ -246,7 +246,7 @@ namespace Supp.ServiceHost.Repositories
                         db.ExecutionQueues.Remove(executionQueue);
                         await db.SaveChangesAsync();
 
-                        var config = new MapperConfiguration(cfg => cfg.CreateMap<Models.ExecutionQueue, ExecutionQueueDto>());
+                        var config = new MapperConfiguration(cfg => cfg.CreateMap<SuppModels.ExecutionQueue, ExecutionQueueDto>());
                         var mapper = config.CreateMapper();
                         var dto = mapper.Map<ExecutionQueueDto>(executionQueue);
 

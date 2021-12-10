@@ -1,0 +1,71 @@
+﻿@model GoogleManagerModels.RequestResult
+
+@using Supp.Site.Controllers;
+
+@{
+    ViewData["Title"] = "Structure Media";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = HomeController.Culture;
+}
+
+@using (Html.BeginForm("StructureMedia", "Media", FormMethod.Get))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <h1>@ViewData["Title"]</h1>
+
+    <hr />
+
+    <div>
+        @if (Model != null)
+        {
+            <p>
+                <dl class="row">
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.Successful)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Successful)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.ResultState)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.ResultState)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.Message)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Message)
+                    </dd>
+                    <br />
+                    <dt class="col-sm-3">
+                        Elements founded
+                        
+                    </dt>
+                    <dd class="col-sm-9">
+                        @{
+                            var totElements = 0;
+                            foreach (var item in Model.Data)
+                            {
+                                totElements += item.Files.Count();
+                            }
+                        }
+                        @totElements
+                    </dd>
+                </dl>
+            </p>
+        }
+    <div class="form-group">
+        @Html.ActionLink("Clear Structure Media", "StructureMedia", new { mediaRequested = true, clear = true}, new { @class = "btn btn-danger", @style = "text-decoration: none;" })
+        @Html.ActionLink("Get Structure Media", "StructureMedia", new { mediaRequested = true, clear = false}, new { @class = "btn btn-primary", @style = "text-decoration: none;" })       
+    </div>
+
+    </div>
+
+    <div class="text-danger" style="padding:30px;">
+        @Html.ValidationSummary(false)
+    </div>
+}

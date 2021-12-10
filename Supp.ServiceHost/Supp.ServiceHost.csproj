@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -7,8 +7,8 @@
   <ItemGroup>
     <None Remove="ExternalLibraries\Additional.dll" />
     <None Remove="ExternalLibraries\Additional.pdb" />
-    <None Remove="ExternalLibraries\GoogleDriveManagerModels.dll" />
-    <None Remove="ExternalLibraries\GoogleDriveManagerModels.pdb" />
+    <None Remove="ExternalLibraries\GoogleManagerSuppModels.dll" />
+    <None Remove="ExternalLibraries\GoogleManagerSuppModels.pdb" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,21 +55,13 @@
     <Reference Include="Additional">
       <HintPath>ExternalLibraries\Additional.dll</HintPath>
     </Reference>
-    <Reference Include="GoogleDriveManagerModels">
-      <HintPath>ExternalLibraries\GoogleDriveManagerModels.dll</HintPath>
+    <Reference Include="GoogleManagerModels">
+      <HintPath>ExternalLibraries\GoogleManagerSuppModels.dll</HintPath>
     </Reference>
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="ExternalLibraries\GoogleDriveManagerModels.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="ExternalLibraries\GoogleDriveManagerModels.pdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\SuppModels\SuppModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>

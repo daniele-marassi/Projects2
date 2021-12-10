@@ -1,4 +1,4 @@
-﻿@model Supp.Site.Models.MediaDto
+﻿@model SuppModels.MediaDto
 
 @{
     ViewData["Title"] = "Create Media";
@@ -12,9 +12,9 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="GoogleDriveAccounts.FirstOrDefault().Account" class="control-label"></label>
-                @Html.DropDownListFor(x => x.GoogleDriveAccountId, new SelectList(Model.GoogleDriveAccounts, "Id", "Account", Model.GoogleDriveAccountId), "-- Select --", new { @class = "select" })
-                @Html.ValidationMessageFor(x => x.GoogleDriveAccountId)
+                <label asp-for="GoogleAccounts.FirstOrDefault().Account" class="control-label"></label>
+                @Html.DropDownListFor(x => x.GoogleAccountId, new SelectList(Model.GoogleAccounts, "Id", "Account", Model.GoogleAccountId), "-- Select --", new { @class = "select" })
+                @Html.ValidationMessageFor(x => x.GoogleAccountId)
             </div>
             <div class="form-group">
                 <label asp-for="FileId" class="control-label"></label>

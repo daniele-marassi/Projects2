@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Supp.Site.Models;
+using SuppModels;
 using Supp.Site.Repositories;
 using Supp.Site.Common;
 using System.Reflection;
@@ -469,7 +469,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: Songs/SongsPlayer
-        public async Task<IActionResult> SongsPlayer(string _playListSelected, int? _volume, string _command, bool? _shuffle)
+        public async Task<IActionResult> SongsPlayer(string _playListSelected, int? _volume, string _command, bool? _shuffle, bool? _repeat)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -479,8 +479,10 @@ namespace Supp.Site.Controllers
                 {
                     var volume = 0;
                     bool shuffle = false;
+                    bool repeat = false;
                     int.TryParse(_volume?.ToString(), out volume);
                     bool.TryParse(_shuffle?.ToString(), out shuffle);
+                    bool.TryParse(_repeat?.ToString(), out repeat);
 
                     data = new SongDto() { FullPath = "" };
 
@@ -510,6 +512,7 @@ namespace Supp.Site.Controllers
                     data.PlayListSelected = playListSelected;
                     data.Command = _command;
                     data.Shuffle = shuffle;
+                    data.Repeat = repeat;
                     data.Volume = volume;
 
                     string access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
@@ -518,21 +521,26 @@ namespace Supp.Site.Controllers
 
                     var playlist = new List<string>() { };
 
+                    //foreach (var item in getAllSongsResult.Data)
+                    //{
+                    //    var splitedPath = Path.GetDirectoryName(item.FullPath).Substring(3).Split(@"\");
+
+                    //    var path = "";
+
+                    //    foreach (var _item in splitedPath)
+                    //    {
+                    //        if (path != "") path += "/";
+                    //        path += _item;
+                    //        playlist.Add(path);
+                    //    }    
+                    //}
+
                     foreach (var item in getAllSongsResult.Data)
                     {
-                        var splitedPath = Path.GetDirectoryName(item.FullPath).Substring(3).Split(@"\");
-
-                        var path = "";
-
-                        foreach (var _item in splitedPath)
-                        {
-                            if (path != "") path += "/";
-                            path += _item;
-                            playlist.Add(path);
-                        }    
+                        playlist.Add(item.Position.Replace(@"\",@"/"));
                     }
 
-                    playlist = playlist.Distinct().ToList();
+                    playlist = playlist.Distinct().OrderBy(_=>_).ToList();
 
                     data.PlayListArray = System.Text.Json.JsonSerializer.Serialize(playlist.ToArray());
 
@@ -550,7 +558,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: Songs/ManageSongsPlayer
-        public async Task<string> ManageSongsPlayer(string _command, string _hostSelected, bool? _shuffle, string _playListSelected)
+        public async Task<string> ManageSongsPlayer(string _command, string _hostSelected, bool? _shuffle, bool? _repeat, string _playListSelected)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -563,11 +571,15 @@ namespace Supp.Site.Controllers
                     var expiresInSeconds = 0;
                     var claims = new ClaimsDto() { IsAuthenticated = false };
                     var shuffle = false;
+                    var repeat = false;
+                    var reset = false;
                     var songsPosition = 0;
                     long songId = 0;
                     var playListSelected = "";
 
                     bool.TryParse(_shuffle?.ToString(), out shuffle);
+
+                    bool.TryParse(_repeat?.ToString(), out repeat);
 
                     int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteSongsPositionCookieName), out songsPosition);
 
@@ -613,16 +625,19 @@ namespace Supp.Site.Controllers
                     SongDto data =null;
 
                     var _songs = getAllSongsResult.Data.OrderBy(_ => _.Order).ToList();
-
-                    if (playListSelected != null && playListSelected != "") _songs = _songs.Where(_ => _.FullPath.Contains(playListSelected.Replace("/", @"\"))).ToList();
+                    if (playListSelected != null && playListSelected != "") _songs = _songs.Where(_ => _.FullPath.Contains(playListSelected.Replace("/", @"\"), StringComparison.InvariantCultureIgnoreCase)).ToList();
 
                     if (_command.Contains("reset"))
                     {
+                        reset = true;
                         foreach (var item in _songs)
                         {
                             item.Listened = false;
                             await songRepo.UpdateSong(item, access_token_cookie);
                         }
+
+                        _songs = getAllSongsResult.Data.OrderBy(_ => _.Order).ToList();
+                        if (playListSelected != null && playListSelected != "") _songs = _songs.Where(_ => _.FullPath.Contains(playListSelected.Replace("/", @"\"), StringComparison.InvariantCultureIgnoreCase)).ToList();
                     }
 
                     if (_command.Contains("volume"))
@@ -656,6 +671,7 @@ namespace Supp.Site.Controllers
                     }
 
                     if (getAllSongsResult != null) songs = _songs.Where(_ => _.Listened == false).OrderBy(_ => _.Order).ToList();
+                    if(songs.Count() == 0 && getAllSongsResult != null && repeat) songs = _songs.OrderBy(_ => _.Order).ToList();
 
                     if (songs.Count > 0) 
                     {
@@ -684,6 +700,7 @@ namespace Supp.Site.Controllers
                             suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteSongIdCookieName, data.Id.ToString(), expiresInSeconds);
 
                             data.Shuffle = shuffle;
+                            data.Repeat = repeat;
                             data.Command = _command;
                             data.PlayListSelected = playListSelected;
                         }
@@ -719,10 +736,14 @@ namespace Supp.Site.Controllers
                         data.Id = 0;
                         data.FullPath = "";
                         data.Successful = false;
-                        data.Title = "No data found!";
+                        data.Title = "No aviable data found!";
+                        data.Shuffle = shuffle;
+                        data.Repeat = repeat;
+                        if (_command == "play") data.Command = "stop";
+                        else data.Command = _command;
 
                         (string Command, long Id, string FullPath) arguments;
-                        arguments.Command = _command;
+                        arguments.Command = data.Command;
                         arguments.Id = data.Id;
                         arguments.FullPath = data.FullPath;
 

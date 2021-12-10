@@ -21,6 +21,7 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\MediaToolkit.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\MessagesPopUp.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\NLog.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\System.ValueTuple.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Newtonsoft.Json.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Common.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Common.dll.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\MessagesPopUp.pdb
@@ -35,7 +36,8 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\NLog.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\System.ValueTuple.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\it\EntityFramework.resources.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\it\EntityFramework.SqlServer.resources.dll
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Debug\Songs.csprojAssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Debug\Songs.csproj.AssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Debug\Songs.csproj.SuggestedBindingRedirects.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Debug\Songs.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Debug\Songs.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Debug\Songs.exe

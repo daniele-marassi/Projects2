@@ -14,12 +14,9 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\AboutBox.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\AxInterop.WMPLib.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\MessagesPopUp.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\NLog.dll
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\System.Resources.Extensions.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\System.ValueTuple.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Additional.dll
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\System.Memory.dll
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\System.Numerics.Vectors.dll
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\System.Buffers.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Newtonsoft.Json.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\AboutBox.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\AboutBox.exe.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\MessagesPopUp.pdb
@@ -28,7 +25,7 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\NLog.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\System.ValueTuple.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Additional.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\bin\Debug\Additional.dll.config
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\obj\Debug\Common.csprojAssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\obj\Debug\Common.csproj.AssemblyReference.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\obj\Debug\Common.Properties.Resources.resources
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\obj\Debug\Common.csproj.GenerateResource.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\obj\Debug\Common.csproj.CoreCompileInputs.cache

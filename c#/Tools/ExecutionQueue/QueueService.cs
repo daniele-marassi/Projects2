@@ -122,7 +122,7 @@ namespace Tools.ExecutionQueue
                                 var updateExecutionQueueResult = await _repo.UpdateExecutionQueue(item);
 
                                 var activeWindowTitle = utilty.GetActiveWindowTitle();
-                                if ((activeWindowTitle != windowCaption || item.Type == "ForceHideApplication") && alwaysShow == false) Hide();
+                                if ((activeWindowTitle != windowCaption || item.Type == ExecutionQueueType.ForceHideApplication.ToString()) && alwaysShow == false) Hide();
                             }
                             catch (Exception)
                             {
