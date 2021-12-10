@@ -19,13 +19,16 @@ namespace SuppModels
         Time = 9,
         SongsPlayer = 10,
         ReadNotes = 11,
-        EditNote = 12,
-        DeleteNote = 13,
-        ReadRemindersToday = 14,
-        ReadRemindersTomorrow = 15,
-        EditReminder = 16,
-        DeleteReminder = 17,
-        RequestNotImplemented = 18
+        SystemReadNotes = 12,
+        EditNote = 13,
+        SystemEditNote = 14,
+        SystemDeleteNote = 15,
+        ReadReminder = 16,
+        ReadRemindersToday = 17,
+        ReadRemindersTomorrow = 18,
+        SystemEditReminder = 19,
+        SystemDeleteReminder = 20,
+        RequestNotImplemented = 21
     }
 
     public class WebSpeechTypesUtility

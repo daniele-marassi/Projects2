@@ -54,16 +54,18 @@ namespace WindowsFormsApp1
 
             //var calendarEvent = googleCalendarUtility.CreateCalendarEvent(createCalendarEventRequest);
 
-            //var getCalendarEventsRequest = new CalendarEventsRequest()
-            //{
-            //    Auth = auth,
-            //    TokenFile = tokenFile,
-            //    Account = "daniele.marassi",
-            //    TimeMin = DateTime.Parse("2021-12-01 00:00:00"),
-            //    TimeMax = DateTime.Parse("2021-12-31 23:59:59")
-            //};
+            var getCalendarEventsRequest = new CalendarEventsRequest()
+            {
+                Auth = auth,
+                TokenFile = tokenFile,
+                Account = "daniele.marassi",
+                TimeMin = DateTime.Parse("2021-12-10 00:00:00"),
+                TimeMax = DateTime.Parse("2021-12-10 23:59:59")
+            };
 
-            //var calendarEventsResult = googleCalendarUtility.GetCalendarEvents(getCalendarEventsRequest);
+            var calendarEventsResult = googleCalendarUtility.GetCalendarEvents(getCalendarEventsRequest);
+
+            var ttt = 0;
 
             //var editCalendarEventRequest = new EditCalendarEventRequest()
             //{
@@ -109,46 +111,46 @@ namespace WindowsFormsApp1
             //        } 
             //    }
 
-            //foreach (var item in calendarEventsResult.Data.OrderBy(_=>_.EventDateStart))
-            //{
-            //    listBox1.Items.Add(item.Summary);
-            //}
-
-            var timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00").AddDays(-7);
-            var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
-
-            var calendarEventsRequest = new CalendarEventsRequest()
+            foreach (var item in calendarEventsResult.Data.OrderBy(_=>_.EventDateStart))
             {
-                Auth = auth,
-                TokenFile = tokenFile,
-                Account = "daniele.marassi",
-                TimeMin = timeMin,
-                TimeMax = timeMax
-            };
-
-            var getCalendarEventsResult = googleCalendarUtility.GetCalendarEvents(calendarEventsRequest);
-
-            if (getCalendarEventsResult.Successful)
-            {
-                foreach (var item in getCalendarEventsResult.Data.Where(_ => _.Summary.Contains("#Note")).ToList())
-                {
-                    var editCalendarEventRequest = new EditCalendarEventRequest()
-                    {
-                        Auth = auth,
-                        TokenFile = tokenFile,
-                        Account = "daniele.marassi",
-                        IdToSearch = item.Id,
-                        EventDateStart = DateTime.Parse(item.EventDateStart.Value.ToString("yyyy-MM-dd") + " 00:00:00"),
-                        EventDateEnd = DateTime.Parse(item.EventDateStart.Value.ToString("yyyy-MM-dd") + " 23:59:59"),
-                        TimeMin = DateTime.Parse(item.EventDateStart.Value.ToString("yyyy-MM-dd") + " 00:00:00"),
-                        TimeMax = DateTime.Parse(item.EventDateStart.Value.ToString("yyyy-MM-dd") + " 23:59:59")
-                    };
-
-                    var calendarEventUpdated = googleCalendarUtility.EditCalendarEventById(editCalendarEventRequest);
-
-                    var ttt = 0;
-                }
+                listBox1.Items.Add(item.Summary);
             }
+
+            //var timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00").AddDays(-7);
+            //var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
+
+            //var calendarEventsRequest = new CalendarEventsRequest()
+            //{
+            //    Auth = auth,
+            //    TokenFile = tokenFile,
+            //    Account = "daniele.marassi",
+            //    TimeMin = timeMin,
+            //    TimeMax = timeMax
+            //};
+
+            //var getCalendarEventsResult = googleCalendarUtility.GetCalendarEvents(calendarEventsRequest);
+
+            //if (getCalendarEventsResult.Successful)
+            //{
+            //    foreach (var item in getCalendarEventsResult.Data.Where(_ => _.Summary.Contains("#Note")).ToList())
+            //    {
+            //        var editCalendarEventRequest = new EditCalendarEventRequest()
+            //        {
+            //            Auth = auth,
+            //            TokenFile = tokenFile,
+            //            Account = "daniele.marassi",
+            //            IdToSearch = item.Id,
+            //            EventDateStart = DateTime.Parse(item.EventDateStart.Value.ToString("yyyy-MM-dd") + " 00:00:00"),
+            //            EventDateEnd = DateTime.Parse(item.EventDateStart.Value.ToString("yyyy-MM-dd") + " 23:59:59"),
+            //            TimeMin = DateTime.Parse(item.EventDateStart.Value.ToString("yyyy-MM-dd") + " 00:00:00"),
+            //            TimeMax = DateTime.Parse(item.EventDateStart.Value.ToString("yyyy-MM-dd") + " 23:59:59")
+            //        };
+
+            //        var calendarEventUpdated = googleCalendarUtility.EditCalendarEventById(editCalendarEventRequest);
+
+            //        var ttt = 0;
+            //    }
+            //}
         }
     }
 }

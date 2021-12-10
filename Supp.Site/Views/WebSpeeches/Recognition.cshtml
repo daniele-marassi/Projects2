@@ -1062,7 +1062,7 @@
     </script>
 }
     
-<div id="main">
+<div id="main" style="overflow:hidden;">
     <div style="text-align:center;">
         <div id="div_shortcuts" style="display: none; z-index: 999; width: 70%; position: absolute; background-color: rgb(50, 50, 50); left: 0; right: 0; margin:auto; box-shadow: 0 0rem 1rem rgba(150, 150, 150, 0.95) !important; border-radius: 25px;">
             <div style="background-color: rgba(70, 70, 70, 0.95);  text-align:right; box-shadow: rgba(150, 150, 150, 0.25) 0 14px 12px -2px; border-radius: 25px;">
@@ -1071,8 +1071,8 @@
             <dl id="shortcutsContainer" class="row" style="max-height:600px; overflow-y:auto; " >
             </dl>
         </div>
-        <div id="div_ellipse" style="margin:50px; padding-bottom:40px;">
-            <svg viewBox="-7 -20 210 140" xmlns="http://www.w3.org/2000/svg">
+        <div id="div_ellipse" style="margin:50px; padding-bottom:20px;">
+            <svg viewBox="5 -15 190 140" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <filter id="blurMe">
                         <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
@@ -1096,9 +1096,9 @@
             <button id="sendPhrase_button" onclick="SendPhrase()" class="btn btn-dark" style="width:57px; display:inline-block; color:#333; border-width:1px; outline: 0;box-shadow: none!important; height:38px; margin-top:-1px;">Send</button>
             <button id="fakeClick_button" onclick="FakeClick();" style="display:none; "></button>
         </div>
-        <div id="results" style="text-align:center;">
+        <div id="results" style="text-align:center; overflow:auto; height:25px;">
             <span class="final" id="final_span"></span> 
-            <span class="interim" id="interim_span" style="overflow:hidden;"></span>
+            <span class="interim" id="interim_span" style=""></span>
         </div>
         <div id="div_start" style="display: none;">
 	        <button id="start_button" onclick="StartButton(event);" style="border-width:1px; display: inline-block; outline: 0; box-shadow: none!important; height:100px; margin-top:100px; margin-right:0px;" class="btn btn-dark">

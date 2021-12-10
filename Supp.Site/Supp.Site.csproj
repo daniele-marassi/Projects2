@@ -5,10 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ExternalLibraries\GoogleCalendar\GoogleCalendar.dll" />
-    <None Remove="ExternalLibraries\GoogleCalendar\GoogleCalendar.pdb" />
-    <None Remove="ExternalLibraries\GoogleDrive\GoogleDrive.dll" />
-    <None Remove="ExternalLibraries\GoogleDrive\GoogleDrive.pdb" />
+    <None Remove="ExternalLibraries\GoogleManager\GoogleCalendar.dll" />
+    <None Remove="ExternalLibraries\GoogleManager\GoogleCalendar.pdb" />
+    <None Remove="ExternalLibraries\GoogleManager\GoogleService.dll" />
+    <None Remove="ExternalLibraries\GoogleManager\GoogleService.pdb" />
     <None Remove="ExternalLibraries\GoogleManagerModels.dll" />
     <None Remove="ExternalLibraries\GoogleManagerModels.pdb" />
     <None Remove="wwwroot\Downloads\GoogleCreateCredentials.zip" />
@@ -56,22 +56,28 @@
     <Content Include="ExternalLibraries\Additional.pdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ExternalLibraries\GoogleCalendar\GoogleCalendar.dll">
+    <Content Include="ExternalLibraries\GoogleManager\GoogleCalendar.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ExternalLibraries\GoogleCalendar\GoogleCalendar.pdb">
+    <Content Include="ExternalLibraries\GoogleManager\GoogleCalendar.pdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ExternalLibraries\GoogleDrive\GoogleDrive.dll">
+    <Content Include="ExternalLibraries\GoogleManager\GoogleService.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ExternalLibraries\GoogleDrive\GoogleDrive.pdb">
+    <Content Include="ExternalLibraries\GoogleManager\GoogleService.pdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ExternalLibraries\GoogleManagerModels.dll">
+    <Content Include="ExternalLibraries\GoogleManager\GoogleDrive.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ExternalLibraries\GoogleManagerModels.pdb">
+    <Content Include="ExternalLibraries\GoogleManager\GoogleDrive.pdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ExternalLibraries\GoogleManager\GoogleManagerModels.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ExternalLibraries\GoogleManager\GoogleManagerModels.pdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -93,9 +99,24 @@
     <Reference Include="GoogleManagerModels">
       <HintPath>ExternalLibraries\GoogleManagerModels.dll</HintPath>
     </Reference>
+    <Reference Include="GoogleService">
+      <HintPath>ExternalLibraries\GoogleManager\GoogleService.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="ExternalLibraries\Additional.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="ExternalLibraries\GoogleManager\GoogleCalendar.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="ExternalLibraries\GoogleManager\GoogleDrive.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="ExternalLibraries\GoogleManager\GoogleService.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="GoogleDriveManager\Output\Result.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

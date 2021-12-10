@@ -175,8 +175,11 @@ namespace Supp.Site.Recognition
 
                         var answer = "";
 
-                        if (_claims.Configuration.General.Culture.ToLower() == "it-it") answer = "Ecco gli appuntamenti:";
-                        if (_claims.Configuration.General.Culture.ToLower() == "en-us") answer = "Here are the appointments:";
+                        if (_claims.Configuration.General.Culture.ToLower() == "it-it" && data.Type == WebSpeechTypes.ReadRemindersToday.ToString()) answer = "I promemoria di oggi:";
+                        if (_claims.Configuration.General.Culture.ToLower() == "en-us" && data.Type == WebSpeechTypes.ReadRemindersToday.ToString()) answer = "Today's reminders:";
+
+                        if (_claims.Configuration.General.Culture.ToLower() == "it-it" && data.Type == WebSpeechTypes.ReadRemindersTomorrow.ToString()) answer = "I promemoria di domani:";
+                        if (_claims.Configuration.General.Culture.ToLower() == "en-us" && data.Type == WebSpeechTypes.ReadRemindersTomorrow.ToString()) answer = "Tomorrow's reminders:";
 
                         if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
                         {
@@ -192,29 +195,12 @@ namespace Supp.Site.Recognition
 
                     if (data != null && data.Type == WebSpeechTypes.ReadNotes.ToString())
                     {
-                        var phrases = new List<string>() { };
-                        var phrase = _phrase;
-
-                        try
-                        {
-                            phrases = JsonConvert.DeserializeObject<List<string>>(data.Phrase);
-                        }
-                        catch (Exception)
-                        {
-                            phrases.Add(data.Phrase);
-                        }
-
-                        foreach (var item in phrases)
-                        {
-                            phrase = phrase.Replace(item, "");
-                        }
-
                         var timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00");
                         var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
 
                         var webSpeechTypes = WebSpeechTypes.ReadNotes;
 
-                        var getRemindersResult = await webSpeecheRepo.GetReminders(access_token_cookie, userName, userId, timeMin, timeMax, webSpeechTypes, phrase);
+                        var getRemindersResult = await webSpeecheRepo.GetReminders(access_token_cookie, userName, userId, timeMin, timeMax, webSpeechTypes, data.Parameters);
 
                         var answer = "";
 
@@ -269,22 +255,8 @@ namespace Supp.Site.Recognition
 
                     if (data != null && data.Type == WebSpeechTypes.SystemWebSearch.ToString())
                     {
-                        var phrases = new List<string>() { };
-                        var phrase = _phrase;
+                        var phrase = GetValueFromPronouncedPhrase(_phrase, data.Phrase);
 
-                        try
-                        {
-                            phrases = JsonConvert.DeserializeObject<List<string>>(data.Phrase);
-                        }
-                        catch (Exception)
-                        {
-                            phrases.Add(data.Phrase);
-                        }
-
-                        foreach (var item in phrases)
-                        {
-                            phrase = phrase.Replace(item, "");
-                        }
                         //HttpUtility.UrlEncode(phrase.Replace(" ", "+"));
                         string url = "http://www.google.com/search?q=" + phrase.Trim().Replace(" ", "+");
                         data.Parameters = url;
@@ -319,8 +291,10 @@ namespace Supp.Site.Recognition
                                 if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
                                 {
                                     var reminders = "";
-                                    if (_claims.Configuration.General.Culture.ToLower() == "it-it") reminders = " Gli appuntamenti di oggi: ";
-                                    if (_claims.Configuration.General.Culture.ToLower() == "en-us") reminders = " Today's appointments: ";
+
+                                    if (_claims.Configuration.General.Culture.ToLower() == "it-it") reminders = "I promemoria di oggi:";
+                                    if (_claims.Configuration.General.Culture.ToLower() == "en-us") reminders = "Today's reminders:";
+
                                     foreach (var item in getRemindersResult.Data)
                                     {
                                         reminders += item.Summary;
@@ -427,6 +401,34 @@ namespace Supp.Site.Recognition
         }
 
         /// <summary>
+        /// Get Value From Pronounced Phrase
+        /// </summary>
+        /// <param name="pronouncedPhrase"></param>
+        /// <param name="phraseFromData"></param>
+        /// <returns></returns>
+        public string GetValueFromPronouncedPhrase(string pronouncedPhrase, string phraseFromData)
+        {
+            var phrases = new List<string>() { };
+            var phrase = pronouncedPhrase;
+
+            try
+            {
+                phrases = JsonConvert.DeserializeObject<List<string>>(phraseFromData);
+            }
+            catch (Exception)
+            {
+                phrases.Add(phraseFromData);
+            }
+
+            foreach (var item in phrases)
+            {
+                phrase = phrase.Replace(item, "");
+            }
+
+            return phrase;
+        }
+
+        /// <summary>
         /// MatchPhrase
         /// </summary>
         /// <param name="_phrase"></param>
@@ -490,12 +492,12 @@ namespace Supp.Site.Recognition
 
                     if (
                         (
-                            item.Type == WebSpeechTypes.ReadNotes.ToString() 
-                            || item.Type == WebSpeechTypes.EditNote.ToString() 
-                            || item.Type == WebSpeechTypes.DeleteNote.ToString()
+                            item.Type == WebSpeechTypes.SystemReadNotes.ToString() 
+                            || item.Type == WebSpeechTypes.SystemEditNote.ToString() 
+                            || item.Type == WebSpeechTypes.SystemDeleteNote.ToString()
 
-                            || item.Type == WebSpeechTypes.EditReminder.ToString()
-                            || item.Type == WebSpeechTypes.DeleteReminder.ToString()
+                            || item.Type == WebSpeechTypes.SystemEditReminder.ToString()
+                            || item.Type == WebSpeechTypes.SystemDeleteReminder.ToString()
                         ) 
                             && _phrase.Trim().StartsWith(phrase) && skipMatch == false)
                     {
