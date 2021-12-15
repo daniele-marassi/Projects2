@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using SuppModels;
+using Supp.Models;
 using System;
 using System.Collections.Generic;
 
@@ -107,6 +107,7 @@ namespace Supp.Site.Common
                 public const string SuppSiteSongsPositionCookieName = "SuppSiteSongsPosition";
                 public const string SuppSiteSongIdCookieName = "SuppSiteSongId";
                 public const string SuppSitePlayListSelectedCookieName = "SuppSitePlayListSelected";
+                public const string SuppSiteNewWebSpeechDtoInJsonCookieName = "SuppSiteNewWebSpeechDtoInJson";                
             }
 
             public static void SetGeneralSettings(IConfiguration configuration)

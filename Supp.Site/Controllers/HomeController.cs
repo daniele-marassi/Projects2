@@ -1,4 +1,4 @@
-﻿using SuppModels;
+﻿using Supp.Models;
 using Supp.Site.Common;
 using Supp.Site.Repositories;
 using NLog;

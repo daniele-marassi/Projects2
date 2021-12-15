@@ -1,5 +1,5 @@
 ﻿using Supp.Site.Common;
-using SuppModels;
+using Supp.Models;
 using Newtonsoft.Json;
 using NLog;
 using System;
@@ -37,7 +37,7 @@ namespace Supp.Site.Repositories
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var response = new WebSpeechResult() { Data = new List<WebSpeechDto>(), ResultState = new SuppModels.ResultType() };
+                var response = new WebSpeechResult() { Data = new List<WebSpeechDto>(), ResultState = new Supp.Models.ResultType() };
 
                 try
                 {
@@ -49,7 +49,7 @@ namespace Supp.Site.Repositories
                     if (result.IsSuccessStatusCode == false)
                     {
                         response.Successful = false;
-                        response.ResultState = SuppModels.ResultType.Error;
+                        response.ResultState = Supp.Models.ResultType.Error;
                         response.Message += result.ReasonPhrase;
                     }
                     else
@@ -61,7 +61,7 @@ namespace Supp.Site.Repositories
                 catch (Exception ex)
                 {
                     response.Successful = false;
-                    response.ResultState = SuppModels.ResultType.Error;
+                    response.ResultState = Supp.Models.ResultType.Error;
                     response.Message = ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
@@ -81,7 +81,7 @@ namespace Supp.Site.Repositories
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var response = new WebSpeechResult() { Data = new List<WebSpeechDto>(), ResultState = new SuppModels.ResultType() };
+                var response = new WebSpeechResult() { Data = new List<WebSpeechDto>(), ResultState = new Supp.Models.ResultType() };
 
                 try
                 {
@@ -95,7 +95,7 @@ namespace Supp.Site.Repositories
                     if (result.IsSuccessStatusCode == false)
                     {
                         response.Successful = false;
-                        response.ResultState = SuppModels.ResultType.Error;
+                        response.ResultState = Supp.Models.ResultType.Error;
                         response.Message += result.ReasonPhrase;
                     }
                     else
@@ -107,7 +107,7 @@ namespace Supp.Site.Repositories
                 catch (Exception ex)
                 {
                     response.Successful = false;
-                    response.ResultState = SuppModels.ResultType.Error;
+                    response.ResultState = Supp.Models.ResultType.Error;
                     response.Message = ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
@@ -127,7 +127,7 @@ namespace Supp.Site.Repositories
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var response = new WebSpeechResult() { Data = new List<WebSpeechDto>(), ResultState = new SuppModels.ResultType() };
+                var response = new WebSpeechResult() { Data = new List<WebSpeechDto>(), ResultState = new Supp.Models.ResultType() };
 
                 try
                 {
@@ -145,7 +145,7 @@ namespace Supp.Site.Repositories
                     if (result.IsSuccessStatusCode == false)
                     {
                         response.Successful = false;
-                        response.ResultState = SuppModels.ResultType.Error;
+                        response.ResultState = Supp.Models.ResultType.Error;
                         response.Message += result.ReasonPhrase;
                     }
                     else
@@ -157,7 +157,7 @@ namespace Supp.Site.Repositories
                 catch (Exception ex)
                 {
                     response.Successful = false;
-                    response.ResultState = SuppModels.ResultType.Error;
+                    response.ResultState = Supp.Models.ResultType.Error;
                     response.Message = ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
@@ -177,7 +177,7 @@ namespace Supp.Site.Repositories
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var response = new WebSpeechResult() { Data = new List<WebSpeechDto>(), ResultState = new SuppModels.ResultType() };
+                var response = new WebSpeechResult() { Data = new List<WebSpeechDto>(), ResultState = new Supp.Models.ResultType() };
 
                 try
                 {
@@ -197,7 +197,7 @@ namespace Supp.Site.Repositories
                     if (result.IsSuccessStatusCode == false)
                     {
                         response.Successful = false;
-                        response.ResultState = SuppModels.ResultType.Error;
+                        response.ResultState = Supp.Models.ResultType.Error;
                         response.Message += result.ReasonPhrase;
                     }
                     else
@@ -209,7 +209,7 @@ namespace Supp.Site.Repositories
                 catch (Exception ex)
                 {
                     response.Successful = false;
-                    response.ResultState = SuppModels.ResultType.Error;
+                    response.ResultState = Supp.Models.ResultType.Error;
                     response.Message = ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
@@ -229,7 +229,7 @@ namespace Supp.Site.Repositories
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var response = new WebSpeechResult() { Data = new List<WebSpeechDto>(), ResultState = new SuppModels.ResultType() };
+                var response = new WebSpeechResult() { Data = new List<WebSpeechDto>(), ResultState = new Supp.Models.ResultType() };
 
                 try
                 {
@@ -243,7 +243,7 @@ namespace Supp.Site.Repositories
                     if (result.IsSuccessStatusCode == false)
                     {
                         response.Successful = false;
-                        response.ResultState = SuppModels.ResultType.Error;
+                        response.ResultState = Supp.Models.ResultType.Error;
                         response.Message += result.ReasonPhrase;
                     }
                     else
@@ -255,7 +255,7 @@ namespace Supp.Site.Repositories
                 catch (Exception ex)
                 {
                     response.Successful = false;
-                    response.ResultState = SuppModels.ResultType.Error;
+                    response.ResultState = Supp.Models.ResultType.Error;
                     response.Message = ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());

@@ -1,4 +1,4 @@
-﻿@model SuppModels.WebSpeechDto
+﻿@model Supp.Models.WebSpeechDto
 
 @using Supp.Site.Controllers;
 @using Supp.Site.Common;
@@ -27,6 +27,7 @@
         var ellipseStep = [];
         var animateIntervals = [];
         var recognitionActive = true;
+        var recognitionDisable = false;
         var speech = null;
         var serviceInterval = null;
         var hosts = [];
@@ -54,6 +55,7 @@
         var tmp_phrase  = '';
 
         //@*Model Variables*@
+        var name = '';
         var answer = '';
         var startAnswer = '';
         var finalStep = false;
@@ -62,6 +64,7 @@
         var application = false;
         var alwaysShow = false;
         var resetAfterLoad = false;
+        var recognitionDisable = false;
         var onlyRefresh = false;
         var culture = '';
         var id = '';
@@ -77,13 +80,14 @@
         var timesToReset = 0;
         var subType = ''; 
         var step = 0;
-        var newWebSpeechDtoInJson= '';
+        var newWebSpeechRequestName= '';
         //@*Model Variables*@
 
         function VariablesAssignmentFromJson(jsonString) {
             //console.warn('###' + jsonString + '###');
             var model = JSON.parse(jsonString);
 
+            name = DecodeUnicodeExtended(model['Name']);
             answer = DecodeUnicodeExtended(model['Answer']);
             startAnswer = DecodeUnicodeExtended(model['StartAnswer']);
             finalStep = GetBoolean(DecodeUnicodeExtended(model['FinalStep']));
@@ -92,6 +96,7 @@
             application = GetBoolean(DecodeUnicodeExtended(model['Application']));
             alwaysShow = GetBoolean(DecodeUnicodeExtended(model['AlwaysShow']));
             resetAfterLoad = GetBoolean(DecodeUnicodeExtended(model['ResetAfterLoad']));
+            recognitionDisable = GetBoolean(DecodeUnicodeExtended(model['RecognitionDisable']));
             onlyRefresh = GetBoolean(DecodeUnicodeExtended(model['OnlyRefresh']));
             culture = DecodeUnicodeExtended(model['Culture']);
             id = DecodeUnicodeExtended( model['Id']);
@@ -106,6 +111,9 @@
             }
             else{
                 _old_phrase = '';
+                step = 0;
+                subType = "";
+                id = 0;
             }
 
             listeningWord1 = DecodeUnicodeExtended(model['ListeningWord1']);
@@ -117,8 +125,8 @@
 
             executionQueueId = DecodeUnicodeExtended(model['ExecutionQueueId']);
             shortcutsInJson = DecodeUnicodeExtended(model['ShortcutsInJson']);
-            newWebSpeechDtoInJson = DecodeUnicode(model['NewWebSpeechDtoInJson']);
-
+            newWebSpeechRequestName = DecodeUnicode(model['NewWebSpeechRequestName']);
+            
             type = DecodeUnicodeExtended(model['Type']);
             parameters = DecodeUnicodeExtended(model['Parameters']); 
             ehi = 0;
@@ -140,6 +148,7 @@
         }
 
         function VariablesAssignmentFromModel() {
+            name = '@Model?.Name';
             answer = '@Model?.Answer';
             startAnswer = '@Model?.StartAnswer';
             finalStep = GetBoolean('@Model?.FinalStep');
@@ -148,6 +157,7 @@
             application = GetBoolean('@Model?.Application');
             alwaysShow = GetBoolean('@Model?.AlwaysShow');
             resetAfterLoad = GetBoolean('@Model?.ResetAfterLoad');
+            recognitionDisable = GetBoolean('@Model?.RecognitionDisable');
             onlyRefresh = GetBoolean('@Model?.OnlyRefresh');
             culture = '@Model?.Culture';
             id = '@Model?.Id';
@@ -162,6 +172,9 @@
             }
             else{
                 _old_phrase = '';
+                step = 0;
+                subType = "";
+                id = 0;
             }
 
             listeningWord1 = '@Model?.ListeningWord1';
@@ -173,7 +186,7 @@
 
             executionQueueId = '@Model?.ExecutionQueueId';
             shortcutsInJson = '@Model?.ShortcutsInJson';
-            newWebSpeechDtoInJson = '@Model?.NewWebSpeechDtoInJson';
+            newWebSpeechRequestName = '@Model?.NewWebSpeechRequestName';
             type = '@Model?.Type';
             parameters = '@Model?.Parameters'; 
             ehi = 0;
@@ -453,6 +466,8 @@
 
             if(ehi == 1 && recognitionActive == true) partialResetActive = true;  
             else PartialReset();
+
+            if(recognitionDisable == true) RecognitionDisable();
         }
 
         function ExecutionFinished(){
@@ -522,11 +537,11 @@
                 _phrase = $("#sendPhrase_text").val();
                 if(_phrase != null && _phrase != ''){
                     var phraseTmp = _phrase;
-                    if(_old_phrase != '') phraseTmp = _old_phrase + ' ' + _phrase;
+                    //if(_old_phrase != '') phraseTmp = _old_phrase + ' ' + _phrase;
                                            
                     clearInterval(serviceInterval);
 
-                    CallWebSpeechDtoInJson(('_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application + '&_subType='+subType + '&_step='+step), "ResultSendPhrase");
+                    CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application + '&_subType='+subType + '&_step='+step), "ResultSendPhrase");
                 }
             }
         }
@@ -539,16 +554,17 @@
             SendHttpRequest("GET", _url, null, funcName);
         } 
 
-        function ResultSendPhrase(result){           
+        function ResultSendPhrase(result){    
             VariablesAssignmentFromJson(result);
             Speak();
             Action(type, parameters);
 
-            if(newWebSpeechDtoInJson != null && newWebSpeechDtoInJson != '' && newWebSpeechDtoInJson != 'null')  CallCreateWithParam(newWebSpeechDtoInJson);
+            if(newWebSpeechRequestName != null && newWebSpeechRequestName != '' && newWebSpeechRequestName != 'null')  CallCreateWithParam(newWebSpeechRequestName);
+            if(recognitionDisable == true) RecognitionDisable();
         }
 
-        function CallCreateWithParam(_newWebSpeechDtoInJson){           
-            var _url = url.replace("Recognition","Create")+'?_newWebSpeechDtoInJson='+ _newWebSpeechDtoInJson;
+        function CallCreateWithParam(_newWebSpeechRequestName){           
+            var _url = url.replace("Recognition","Create")+'?_newWebSpeechRequestName='+ _newWebSpeechRequestName;
 
             if(application == false){
                 window.open(_url);
@@ -682,17 +698,17 @@
                                            
                                             clearInterval(serviceInterval);
                                             
-                                            CallWebSpeechDtoInJson(('_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionEhi");
+                                            CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionEhi");
                                         } else if (ehi == 1 && _phrase != listeningPhrase && _phrase != null && _phrase != '' && _reset == false) {
                                             var audio = new Audio("/Files/Ehi.mp3");
                                             audio.play();
 
                                             var phraseTmp = _phrase;
-                                            if(_old_phrase != '') phraseTmp = _old_phrase + ' ' + _phrase;
+                                            //if(_old_phrase != '') phraseTmp = _old_phrase + ' ' + _phrase;
                                            
                                             clearInterval(serviceInterval);
 
-                                            CallWebSpeechDtoInJson(('_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application + '&_subType='+subType + '&_step='+step), "ResultRecognitionPhrase");
+                                            CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application + '&_subType='+subType + '&_step='+step), "ResultRecognitionPhrase");
                                         } else if (ehi == 0 && _phrase != listeningPhrase && _phrase.includes(listeningPhrase) && _phrase != null && _phrase != '' && _reset == false) {
                                             var audio = new Audio("/Files/Ehi.mp3");
                                             audio.play();
@@ -705,7 +721,7 @@
 
                                             clearInterval(serviceInterval);
 
-                                            CallWebSpeechDtoInJson(('_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application + '&_subType='+subType + '&_step='+step), "ResultRecognitionPhrase");
+                                            CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application + '&_subType='+subType + '&_step='+step), "ResultRecognitionPhrase");
                                         }
                                     }
                                 }
@@ -736,18 +752,20 @@
             }
         }
 
-        function ResultRecognitionPhrase(result){           
+        function ResultRecognitionPhrase(result){  
             VariablesAssignmentFromJson(result);
             Speak();
             Action(type, parameters);
 
-            if(newWebSpeechDtoInJson != null && newWebSpeechDtoInJson != '' && newWebSpeechDtoInJson != 'null')  CallCreateWithParam(newWebSpeechDtoInJson);
+            if(newWebSpeechRequestName != null && newWebSpeechRequestName != '' && newWebSpeechRequestName != 'null')  CallCreateWithParam(newWebSpeechRequestName);
+            if(recognitionDisable == true) RecognitionDisable();
         }
 
-        function ResultRecognitionEhi(result){           
+        function ResultRecognitionEhi(result){     
             VariablesAssignmentFromJson(result);
             Speak();
             Action(type, parameters);
+            if(recognitionDisable == true) RecognitionDisable();
         }
 
         function SimulateClick(control) {
@@ -790,22 +808,25 @@
         }
 
         function SetAudio(){
-            if(audioActive == true) {
-                navigator.mediaDevices.getUserMedia({ audio: true })
-                .then(function (stream) {
-                    window.localStream = stream;
-                    console.warn('You let me use your mic!')
-                })
-                .catch(function (err) {
-                    console.warn('No mic for you!')
-                });
-            } else {
-                window.localStream.getTracks().forEach( (track) => {
-                    track.stop();
-                     console.warn('mic off')
-                });
-                window.localStream.getAudioTracks()[0].stop();
+            try {
+                if(audioActive == true) {
+                    navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(function (stream) {
+                        window.localStream = stream;
+                        console.warn('You let me use your mic!')
+                    })
+                    .catch(function (err) {
+                        console.warn('No mic for you!')
+                    });
+                } else {
+                    window.localStream.getTracks().forEach( (track) => {
+                        track.stop();
+                         console.warn('mic off')
+                    });
+                    window.localStream.getAudioTracks()[0].stop();
+                }
             }
+            catch (error) { }
         }
 
         function Speak(){
@@ -832,8 +853,7 @@
 
         function PartialReset(){
             ehi = 0;
-            step = 0;
-            subType = "";
+
             _old_phrase = '';
             _phrase = null;
             partialResetActive = false;
@@ -895,26 +915,32 @@
 
         function RecognitionEnableDisable(){
             if(recognitionActive == true){
-                clearInterval(serviceInterval);
-                serviceInterval = null;
-                PartialReset();
-                recognitionActive = false;
-                audioActive = false;
-                SetAudio();
-                recognition.abort();
-                recognition.stop();
-                StopAnimateIntervals();
-                clearInterval(animateIntervals['StopAnimateIntervalsListening']);
-                animateIntervals['StopAnimateIntervalsListening'] = null;
-                document.getElementById("recognitionEnableDisable_image").src = '/Images/micOff.png';
-                
+                RecognitionDisable();
             } else {
                 PartialReset();
                 recognitionActive = true;
+                recognitionDisable = false;
                 audioActive = true;
                 InitFinal();
                 document.getElementById("recognitionEnableDisable_image").src = '/Images/micOn.png';
             }
+        }
+
+        function RecognitionDisable(){
+            recognitionDisable = true;
+            recognitionActive = false;
+            clearInterval(serviceInterval);
+            serviceInterval = null;
+            PartialReset();
+            recognitionActive = false;
+            audioActive = false;
+            SetAudio();
+            recognition.abort();
+            recognition.stop();
+            StopAnimateIntervals();
+            clearInterval(animateIntervals['StopAnimateIntervalsListening']);
+            animateIntervals['StopAnimateIntervalsListening'] = null;
+            document.getElementById("recognitionEnableDisable_image").src = '/Images/micOff.png';
         }
 
         function MenuClick() {
@@ -964,7 +990,7 @@
                             window.open(_url, "open link", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
                         }
                         else {
-                            CallWebSpeechDtoInJson(('_id=' + shortcut['Id'] + '&_hostSelected=' + $("#hosts_cmb option:selected").text() + '&_application=' + application), "ResultActionShortcut");
+                            CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + shortcut['Id'] + '&_hostSelected=' + $("#hosts_cmb option:selected").text() + '&_application=' + application), "ResultActionShortcut");
                         }
                     }
                 }
@@ -975,10 +1001,11 @@
             }
         }
 
-        function ResultActionShortcut(result){           
+        function ResultActionShortcut(result){
             VariablesAssignmentFromJson(result);
             Speak();
             Action(type, parameters);
+            if(recognitionDisable == true) RecognitionDisable();
         }
 
         function Action(type, link){
@@ -1128,5 +1155,7 @@
             InitFinal();  
             ClearUrl();
         }
+
+        if(recognitionDisable == true) RecognitionDisable();
 	}	
 </script>

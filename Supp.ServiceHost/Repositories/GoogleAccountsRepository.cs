@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Supp.ServiceHost.Common;
 using Supp.ServiceHost.Repositories;
-using SuppModels;
+using Supp.Models;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using System;
@@ -65,7 +65,7 @@ namespace Supp.ServiceHost.Repositories
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var response = new GoogleAccountResult() { Data = new List<GoogleAccountDto>(), ResultState = new SuppModels.ResultType() };
+                var response = new GoogleAccountResult() { Data = new List<GoogleAccountDto>(), ResultState = new Supp.Models.ResultType() };
 
                 try
                 {
@@ -79,14 +79,14 @@ namespace Supp.ServiceHost.Repositories
                     {
                         response.Data.AddRange(dto);
                         response.Successful = true;
-                        response.ResultState = SuppModels.ResultType.Found;
+                        response.ResultState = Supp.Models.ResultType.Found;
                         response.Message = "";
                     }
                 }
                 catch (Exception ex)
                 {
                     response.Successful = false;
-                    response.ResultState = SuppModels.ResultType.Error;
+                    response.ResultState = Supp.Models.ResultType.Error;
                     response.Message = ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
@@ -106,7 +106,7 @@ namespace Supp.ServiceHost.Repositories
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var response = new GoogleAccountResult() { Data = new List<GoogleAccountDto>(), ResultState = new SuppModels.ResultType() };
+                var response = new GoogleAccountResult() { Data = new List<GoogleAccountDto>(), ResultState = new Supp.Models.ResultType() };
 
                 try
                 {
@@ -120,14 +120,14 @@ namespace Supp.ServiceHost.Repositories
                     {
                         response.Data.Add(dto);
                         response.Successful = true;
-                        response.ResultState = SuppModels.ResultType.Found;
+                        response.ResultState = Supp.Models.ResultType.Found;
                         response.Message = "";
                     }
                 }
                 catch (Exception ex)
                 {
                     response.Successful = false;
-                    response.ResultState = SuppModels.ResultType.Error;
+                    response.ResultState = Supp.Models.ResultType.Error;
                     response.Message = ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
@@ -147,7 +147,7 @@ namespace Supp.ServiceHost.Repositories
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var response = new GoogleAccountResult() { Data = new List<GoogleAccountDto>(), ResultState = new SuppModels.ResultType() };
+                var response = new GoogleAccountResult() { Data = new List<GoogleAccountDto>(), ResultState = new Supp.Models.ResultType() };
 
                 try
                 {
@@ -158,7 +158,7 @@ namespace Supp.ServiceHost.Repositories
                     db.Entry(data).State = EntityState.Modified;
                     await db.SaveChangesAsync();
                     response.Successful = true;
-                    response.ResultState = SuppModels.ResultType.Updated;
+                    response.ResultState = Supp.Models.ResultType.Updated;
                     response.Message = "";
                 }
                 catch (Exception ex)
@@ -166,14 +166,14 @@ namespace Supp.ServiceHost.Repositories
                     if (!GoogleAccountExists(dto.Id))
                     {
                         response.Successful = true;
-                        response.ResultState = SuppModels.ResultType.NotFound;
+                        response.ResultState = Supp.Models.ResultType.NotFound;
                         response.Message = ex.Message;
                         response.OriginalException = null;
                     }
                     else
                     {
                         response.Successful = false;
-                        response.ResultState = SuppModels.ResultType.Error;
+                        response.ResultState = Supp.Models.ResultType.Error;
                         response.Message = ex.Message;
                         response.OriginalException = null;
                         logger.Error(ex.ToString());
@@ -194,7 +194,7 @@ namespace Supp.ServiceHost.Repositories
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var response = new GoogleAccountResult() { Data = new List<GoogleAccountDto>(), ResultState = new SuppModels.ResultType() };
+                var response = new GoogleAccountResult() { Data = new List<GoogleAccountDto>(), ResultState = new Supp.Models.ResultType() };
 
                 try
                 {
@@ -208,14 +208,14 @@ namespace Supp.ServiceHost.Repositories
                     dto.Id = data.Id;
 
                     response.Successful = true;
-                    response.ResultState = SuppModels.ResultType.Created;
+                    response.ResultState = Supp.Models.ResultType.Created;
                     response.Message = "";
                     response.Data.Add(dto);
                 }
                 catch (Exception ex)
                 {
                     response.Successful = false;
-                    response.ResultState = SuppModels.ResultType.Error;
+                    response.ResultState = Supp.Models.ResultType.Error;
                     response.Message = ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
@@ -235,7 +235,7 @@ namespace Supp.ServiceHost.Repositories
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var response = new GoogleAccountResult() { Data = new List<GoogleAccountDto>(), ResultState = new SuppModels.ResultType() };
+                var response = new GoogleAccountResult() { Data = new List<GoogleAccountDto>(), ResultState = new Supp.Models.ResultType() };
 
                 try
                 {
@@ -243,7 +243,7 @@ namespace Supp.ServiceHost.Repositories
                     if (googleAccount == null)
                     {
                         response.Successful = true;
-                        response.ResultState = SuppModels.ResultType.NotFound;
+                        response.ResultState = Supp.Models.ResultType.NotFound;
                         response.Message = "";
                     }
                     else
@@ -256,7 +256,7 @@ namespace Supp.ServiceHost.Repositories
                         var dto = mapper.Map<GoogleAccountDto>(googleAccount);
 
                         response.Successful = true;
-                        response.ResultState = SuppModels.ResultType.Deleted;
+                        response.ResultState = Supp.Models.ResultType.Deleted;
                         response.Message = "";
                         response.Data.Add(dto);
                     }
@@ -264,7 +264,7 @@ namespace Supp.ServiceHost.Repositories
                 catch (Exception ex)
                 {
                     response.Successful = false;
-                    response.ResultState = SuppModels.ResultType.Error;
+                    response.ResultState = Supp.Models.ResultType.Error;
                     response.Message = ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
@@ -284,7 +284,7 @@ namespace Supp.ServiceHost.Repositories
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var response = new GoogleAccountResult() { ResultState = new SuppModels.ResultType() };
+                var response = new GoogleAccountResult() { ResultState = new Supp.Models.ResultType() };
 
                 try
                 {
@@ -359,21 +359,21 @@ namespace Supp.ServiceHost.Repositories
                             System.IO.File.WriteAllText(tokenFileFullPath, JsonConvert.SerializeObject(credential.AccessProperties));
 
                             response.Successful = true;
-                            response.ResultState = SuppModels.ResultType.Created;
+                            response.ResultState = Supp.Models.ResultType.Created;
                             response.Message = "Credentials created!";
                         }
                     }
                     else 
                     {
                         response.Successful = true;
-                        response.ResultState = SuppModels.ResultType.Failed;
+                        response.ResultState = Supp.Models.ResultType.Failed;
                         response.Message = "ERROR: No Credential sended!";
                     }
                 }
                 catch (Exception ex)
                 {
                     response.Successful = false;
-                    response.ResultState = SuppModels.ResultType.Error;
+                    response.ResultState = Supp.Models.ResultType.Error;
                     response.Message = ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());

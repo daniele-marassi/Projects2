@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SuppModels;
+using Supp.Models;
 using Supp.Site.Repositories;
 using Supp.Site.Common;
 using System.Reflection;

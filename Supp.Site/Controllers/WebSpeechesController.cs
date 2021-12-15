@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SuppModels;
+using Supp.Models;
 using Supp.Site.Repositories;
 using Supp.Site.Common;
 using System.Reflection;
@@ -114,7 +114,9 @@ namespace Supp.Site.Controllers
                             || _.Answer.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                             || _.Ico.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                             || _.Type.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.SubType.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                             || _.Phrase.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.StepType.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                         );
                     }
 
@@ -150,8 +152,14 @@ namespace Supp.Site.Controllers
                         case "Type":
                             data = data.OrderBy(_ => _.Type);
                             break;
+                        case "SubType":
+                            data = data.OrderBy(_ => _.SubType);
+                            break;
                         case "Phrase":
                             data = data.OrderBy(_ => _.Phrase);
+                            break;
+                        case "StepType":
+                            data = data.OrderBy(_ => _.StepType);
                             break;
                         default:
                             data = data.OrderBy(_ => _.Name);
@@ -235,7 +243,7 @@ namespace Supp.Site.Controllers
                     foreach (FileInfo file in Files)
                     {
                         var ico = file.FullName.Replace(Path.Combine(path, "wwwroot"), "").Replace(@"\", "/");
-                        shortcutImages.Add(new ShortcutImage() { Id = ico, Name = file.Name });
+                        shortcutImages.Add(new ShortcutImage() { Id = ico.Trim(), Name = file.Name.Trim() });
                     }
                 }
                 catch (Exception ex)
@@ -248,7 +256,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/Create
-        public IActionResult Create(string _newWebSpeechDtoInJson)
+        public IActionResult Create(string _newWebSpeechRequestName)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -256,7 +264,11 @@ namespace Supp.Site.Controllers
                 try
                 {
                     WebSpeechDto newWebSpeech = null;
-                    if(_newWebSpeechDtoInJson != null && _newWebSpeechDtoInJson != String.Empty) newWebSpeech = JsonConvert.DeserializeObject<WebSpeechDto>(_newWebSpeechDtoInJson);
+                    if (_newWebSpeechRequestName != null && _newWebSpeechRequestName != String.Empty)
+                    {
+                        var newWebSpeechDtoInJson = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteNewWebSpeechDtoInJsonCookieName + "_" + _newWebSpeechRequestName);
+                        newWebSpeech = JsonConvert.DeserializeObject<WebSpeechDto>(newWebSpeechDtoInJson);
+                    }
                     var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                     var method = currentMethod.Name;
                     var className = currentMethod.DeclaringType.Name;
@@ -273,6 +285,14 @@ namespace Supp.Site.Controllers
 
                     var shortcutImages = GetShortcutImages();
                     var claims = SuppUtility.GetClaims(User);
+
+                    var hosts = new List<Host>() { };
+                    var hostsArray = JsonConvert.DeserializeObject<List<string>>(claims.Configuration.Speech.HostsArray);
+
+                    foreach (var item in hostsArray)
+                    {
+                        hosts.Add(new Host() { Id = item, Name = item });
+                    }
 
                     foreach (var row in data)
                     {
@@ -293,6 +313,7 @@ namespace Supp.Site.Controllers
                             row.WebSpeeches = webSpeeches;
                             row.WebSpeechIds = new long[] { };
                             row.ShortcutImages = shortcutImages;
+                            row.Hosts = hosts;
                         }
                         else
                         {
@@ -313,6 +334,7 @@ namespace Supp.Site.Controllers
                             row.Ico = newWebSpeech.Ico;
                             row.Type = newWebSpeech.Type;
                             row.Order = newWebSpeech.Order;
+                            row.Hosts = hosts;
 
                             if (newWebSpeech.PrivateInstruction == true) row.UserId = claims.UserId;
                             else row.UserId = 0;
@@ -326,7 +348,7 @@ namespace Supp.Site.Controllers
                     logger.Error(ex.ToString());
                     ModelState.AddModelError("ModelStateErrors", ex.Message);
 
-                    return View(data);
+                    return View(data.FirstOrDefault());
                 }
             }
         }
@@ -412,6 +434,17 @@ namespace Supp.Site.Controllers
 
                     data.WebSpeeches = webSpeeches;
                     data.ShortcutImages = shortcutImages;
+
+                    var claims = SuppUtility.GetClaims(User);
+                    var hosts = new List<Host>() { };
+                    var hostsArray = JsonConvert.DeserializeObject<List<string>>(claims.Configuration.Speech.HostsArray);
+
+                    foreach (var item in hostsArray)
+                    {
+                        hosts.Add( new Host() { Id = item, Name = item });
+                    }
+
+                    data.Hosts = hosts;
 
                     return View(data);
                 }
@@ -737,7 +770,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/GetWebSpeechDtoInJson
-        public async Task<string> GetWebSpeechDtoInJson(string _phrase, string _hostSelected, bool? _reset, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step)
+        public async Task<string> GetWebSpeechDtoInJson(string _phrase, string _hostSelected, bool? _reset, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step, bool? _recognitionDisable)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -749,6 +782,7 @@ namespace Supp.Site.Controllers
                     var application = false;
                     var alwaysShow = false;
                     var onlyRefresh = false;
+                    var recognitionDisable = false;
                     var hostSelected = "";
                     long executionQueueId = 0;
                     long.TryParse(_executionQueueId?.ToString(), out executionQueueId);
@@ -756,6 +790,8 @@ namespace Supp.Site.Controllers
                     long.TryParse(_id?.ToString(), out id);
                     bool.TryParse(_reset?.ToString(), out reset);
                     bool.TryParse(_onlyRefresh?.ToString(), out onlyRefresh);
+                    bool.TryParse(_recognitionDisable?.ToString(), out recognitionDisable);
+                    
                     int step = 0;
                     int.TryParse(_step?.ToString(), out step);
 
@@ -791,6 +827,7 @@ namespace Supp.Site.Controllers
 
                     if (data != null)
                     {
+                        data.RecognitionDisable = recognitionDisable;
                         result = System.Text.Json.JsonSerializer.Serialize(data);
                         result = result.Replace(@"\", "/");
                     }

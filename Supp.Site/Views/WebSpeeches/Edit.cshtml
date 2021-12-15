@@ -1,4 +1,4 @@
-﻿@model SuppModels.WebSpeechDto
+﻿@model Supp.Models.WebSpeechDto
 
 @{
     ViewData["Title"] = "Edit WebSpeech";
@@ -12,7 +12,6 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" /><input type="hidden" asp-for="InsDateTime" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control textBoxCustom" />
@@ -40,8 +39,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="Host" class="control-label"></label>
-                <input asp-for="Host" class="form-control textBoxCustom" />
-                <span asp-validation-for="Host" class="text-danger"></span>
+                @Html.DropDownListFor(x => x.Host, new SelectList(Model.Hosts, "Id", "Name", Model.Host), "-- Select --", new {@class="select" })
+                @Html.ValidationMessageFor(x => x.Host)
             </div>
             <div class="form-group">
                 <label asp-for="Answer" class="control-label"></label>
@@ -60,13 +59,28 @@
             </div>
             <div class="form-group">
                 <label asp-for="Type" class="control-label"></label>
-                @Html.DropDownListFor(x => x.Type, new SelectList(Model.WebSpeechTypes, "Id", "Type", Model.Type), "-- Select --", new {@class="select" })
+                @Html.DropDownListFor(x => x.Type, new SelectList(Model.WebSpeechTypes, "Id", "Name", Model.Type), "-- Select --", new {@class="select" })
                 @Html.ValidationMessageFor(x => x.Type)
+            </div>
+            <div class="form-group">
+                <label asp-for="SubType" class="control-label"></label>
+                @Html.DropDownListFor(x => x.SubType, new SelectList(Model.WebSpeechTypes, "Id", "Name", Model.SubType), "-- Select --", new {@class="select" })
+                @Html.ValidationMessageFor(x => x.SubType)
             </div>
             <div class="form-group">
                 <label asp-for="ParentIds" class="control-label"></label>
                 @Html.ListBoxFor(x => x.WebSpeechIds, new SelectList(Model.WebSpeeches, "Id", "Phrase"), new { @class = "listbox"})
                 @Html.ValidationMessageFor(x => x.WebSpeechIds)
+            </div>
+            <div class="form-group">
+                <label asp-for="Step" class="control-label"></label>
+                <input asp-for="Step" class="form-control textBoxCustom" />
+                <span asp-validation-for="Step" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StepType" class="control-label"></label>
+                @Html.DropDownListFor(x => x.StepType, new SelectList(Model.StepTypes, "Id", "Name", Model.StepType), "-- Select --", new {@class="select" })
+                @Html.ValidationMessageFor(x => x.StepType)
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">

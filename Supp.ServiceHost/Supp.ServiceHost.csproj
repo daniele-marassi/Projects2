@@ -7,8 +7,8 @@
   <ItemGroup>
     <None Remove="ExternalLibraries\Additional.dll" />
     <None Remove="ExternalLibraries\Additional.pdb" />
-    <None Remove="ExternalLibraries\GoogleManagerSuppModels.dll" />
-    <None Remove="ExternalLibraries\GoogleManagerSuppModels.pdb" />
+    <None Remove="ExternalLibraries\GoogleManagerSupp.Models.dll" />
+    <None Remove="ExternalLibraries\GoogleManagerSupp.Models.pdb" />
   </ItemGroup>
 
   <ItemGroup>
@@ -56,12 +56,12 @@
       <HintPath>ExternalLibraries\Additional.dll</HintPath>
     </Reference>
     <Reference Include="GoogleManagerModels">
-      <HintPath>ExternalLibraries\GoogleManagerSuppModels.dll</HintPath>
+      <HintPath>ExternalLibraries\GoogleManagerSupp.Models.dll</HintPath>
     </Reference>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SuppModels\SuppModels.csproj" />
+    <ProjectReference Include="..\Supp.Models\Supp.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>

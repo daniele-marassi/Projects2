@@ -1,4 +1,4 @@
-﻿using SuppModels;
+﻿using Supp.Models;
 using System.Threading.Tasks;
 
 namespace Supp.ServiceHost.Contracts

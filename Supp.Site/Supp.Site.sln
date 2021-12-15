@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supp.Site", "Supp.Site.csproj", "{954D3CC7-4EB7-471B-8ECA-EC3A4BCE92D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuppModels", "..\SuppModels\SuppModels.csproj", "{D95DD71C-F584-4220-B481-7DBE3A3BC7A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supp.Models", "..\Supp.Models\Supp.Models.csproj", "{D95DD71C-F584-4220-B481-7DBE3A3BC7A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

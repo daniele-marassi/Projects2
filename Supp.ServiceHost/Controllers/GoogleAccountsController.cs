@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using SuppModels;
+using Supp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;

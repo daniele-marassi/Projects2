@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SuppModels;
+using Supp.Models;
 using Supp.Site.Repositories;
 using Supp.Site.Common;
 using System.Reflection;
@@ -565,7 +565,7 @@ namespace Supp.Site.Controllers
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
                 var result = new RequestResult() { Data = new List<Request>(), ResultState = GoogleManagerModels.ResultType.None, Message = "No message!" };
-                var resultMedia = new MediaResult() { Data = new List<MediaDto>(), ResultState = SuppModels.ResultType.Created };
+                var resultMedia = new MediaResult() { Data = new List<MediaDto>(), ResultState = Supp.Models.ResultType.Created };
 
                 var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                 var method = currentMethod.Name;

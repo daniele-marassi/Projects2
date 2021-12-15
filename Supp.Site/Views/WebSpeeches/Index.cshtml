@@ -1,4 +1,4 @@
-﻿@model X.PagedList.IPagedList<SuppModels.WebSpeechDto>
+﻿@model X.PagedList.IPagedList<Supp.Models.WebSpeechDto>
 
 @using Supp.Site.Controllers;
 @using X.PagedList.Mvc.Core
@@ -62,7 +62,16 @@
                         @Html.ActionLink("Type", "Index", new { sortOrder = "Type", currentFilter = ViewBag.CurrentFilter })
                     </th>
                     <th id="selectable">
+                        @Html.ActionLink("Sub Type", "Index", new { sortOrder = "SubType", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
                         @Html.ActionLink("Previous Phrase", "Index", new { sortOrder = "PreviousPhrase", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("Step", "Index", new { sortOrder = "Step", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("Step Type", "Index", new { sortOrder = "StepType", currentFilter = ViewBag.CurrentFilter })
                     </th>
                     <th id="selectable">
                         @Html.ActionLink("FinalStep", "Index", new { sortOrder = "FinalStep", currentFilter = ViewBag.CurrentFilter })
@@ -110,7 +119,16 @@
                         @Html.DisplayFor(modelItem => item.Type)
                     </td>
                     <td>
+                        @Html.DisplayFor(modelItem => item.SubType)
+                    </td>
+                    <td>
                         @Html.DisplayFor(modelItem => item.PreviousPhrase)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Step)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StepType)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FinalStep)

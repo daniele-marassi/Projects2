@@ -101,6 +101,9 @@ CREATE TABLE [dbo].[WebSpeeches](
 	[Ico] [nvarchar](256) NULL,
 	[Order] [int] NOT NULL,
 	[Type] [nvarchar](256) NOT NULL,
+	[SubType] [nvarchar](256) NULL,
+	[Step] [int] NULL,
+	[StepType] [nvarchar](256) NULL,
 	[InsDateTime] [datetime] NOT NULL,
 PRIMARY KEY CLUSTERED 
 (

@@ -4,6 +4,21 @@
     "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Site\\Supp.Site.csproj": {}
   },
   "projects": {
+    "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj": {
+      "restore": {
+        "projectUniqueName": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj",
+        "projectName": "Supp.Models",
+        "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj",
+        "frameworks": {
+          "net472": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net472": {}
+      }
+    },
     "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Site\\Supp.Site.csproj": {
       "version": "1.0.0",
       "restore": {
@@ -33,8 +48,8 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "C:\\Users\\ev\\GoogleDriveShare\\Projects\\SuppModels\\SuppModels.csproj": {
-                "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\SuppModels\\SuppModels.csproj"
+              "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj": {
+                "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj"
               }
             }
           }
@@ -134,23 +149,8 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
         }
-      }
-    },
-    "C:\\Users\\ev\\GoogleDriveShare\\Projects\\SuppModels\\SuppModels.csproj": {
-      "restore": {
-        "projectUniqueName": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\SuppModels\\SuppModels.csproj",
-        "projectName": "SuppModels",
-        "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\SuppModels\\SuppModels.csproj",
-        "frameworks": {
-          "net472": {
-            "projectReferences": {}
-          }
-        }
-      },
-      "frameworks": {
-        "net472": {}
       }
     }
   }

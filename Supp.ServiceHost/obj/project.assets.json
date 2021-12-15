@@ -3025,13 +3025,13 @@
           "lib/netstandard1.3/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "SuppModels/1.0.0": {
+      "Supp.Models/1.0.0": {
         "type": "project",
         "compile": {
-          "bin/placeholder/SuppModels.dll": {}
+          "bin/placeholder/Supp.Models.dll": {}
         },
         "runtime": {
-          "bin/placeholder/SuppModels.dll": {}
+          "bin/placeholder/Supp.Models.dll": {}
         }
       }
     }
@@ -9630,10 +9630,10 @@
         "system.xml.xmlserializer.nuspec"
       ]
     },
-    "SuppModels/1.0.0": {
+    "Supp.Models/1.0.0": {
       "type": "project",
-      "path": "../SuppModels/SuppModels.csproj",
-      "msbuildProject": "../SuppModels/SuppModels.csproj"
+      "path": "../Supp.Models/Supp.Models.csproj",
+      "msbuildProject": "../Supp.Models/Supp.Models.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -9654,7 +9654,7 @@
       "NLog >= 4.7.0",
       "NLog.Schema >= 4.7.0",
       "Newtonsoft.Json >= 12.0.3",
-      "SuppModels >= 1.0.0",
+      "Supp.Models >= 1.0.0",
       "System.ServiceProcess.ServiceController >= 4.7.0",
       "System.Text.Encodings.Web >= 4.7.0"
     ]
@@ -9693,8 +9693,8 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "C:\\Users\\ev\\GoogleDriveShare\\Projects\\SuppModels\\SuppModels.csproj": {
-              "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\SuppModels\\SuppModels.csproj"
+            "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj": {
+              "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj"
             }
           }
         }
@@ -9804,7 +9804,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
       }
     }
   }

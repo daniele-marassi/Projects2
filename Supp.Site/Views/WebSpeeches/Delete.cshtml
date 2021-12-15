@@ -1,4 +1,4 @@
-﻿@model SuppModels.WebSpeechDto
+﻿@model Supp.Models.WebSpeechDto
 
 @{
     ViewData["Title"] = "Delete WebSpeech";
@@ -74,6 +74,12 @@
             @Html.DisplayFor(model => model.Type)
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SubType)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SubType)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ParentIds)
         </dt>
         <dd class="col-sm-10">
@@ -84,6 +90,18 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.PreviousPhrase)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Step)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Step)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StepType)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StepType)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.FinalStep)

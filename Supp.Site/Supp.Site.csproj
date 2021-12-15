@@ -83,7 +83,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SuppModels\SuppModels.csproj" />
+    <ProjectReference Include="..\Supp.Models\Supp.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>

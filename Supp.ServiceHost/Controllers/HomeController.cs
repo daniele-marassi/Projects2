@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Supp.ServiceHost.Common;
 using Supp.ServiceHost.Contexts;
 using Supp.ServiceHost.Contracts;
-using SuppModels;
+using Supp.Models;
 using Supp.ServiceHost.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

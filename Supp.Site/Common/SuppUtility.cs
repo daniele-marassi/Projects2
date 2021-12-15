@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using NLog;
-using SuppModels;
+using Supp.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

@@ -3405,13 +3405,13 @@
           "lib/netstandard2.0/X.PagedList.Web.Common.dll": {}
         }
       },
-      "SuppModels/1.0.0": {
+      "Supp.Models/1.0.0": {
         "type": "project",
         "compile": {
-          "bin/placeholder/SuppModels.dll": {}
+          "bin/placeholder/Supp.Models.dll": {}
         },
         "runtime": {
-          "bin/placeholder/SuppModels.dll": {}
+          "bin/placeholder/Supp.Models.dll": {}
         }
       }
     }
@@ -10347,10 +10347,10 @@
         "x.pagedlist.web.common.nuspec"
       ]
     },
-    "SuppModels/1.0.0": {
+    "Supp.Models/1.0.0": {
       "type": "project",
-      "path": "../SuppModels/SuppModels.csproj",
-      "msbuildProject": "../SuppModels/SuppModels.csproj"
+      "path": "../Supp.Models/Supp.Models.csproj",
+      "msbuildProject": "../Supp.Models/Supp.Models.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -10368,7 +10368,7 @@
       "NLog >= 4.6.8",
       "NLog.Schema >= 4.6.8",
       "Newtonsoft.Json >= 13.0.1",
-      "SuppModels >= 1.0.0",
+      "Supp.Models >= 1.0.0",
       "System.Linq >= 4.3.0",
       "System.Management >= 5.0.0",
       "X.PagedList.Mvc.Core >= 7.9.1"
@@ -10408,8 +10408,8 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "C:\\Users\\ev\\GoogleDriveShare\\Projects\\SuppModels\\SuppModels.csproj": {
-              "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\SuppModels\\SuppModels.csproj"
+            "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj": {
+              "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj"
             }
           }
         }
@@ -10509,7 +10509,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
       }
     }
   },
