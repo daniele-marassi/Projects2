@@ -21,7 +21,6 @@
         var ignore_onend = true;
         var recognition = null;
         var _phrase = null;
-        var _old_phrase = '';
         var listeningPhrase = '';
         var r = [];
         var ellipseStep = [];
@@ -105,12 +104,11 @@
 
             if(finalStep == false) {
                 if(phrase != null && phrase != ''){           
-                    if(_old_phrase != '') _old_phrase += ' ';
-                    _old_phrase += phrase;
+
                 }
             }
             else{
-                _old_phrase = '';
+                stepType = "";
                 step = 0;
                 subType = "";
                 id = 0;
@@ -166,12 +164,11 @@
 
             if(finalStep == false) {
                 if(phrase != null && phrase != ''){           
-                    if(_old_phrase != '') _old_phrase += ' ';
-                    _old_phrase += phrase;
+
                 }
             }
             else{
-                _old_phrase = '';
+                stepType = "";
                 step = 0;
                 subType = "";
                 id = 0;
@@ -537,11 +534,10 @@
                 _phrase = $("#sendPhrase_text").val();
                 if(_phrase != null && _phrase != ''){
                     var phraseTmp = _phrase;
-                    //if(_old_phrase != '') phraseTmp = _old_phrase + ' ' + _phrase;
-                                           
+              
                     clearInterval(serviceInterval);
 
-                    CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application + '&_subType='+subType + '&_step='+step), "ResultSendPhrase");
+                    CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultSendPhrase");
                 }
             }
         }
@@ -704,11 +700,10 @@
                                             audio.play();
 
                                             var phraseTmp = _phrase;
-                                            //if(_old_phrase != '') phraseTmp = _old_phrase + ' ' + _phrase;
                                            
                                             clearInterval(serviceInterval);
 
-                                            CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application + '&_subType='+subType + '&_step='+step), "ResultRecognitionPhrase");
+                                            CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionPhrase");
                                         } else if (ehi == 0 && _phrase != listeningPhrase && _phrase.includes(listeningPhrase) && _phrase != null && _phrase != '' && _reset == false) {
                                             var audio = new Audio("/Files/Ehi.mp3");
                                             audio.play();
@@ -721,7 +716,7 @@
 
                                             clearInterval(serviceInterval);
 
-                                            CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application + '&_subType='+subType + '&_step='+step), "ResultRecognitionPhrase");
+                                            CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionPhrase");
                                         }
                                     }
                                 }
@@ -852,9 +847,20 @@
         }
 
         function PartialReset(){
-            ehi = 0;
 
-            _old_phrase = '';
+            if(finalStep == false) {
+                if(phrase != null && phrase != ''){           
+
+                }
+            }
+            else{
+                stepType = "";
+                step = 0;
+                subType = "";
+                id = 0;
+            }
+
+            ehi = 0;
             _phrase = null;
             partialResetActive = false;
             audioActive = true;

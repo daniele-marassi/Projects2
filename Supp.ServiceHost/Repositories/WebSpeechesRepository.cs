@@ -148,6 +148,8 @@ namespace Supp.ServiceHost.Repositories
                     var mapper = config.CreateMapper();
                     var data = mapper.Map<WebSpeech>(dto);
 
+                    data.InsDateTime = DateTime.Parse(data.InsDateTime.ToString());
+
                     db.Entry(data).State = EntityState.Modified;
                     await db.SaveChangesAsync();
                     response.Successful = true;
@@ -193,6 +195,8 @@ namespace Supp.ServiceHost.Repositories
                     var config = new MapperConfiguration(cfg => cfg.CreateMap<WebSpeechDto, WebSpeech>());
                     var mapper = config.CreateMapper();
                     var data = mapper.Map<WebSpeech>(dto);
+
+                    data.InsDateTime = DateTime.Now;
 
                     db.WebSpeeches.Add(data);
                     await db.SaveChangesAsync();

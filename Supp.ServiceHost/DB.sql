@@ -205,9 +205,9 @@ CREATE TABLE [dbo].[GoogleAuths](
 	[Client_id] [nvarchar](max) NULL,
 	[Project_id] [nvarchar](max) NULL,
 	[Client_secret] [nvarchar](max) NULL,
-	[InsDateTime] [datetime] NOT NULL,
 	[TokenFileInJson] [nvarchar](max) NULL,
 	[GooglePublicKey] [nvarchar](max) NULL,
+	[InsDateTime] [datetime] NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -280,8 +280,8 @@ CREATE TABLE [dbo].[Songs](
 	[Position] [nvarchar](4000) NULL,
 	[Order] [int] NOT NULL,
 	[Listened] [bit] NOT NULL,
-	[InsDateTime] [datetime] NOT NULL,
 	[DurationInMilliseconds] [bigint] NULL,
+	[InsDateTime] [datetime] NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -307,11 +307,11 @@ CREATE TABLE [dbo].[WebSpeeches](
 	[Ico] [nvarchar](256) NULL,
 	[Order] [int] NOT NULL,
 	[Type] [nvarchar](256) NOT NULL,
-	[InsDateTime] [datetime] NOT NULL,
 	[OperationEnable] [bit] NULL,
 	[SubType] [nvarchar](256) NULL,
 	[Step] [int] NULL,
 	[StepType] [nvarchar](256) NULL,
+	[InsDateTime] [datetime] NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

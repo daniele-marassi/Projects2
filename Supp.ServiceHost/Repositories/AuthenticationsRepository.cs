@@ -323,6 +323,8 @@ namespace Supp.ServiceHost.Repositories
                     var mapper = config.CreateMapper();
                     var data = mapper.Map<Authentication>(dto);
 
+                    data.InsDateTime = DateTime.Now;
+
                     db.Authentications.Add(data);
                     await db.SaveChangesAsync();
 

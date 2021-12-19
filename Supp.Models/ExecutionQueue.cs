@@ -14,9 +14,6 @@ namespace Supp.Models
         public string Output { get; set; }
         public string Host { get; set; }
         public string StateQueue { get; set; }
-
-
-        [Column(TypeName = "datetime")]
-        public DateTime InsDateTime { get; }
+        public DateTime InsDateTime { get; set; }
     }
 }

@@ -145,13 +145,9 @@ namespace Supp.ServiceHost.Repositories
                     var mapper = config.CreateMapper();
                     var data = mapper.Map<Supp.Models.ExecutionQueue>(dto);
 
-                    db.Entry(data).State = EntityState.Modified;
+                    data.InsDateTime = DateTime.Parse(data.InsDateTime.ToString());
 
-                    //if (db.Entry(data).State == EntityState.Detached)
-                    //{
-                    //    db.Set<Supp.Models.ExecutionQueue>().Attach(data);
-                    //    db.Entry(data).State = EntityState.Modified;
-                    //}
+                    db.Entry(data).State = EntityState.Modified;
 
                     await db.SaveChangesAsync();
                     response.Successful = true;
@@ -197,6 +193,8 @@ namespace Supp.ServiceHost.Repositories
                     var config = new MapperConfiguration(cfg => cfg.CreateMap<ExecutionQueueDto, Supp.Models.ExecutionQueue>());
                     var mapper = config.CreateMapper();
                     var data = mapper.Map<Supp.Models.ExecutionQueue>(dto);
+
+                    data.InsDateTime = DateTime.Now;
 
                     db.ExecutionQueues.Add(data);
                     await db.SaveChangesAsync();

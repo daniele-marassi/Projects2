@@ -43,7 +43,7 @@ namespace Supp.Site.Recognition
             {
                 suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
 
-                newWebSpeech = new WebSpeechDto() { Name = "NewImplemented" + "_" + DateTime.Now.ToString("yyyyMMddhhmmss"), Phrase = @"[""" + _phrase + @"""]", Host = "All", Type = WebSpeechTypes.Request.ToString(), FinalStep = true, OperationEnable = true, PrivateInstruction = true, Ico = "/Images/Shortcuts/generic.png" };
+                newWebSpeech = new WebSpeechDto() { Name = "NewImplemented" + "_" + DateTime.Now.ToString("yyyyMMddhhmmss"), Phrase = @"[[""" + _phrase + @"""]]", Host = "All", Type = WebSpeechTypes.Request.ToString(), FinalStep = true, OperationEnable = true, PrivateInstruction = true, Ico = "/Images/Shortcuts/generic.png" };
 
                 newWebSpeechString = JsonConvert.SerializeObject(newWebSpeech);
 

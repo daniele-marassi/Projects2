@@ -35,6 +35,6 @@ namespace Supp.Models
         public int ThumbnailWidth { get; set; }
         public int ThumbnailHeight { get; set; }
 
-        public DateTime InsDateTime { get; }
+        public DateTime InsDateTime { get; set; }
     }
 }

@@ -155,6 +155,8 @@ namespace Supp.ServiceHost.Repositories
                     var mapper = config.CreateMapper();
                     var data = mapper.Map<GoogleAccount>(dto);
 
+                    data.InsDateTime = DateTime.Parse(data.InsDateTime.ToString());
+
                     db.Entry(data).State = EntityState.Modified;
                     await db.SaveChangesAsync();
                     response.Successful = true;
@@ -201,6 +203,8 @@ namespace Supp.ServiceHost.Repositories
                     var config = new MapperConfiguration(cfg => cfg.CreateMap<GoogleAccountDto, GoogleAccount>());
                     var mapper = config.CreateMapper();
                     var data = mapper.Map<GoogleAccount>(dto);
+
+                    data.InsDateTime = DateTime.Now;
 
                     db.GoogleAccounts.Add(data);
                     await db.SaveChangesAsync();

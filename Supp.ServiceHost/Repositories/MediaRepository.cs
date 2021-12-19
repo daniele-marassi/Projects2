@@ -149,6 +149,8 @@ namespace Supp.ServiceHost.Repositories
                     var mapper = config.CreateMapper();
                     var data = mapper.Map<Media>(dto);
 
+                    data.InsDateTime = DateTime.Parse(data.InsDateTime.ToString());
+
                     db.Entry(data).State = EntityState.Modified;
                     await db.SaveChangesAsync();
                     response.Successful = true;
@@ -194,6 +196,8 @@ namespace Supp.ServiceHost.Repositories
                     var config = new MapperConfiguration(cfg => cfg.CreateMap<MediaDto, Media>());
                     var mapper = config.CreateMapper();
                     var data = mapper.Map<Media>(dto);
+
+                    data.InsDateTime = DateTime.Now;
 
                     db.Media.Add(data);
                     await db.SaveChangesAsync();

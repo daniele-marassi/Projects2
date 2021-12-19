@@ -27,6 +27,6 @@ namespace Supp.Models
         public string SubType { get; set; }
         public int Step { get; set; }
         public string StepType { get; set; }
-        public DateTime InsDateTime { get;}
+        public DateTime InsDateTime { get; set; }
     }
 }

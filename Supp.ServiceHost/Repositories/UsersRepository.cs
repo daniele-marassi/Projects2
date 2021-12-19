@@ -148,6 +148,8 @@ namespace Supp.ServiceHost.Repositories
                     var mapper = config.CreateMapper();
                     var data = mapper.Map<User>(dto);
 
+                    data.InsDateTime = DateTime.Parse(data.InsDateTime.ToString());
+
                     db.Entry(data).State = EntityState.Modified;
                     await db.SaveChangesAsync();
                     response.Successful = true;
@@ -194,6 +196,8 @@ namespace Supp.ServiceHost.Repositories
                     var config = new MapperConfiguration(cfg => cfg.CreateMap<UserDto, User>());
                     var mapper = config.CreateMapper();
                     var data = mapper.Map<User>(dto);
+
+                    data.InsDateTime = DateTime.Now;
 
                     db.Users.Add(data);
                     await db.SaveChangesAsync();

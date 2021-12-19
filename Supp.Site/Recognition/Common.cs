@@ -170,13 +170,13 @@ namespace Supp.Site.Recognition
                     result.Data = getDataResult.Data;
                     shortcuts = getDataResult.Shortcuts.OrderBy(_ => _.Order).ToList();
 
-                    if (_id == 0 && _phrase != "" && _phrase != null && (_subType == "" || _subType == null || _subType == "null") && _step < 1)
+                    if (_id == 0 && _phrase != "" && _phrase != null && (_subType == "" || _subType == null || _subType == "null") && _step == 0)
                     {
                         var matchPhraseResult = MatchPhrase(_phrase, result.Data, _claims, _id);
                         data = matchPhraseResult.Data;
                         _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
                     }
-                    else if (_id != 0 && (_subType == "" || _subType == null || _subType == "null") && _step < 1)
+                    else if (_id != 0 && (_subType == "" || _subType == null || _subType == "null") && _step == 0)
                     {
                         data = result.Data.Where(_ => _.Id == _id).FirstOrDefault();
                         if (data != null) data = GetAnswer(data);
@@ -209,7 +209,7 @@ namespace Supp.Site.Recognition
                             matchPhraseResult = MatchPhrase(_phrase, items, _claims, _id);
                             if (matchPhraseResult.Data != null)
                             {
-                                if (matchPhraseResult.Data.StepType == StepTypes.Default.ToString()) data = result.Data.Where(_ => GetParentIds(_.ParentIds).Contains(matchPhraseResult.Data.Id)).FirstOrDefault();
+                                if (matchPhraseResult.Data.StepType == StepTypes.Default.ToString() && matchPhraseResult.Data.FinalStep == false) data = result.Data.Where(_ => GetParentIds(_.ParentIds).Contains(matchPhraseResult.Data.Id)).FirstOrDefault();
                                 else data = matchPhraseResult.Data;
 
                                 if (data != null)

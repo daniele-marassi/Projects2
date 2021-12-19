@@ -20,6 +20,6 @@ namespace Supp.Models
 
         public string CustomizeParams { get; set; }
 
-        public DateTime InsDateTime { get; }
+        public DateTime InsDateTime { get; set; }
     }
 }

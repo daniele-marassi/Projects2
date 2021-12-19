@@ -3,3 +3,4 @@ C:\Users\ev\GoogleDriveShare\Projects\Supp.Models\bin\Debug\Supp.Models.pdb
 C:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Debug\Supp.Models.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Debug\Supp.Models.dll
 C:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Debug\Supp.Models.pdb
+C:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Debug\Supp.Models.csproj.AssemblyReference.cache
