@@ -9,6 +9,6 @@
         public string Output { get; set; }
         public string Host { get; set; }
         public string StateQueue { get; set; }
-        public System.DateTime InsDateTime { get; }
+        public System.DateTime InsDateTime { get; set; }
     }
 }

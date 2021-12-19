@@ -17,6 +17,10 @@ namespace Tools.ExecutionQueue.Contexts
             //modelBuilder.Entity<Models.ExecutionQueue>()
             //    .Property(_ => _.InsDateTime)
             //    .HasColumnType("datetime");
+
+            //modelBuilder.Entity<Models.ExecutionQueue>()
+            //    .Property(b => b.InsDateTime)
+            //    .HasDefaultValueSql("getdate()");
         }
     }
 }
