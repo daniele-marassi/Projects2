@@ -31,12 +31,10 @@
         <table class="table">
             <thead>
                 <tr>
-
+                    <th id="borderTitle"></th>
                     <th id="selectable">
                         @Html.ActionLink("Type", "Index", new { sortOrder = "Type", currentFilter = ViewBag.CurrentFilter })
                     </th>
-
-                    <th id="borderTitle"></th>
                 </tr>
             </thead>
             <tbody>
@@ -46,12 +44,12 @@
                     {
                         <tr>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Type)
+                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
+                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
+                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                             </td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                @Html.DisplayFor(modelItem => item.Type)
                             </td>
                         </tr>
                     }

@@ -79,7 +79,7 @@ namespace Supp.ServiceHost.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -119,7 +119,7 @@ namespace Supp.ServiceHost.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -187,7 +187,7 @@ namespace Supp.ServiceHost.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -250,7 +250,7 @@ namespace Supp.ServiceHost.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -289,14 +289,14 @@ namespace Supp.ServiceHost.Repositories
                     {
                         response.Successful = true;
                         response.ResultState = ResultType.NotFound;
-                        response.Message = ex.Message;
+                        response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                         response.OriginalException = null;
                     }
                     else
                     {
                         response.Successful = false;
                         response.ResultState = ResultType.Error;
-                        response.Message = ex.Message;
+                        response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                         response.OriginalException = null;
                         logger.Error(ex.ToString());
                         //throw ex;
@@ -337,7 +337,7 @@ namespace Supp.ServiceHost.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -385,7 +385,7 @@ namespace Supp.ServiceHost.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
                     //throw ex;

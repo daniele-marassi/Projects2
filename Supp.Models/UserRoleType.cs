@@ -15,6 +15,6 @@ namespace Supp.Models
         public string Type { get; set; }
 
 
-        public System.DateTime InsDateTime { get; set;}
+        public DateTime InsDateTime { get; }
     }
 }

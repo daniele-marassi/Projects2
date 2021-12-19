@@ -14,8 +14,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Exter
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\External_library\GoogleCalendar\GoogleService.dll.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\External_library\GoogleManagerModels.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\External_library\GoogleManagerModels.pdb
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\External_library\Newtonsoft.Json.dll
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\External_library\Newtonsoft.Json.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\RenewNotes.exe.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\RenewNotes.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\RenewNotes.pdb
@@ -34,7 +32,7 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Googl
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\MessagesPopUp.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Newtonsoft.Json.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\NLog.dll
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\SuppModels.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Supp.Models.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\GoogleService.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Common.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Common.dll.config
@@ -59,7 +57,7 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Googl
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\GoogleManagerModels.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Newtonsoft.Json.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\NLog.xml
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\SuppModels.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Supp.Models.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\GoogleService.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\GoogleService.dll.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\obj\Debug\RenewNotes.csproj.AssemblyReference.cache

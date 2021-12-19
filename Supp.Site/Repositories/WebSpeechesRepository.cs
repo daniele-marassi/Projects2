@@ -62,7 +62,7 @@ namespace Supp.Site.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = Supp.Models.ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -108,7 +108,7 @@ namespace Supp.Site.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = Supp.Models.ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -158,7 +158,7 @@ namespace Supp.Site.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = Supp.Models.ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -210,7 +210,7 @@ namespace Supp.Site.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = Supp.Models.ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -256,7 +256,7 @@ namespace Supp.Site.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = Supp.Models.ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -335,6 +335,12 @@ namespace Supp.Site.Repositories
                         if(events.Successful == false && response.Message != null && response.Message != String.Empty) errors.Add(events.Message);
                     }
 
+                    if (googleAccounts.Count == 0)
+                    {
+                        response.ResultState = GoogleManagerModels.ResultType.NotFound;
+                        errors.Add("No google accounts found!");
+                    }
+
                     if (response.Data.Count == 0 && errors.Count == 0)
                         response.ResultState = GoogleManagerModels.ResultType.NotFound;
                     if (response.Data.Count > 0 && errors.Count == 0)
@@ -342,7 +348,7 @@ namespace Supp.Site.Repositories
                     if (response.Data.Count > 0 && errors.Count > 0)
                         response.ResultState = GoogleManagerModels.ResultType.FoundWithError;
 
-                    if (response.Data.Count == 0 && errors.Count > 0)
+                    if (response.Data.Count == 0 && errors.Count > 0 && googleAccounts.Count > 0)
                     {
                         response.Successful = false;
                         response.ResultState = GoogleManagerModels.ResultType.Error;
@@ -357,7 +363,7 @@ namespace Supp.Site.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = GoogleManagerModels.ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -408,6 +414,12 @@ namespace Supp.Site.Repositories
                         if (holidays.Successful == false && response.Message != null && response.Message != String.Empty) errors.Add(holidays.Message);
                     }
 
+                    if (googleAccounts.Count == 0)
+                    {
+                        response.ResultState = GoogleManagerModels.ResultType.NotFound;
+                        errors.Add("No google accounts found!");
+                    }
+
                     if (response.Data.Count == 0 && errors.Count == 0)
                         response.ResultState = GoogleManagerModels.ResultType.NotFound;
                     if (response.Data.Count > 0 && errors.Count == 0)
@@ -415,7 +427,7 @@ namespace Supp.Site.Repositories
                     if (response.Data.Count > 0 && errors.Count > 0)
                         response.ResultState = GoogleManagerModels.ResultType.FoundWithError;
 
-                    if (response.Data.Count == 0 && errors.Count > 0)
+                    if (response.Data.Count == 0 && errors.Count > 0 && googleAccounts.Count > 0)
                     {
                         response.Successful = false;
                         response.ResultState = GoogleManagerModels.ResultType.Error;
@@ -430,7 +442,7 @@ namespace Supp.Site.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = GoogleManagerModels.ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
                     //throw ex;

@@ -6,6 +6,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>C:\Supp.ServiceHost</_PublishTargetUrl>
+    <_PublishTargetUrl>\\ev-tb\c$\Supp.ServiceHost</_PublishTargetUrl>
+    <History>True|2021-12-19T12:21:43.8442967Z;True|2021-12-19T13:15:35.6050544+01:00;True|2021-12-19T01:26:23.7459360+01:00;False|2021-12-19T01:25:08.0121883+01:00;False|2021-12-19T01:23:38.2653031+01:00;False|2021-12-19T01:21:09.1319027+01:00;False|2021-12-19T01:16:14.7386359+01:00;</History>
   </PropertyGroup>
 </Project>

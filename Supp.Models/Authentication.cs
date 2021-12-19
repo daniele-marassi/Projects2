@@ -24,6 +24,6 @@ namespace Supp.Models
         public DateTime CreatedAt { get; set; }
         public long UserId { get; set; }
 
-        public System.DateTime InsDateTime { get; set;}
+        public DateTime InsDateTime { get;}
     }
 }

@@ -16,8 +16,8 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleNote\bin\Deb
 C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleNote\bin\Debug\Google.Apis.Keep.v1.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleNote\bin\Debug\Google.Apis.Keep.v1.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleNote\bin\Debug\Newtonsoft.Json.xml
-C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleNote\obj\Debug\GoogleNote.csproj.AssemblyReference.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleNote\obj\Debug\GoogleNote.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleNote\obj\Debug\GoogleNote.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleNote\obj\Debug\GoogleNote.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleNote\obj\Debug\GoogleNote.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleNote\obj\Debug\GoogleNote.csproj.AssemblyReference.cache

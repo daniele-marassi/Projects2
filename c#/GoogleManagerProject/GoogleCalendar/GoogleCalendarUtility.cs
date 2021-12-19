@@ -81,7 +81,7 @@ namespace GoogleCalendar
             {
                 result.Successful = false;
                 result.ResultState = ResultType.Error;
-                result.Message = ex.Message;
+                result.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
             }
 
             return result;
@@ -102,7 +102,7 @@ namespace GoogleCalendar
             {
                 var appPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
                 var accessProperties = JsonConvert.DeserializeObject<AccessProperties>(tokenFile.Content);
-                accessProperties.Expires_in = 3599;
+                //accessProperties.Expires_in = 13599;
 
                 var resourcesPath = Path.Combine(appPath, "Resources");
                 if (!Directory.Exists(resourcesPath)) Directory.CreateDirectory(resourcesPath);
@@ -210,7 +210,7 @@ namespace GoogleCalendar
             {
                 result.Successful = false;
                 result.ResultState = ResultType.Error;
-                result.Message = ex.Message;
+                result.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
             }
 
             return result;
@@ -272,7 +272,7 @@ namespace GoogleCalendar
                     {
                         result.Successful = false;
                         result.ResultState = ResultType.Error;
-                        result.Message = ex.Message;
+                        result.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     }
                 }
             }
@@ -280,7 +280,7 @@ namespace GoogleCalendar
             {
                 result.Successful = false;
                 result.ResultState = ResultType.Error;
-                result.Message = ex.Message;
+                result.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
             }
 
             return result;
@@ -412,7 +412,7 @@ namespace GoogleCalendar
                     {
                         result.Successful = false;
                         result.ResultState = ResultType.Error;
-                        result.Message = ex.Message;
+                        result.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     }
                 }
                 else
@@ -427,7 +427,7 @@ namespace GoogleCalendar
             {
                 result.Successful = false;
                 result.ResultState = ResultType.Error;
-                result.Message = ex.Message;
+                result.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
             }
 
             return result;
@@ -497,14 +497,14 @@ namespace GoogleCalendar
                 {
                     result.Successful = false;
                     result.ResultState = GoogleManagerModels.ResultType.Error;
-                    result.Message = ex.Message;
+                    result.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                 }
             }
             catch (Exception ex)
             {
                 result.Successful = false;
                 result.ResultState = GoogleManagerModels.ResultType.Error;
-                result.Message = ex.Message;
+                result.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
             }
 
             return result;
@@ -560,7 +560,7 @@ namespace GoogleCalendar
             {
                 result.Successful = false;
                 result.ResultState = ResultType.Error;
-                result.Message = ex.Message;
+                result.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
             }
 
             return result;
@@ -678,7 +678,7 @@ namespace GoogleCalendar
                     {
                         result.Successful = false;
                         result.ResultState = ResultType.Error;
-                        result.Message = ex.Message;
+                        result.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     }
                 }
                 else
@@ -693,7 +693,7 @@ namespace GoogleCalendar
             {
                 result.Successful = false;
                 result.ResultState = ResultType.Error;
-                result.Message = ex.Message;
+                result.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
             }
 
             return result;

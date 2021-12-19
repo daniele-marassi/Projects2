@@ -13,7 +13,7 @@
     <WebStackScaffolding_DbContextTypeFullName>Supp.ServiceHost.Data.ApiServiceContext</WebStackScaffolding_DbContextTypeFullName>
     <WebStackScaffolding_IsAsyncSelected>False</WebStackScaffolding_IsAsyncSelected>
     <WebStackScaffolding_IsViewGenerationSelected>False</WebStackScaffolding_IsViewGenerationSelected>
-    <NameOfLastUsedPublishProfile>FolderProfile</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>C:\Users\ev\GoogleDriveShare\Projects\Supp.ServiceHost\Properties\PublishProfiles\FolderProfile.pubxml</NameOfLastUsedPublishProfile>
     <WebStackScaffolding_ViewDialogWidth>600</WebStackScaffolding_ViewDialogWidth>
   </PropertyGroup>
 </Project>

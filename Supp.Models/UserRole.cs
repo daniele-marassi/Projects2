@@ -17,6 +17,6 @@ namespace Supp.Models
         public long UserRoleTypeId { get; set; }
 
 
-        public System.DateTime InsDateTime { get; set;}
+        public DateTime InsDateTime { get; }
     }
 }

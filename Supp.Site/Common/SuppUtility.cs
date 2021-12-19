@@ -179,8 +179,9 @@ namespace Supp.Site.Common
                         var configInJson = claims.Where(_ => _.Type == "ConfigInJson").Select(_ => _.Value).FirstOrDefault();
                         if (configInJson != null && configInJson != String.Empty)
                         {
-                            var obj = JsonConvert.DeserializeObject<Configuration>(configInJson);
-                            dto.Configuration = obj;
+                            var config = JsonConvert.DeserializeObject<Configuration>(configInJson);
+
+                            dto.Configuration = config;
                         }
                         else dto.Configuration = JsonConvert.DeserializeObject<Configuration>(GeneralSettings.Static.ConfigDefaultInJson);
 

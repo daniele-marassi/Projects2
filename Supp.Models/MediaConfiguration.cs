@@ -14,6 +14,6 @@ namespace Supp.Models
         public int MaxThumbnailSize { get; set; }
         public int MinThumbnailSize { get; set; }
 
-        public System.DateTime InsDateTime { get; set;}
+        public DateTime InsDateTime { get; }
     }
 }

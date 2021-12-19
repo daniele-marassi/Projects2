@@ -19,6 +19,6 @@ namespace Supp.Models
 
         public string ConfigDefaultInJson { get; set; }
 
-        public System.DateTime InsDateTime { get; set;}
+        public DateTime InsDateTime { get; set; }
     }
 }

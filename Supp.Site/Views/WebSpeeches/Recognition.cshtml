@@ -799,8 +799,8 @@
             // reset after idle time countTheTimesToReset
             if(resetActive && countTheTimesToReset == timesToReset && recognitionActive == true){
                 countTheTimesToReset = 0;
-                resetActive = false;
-                Reset(false, true);
+                //resetActive = false;
+                //Reset(false, true);
             }
 
             if(resetActive && recognitionActive == true) countTheTimesToReset++;
@@ -861,8 +861,8 @@
             countTheTimesToPartialReset = 0;
             countTheTimesToReset = 0;
             $("#sendPhrase_text").val('');
-            document.getElementById('final_span').innerHTML = '';
-            document.getElementById('interim_span').innerHTML = '';
+            //document.getElementById('final_span').innerHTML = '';
+            //document.getElementById('interim_span').innerHTML = '';
         }
 
         function InitFinal(){

@@ -14,6 +14,6 @@ namespace Supp.Models
         public string Client_secret { get; set; }
         public string TokenFileInJson { get; set; }
         public string GooglePublicKey { get; set; }
-        public System.DateTime InsDateTime { get; set; }
+        public DateTime InsDateTime { get; set; }
     }
 }

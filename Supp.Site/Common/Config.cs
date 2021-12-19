@@ -133,7 +133,6 @@ namespace Supp.Site.Common
                     GeneralSettings.Static.DescriptionMeteoToTheSalutationActive = bool.Parse(configuration.GetSection("AppSettings:DescriptionMeteoToTheSalutationActive").Value);
                     GeneralSettings.Static.RemindersActive = bool.Parse(configuration.GetSection("AppSettings:RemindersActive").Value);
                     GeneralSettings.Static.TimesToReset = int.Parse(configuration.GetSection("AppSettings:TimesToReset").Value);
-                    
                 }
             }
         }

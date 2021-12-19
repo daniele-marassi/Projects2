@@ -17,7 +17,7 @@ namespace Supp.Models
         public string Host { get; set; }
         public string StateQueue { get; set; }
 
-        public System.DateTime InsDateTime { get; set; }
+        public DateTime InsDateTime { get; set; }
 
         public IEnumerable<WebSpeechType> WebSpeechTypes { get { return WebSpeechTypesUtility.Get(); } }
     }

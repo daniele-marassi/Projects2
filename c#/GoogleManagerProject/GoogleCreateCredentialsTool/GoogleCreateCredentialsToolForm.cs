@@ -279,6 +279,9 @@ namespace GoogleCreateCredentials
 
                 try
                 {
+                    value = ConfigurationManager.AppSettings["GooglePublicKey"];
+                    if (value != null && value != String.Empty) GooglePublicKeyTxt.Text = value;
+
                     value = ConfigurationManager.AppSettings["AccountType"];
                     if(value != null && value != String.Empty) GoogleAccountTypeCmb.Text = value;
                     value = ConfigurationManager.AppSettings["GoogleAccount"];
@@ -297,13 +300,13 @@ namespace GoogleCreateCredentials
                 }
 
                 //for test
-                //GoogleAccountTypeCmb.Text = "Drive";
-                //GooglePublicKeyTxt.Text = "AIzaSyCdWVUdy3QmmYLjDwQWqP03gV49hfvWMhc";
-                //GoogleAccountTxt.Text = "daniele.marassi.media1";
-                //FolderToFilterTxt.Text = "Roberta_me";
-                //AddressTxt.Text = "http://ev-tb:82";
-                //UserNameTxt.Text = "daniele.marassi@gmail.com";
-                //PasswordTxt.Text = "Enilno.00";
+                GoogleAccountTypeCmb.Text = "Calendar";
+                GooglePublicKeyTxt.Text = "AIzaSyCdWVUdy3QmmYLjDwQWqP03gV49hfvWMhc";
+                GoogleAccountTxt.Text = "daniele.marassi";
+                FolderToFilterTxt.Text = "";
+                AddressTxt.Text = "http://localhost:52110";
+                UserNameTxt.Text = "daniele.marassi@gmail.com";
+                PasswordTxt.Text = "Enilno.00";
             }
             catch (Exception ex)
             {

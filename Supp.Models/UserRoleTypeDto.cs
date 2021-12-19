@@ -10,7 +10,7 @@ namespace Supp.Models
         public long Id { get; set; }
         public string Type { get; set; }
 
-        public System.DateTime InsDateTime { get; set;}
+        public DateTime InsDateTime { get; set; }
         public bool Selected { get; set; }
         public string TypeName { get; set; }
     }

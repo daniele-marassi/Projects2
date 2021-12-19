@@ -103,7 +103,7 @@ namespace Supp.Site.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -149,7 +149,7 @@ namespace Supp.Site.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -195,7 +195,7 @@ namespace Supp.Site.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -241,7 +241,7 @@ namespace Supp.Site.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -293,7 +293,7 @@ namespace Supp.Site.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -345,7 +345,7 @@ namespace Supp.Site.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -391,7 +391,7 @@ namespace Supp.Site.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
                     //throw ex;

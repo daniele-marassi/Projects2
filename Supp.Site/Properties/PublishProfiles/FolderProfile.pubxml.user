@@ -6,6 +6,7 @@ modificando il file MSBuild. Per altre informazioni su questo argomento, vedere 
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>C:\Supp.Site</_PublishTargetUrl>
+    <_PublishTargetUrl>\\ev-tb\c$\Supp.Site</_PublishTargetUrl>
+    <History>True|2021-12-19T12:22:14.8789248Z;True|2021-12-19T13:16:20.7342952+01:00;True|2021-12-19T01:27:50.8976139+01:00;</History>
   </PropertyGroup>
 </Project>

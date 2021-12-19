@@ -31,14 +31,13 @@
         <table class="table">
             <thead>
                 <tr>
-
+                    <th id="borderTitle"></th>
                     <th id="selectable">
                         @Html.ActionLink("UserFullName", "Index", new { sortOrder = "UserFullName", currentFilter = ViewBag.CurrentFilter })
                     </th>
                     <th id="selectable">
                         @Html.ActionLink("TypeName", "Index", new { sortOrder = "TypeName", currentFilter = ViewBag.CurrentFilter })
                     </th>
-                    <th id="borderTitle"></th>
                 </tr>
             </thead>
             <tbody>
@@ -48,15 +47,15 @@
                     {
                         <tr>
                             <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
+                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
+                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.Users.Where(_ => _.Id == item.UserId).FirstOrDefault().UserFullName)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.UserRoleTypes.Where(_ => _.Id == item.UserRoleTypeId).FirstOrDefault().TypeName)
-                            </td>
-                            <td>
-                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                             </td>
                         </tr>
                     }

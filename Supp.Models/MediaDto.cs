@@ -33,7 +33,7 @@ namespace Supp.Models
         public byte[] Thumbnail { get; set; }
         public int ThumbnailWidth { get; set; }
         public int ThumbnailHeight { get; set; }
-        public System.DateTime InsDateTime { get; set; }
+        public DateTime InsDateTime { get; set; }
 
         public IEnumerable<GoogleAccountDto> GoogleAccounts { get; set; }
     }

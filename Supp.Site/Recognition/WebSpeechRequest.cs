@@ -31,7 +31,7 @@ namespace Supp.Site.Recognition
         /// <param name="response"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        public static WebSpeechDto Manage(WebSpeechDto data, int _step, int expiresInSeconds, string _phrase, HttpResponse response, HttpRequest request)
+        public static WebSpeechDto Manage(WebSpeechDto data, int _step, string _stepType, int expiresInSeconds, string _phrase, HttpResponse response, HttpRequest request)
         {
             WebSpeechDto newWebSpeech = null;
             string newWebSpeechString = "";
@@ -49,9 +49,6 @@ namespace Supp.Site.Recognition
 
                 suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName, newWebSpeechString, expiresInSeconds);
             }
-
-            //if (data?.StepType != StepTypes.GetAnswer.ToString())
-            //     data.Phrase = "";
 
             if (_step > 0)
             {
@@ -71,14 +68,14 @@ namespace Supp.Site.Recognition
 
             if (_step > 2 && data?.FinalStep != true)
             {
-                if (data?.StepType == StepTypes.GetAnswer.ToString()) newWebSpeech.Answer = @"[""" + _phrase.Trim() + @"""]";
+                if (_stepType == StepTypes.GetAnswer.ToString()) newWebSpeech.Answer = @"[""" + _phrase.Trim() + @"""]";
 
                 newWebSpeechString = JsonConvert.SerializeObject(newWebSpeech);
                 suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
                 suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName, newWebSpeechString, expiresInSeconds);
             }
 
-            if (data?.StepType == StepTypes.AddManually.ToString() && data?.FinalStep == true)
+            if (_stepType == StepTypes.AddManually.ToString() && data?.FinalStep == true)
             {
                 suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
 
@@ -92,7 +89,7 @@ namespace Supp.Site.Recognition
                 }
             }
 
-            if (data?.StepType == StepTypes.AddNow.ToString() && data?.FinalStep == true)
+            if (_stepType == StepTypes.AddNow.ToString() && data?.FinalStep == true)
             {
                 suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
 
@@ -139,7 +136,8 @@ namespace Supp.Site.Recognition
                         SubType = WebSpeechTypes.SystemRequestNotImplemented.ToString(),
                         Step = step,
                         OperationEnable = true,
-                        ParentIds = ""
+                        ParentIds = "",
+                        StepType = StepTypes.Choice.ToString()
                     }
                 );
 
@@ -160,7 +158,8 @@ namespace Supp.Site.Recognition
                         SubType = WebSpeechTypes.SystemRequestNotImplemented.ToString(),
                         Step = step,
                         OperationEnable = true,
-                        ParentIds = "["+ (startId).ToString() + "]"
+                        ParentIds = "["+ (startId).ToString() + "]",
+                        StepType = StepTypes.Default.ToString()
                     }
                 );
 
@@ -180,7 +179,8 @@ namespace Supp.Site.Recognition
                         SubType = WebSpeechTypes.SystemRequestNotImplemented.ToString(),
                         Step = step,
                         OperationEnable = true,
-                        ParentIds = "[" + (startId).ToString() + "]"
+                        ParentIds = "[" + (startId).ToString() + "]",
+                        StepType = StepTypes.Default.ToString()
                     }
                 );
 
@@ -201,7 +201,8 @@ namespace Supp.Site.Recognition
                         SubType = WebSpeechTypes.SystemRequestNotImplemented.ToString(),
                         Step = step,
                         OperationEnable = true,
-                        ParentIds = "[" + (id - 1).ToString() + "]"
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.Choice.ToString()
                     }
                 );
 
@@ -239,7 +240,8 @@ namespace Supp.Site.Recognition
                         SubType = WebSpeechTypes.SystemRequestNotImplemented.ToString(),
                         Step = step,
                         OperationEnable = true,
-                        ParentIds = ""
+                        ParentIds = "",
+                        StepType = StepTypes.Choice.ToString()
                     }
                 );
 
@@ -260,7 +262,8 @@ namespace Supp.Site.Recognition
                         SubType = WebSpeechTypes.SystemRequestNotImplemented.ToString(),
                         Step = step,
                         OperationEnable = true,
-                        ParentIds = "[" + (startId).ToString() + "]"
+                        ParentIds = "[" + (startId).ToString() + "]",
+                        StepType = StepTypes.Default.ToString()
                     }
                 );
 
@@ -280,7 +283,8 @@ namespace Supp.Site.Recognition
                         SubType = WebSpeechTypes.SystemRequestNotImplemented.ToString(),
                         Step = step,
                         OperationEnable = true,
-                        ParentIds = "[" + (startId).ToString() + "]"
+                        ParentIds = "[" + (startId).ToString() + "]",
+                        StepType = StepTypes.Default.ToString()
                     }
                 );
 
@@ -301,7 +305,8 @@ namespace Supp.Site.Recognition
                         SubType = WebSpeechTypes.SystemRequestNotImplemented.ToString(),
                         Step = step,
                         OperationEnable = true,
-                        ParentIds = "[" + (id - 1).ToString() + "]"
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.Choice.ToString()
                     }
                 );
 
@@ -309,15 +314,15 @@ namespace Supp.Site.Recognition
 
                 id = result.OrderByDescending(_ => _.Id).FirstOrDefault().Id;
                 step = result.OrderByDescending(_ => _.Step).FirstOrDefault().Step;
-                result.AddRange(GetRequestNotImplementedAnswerIta(id, step, parentId));
+                result.AddRange(GetRequestNotImplementedAnswerEng(id, step, parentId));
 
                 id = result.OrderByDescending(_ => _.Id).FirstOrDefault().Id;
                 step = result.OrderByDescending(_ => _.Step).FirstOrDefault().Step;
-                result.AddRange(GetRequestNotImplementedInsertIta(id, step, id));
+                result.AddRange(GetRequestNotImplementedInsertEng(id, step, id));
 
                 id = result.OrderByDescending(_ => _.Id).FirstOrDefault().Id;
                 step = result.OrderByDescending(_ => _.Step).FirstOrDefault().Step;
-                result.AddRange(GetRequestNotImplementedOtherIta(id, step, parentId));
+                result.AddRange(GetRequestNotImplementedOtherEng(id, step, parentId));
             }
 
             return result;
@@ -354,7 +359,7 @@ namespace Supp.Site.Recognition
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + parentId.ToString() + "]",
-                    StepType = StepTypes.GetAnswer.ToString()
+                    StepType = StepTypes.Choice.ToString()
                 }
             );
 
@@ -396,7 +401,8 @@ namespace Supp.Site.Recognition
                     SubType = WebSpeechTypes.SystemRequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
-                    ParentIds = "[" + startId.ToString() + "]"
+                    ParentIds = "[" + startId.ToString() + "]",
+                    StepType = StepTypes.AddNow.ToString()
                 }
             );
 
@@ -418,7 +424,7 @@ namespace Supp.Site.Recognition
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + (id-1).ToString() + "]",
-                    StepType = StepTypes.AddNow.ToString()
+                    StepType = StepTypes.Default.ToString()
                 }
             );
 
@@ -454,7 +460,8 @@ namespace Supp.Site.Recognition
                     SubType = WebSpeechTypes.SystemRequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
-                    ParentIds = "[" + parentId.ToString() + "]"
+                    ParentIds = "[" + parentId.ToString() + "]",
+                    StepType = StepTypes.GetAnswer.ToString()
                 }
             );
 
@@ -489,7 +496,8 @@ namespace Supp.Site.Recognition
                     SubType = WebSpeechTypes.SystemRequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
-                    ParentIds = "[" + parentId.ToString() + "]"
+                    ParentIds = "[" + parentId.ToString() + "]",
+                    StepType = StepTypes.Default.ToString()
                 }
             );
 
@@ -526,7 +534,7 @@ namespace Supp.Site.Recognition
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + parentId.ToString() + "]",
-                    StepType = StepTypes.GetAnswer.ToString()
+                    StepType = StepTypes.Choice.ToString()
                 }
             );
 
@@ -568,7 +576,8 @@ namespace Supp.Site.Recognition
                     SubType = WebSpeechTypes.SystemRequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
-                    ParentIds = "[" + startId.ToString() + "]"
+                    ParentIds = "[" + startId.ToString() + "]",
+                    StepType = StepTypes.AddNow.ToString()
                 }
             );
 
@@ -590,7 +599,7 @@ namespace Supp.Site.Recognition
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + (id - 1).ToString() + "]",
-                    StepType = StepTypes.AddNow.ToString()
+                    StepType = StepTypes.Default.ToString()
                 }
             );
 
@@ -626,7 +635,8 @@ namespace Supp.Site.Recognition
                     SubType = WebSpeechTypes.SystemRequestNotImplemented.ToString(),
                     Step = step,
                     OperationEnable = true,
-                    ParentIds = "[" + parentId.ToString() + "]"
+                    ParentIds = "[" + parentId.ToString() + "]",
+                    StepType = StepTypes.GetAnswer.ToString()
                 }
             );
 
@@ -661,7 +671,8 @@ namespace Supp.Site.Recognition
                    SubType = WebSpeechTypes.SystemRequestNotImplemented.ToString(),
                    Step = step,
                    OperationEnable = true,
-                   ParentIds = "[" + parentId.ToString() + "]"
+                   ParentIds = "[" + parentId.ToString() + "]",
+                   StepType = StepTypes.Default.ToString()
                }
            );
 

@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using Supp.ServiceHost.Contracts;
 using Supp.ServiceHost.Contexts;
 using Additional.NLog;
+using System.Text.Json;
+using System.Dynamic;
 
 namespace Supp.ServiceHost.Repositories
 {
@@ -80,7 +82,7 @@ namespace Supp.ServiceHost.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -121,7 +123,7 @@ namespace Supp.ServiceHost.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -160,14 +162,14 @@ namespace Supp.ServiceHost.Repositories
                     {
                         response.Successful = true;
                         response.ResultState = ResultType.NotFound;
-                        response.Message = ex.Message;
+                        response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                         response.OriginalException = null;
                     }
                     else
                     {
                         response.Successful = false;
                         response.ResultState = ResultType.Error;
-                        response.Message = ex.Message;
+                        response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                         response.OriginalException = null;
                         logger.Error(ex.ToString());
                         //throw ex;
@@ -190,7 +192,6 @@ namespace Supp.ServiceHost.Repositories
 
                 try
                 {
-
                     var config = new MapperConfiguration(cfg => cfg.CreateMap<GoogleAuthDto, GoogleAuth>());
                     var mapper = config.CreateMapper();
                     var data = mapper.Map<GoogleAuth>(dto);
@@ -209,7 +210,7 @@ namespace Supp.ServiceHost.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
                     //throw ex;
@@ -257,7 +258,7 @@ namespace Supp.ServiceHost.Repositories
                 {
                     response.Successful = false;
                     response.ResultState = ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
                     //throw ex;

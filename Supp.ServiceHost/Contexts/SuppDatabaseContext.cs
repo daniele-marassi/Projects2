@@ -61,7 +61,7 @@ namespace Supp.ServiceHost.Contexts
 
             modelBuilder.Entity<Supp.Models.WebSpeech>()
                 .Property(b => b.InsDateTime)
-                .HasDefaultValueSql("getdate()");
+                .HasDefaultValueSql("CONVERT([varchar],getdate(),(121))");
 
             modelBuilder.Entity<Supp.Models.ExecutionQueue>()
                 .Property(b => b.InsDateTime)

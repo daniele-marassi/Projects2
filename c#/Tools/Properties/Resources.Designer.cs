@@ -71,6 +71,16 @@ namespace Tools.Properties {
         }
         
         /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Icon simile a (Icona).
+        /// </summary>
+        internal static System.Drawing.Icon About1 {
+            get {
+                object obj = ResourceManager.GetObject("About1", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Byte[].
         /// </summary>
         internal static byte[] Error {
@@ -127,6 +137,26 @@ namespace Tools.Properties {
             get {
                 object obj = ResourceManager.GetObject("ServicesError", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Icon simile a (Icona).
+        /// </summary>
+        internal static System.Drawing.Icon Shut {
+            get {
+                object obj = ResourceManager.GetObject("Shut", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Icon simile a (Icona).
+        /// </summary>
+        internal static System.Drawing.Icon ShutTask {
+            get {
+                object obj = ResourceManager.GetObject("ShutTask", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         

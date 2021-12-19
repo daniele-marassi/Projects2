@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Supp.Models
@@ -16,6 +17,6 @@ namespace Supp.Models
 
 
         [Column(TypeName = "datetime")]
-        public System.DateTime InsDateTime { get; set;}
+        public DateTime InsDateTime { get; }
     }
 }

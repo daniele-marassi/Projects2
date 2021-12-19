@@ -9,8 +9,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Resources
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\External_library\Additional.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\External_library\Additional.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\External_library\Additional.dll.config
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\External_library\Newtonsoft.Json.dll
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\External_library\Newtonsoft.Json.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\SyncIp.exe.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\SyncIp.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\SyncIp.pdb

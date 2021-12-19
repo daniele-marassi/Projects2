@@ -14,7 +14,7 @@ namespace Supp.Models
         public long GoogleAuthId { get; set; }
         public long UserId { get; set; }
         public string AccountType { get; set; }
-        public System.DateTime InsDateTime { get; set; }
+        public DateTime InsDateTime { get; set; }
 
         public IEnumerable<GoogleAuthDto> GoogleAuths { get; set; }
 

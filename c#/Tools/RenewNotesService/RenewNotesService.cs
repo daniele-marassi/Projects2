@@ -6,7 +6,7 @@ using GoogleManagerModels;
 using Newtonsoft.Json;
 using NLog;
 using RenewNotes.Repositories;
-using SuppModels;
+using Supp.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -163,7 +163,7 @@ namespace Tools.RenewNotes
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var response = new TokenResult() { Data = new List<TokenDto>(), ResultState = new SuppModels.ResultType() };
+                var response = new TokenResult() { Data = new List<TokenDto>(), ResultState = new Supp.Models.ResultType() };
 
                 try
                 {
@@ -179,7 +179,7 @@ namespace Tools.RenewNotes
                     if (result.IsSuccessStatusCode == false)
                     {
                         response.Successful = false;
-                        response.ResultState = SuppModels.ResultType.Error;
+                        response.ResultState = Supp.Models.ResultType.Error;
                         response.Message += result.ReasonPhrase;
                     }
                     else
@@ -191,7 +191,7 @@ namespace Tools.RenewNotes
                 {
                     response.Successful = false;
                     response.IsAuthenticated = false;
-                    response.ResultState = SuppModels.ResultType.Error;
+                    response.ResultState = Supp.Models.ResultType.Error;
                     response.Message = "";
                     response.OriginalException = ex;
                     logger.Error(ex.ToString());
@@ -279,6 +279,14 @@ namespace Tools.RenewNotes
                                 if (calendarEventUpdated.Successful == false && response.Message != null && response.Message != String.Empty) errors.Add(calendarEventUpdated.Message);
                             }
                         }
+
+                        if (getCalendarEventsResult.Successful == false) errors.Add(getCalendarEventsResult.Message);
+                    }
+
+                    if (googleAccounts.Count == 0)
+                    {
+                        response.ResultState = GoogleManagerModels.ResultType.NotFound;
+                        errors.Add("No google accounts found!");
                     }
 
                     if (response.Data.Count == 0 && errors.Count == 0)
@@ -288,7 +296,7 @@ namespace Tools.RenewNotes
                     if (response.Data.Count > 0 && errors.Count > 0)
                         response.ResultState = GoogleManagerModels.ResultType.FoundWithError;
 
-                    if (response.Data.Count == 0 && errors.Count > 0)
+                    if (response.Data.Count == 0 && errors.Count > 0 && googleAccounts.Count > 0)
                     {
                         response.Successful = false;
                         response.ResultState = GoogleManagerModels.ResultType.Error;
@@ -303,7 +311,7 @@ namespace Tools.RenewNotes
                 {
                     response.Successful = false;
                     response.ResultState = GoogleManagerModels.ResultType.Error;
-                    response.Message = ex.Message;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
                     //throw ex;

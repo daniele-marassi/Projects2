@@ -14,7 +14,7 @@ namespace Supp.Models
         public int Order { get; set; }
         public bool Listened { get; set; }
         public long DurationInMilliseconds { get; set; }
-        public System.DateTime InsDateTime { get; }
+        public DateTime InsDateTime { get; set; }
 
         public bool Successful { get; set; }
 

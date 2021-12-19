@@ -289,6 +289,8 @@ namespace Supp.Site.Controllers
                     var hosts = new List<Host>() { };
                     var hostsArray = JsonConvert.DeserializeObject<List<string>>(claims.Configuration.Speech.HostsArray);
 
+                    if (hostsArray.Where(_ => _.ToLower() == "all").Count() == 0) hostsArray.Add("All");
+
                     foreach (var item in hostsArray)
                     {
                         hosts.Add(new Host() { Id = item, Name = item });
@@ -439,6 +441,8 @@ namespace Supp.Site.Controllers
                     var hosts = new List<Host>() { };
                     var hostsArray = JsonConvert.DeserializeObject<List<string>>(claims.Configuration.Speech.HostsArray);
 
+                    if (hostsArray.Where(_ => _.ToLower() == "all").Count() == 0) hostsArray.Add("All");
+
                     foreach (var item in hostsArray)
                     {
                         hosts.Add( new Host() { Id = item, Name = item });
@@ -500,7 +504,7 @@ namespace Supp.Site.Controllers
                         logger.Error(ex.ToString());
                         ModelState.AddModelError("ModelStateErrors", ex.Message);
 
-                        return View(dto);
+                        return View();
                     }
 
                     return RedirectToAction(nameof(Index));

@@ -193,32 +193,55 @@ namespace Supp.Site.Recognition
                             }
                         }
 
+                        var stepType = "";
+
+                        var previousWebSpeech = result.Data.Where(_ => _.Id == _id).FirstOrDefault();
+                        if (previousWebSpeech != null)
+                            stepType = previousWebSpeech.StepType;
+
                         var items = result.Data.Where(_ => GetParentIds(_.ParentIds).Contains(_id) && _.Step == (_step + 1)).ToList();
                         (WebSpeechDto Data, string WebSpeechKeysMatched) matchPhraseResult;
                         matchPhraseResult.Data = null;
                         matchPhraseResult.WebSpeechKeysMatched = null;
 
-                        if (items != null && items.Count > 1)
+                        if (items != null)
                         {
                             matchPhraseResult = MatchPhrase(_phrase, items, _claims, _id);
                             if (matchPhraseResult.Data != null)
                             {
-                                data = result.Data.Where(_ => GetParentIds(_.ParentIds).Contains(matchPhraseResult.Data.Id)).FirstOrDefault();
+                                if (matchPhraseResult.Data.StepType == StepTypes.Default.ToString()) data = result.Data.Where(_ => GetParentIds(_.ParentIds).Contains(matchPhraseResult.Data.Id)).FirstOrDefault();
+                                else data = matchPhraseResult.Data;
+
                                 if (data != null)
+                                {
                                     data = GetAnswer(data);
+                                    stepType = data.StepType;
+                                }
                             }
                         }
 
-                        if (data == null && matchPhraseResult.Data != null)
-                            data = matchPhraseResult.Data;
-
-                        if (data == null && items != null && items.Count == 1)
+                        if (data == null && items != null && items.Count == 1 && stepType != StepTypes.Choice.ToString())
                         {
                             data = items.FirstOrDefault();
                             data = GetAnswer(data);
                         }
 
-                        if (data != null && _subType != "" && _subType != null && _subType != "null") data = Recognition.WebSpeechRequest.Manage(data, data.Step, expiresInSeconds, _phrase, response, request);
+                        if (data != null && _subType != "" && _subType != null && _subType != "null") data = Recognition.WebSpeechRequest.Manage(data, _step, stepType, expiresInSeconds, _phrase, response, request);
+
+                        if (data == null && _subType != "" && _subType != null && _subType != "null")
+                        {
+                            data = previousWebSpeech;
+                            if (data != null)
+                            {
+                                data = GetAnswer(data);
+
+                                if (_claims.Configuration.General.Culture.ToLower() == "it-it")
+                                    data.Answer = "non ho capito!" + " " + data.Answer;
+
+                                if (_claims.Configuration.General.Culture.ToLower() == "en-us")
+                                    data.Answer = "" + " " + data.Answer;
+                            }
+                        }
                     }
 
                     if (data != null && (data.Type == WebSpeechTypes.ReadRemindersToday.ToString() || data.Type == WebSpeechTypes.ReadRemindersTomorrow.ToString()))
@@ -430,7 +453,7 @@ namespace Supp.Site.Recognition
                             data = dataResult.Data.Where(_=>_.Step == 1).FirstOrDefault();
                         }
 
-                        data = Recognition.WebSpeechRequest.Manage(data, _step, expiresInSeconds, _phrase, response, request);
+                        data = Recognition.WebSpeechRequest.Manage(data, _step, StepTypes.Default.ToString(), expiresInSeconds, _phrase, response, request);
                     }
 
                     if (data == null) data = new WebSpeechDto() { Answer = "", Ehi = 0 };

@@ -35,7 +35,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\AutoMapp
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\AutoMapper.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\EntityFramework.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\EntityFramework.SqlServer.xml
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\Newtonsoft.Json.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\NLog.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\System.ValueTuple.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.csproj.AssemblyReference.cache
