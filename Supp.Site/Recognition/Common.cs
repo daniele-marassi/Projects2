@@ -27,12 +27,14 @@ namespace Supp.Site.Recognition
         private readonly SuppUtility suppUtility;
         private readonly WebSpeechesRepository webSpeecheRepo;
         private readonly ExecutionQueuesRepository executionQueueRepo;
+        private readonly WebSpeechRequest webSpeechRequest;
 
         public Common()
         {
             suppUtility = new SuppUtility();
             webSpeecheRepo = new WebSpeechesRepository();
             executionQueueRepo = new ExecutionQueuesRepository();
+            webSpeechRequest = new WebSpeechRequest();
         }
 
         /// <summary>
@@ -185,10 +187,20 @@ namespace Supp.Site.Recognition
                     {
                         if (_subType == WebSpeechTypes.SystemRequestNotImplemented.ToString())
                         {
-                            var requestsNotImplemented = Recognition.WebSpeechRequest.GetRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
+                            var requestsNotImplemented = webSpeechRequest.GetRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
                             if (requestsNotImplemented != null && requestsNotImplemented.Count > 0)
                             {
                                 var dataResult = GetData(requestsNotImplemented);
+                                result.Data.AddRange(dataResult.Data);
+                            }
+                        }
+
+                        if (_subType == WebSpeechTypes.SystemRequestAddToNote.ToString())
+                        {
+                            var requestsRequestAddToNote = webSpeechRequest.GetRequestAddToNote(_claims.Configuration.General.Culture, lastWebSpeechId);
+                            if (requestsRequestAddToNote != null && requestsRequestAddToNote.Count > 0)
+                            {
+                                var dataResult = GetData(requestsRequestAddToNote);
                                 result.Data.AddRange(dataResult.Data);
                             }
                         }
@@ -226,7 +238,7 @@ namespace Supp.Site.Recognition
                             data = GetAnswer(data);
                         }
 
-                        if (data != null && _subType != "" && _subType != null && _subType != "null") data = Recognition.WebSpeechRequest.Manage(data, _step, stepType, expiresInSeconds, _phrase, response, request);
+                        if (data != null && _subType != "" && _subType != null && _subType != "null") data = webSpeechRequest.Manage(data, _subType, _step, stepType, expiresInSeconds, _phrase, response, request);
 
                         if (data == null && _subType != "" && _subType != null && _subType != "null")
                         {
@@ -348,6 +360,17 @@ namespace Supp.Site.Recognition
                         data.Parameters = url;
                     }
 
+                    if (data != null && data.Type == WebSpeechTypes.EditNote.ToString())
+                    {
+                        var requestsNotImplemented = webSpeechRequest.GetRequestAddToNote(_claims.Configuration.General.Culture, lastWebSpeechId);
+                        if (requestsNotImplemented != null && requestsNotImplemented.Count > 0)
+                        {
+                            var dataResult = GetData(requestsNotImplemented);
+
+                            data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
+                        }
+                    }
+
                     var salutation = _claims.Configuration.Speech.Salutation;
                     if (_claims.Name == null && _claims.Configuration.General.Culture.ToLower() == "it-it") _claims.Name = "tu";
                     if (_claims.Name == null && _claims.Configuration.General.Culture.ToLower() == "en-us") _claims.Name = "you";
@@ -446,14 +469,14 @@ namespace Supp.Site.Recognition
                     {
                         if (_subType == null || _subType == "") _subType = WebSpeechTypes.SystemRequestNotImplemented.ToString();
 
-                        var requestsNotImplemented = Recognition.WebSpeechRequest.GetRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
+                        var requestsNotImplemented = webSpeechRequest.GetRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
                         if (requestsNotImplemented != null && requestsNotImplemented.Count > 0)
                         {
                             var dataResult = GetData(requestsNotImplemented);
                             data = dataResult.Data.Where(_=>_.Step == 1).FirstOrDefault();
                         }
 
-                        data = Recognition.WebSpeechRequest.Manage(data, _step, StepTypes.Default.ToString(), expiresInSeconds, _phrase, response, request);
+                        data = webSpeechRequest.Manage(data, WebSpeechTypes.SystemRequestNotImplemented.ToString(), _step, StepTypes.Default.ToString(), expiresInSeconds, _phrase, response, request);
                     }
 
                     if (data == null) data = new WebSpeechDto() { Answer = "", Ehi = 0 };
