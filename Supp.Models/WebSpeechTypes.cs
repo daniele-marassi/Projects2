@@ -28,8 +28,9 @@ namespace Supp.Models
         ReadRemindersTomorrow = 18,
         SystemEditReminder = 19,
         SystemDeleteReminder = 20,
-        SystemRequestNotImplemented = 21,
-        SystemRequestAddToNote = 22
+        SystemDialogueRequestNotImplemented = 21,
+        SystemDialogueAddToNote = 22,
+        SystemDialogueGeneric = 23
     }
 
     public class WebSpeechTypesUtility

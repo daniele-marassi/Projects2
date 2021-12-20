@@ -4,12 +4,13 @@ using System.Linq;
 
 namespace Supp.Site.Recognition
 {
-    public class RequestAddToNote
+    public class DialogueAddToNote
     {
         /// <summary>
         /// Get
         /// </summary>
         /// <param name="culture"></param>
+        /// <param name="lastWebSpeechId"></param>
         /// <returns></returns>
         public List<WebSpeechDto> Get(string culture, long lastWebSpeechId)
         {
@@ -22,21 +23,55 @@ namespace Supp.Site.Recognition
             {
                 id = startId;
                 step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = @"[""Dimmi il nome della nota"",""Qual'è il nome della nota?""]",
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "",
+                        StepType = StepTypes.GetAnswer.ToString()
+                    }
+                );
 
-                var parentId = id;
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = @"[""Cosa devo aggiungere?"",""Dimmi cosa devo aggiungere""]",
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.GetAnswer.ToString()
+                    }
+                );
 
-                var stepOfChoice = step;
+                var parentId = result.OrderByDescending(_ => _.Id).FirstOrDefault().Id;
 
-                id = startId;
-                step = stepOfChoice;
-                result.AddRange(AnswerIta(id, step, parentId));
-
-                stepOfChoice = step;
+                var stepOfChoice = result.OrderByDescending(_ => _.Step).FirstOrDefault().Step;
 
                 id = result.OrderByDescending(_ => _.Id).FirstOrDefault().Id;
                 step = result.OrderByDescending(_ => _.Step).FirstOrDefault().Step;
-                result.AddRange(InsertIta(id, step, id));
-
+                result.AddRange(InsertIta(id, step, parentId));
             }
 
             if (culture.ToLower() == "en-us")
@@ -66,15 +101,15 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = WebSpeechTypes.SystemRequestAddToNote.ToString() + "_" + id.ToString(),
-                    Phrase = @"[[""Inserisco""]]",
+                    Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
+                    Phrase = @"EMPTY",
                     Answer = @"[""Inserisco subito?"", ""Inserisco ora?"", ""Aggiungo subito?"", ""Aggiungo ora?""]",
                     Host = "All",
                     FinalStep = false,
                     UserId = 0,
                     Order = 0,
                     Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemRequestAddToNote.ToString(),
+                    SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + parentId.ToString() + "]",
@@ -88,7 +123,7 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = WebSpeechTypes.SystemRequestAddToNote.ToString() + "_" + id.ToString(),
+                    Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
                     Phrase = @"[[""no"", ""non ora"", ""no grazie""]]",
                     Answer = @"[""ok"",""va bene"",""certo"",""bene""]",
                     Host = "All",
@@ -96,7 +131,7 @@ namespace Supp.Site.Recognition
                     UserId = 0,
                     Order = 0,
                     Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemRequestAddToNote.ToString(),
+                    SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + startId.ToString() + "]",
@@ -109,7 +144,7 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = WebSpeechTypes.SystemRequestAddToNote.ToString() + "_" + id.ToString(),
+                    Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
                     Phrase = @"[[""sì"",""ok"",""sì va bene"",""si"",""ok"",""si va bene"", ""ok va bene""]]",
                     Answer = @"[""ok"",""va bene"",""certo"",""bene""]",
                     Host = "All",
@@ -117,7 +152,7 @@ namespace Supp.Site.Recognition
                     UserId = 0,
                     Order = 0,
                     Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemRequestAddToNote.ToString(),
+                    SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + startId.ToString() + "]",
@@ -131,7 +166,7 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = WebSpeechTypes.SystemRequestAddToNote.ToString() + "_" + id.ToString(),
+                    Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
                     Phrase = @"EMPTY",
                     Answer = @"[""Inserito""]",
                     Host = "All",
@@ -139,70 +174,11 @@ namespace Supp.Site.Recognition
                     UserId = 0,
                     Order = 0,
                     Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemRequestAddToNote.ToString(),
+                    SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + (id - 1).ToString() + "]",
                     StepType = StepTypes.Default.ToString()
-                }
-            );
-
-            return result;
-        }
-
-        /// <summary>
-        /// AnswerIta
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="step"></param>
-        /// <param name="parentId"></param>
-        /// <returns></returns>
-        public List<WebSpeechDto> AnswerIta(long id, int step, long parentId)
-        {
-            var result = new List<WebSpeechDto>() { };
-            var startId = id + 1;
-
-            id = startId;
-            step++;
-            result.Add(
-                new WebSpeechDto()
-                {
-                    Id = id,
-                    Name = WebSpeechTypes.SystemRequestAddToNote.ToString() + "_" + id.ToString(),
-                    Phrase = @"EMPTY",
-                    Answer = @"[""Dimmi il nome della nota"",""Qual'è il nome della nota?""]",
-                    Host = "All",
-                    FinalStep = false,
-                    UserId = 0,
-                    Order = 0,
-                    Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemRequestAddToNote.ToString(),
-                    Step = step,
-                    OperationEnable = true,
-                    ParentIds = "[" + parentId.ToString() + "]",
-                    StepType = StepTypes.GetAnswer.ToString()
-                }
-            );
-
-            id++;
-            step++;
-            result.Add(
-                new WebSpeechDto()
-                {
-                    Id = id,
-                    Name = WebSpeechTypes.SystemRequestAddToNote.ToString() + "_" + id.ToString(),
-                    Phrase = @"EMPTY",
-                    Answer = @"[""Cosa devo aggiungere?"",""Dimmi cosa devo aggiungere""]",
-                    Host = "All",
-                    FinalStep = false,
-                    UserId = 0,
-                    Order = 0,
-                    Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemRequestAddToNote.ToString(),
-                    Step = step,
-                    OperationEnable = true,
-                    ParentIds = "[" + parentId.ToString() + "]",
-                    StepType = StepTypes.GetAnswer.ToString()
                 }
             );
 
@@ -227,15 +203,15 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = WebSpeechTypes.SystemRequestAddToNote.ToString() + "_" + id.ToString(),
-                    Phrase = @"[[""I enter""]]",
+                    Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
+                    Phrase = @"EMPTY",
                     Answer = @"[""Do I post now?"",""Do I post now?"",""Do I add now?"",""Do I add now?""]",
                     Host = "All",
                     FinalStep = false,
                     UserId = 0,
                     Order = 0,
                     Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemRequestAddToNote.ToString(),
+                    SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + parentId.ToString() + "]",
@@ -249,7 +225,7 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = WebSpeechTypes.SystemRequestAddToNote.ToString() + "_" + id.ToString(),
+                    Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
                     Phrase = @"[[""no"",""not now"",""no thanks""]]",
                     Answer = @"[""ok"",""ok"",""sure"",""ok""]",
                     Host = "All",
@@ -257,7 +233,7 @@ namespace Supp.Site.Recognition
                     UserId = 0,
                     Order = 0,
                     Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemRequestAddToNote.ToString(),
+                    SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + startId.ToString() + "]",
@@ -270,7 +246,7 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = WebSpeechTypes.SystemRequestAddToNote.ToString() + "_" + id.ToString(),
+                    Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
                     Phrase = @"[[""yes"",""ok"",""yes alright"",""yes"",""ok"",""okay"",""ok go well""]]",
                     Answer = @"[""ok"",""ok"",""sure"",""ok""]",
                     Host = "All",
@@ -278,7 +254,7 @@ namespace Supp.Site.Recognition
                     UserId = 0,
                     Order = 0,
                     Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemRequestAddToNote.ToString(),
+                    SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + startId.ToString() + "]",
@@ -292,7 +268,7 @@ namespace Supp.Site.Recognition
                 new WebSpeechDto()
                 {
                     Id = id,
-                    Name = WebSpeechTypes.SystemRequestAddToNote.ToString() + "_" + id.ToString(),
+                    Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
                     Phrase = @"EMPTY",
                     Answer = @"[""Posted""]",
                     Host = "All",
@@ -300,7 +276,7 @@ namespace Supp.Site.Recognition
                     UserId = 0,
                     Order = 0,
                     Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemRequestAddToNote.ToString(),
+                    SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + (id - 1).ToString() + "]",

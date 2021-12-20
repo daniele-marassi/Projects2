@@ -25,8 +25,6 @@ namespace Supp.Models
             public string ListeningWord2 { get; set; }
             public string ListeningAnswer { get; set; }
             public string Salutation { get; set; }
-            public string MinSpeechWordsCoefficient { get; set; }
-            public string MaxSpeechWordsCoefficient { get; set; }
             public string MeteoParameterToTheSalutation { get; set; }
             public bool DescriptionMeteoToTheSalutationActive { get; set; }
             public bool RemindersActive { get; set; }

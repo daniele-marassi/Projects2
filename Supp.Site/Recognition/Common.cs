@@ -27,14 +27,14 @@ namespace Supp.Site.Recognition
         private readonly SuppUtility suppUtility;
         private readonly WebSpeechesRepository webSpeecheRepo;
         private readonly ExecutionQueuesRepository executionQueueRepo;
-        private readonly WebSpeechRequest webSpeechRequest;
+        private readonly Dialogue dialogue;
 
         public Common()
         {
             suppUtility = new SuppUtility();
             webSpeecheRepo = new WebSpeechesRepository();
             executionQueueRepo = new ExecutionQueuesRepository();
-            webSpeechRequest = new WebSpeechRequest();
+            dialogue = new Dialogue();
         }
 
         /// <summary>
@@ -71,12 +71,12 @@ namespace Supp.Site.Recognition
 
                 if (item.WebSpeechIds != null && item.WebSpeechIds.Count() > 0)
                 {
-                    foreach (var id in item.WebSpeechIds)
+                    foreach (var id in item.WebSpeechIds.OrderBy(_=>_).ToList())
                     {
                         var _phrase = data.Where(_ => _.Id == id).Select(_ => _.Phrase).FirstOrDefault();
                         if (item.PreviousPhrase == null) item.PreviousPhrase = String.Empty;
-                        if (item.PreviousPhrase != "") item.PreviousPhrase += " ";
-                        item.PreviousPhrase += _phrase;
+                        if (item.PreviousPhrase != "") item.PreviousPhrase += " -> ";
+                        item.PreviousPhrase += "Id:" + id.ToString() + " - Phrase:" +_phrase;
                     }
                 }
 
@@ -138,6 +138,16 @@ namespace Supp.Site.Recognition
                 WebSpeechDto data = null;
                 try
                 {
+                    if (_phrase != null && _phrase != String.Empty)
+                    {
+                        _phrase = _phrase.Replace("'", " ");
+
+                        var percentage = "";
+                        if (_claims.Configuration.General.Culture.ToLower() == "it-it") percentage = " percento";
+                        if (_claims.Configuration.General.Culture.ToLower() == "en-us") percentage = " percent";
+                        _phrase = _phrase.Replace("%", percentage);
+                    }
+
                     var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                     var method = currentMethod.Name;
                     var className = currentMethod.DeclaringType.Name;
@@ -185,9 +195,9 @@ namespace Supp.Site.Recognition
                     }
                     else if (_id != 0 && _subType != "" && _subType != null && _subType != "null" && _step > 0)
                     {
-                        if (_subType == WebSpeechTypes.SystemRequestNotImplemented.ToString())
+                        if (_subType == WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString())
                         {
-                            var requestsNotImplemented = webSpeechRequest.GetRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
+                            var requestsNotImplemented = dialogue.GetDialogueRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
                             if (requestsNotImplemented != null && requestsNotImplemented.Count > 0)
                             {
                                 var dataResult = GetData(requestsNotImplemented);
@@ -195,9 +205,9 @@ namespace Supp.Site.Recognition
                             }
                         }
 
-                        if (_subType == WebSpeechTypes.SystemRequestAddToNote.ToString())
+                        if (_subType == WebSpeechTypes.SystemDialogueAddToNote.ToString())
                         {
-                            var requestsRequestAddToNote = webSpeechRequest.GetRequestAddToNote(_claims.Configuration.General.Culture, lastWebSpeechId);
+                            var requestsRequestAddToNote = dialogue.GetDialogueAddToNote(_claims.Configuration.General.Culture, lastWebSpeechId);
                             if (requestsRequestAddToNote != null && requestsRequestAddToNote.Count > 0)
                             {
                                 var dataResult = GetData(requestsRequestAddToNote);
@@ -238,7 +248,7 @@ namespace Supp.Site.Recognition
                             data = GetAnswer(data);
                         }
 
-                        if (data != null && _subType != "" && _subType != null && _subType != "null") data = webSpeechRequest.Manage(data, _subType, _step, stepType, expiresInSeconds, _phrase, response, request);
+                        if (data != null && _subType != "" && _subType != null && _subType != "null") data = dialogue.Manage(data, _subType, _step, stepType, expiresInSeconds, _phrase, response, request);
 
                         if (data == null && _subType != "" && _subType != null && _subType != "null")
                         {
@@ -323,6 +333,22 @@ namespace Supp.Site.Recognition
 
                     if (data != null && (data.Type == WebSpeechTypes.SystemRunExe.ToString() || data.Type == WebSpeechTypes.RunExe.ToString()) && data.OperationEnable == true)
                     {
+                        if (data.Parameters == null || data.Parameters == String.Empty)
+                        {
+                            var value = 0;
+                            var words = _phrase.Trim().ToLower().Split(' ');
+                            foreach (var word in words)
+                            {
+                                try
+                                {
+                                    value = int.Parse(word);
+                                    data.Parameters = value.ToString();
+                                }
+                                catch (Exception)
+                                {}
+                            }
+                        }
+
                         var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = _hostSelected, Type = data.Type };
                         var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
 
@@ -362,12 +388,14 @@ namespace Supp.Site.Recognition
 
                     if (data != null && data.Type == WebSpeechTypes.EditNote.ToString())
                     {
-                        var requestsNotImplemented = webSpeechRequest.GetRequestAddToNote(_claims.Configuration.General.Culture, lastWebSpeechId);
+                        var requestsNotImplemented = dialogue.GetDialogueAddToNote(_claims.Configuration.General.Culture, lastWebSpeechId);
                         if (requestsNotImplemented != null && requestsNotImplemented.Count > 0)
                         {
                             var dataResult = GetData(requestsNotImplemented);
 
                             data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
+
+                            data = GetAnswer(data);
                         }
                     }
 
@@ -464,19 +492,21 @@ namespace Supp.Site.Recognition
 
                     if (
                         (_phrase != null && _phrase != "" && data == null && result != null && _phrase.Split(" ").Count() > 1)
-                        || (data == null && _subType == WebSpeechTypes.SystemRequestNotImplemented.ToString())
+                        || (data == null && _subType == WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString())
                     )
                     {
-                        if (_subType == null || _subType == "") _subType = WebSpeechTypes.SystemRequestNotImplemented.ToString();
+                        if (_subType == null || _subType == "") _subType = WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString();
 
-                        var requestsNotImplemented = webSpeechRequest.GetRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
+                        var requestsNotImplemented = dialogue.GetDialogueRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
                         if (requestsNotImplemented != null && requestsNotImplemented.Count > 0)
                         {
                             var dataResult = GetData(requestsNotImplemented);
                             data = dataResult.Data.Where(_=>_.Step == 1).FirstOrDefault();
                         }
 
-                        data = webSpeechRequest.Manage(data, WebSpeechTypes.SystemRequestNotImplemented.ToString(), _step, StepTypes.Default.ToString(), expiresInSeconds, _phrase, response, request);
+                        data = GetAnswer(data);
+
+                        data = dialogue.Manage(data, WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString(), _step, StepTypes.Default.ToString(), expiresInSeconds, _phrase, response, request);
                     }
 
                     if (data == null) data = new WebSpeechDto() { Answer = "", Ehi = 0 };
@@ -587,7 +617,9 @@ namespace Supp.Site.Recognition
                                     var founded = false;
                                     foreach (var key in keysArray)
                                     {
-                                        if (!founded && _phrase.Trim().ToLower().Contains(key.ToString().Trim().ToLower()))
+                                        var words = _phrase.Trim().ToLower().Split(' ');
+
+                                        if (!founded && words.Contains(key.ToString().Trim().ToLower()))
                                         {
                                             founded = true;
                                             countMatch++;
@@ -635,125 +667,6 @@ namespace Supp.Site.Recognition
             {
                 result.Data = GetAnswer(_data);            
             }
-
-            return result;
-        }
-
-        public (WebSpeechDto Data, string PhraseMatched) MatchPhrase_old(string _phrase, List<WebSpeechDto> webSpeechlist, ClaimsDto _claims)
-        {
-            WebSpeechDto data = null;
-            var _words = _phrase.Split(" ");
-            var _wordsCount = _words.Count();
-            var countMatch = 0;
-            var match = 0;
-            var perferctMatch = false;
-            var skipMatch = false;
-            List<WebSpeechDto> _data = null;
-            var _phraseMatched = "";
-            var rnd = new Random();
-            (WebSpeechDto Data, string PhraseMatched) result;
-            result.Data = null;
-            result.PhraseMatched = null;
-
-            foreach (var item in webSpeechlist)
-            {
-                var phrases = new List<string>() { };
-
-                try
-                {
-                    phrases = JsonConvert.DeserializeObject<List<string>>(item.Phrase);
-                }
-                catch (Exception)
-                {
-                    phrases.Add(item.Phrase);
-                }
-
-                for (int i = 0; i < phrases.Count; i++)
-                {
-                    if (item.PreviousPhrase != null && item.PreviousPhrase != String.Empty)
-                        phrases[i] = item.PreviousPhrase + " " + phrases[i];
-                }
-
-                foreach (var phrase in phrases)
-                {
-                    var words = phrase.Split(" ");
-                    var wordsCount = words.Count();
-                    var minMatch = 0;
-                    var maxWords = 0;
-
-                    minMatch = (int)(_wordsCount - Math.Ceiling(_wordsCount * decimal.Parse(_claims.Configuration.Speech.MinSpeechWordsCoefficient)));
-                    maxWords = (int)(_wordsCount + Math.Ceiling(_wordsCount * decimal.Parse(_claims.Configuration.Speech.MaxSpeechWordsCoefficient)));
-
-                    if (_wordsCount == 2) minMatch = 2;
-                    if (minMatch == 0) minMatch = 1;
-
-                    if (item.Type == WebSpeechTypes.SystemWebSearch.ToString() && _phrase.Trim().StartsWith(phrase) && skipMatch == false)
-                    {
-                        skipMatch = true;
-                        _data = new List<WebSpeechDto>();
-                        _data.Add(item);
-                    }
-
-                    if (
-                        (
-                            item.Type == WebSpeechTypes.SystemReadNotes.ToString() 
-                            || item.Type == WebSpeechTypes.SystemEditNote.ToString() 
-                            || item.Type == WebSpeechTypes.SystemDeleteNote.ToString()
-
-                            || item.Type == WebSpeechTypes.SystemEditReminder.ToString()
-                            || item.Type == WebSpeechTypes.SystemDeleteReminder.ToString()
-                        ) 
-                            && _phrase.Trim().StartsWith(phrase) && skipMatch == false)
-                    {
-                        skipMatch = true;
-                        _data = new List<WebSpeechDto>();
-                        _data.Add(item);
-                    }
-
-                    if (skipMatch == false)
-                    {
-                        match = 0;
-
-                        for (int x = 0; x < words.Length; x++)
-                        {
-                            for (int y = 0; y < _words.Length; y++)
-                            {
-                                if (_words[y].Trim().ToLower() == words[x].Trim().ToLower() && words[x] != "")
-                                {
-                                    match++;
-                                    words[x] = "";
-                                }
-                            }
-                        }
-
-                        if ((match > countMatch || match == _wordsCount) && perferctMatch == false && wordsCount <= maxWords)
-                        {
-                            countMatch = match;
-                            _data = null;
-                        }
-
-                        if (match >= minMatch && wordsCount <= maxWords && (perferctMatch == false || (perferctMatch == true && match == _wordsCount && match == wordsCount)))
-                        {
-                            if (match == _wordsCount && match == wordsCount) perferctMatch = true;
-                            if (_data == null) _data = new List<WebSpeechDto>();
-                            _data.Add(item);
-                            _phraseMatched = phrase;
-                        }
-                    }
-                }
-            }
-
-            if (_data != null)
-            {
-                int x = rnd.Next(0, _data.Count());
-
-                data = _data[x];
-
-                data = GetAnswer(data);
-            }
-
-            result.Data = data;
-            result.PhraseMatched = _phraseMatched;
 
             return result;
         }

@@ -7,6 +7,6 @@ modificando il file MSBuild. Per altre informazioni su questo argomento, vedere 
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <_PublishTargetUrl>\\ev-tb\c$\Supp.Site</_PublishTargetUrl>
-    <History>True|2021-12-19T21:40:24.1541410Z;True|2021-12-19T18:46:54.5557830+01:00;True|2021-12-19T18:35:05.4717171+01:00;True|2021-12-19T13:22:14.8789248+01:00;True|2021-12-19T13:16:20.7342952+01:00;True|2021-12-19T01:27:50.8976139+01:00;</History>
+    <History>True|2021-12-20T22:38:09.9651491Z;True|2021-12-20T11:00:42.8803405+01:00;True|2021-12-19T22:40:24.1541410+01:00;True|2021-12-19T18:46:54.5557830+01:00;True|2021-12-19T18:35:05.4717171+01:00;True|2021-12-19T13:22:14.8789248+01:00;True|2021-12-19T13:16:20.7342952+01:00;True|2021-12-19T01:27:50.8976139+01:00;</History>
   </PropertyGroup>
 </Project>

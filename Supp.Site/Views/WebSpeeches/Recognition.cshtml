@@ -459,6 +459,7 @@
 
             countTheTimesToPartialReset = 0;
             partialResetActive = false;
+            resetActive = false;
             countTheTimesToReset = 0;
 
             if(ehi == 1 && recognitionActive == true) partialResetActive = true;  
@@ -794,6 +795,7 @@
             // reset after idle time countTheTimesToReset
             if(resetActive && countTheTimesToReset == timesToReset && recognitionActive == true){
                 countTheTimesToReset = 0;
+                RecognitionEnable();
                 //resetActive = false;
                 //Reset(false, true);
             }
@@ -863,6 +865,7 @@
             ehi = 0;
             _phrase = null;
             partialResetActive = false;
+            resetActive = false;
             audioActive = true;
             countTheTimesToPartialReset = 0;
             countTheTimesToReset = 0;
@@ -871,12 +874,8 @@
             //document.getElementById('interim_span').innerHTML = '';
         }
 
-        function InitFinal(){
-            if(application == true) resetActive = true;
-
-            clearInterval(serviceInterval);
-            serviceInterval = setInterval( function() { Service(); }, 1000);
-            
+        function PartialInitFinal(){
+           
             if(firstLoad == false) fakeClickMilliseconds = 50;
             else {            
                 firstLoad = false;
@@ -907,7 +906,16 @@
                     Speak();
                 }, 50);  
 
-            }, fakeClickMilliseconds);  
+            }, fakeClickMilliseconds);
+        }
+
+        function InitFinal(){
+            if(application == true) resetActive = true;
+
+            clearInterval(serviceInterval);
+            serviceInterval = setInterval( function() { Service(); }, 1000);
+            
+            PartialInitFinal();  
 
             var _shortcutsInJson = (shortcutsInJson).replace(/&quot;/g, '"');
             shortcuts = JSON.parse(_shortcutsInJson);
@@ -919,15 +927,20 @@
             console.warn('FakeClick');      
         }
 
+        function RecognitionEnable(){  
+            console.warn('RecognitionEnable');
+            PartialReset();
+            recognitionActive = true;
+            recognitionDisable = false;
+            audioActive = true;
+            PartialInitFinal();
+        }
+
         function RecognitionEnableDisable(){
             if(recognitionActive == true){
                 RecognitionDisable();
             } else {
-                PartialReset();
-                recognitionActive = true;
-                recognitionDisable = false;
-                audioActive = true;
-                InitFinal();
+                RecognitionEnable();
                 document.getElementById("recognitionEnableDisable_image").src = '/Images/micOn.png';
             }
         }

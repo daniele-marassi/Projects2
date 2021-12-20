@@ -11,11 +11,11 @@ using static Supp.Site.Common.Config;
 
 namespace Supp.Site.Recognition
 {
-    public class WebSpeechRequest
+    public class Dialogue
     {
         private readonly SuppUtility suppUtility;
 
-        public WebSpeechRequest()
+        public Dialogue()
         {
             suppUtility = new SuppUtility();
         }
@@ -23,11 +23,12 @@ namespace Supp.Site.Recognition
         /// <summary>
         /// Manage
         /// </summary>
+        /// <param name="data"></param>
         /// <param name="_subType"></param>
         /// <param name="_step"></param>
+        /// <param name="_stepType"></param>
         /// <param name="expiresInSeconds"></param>
         /// <param name="_phrase"></param>
-        /// <param name="_claims"></param>
         /// <param name="response"></param>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -68,14 +69,14 @@ namespace Supp.Site.Recognition
 
             if (_step > 2 && data?.FinalStep != true)
             {
-                if (_stepType == StepTypes.GetAnswer.ToString() && _subType == WebSpeechTypes.SystemRequestNotImplemented.ToString()) newWebSpeech.Answer = @"[""" + _phrase.Trim() + @"""]";
+                if (_stepType == StepTypes.GetAnswer.ToString() && (_subType == WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString() || _subType == WebSpeechTypes.SystemDialogueGeneric.ToString())) newWebSpeech.Answer = @"[""" + _phrase.Trim() + @"""]";
 
                 newWebSpeechString = JsonConvert.SerializeObject(newWebSpeech);
                 suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
                 suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName, newWebSpeechString, expiresInSeconds);
             }
 
-            if (_stepType == StepTypes.AddManually.ToString() && data?.FinalStep == true && _subType == WebSpeechTypes.SystemRequestNotImplemented.ToString())
+            if (_stepType == StepTypes.AddManually.ToString() && data?.FinalStep == true && (_subType == WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString() || _subType == WebSpeechTypes.SystemDialogueGeneric.ToString()))
             {
                 suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
 
@@ -89,7 +90,7 @@ namespace Supp.Site.Recognition
                 }
             }
 
-            if (_stepType == StepTypes.AddNow.ToString() && data?.FinalStep == true && _subType == WebSpeechTypes.SystemRequestNotImplemented.ToString())
+            if (_stepType == StepTypes.AddNow.ToString() && data?.FinalStep == true && (_subType == WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString() || _subType == WebSpeechTypes.SystemDialogueGeneric.ToString()))
             {
                 suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
 
@@ -105,16 +106,28 @@ namespace Supp.Site.Recognition
             return data;
         }
 
-        public List<WebSpeechDto> GetRequestNotImplemented(string culture, long lastWebSpeechId)
+        /// <summary>
+        /// Get Dialogue RequestNotImplemented
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <param name="lastWebSpeechId"></param>
+        /// <returns></returns>
+        public List<WebSpeechDto> GetDialogueRequestNotImplemented(string culture, long lastWebSpeechId)
         {
-            var requestNotImplemented = new RequestNotImplemented();
-            return requestNotImplemented.Get(culture, lastWebSpeechId);
+            var dialogueRequestNotImplemented = new DialogueRequestNotImplemented();
+            return dialogueRequestNotImplemented.Get(culture, lastWebSpeechId);
         }
 
-        public List<WebSpeechDto> GetRequestAddToNote(string culture, long lastWebSpeechId)
+        /// <summary>
+        /// Get Dialogue AddToNote
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <param name="lastWebSpeechId"></param>
+        /// <returns></returns>
+        public List<WebSpeechDto> GetDialogueAddToNote(string culture, long lastWebSpeechId)
         {
-            var requestAddToNote = new RequestAddToNote();
-            return requestAddToNote.Get(culture, lastWebSpeechId);
+            var dialogueAddToNote = new DialogueAddToNote();
+            return dialogueAddToNote.Get(culture, lastWebSpeechId);
         }
     }
 }
