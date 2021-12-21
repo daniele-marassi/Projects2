@@ -83,6 +83,7 @@
         //@*Model Variables*@
 
         function VariablesAssignmentFromJson(jsonString) {
+            LogFunctionStart();
             //console.warn('###' + jsonString + '###');
             var model = JSON.parse(jsonString);
 
@@ -143,9 +144,11 @@
                 step=parseInt(DecodeUnicodeExtended(model['Step']));
             }
             catch (error) {}
+            LogFunctionEnd();
         }
 
         function VariablesAssignmentFromModel() {
+            LogFunctionStart();
             name = '@Model?.Name';
             answer = '@Model?.Answer';
             startAnswer = '@Model?.StartAnswer';
@@ -207,6 +210,7 @@
                 step=parseInt('@Model?.Step');
             }
             catch (error) {}
+            LogFunctionEnd();
         }
         
         function AddAnimateInterval(id, size, range, amount, milliseconds) {
@@ -319,6 +323,7 @@
         }
 
         function ReadOutLoud(_message, _finalStep) {
+            LogFunctionStart();
             readOutLoudActive = true;
             recognitionActive = false;
             if(recognition != null){
@@ -420,6 +425,7 @@
             }
             
             speech.onend = function(event) {
+                LogFunctionStart('speech.onend');
                 if (_finalStep == true || readOutLoudActive == false || _message == null || _message == ''){
                     EndReadOutLoud();
                 } else {
@@ -428,10 +434,13 @@
                     speech = null;
                     ReadOutLoud(_message, _finalStep); 
                 }
+                LogFunctionEnd('speech.onend');
             }
+            LogFunctionEnd();
         }
 
         function EndReadOutLoud(){
+            LogFunctionStart();
             if(synth != null) synth.cancel();
             synth= null;
             speech = null;
@@ -466,18 +475,22 @@
             else PartialReset();
 
             if(recognitionDisable == true) RecognitionDisable();
+            LogFunctionEnd();
         }
 
         function ExecutionFinished(){
+            LogFunctionStart();
             if(url != null && application == true)
             {
                 var json = "{_id:"+id+",_hostSelected:"+hostSelected+"}";
                 var _url = url.replace("Recognition","ExecutionFinished")+'?_id='+executionQueueId+'&_hostSelected='+hostSelected;
                 SendHttpRequest("POST", _url, json, null);
             }
+            LogFunctionEnd();
         }
 
         function InitPage(){
+            LogFunctionStart();
             //application = true;
             if(application == true){
                 document.getElementById('menu_button').style.display = 'inline';
@@ -528,39 +541,45 @@
 
                 document.getElementById('hosts_cmb').value = hostSelected;
             }
+            LogFunctionEnd();
         }
 
         function SendPhrase(){
+            LogFunctionStart();
             if(_reset == false){
                 _phrase = $("#sendPhrase_text").val();
                 if(_phrase != null && _phrase != ''){
                     var phraseTmp = _phrase;
-              
-                    clearInterval(serviceInterval);
 
                     CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultSendPhrase");
                 }
             }
+            LogFunctionEnd();
         }
 
-        function CallWebSpeechDtoInJson(paramString, funcName){           
+        function CallWebSpeechDtoInJson(paramString, funcName){     
+            LogFunctionStart();
             var _url = url.replace("Recognition","GetWebSpeechDtoInJson")+'?' + paramString;
 
             PartialReset();
                     
             SendHttpRequest("GET", _url, null, funcName);
+            LogFunctionEnd();
         } 
 
-        function ResultSendPhrase(result){    
+        function ResultSendPhrase(result){
+            LogFunctionStart();
             VariablesAssignmentFromJson(result);
             Speak();
             Action(type, parameters);
 
             if(newWebSpeechRequestName != null && newWebSpeechRequestName != '' && newWebSpeechRequestName != 'null')  CallCreateWithParam(newWebSpeechRequestName);
             if(recognitionDisable == true) RecognitionDisable();
+            LogFunctionEnd();
         }
 
-        function CallCreateWithParam(_newWebSpeechRequestName){           
+        function CallCreateWithParam(_newWebSpeechRequestName){
+            LogFunctionStart();
             var _url = url.replace("Recognition","Create")+'?_newWebSpeechRequestName='+ _newWebSpeechRequestName;
 
             if(application == false){
@@ -569,15 +588,17 @@
             else if(application == true){
                 window.open(_url, "Create WebSpeech", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
             } 
+            LogFunctionEnd();
         }
 
         function Upgrade() {
+            LogFunctionStart();
             if(recognitionActive == true) StopAnimateIntervals();
-            console.warn('info_upgrade');
+            LogFunctionEnd();
         }
 
         function StartButton(event) {
-
+            LogFunctionStart();
             if(IsMobile() == true){
                 document.getElementById('start_img').src = "/Images/microphone.png";
             }
@@ -591,7 +612,6 @@
             if (animateIntervals['ellipse1'] == null && recognitionActive == true) StartAnimateIntervals(70);
             final_transcript = '';
             recognition.lang = culture;
-            //SetAudio();
 
             try {
                 recognition.start();
@@ -600,9 +620,11 @@
 
             recognitionActive = true;
             ignore_onend = false;
+            LogFunctionEnd();
         }
 
         function InitSpeech(){
+            LogFunctionStart();
             if (!('webkitSpeechRecognition' in window)) {
                 Upgrade();
             } else {
@@ -631,9 +653,10 @@
                     }
 
                     if(recognitionActive == true){
-                        PartialReset();
-                        StopAnimateIntervals();
-                        InitFinal();
+                        //PartialReset();
+                        //StopAnimateIntervals();
+                        //PartialInitFinal();
+                        RecognitionEnable(true);
                     }
                     if (event.error == 'no-speech') {
                         console.warn('info_no_speech');
@@ -649,10 +672,11 @@
                     }
                 };
 
-                recognition.onend = function () {     
+                recognition.onend = function () {
+                    LogFunctionStart('recognition.onend');
                     if(recognitionActive == true){
-                        PartialReset();
-                         if (IsMobile() == false) InitFinal();
+                        //PartialReset();
+                         if (IsMobile() == false) RecognitionEnable(true); //PartialInitFinal();
                     }
 
                     if(IsMobile() == true){
@@ -661,6 +685,7 @@
                         clearInterval(animateIntervals['StopAnimateIntervalsListening']);
                         animateIntervals['StopAnimateIntervalsListening'] = null;
                     }
+                    LogFunctionEnd('recognition.onend');
                 };
 
                 recognition.onresult = function (event) {
@@ -692,17 +717,13 @@
                                             audio.play();
                                             
                                             var phraseTmp = _phrase;
-                                           
-                                            clearInterval(serviceInterval);
-                                            
+
                                             CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionEhi");
                                         } else if (ehi == 1 && _phrase != listeningPhrase && _phrase != null && _phrase != '' && _reset == false) {
                                             var audio = new Audio("/Files/Ehi.mp3");
                                             audio.play();
 
                                             var phraseTmp = _phrase;
-                                           
-                                            clearInterval(serviceInterval);
 
                                             CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionPhrase");
                                         } else if (ehi == 0 && _phrase != listeningPhrase && _phrase.includes(listeningPhrase) && _phrase != null && _phrase != '' && _reset == false) {
@@ -714,8 +735,6 @@
                                             start = start + listeningPhrase.length;
                                             phraseTmp = phraseTmp.substring(start, phraseTmp.length);
                                             phraseTmp = phraseTmp.trim();
-
-                                            clearInterval(serviceInterval);
 
                                             CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionPhrase");
                                         }
@@ -746,25 +765,31 @@
                     }
                 };
             }
+            LogFunctionEnd();
         }
 
         function ResultRecognitionPhrase(result){  
+            LogFunctionStart();
             VariablesAssignmentFromJson(result);
             Speak();
             Action(type, parameters);
 
             if(newWebSpeechRequestName != null && newWebSpeechRequestName != '' && newWebSpeechRequestName != 'null')  CallCreateWithParam(newWebSpeechRequestName);
             if(recognitionDisable == true) RecognitionDisable();
+            LogFunctionEnd();
         }
 
-        function ResultRecognitionEhi(result){     
+        function ResultRecognitionEhi(result){
+            LogFunctionStart();
             VariablesAssignmentFromJson(result);
             Speak();
             Action(type, parameters);
             if(recognitionDisable == true) RecognitionDisable();
+            LogFunctionEnd();
         }
 
         function SimulateClick(control) {
+            LogFunctionStart();
             if (document.all) {
                 control.click();
             } else {
@@ -772,39 +797,59 @@
                 evObj.initMouseEvent('click', true, true, window, 1, 12, 345, 7, 220, false, false, true, false, 0, null);
                 control.dispatchEvent(evObj);
             }
+            LogFunctionEnd();
+        }
+
+        function LogFunctionStart(functionName){
+            var date = new Date();
+            var dateString = date.toISOString().replace('T',' ').replace('Z','');
+            var value = LogFunctionStart.caller.name;
+            if(functionName != null && functionName != undefined) value =functionName;
+            value = dateString + ' - Function: ' + value +' - START';
+            console.warn(value);  
+
+            return value;
+        }
+
+        function LogFunctionEnd(functionName){
+            var date = new Date();
+            var dateString = date.toISOString().replace('T',' ').replace('Z','');
+            var value = LogFunctionEnd.caller.name;
+            if(functionName != null && functionName != undefined) value =functionName;
+            value = dateString + ' - Function: ' + value +' - END';
+            console.warn(value);  
+
+            return value;
         }
 
         function Service() {
             if(voices == undefined || voices == null || voices.length == 0) voices = window.speechSynthesis.getVoices();
 
-            //if(audioActive == true) SetAudio();
+            //timesToReset = 20;
+            //console.warn(countTheTimesToReset);
 
             // partial reset after ehi with wait countTheTimesToPartialReset
-            if(partialResetActive && countTheTimesToPartialReset == 10 && recognitionActive == true){
+            if(partialResetActive && countTheTimesToPartialReset == timesToReset && recognitionActive == true){
                 countTheTimesToPartialReset = 0;
-                partialResetActive = false;
-                PartialReset();
+                //RecognitionEnable(true);
             }
 
             if(partialResetActive && recognitionActive == true) countTheTimesToPartialReset++;
             else countTheTimesToPartialReset = 0;
 
-            //timesToReset = 20;
-            //console.warn(countTheTimesToReset);
-
             // reset after idle time countTheTimesToReset
-            if(resetActive && countTheTimesToReset == timesToReset && recognitionActive == true){
+            if(resetActive && countTheTimesToReset == 10 && recognitionActive == true){
                 countTheTimesToReset = 0;
-                RecognitionEnable();
-                //resetActive = false;
-                //Reset(false, true);
+                resetActive = false;  
+                Reset(false, true);
             }
 
-            if(resetActive && recognitionActive == true) countTheTimesToReset++;
+            if(resetActive == true && recognitionActive == true) countTheTimesToReset++;
             else countTheTimesToReset = 0;
         }
 
         function SetAudio(){
+            LogFunctionStart();
             try {
                 if(audioActive == true) {
                     navigator.mediaDevices.getUserMedia({ audio: true })
@@ -824,9 +869,11 @@
                 }
             }
             catch (error) { }
+            LogFunctionEnd();
         }
 
         function Speak(){
+            LogFunctionStart();
             if (answer != null && answer != '') {
                 document.getElementById('final_span').innerHTML = '';
                 document.getElementById('interim_span').innerHTML = '';
@@ -837,19 +884,22 @@
             } else {
                 PartialReset();
             }
+            LogFunctionEnd();
         }
 
         function Reset(reset, _onlyRefresh){
+            LogFunctionStart();
             PartialReset();
             if(_reset == false){ 
                  _reset = true;
                 clearInterval(serviceInterval);
                 location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset='+ reset + '&_application='+application + '&_executionQueueId='+ executionQueueId + '&_hostSelected=' + $("#hosts_cmb option:selected").text() + '&_onlyRefresh='+_onlyRefresh;
             }
+            LogFunctionEnd();
         }
 
         function PartialReset(){
-
+            LogFunctionStart();
             if(finalStep == false) {
                 if(phrase != null && phrase != ''){           
 
@@ -864,18 +914,17 @@
 
             ehi = 0;
             _phrase = null;
-            partialResetActive = false;
-            resetActive = false;
             audioActive = true;
             countTheTimesToPartialReset = 0;
             countTheTimesToReset = 0;
             $("#sendPhrase_text").val('');
             //document.getElementById('final_span').innerHTML = '';
             //document.getElementById('interim_span').innerHTML = '';
+            LogFunctionEnd();
         }
 
         function PartialInitFinal(){
-           
+            LogFunctionStart();
             if(firstLoad == false) fakeClickMilliseconds = 50;
             else {            
                 firstLoad = false;
@@ -893,23 +942,29 @@
             sessionGuid = GenerateGuid();
             
             initFinalTimeoutStep1 = setTimeout(function(){
+                LogFunctionStart('initFinalTimeoutStep1');
                 SimulateClick(document.getElementById('fakeClick_button'));
 
                 initFinalTimeoutStep2 = setTimeout(function(){
+                    LogFunctionStart('initFinalTimeoutStep2');
                     Action(type, parameters);
 
                     SetAudio();
                 
                     if(IsMobile() == false) StartButton(event);
-                    //EndReadOutLoud();
-                    
-                    Speak();
-                }, 50);  
 
+                    Speak();
+
+                    partialResetActive = true;
+                    LogFunctionEnd('initFinalTimeoutStep2');
+                }, 50);  
+                LogFunctionEnd('initFinalTimeoutStep1');
             }, fakeClickMilliseconds);
+            LogFunctionEnd();
         }
 
         function InitFinal(){
+            LogFunctionStart();
             if(application == true) resetActive = true;
 
             clearInterval(serviceInterval);
@@ -921,31 +976,38 @@
             shortcuts = JSON.parse(_shortcutsInJson);
             
             CreateShortcuts(shortcuts);
+            LogFunctionEnd();
         }
 
         function FakeClick(){
-            console.warn('FakeClick');      
+            LogFunctionStart();
+            LogFunctionEnd();      
         }
 
-        function RecognitionEnable(){  
-            console.warn('RecognitionEnable');
+        function RecognitionEnable(partial){  
+            LogFunctionStart();
             PartialReset();
             recognitionActive = true;
             recognitionDisable = false;
             audioActive = true;
-            PartialInitFinal();
+            if(partial == true) PartialInitFinal();
+            else InitFinal();
+            LogFunctionEnd();
         }
 
         function RecognitionEnableDisable(){
+            LogFunctionStart();
             if(recognitionActive == true){
                 RecognitionDisable();
             } else {
-                RecognitionEnable();
+                RecognitionEnable(false);
                 document.getElementById("recognitionEnableDisable_image").src = '/Images/micOn.png';
             }
+            LogFunctionEnd();
         }
 
         function RecognitionDisable(){
+            LogFunctionStart();
             recognitionDisable = true;
             recognitionActive = false;
             clearInterval(serviceInterval);
@@ -960,29 +1022,37 @@
             clearInterval(animateIntervals['StopAnimateIntervalsListening']);
             animateIntervals['StopAnimateIntervalsListening'] = null;
             document.getElementById("recognitionEnableDisable_image").src = '/Images/micOff.png';
+            LogFunctionEnd();
         }
 
         function MenuClick() {
+            LogFunctionStart();
             if(application == true){
                 var element = document.getElementById("menu_items");
                 if(element.style.display != 'inline') element.style.display = 'inline';
                 else element.style.display = 'none';
             }
+            LogFunctionEnd();
         }
 
         function OpenShortcuts(){
+            LogFunctionStart();
             var element = document.getElementById("div_shortcuts");
             element.style.display = "block";
             recognitionActive = false;
+            LogFunctionStart();
         }
 
         function CloseShortcuts(){
+            LogFunctionStart();
             var element = document.getElementById("div_shortcuts");
             element.style.display = "none";
             recognitionActive = true;
+            LogFunctionEnd();
         }
 
         function ActionShortcut(id){
+            LogFunctionStart();
             clearTimeout(actionShortcutTimeout);       
             actionShortcutTimeout = null;
 
@@ -1018,16 +1088,20 @@
                     CloseShortcuts();
                 }, 50);          
             }
+            LogFunctionEnd();
         }
 
         function ResultActionShortcut(result){
+            LogFunctionStart();
             VariablesAssignmentFromJson(result);
             Speak();
             Action(type, parameters);
             if(recognitionDisable == true) RecognitionDisable();
+            LogFunctionEnd();
         }
 
         function Action(type, link){
+            LogFunctionStart();
             link = DecodeUnicode(link);
 
             if(application == false && type == 'Link' && link != null && link != '' ){
@@ -1057,10 +1131,12 @@
                 _url = DecodeUnicodeExtended(_url);
 
                 window.open(_url, "search", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
-            } 
+            }
+            LogFunctionEnd();
         }
 
         function AddShortcuts(shortcut){
+            LogFunctionStart();
             var element = document.getElementById("shortcutsContainer");
             var dt = '';
 
@@ -1075,9 +1151,11 @@
             dt += '</dt>';
 
             element.innerHTML += dt;
+            LogFunctionEnd();
         }
 
         function CreateShortcuts(_shortcuts){
+            LogFunctionStart();
             var element = document.getElementById("shortcutsContainer");
             element.innerHTML = '';
 
@@ -1091,19 +1169,24 @@
 
                 AddShortcuts(shortcut);
             }
+            LogFunctionEnd();
         }
 
-	    function EllipseClick()
-	    {
+	    function EllipseClick() {
+           LogFunctionStart();
 	       if(readOutLoudActive == false) OpenShortcuts();
            if(readOutLoudActive == true){
                 readOutLoudActive = false;
                 if(synth != null) synth.cancel();
             }
+            LogFunctionEnd();
 	    }
 
         function SendPhraseTextKeyDown() {
+            LogFunctionStart();
             countTheTimesToReset = 0;
+            countTheTimesToPartialReset=0;
+            LogFunctionEnd();
         }
     </script>
 }
@@ -1156,8 +1239,9 @@
 
 <script>
 	window.onload = function(e) {
+        LogFunctionStart('window.onload');
         VariablesAssignmentFromModel();
-
+        console.warn('resetAfterLoad:' + resetAfterLoad);
         if(resetAfterLoad == true) {
             clearTimeout(initFinalTimeoutStep2);
             initFinalTimeoutStep2 = null;
@@ -1176,5 +1260,6 @@
         }
 
         if(recognitionDisable == true) RecognitionDisable();
+        LogFunctionEnd('window.onload');
 	}	
 </script>
