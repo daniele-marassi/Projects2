@@ -769,7 +769,15 @@ namespace Supp.Site.Recognition
             //if (descriptionActive && day == Days.Tomorrow) description = src["data"]["weatherReportTomorrow"]["description"].ToString();
             //if (descriptionActive && (day == Days.Today || description == "" || description == " ")) description = src["data"]["weatherReportToday"]["description"].ToString();
 
-            if (descriptionActive) description = src["data"]["previsionAbstract"]["description"].ToString();
+            if (descriptionActive)
+            {              
+                try
+                {
+                    description = src["data"]["previsionAbstract"]["description"].ToString();
+                }
+                catch (Exception)
+                {}
+            }
 
             if (description != String.Empty) description += ".";
 
