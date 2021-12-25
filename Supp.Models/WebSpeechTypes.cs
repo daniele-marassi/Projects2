@@ -30,7 +30,10 @@ namespace Supp.Models
         SystemDeleteReminder = 20,
         SystemDialogueRequestNotImplemented = 21,
         SystemDialogueAddToNote = 22,
-        SystemDialogueGeneric = 23
+        SystemDialogueAddToNoteWithName = 23,
+        SystemDialogueClearNote = 24,
+        SystemDialogueClearNoteWithName = 25,
+        SystemDialogueGeneric = 26
     }
 
     public class WebSpeechTypesUtility

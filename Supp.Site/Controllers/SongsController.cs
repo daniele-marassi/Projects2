@@ -61,7 +61,7 @@ namespace Supp.Site.Controllers
 
                     ViewBag.CurrentFilter = searchString;
 
-                    string access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
 
                     result = await songRepo.GetAllSongs(access_token_cookie);
 
@@ -509,35 +509,30 @@ namespace Supp.Site.Controllers
                     data.HostSelected = hostSelected;
                     data.HostsArray = claims.Configuration.Speech.HostsArray;
                     data.HostSelected = claims.Configuration.Speech.HostDefault;
-                    data.PlayListSelected = playListSelected;
+                    data.PlayListSelected = playListSelected.ToLower();
                     data.Command = _command;
                     data.Shuffle = shuffle;
                     data.Repeat = repeat;
                     data.Volume = volume;
 
-                    string access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
 
                     var getAllSongsResult = songRepo.GetAllSongs(access_token_cookie).GetAwaiter().GetResult();
 
                     var playlist = new List<string>() { };
 
-                    //foreach (var item in getAllSongsResult.Data)
-                    //{
-                    //    var splitedPath = Path.GetDirectoryName(item.FullPath).Substring(3).Split(@"\");
-
-                    //    var path = "";
-
-                    //    foreach (var _item in splitedPath)
-                    //    {
-                    //        if (path != "") path += "/";
-                    //        path += _item;
-                    //        playlist.Add(path);
-                    //    }    
-                    //}
-
                     foreach (var item in getAllSongsResult.Data)
                     {
-                        playlist.Add(item.Position.Replace(@"\",@"/"));
+                        var splitedPath = item.Position.Split(@"\");
+
+                        var path = "";
+
+                        foreach (var _item in splitedPath)
+                        {
+                            if (path != "") path += "/";
+                            path += _item;
+                            playlist.Add(path.ToLower());
+                        }
                     }
 
                     playlist = playlist.Distinct().OrderBy(_=>_).ToList();
@@ -616,7 +611,7 @@ namespace Supp.Site.Controllers
                         claims = SuppUtility.GetClaims(User);
                     }
 
-                    string access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
 
                     var getAllSongsResult = songRepo.GetAllSongs(access_token_cookie).GetAwaiter().GetResult();
 
@@ -702,7 +697,7 @@ namespace Supp.Site.Controllers
                             data.Shuffle = shuffle;
                             data.Repeat = repeat;
                             data.Command = _command;
-                            data.PlayListSelected = playListSelected;
+                            data.PlayListSelected = playListSelected.ToLower();
                         }
                         catch (Exception)
                         {

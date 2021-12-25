@@ -1,18 +1,30 @@
-﻿using Supp.Models;
+﻿using GoogleManagerModels;
+using Supp.Models;
+using Supp.Site.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Supp.Site.Recognition
 {
     public class DialogueAddToNote
     {
+        private readonly WebSpeechesRepository webSpeecheRepo;
+
+        public DialogueAddToNote()
+        {
+            webSpeecheRepo = new WebSpeechesRepository();
+        }
+
         /// <summary>
         /// Get
         /// </summary>
         /// <param name="culture"></param>
         /// <param name="lastWebSpeechId"></param>
+        /// <param name="_subType"></param>
         /// <returns></returns>
-        public List<WebSpeechDto> Get(string culture, long lastWebSpeechId)
+        public List<WebSpeechDto> Get(string culture, long lastWebSpeechId, string _subType)
         {
             var result = new List<WebSpeechDto>() { };
             var startId = lastWebSpeechId + 1;
@@ -21,25 +33,51 @@ namespace Supp.Site.Recognition
 
             if (culture.ToLower() == "it-it")
             {
-                id = startId;
+                if (_subType == WebSpeechTypes.SystemDialogueAddToNote.ToString())
+                {
+                    id = startId;
+                    step++;
+                    result.Add(
+                        new WebSpeechDto()
+                        {
+                            Id = id,
+                            Name = _subType + "_" + id.ToString(),
+                            Phrase = @"EMPTY",
+                            Answer = @"[""Dimmi il nome della nota"",""Qual'è il nome della nota?""]",
+                            Host = "All",
+                            FinalStep = false,
+                            UserId = 0,
+                            Order = 0,
+                            Type = WebSpeechTypes.SystemRequest.ToString(),
+                            SubType = _subType,
+                            Step = step,
+                            OperationEnable = true,
+                            ParentIds = "",
+                            StepType = StepTypes.GetElementName.ToString()
+                        }
+                    );
+                }
+
+                if (_subType == WebSpeechTypes.SystemDialogueAddToNote.ToString()) id++;
+                if (_subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()) id = startId;
                 step++;
                 result.Add(
                     new WebSpeechDto()
                     {
                         Id = id,
-                        Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
+                        Name = _subType + "_" + id.ToString(),
                         Phrase = @"EMPTY",
-                        Answer = @"[""Dimmi il nome della nota"",""Qual'è il nome della nota?""]",
+                        Answer = @"[""Cosa devo aggiungere?"",""Dimmi cosa devo aggiungere""]",
                         Host = "All",
                         FinalStep = false,
                         UserId = 0,
                         Order = 0,
                         Type = WebSpeechTypes.SystemRequest.ToString(),
-                        SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
+                        SubType = _subType,
                         Step = step,
                         OperationEnable = true,
-                        ParentIds = "",
-                        StepType = StepTypes.GetAnswer.ToString()
+                        ParentIds = _subType == WebSpeechTypes.SystemDialogueAddToNote.ToString() ? "[" + (id - 1).ToString() + "]" : "",
+                        StepType = StepTypes.GetElementValue.ToString()
                     }
                 );
 
@@ -49,242 +87,106 @@ namespace Supp.Site.Recognition
                     new WebSpeechDto()
                     {
                         Id = id,
-                        Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
+                        Name = _subType + "_" + id.ToString(),
                         Phrase = @"EMPTY",
-                        Answer = @"[""Cosa devo aggiungere?"",""Dimmi cosa devo aggiungere""]",
+                        Answer = @"[""Inserito""]",
+                        Host = "All",
+                        FinalStep = true,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.Default.ToString()
+                    }
+                );
+            }
+
+            if (culture.ToLower() == "en-us")
+            {
+                id = startId;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = @"[""Tell me the name of the note"",""What is the name of the note?""]",
                         Host = "All",
                         FinalStep = false,
                         UserId = 0,
                         Order = 0,
                         Type = WebSpeechTypes.SystemRequest.ToString(),
-                        SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
+                        SubType = _subType,
                         Step = step,
                         OperationEnable = true,
-                        ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.GetAnswer.ToString()
+                        ParentIds = "",
+                        StepType = StepTypes.GetElementName.ToString()
                     }
                 );
 
-                var parentId = result.OrderByDescending(_ => _.Id).FirstOrDefault().Id;
+                if (_subType == WebSpeechTypes.SystemDialogueAddToNote.ToString()) id++;
+                if (_subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()) id = startId;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = @"[""What should I add?"",""Tell me what should I add""]",
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = _subType == WebSpeechTypes.SystemDialogueAddToNote.ToString() ? "[" + (id - 1).ToString() + "]" : "",
+                        StepType = StepTypes.GetElementValue.ToString()
+                    }
+                );
 
-                var stepOfChoice = result.OrderByDescending(_ => _.Step).FirstOrDefault().Step;
-
-                id = result.OrderByDescending(_ => _.Id).FirstOrDefault().Id;
-                step = result.OrderByDescending(_ => _.Step).FirstOrDefault().Step;
-                result.AddRange(InsertIta(id, step, parentId));
-            }
-
-            if (culture.ToLower() == "en-us")
-            {
-
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = @"[""Posted""]",
+                        Host = "All",
+                        FinalStep = true,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.Default.ToString()
+                    }
+                );
             }
 
             return result;
         }
 
-
-        /// <summary>
-        /// InsertIta
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="step"></param>
-        /// <param name="parentId"></param>
-        /// <returns></returns>
-        public List<WebSpeechDto> InsertIta(long id, int step, long parentId)
+        public async Task<EventResult> AddElementInNote(WebSpeechDto dto, string token, string userName, long userId)
         {
-            var result = new List<WebSpeechDto>() { };
-            var startId = id + 1;
+            var timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00");
+            var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
 
-            id = startId;
-            step++;
-            result.Add(
-                new WebSpeechDto()
-                {
-                    Id = id,
-                    Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
-                    Phrase = @"EMPTY",
-                    Answer = @"[""Inserisco subito?"", ""Inserisco ora?"", ""Aggiungo subito?"", ""Aggiungo ora?""]",
-                    Host = "All",
-                    FinalStep = false,
-                    UserId = 0,
-                    Order = 0,
-                    Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
-                    Step = step,
-                    OperationEnable = true,
-                    ParentIds = "[" + parentId.ToString() + "]",
-                    StepType = StepTypes.Choice.ToString()
-                }
-            );
+            var editCalendarEventRequest = new EditCalendarEventRequest() { SummaryToSearch = dto.ElementName, Description = "\n"+dto.ElementValue, TimeMax = timeMax, TimeMin = timeMin, DescriptionAppended = true };
 
-            id++;
-            step++;
-            result.Add(
-                new WebSpeechDto()
-                {
-                    Id = id,
-                    Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
-                    Phrase = @"[[""no"", ""non ora"", ""no grazie""]]",
-                    Answer = @"[""ok"",""va bene"",""certo"",""bene""]",
-                    Host = "All",
-                    FinalStep = true,
-                    UserId = 0,
-                    Order = 0,
-                    Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
-                    Step = step,
-                    OperationEnable = true,
-                    ParentIds = "[" + startId.ToString() + "]",
-                    StepType = StepTypes.AddManually.ToString()
-                }
-            );
+            var getRemindersResult = await webSpeecheRepo.EditLastReminder(token, userName, userId, WebSpeechTypes.EditNote, editCalendarEventRequest);
 
-            id++;
-            result.Add(
-                new WebSpeechDto()
-                {
-                    Id = id,
-                    Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
-                    Phrase = @"[[""sì"",""ok"",""sì va bene"",""si"",""ok"",""si va bene"", ""ok va bene""]]",
-                    Answer = @"[""ok"",""va bene"",""certo"",""bene""]",
-                    Host = "All",
-                    FinalStep = false,
-                    UserId = 0,
-                    Order = 0,
-                    Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
-                    Step = step,
-                    OperationEnable = true,
-                    ParentIds = "[" + startId.ToString() + "]",
-                    StepType = StepTypes.AddNow.ToString()
-                }
-            );
-
-            id++;
-            step++;
-            result.Add(
-                new WebSpeechDto()
-                {
-                    Id = id,
-                    Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
-                    Phrase = @"EMPTY",
-                    Answer = @"[""Inserito""]",
-                    Host = "All",
-                    FinalStep = true,
-                    UserId = 0,
-                    Order = 0,
-                    Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
-                    Step = step,
-                    OperationEnable = true,
-                    ParentIds = "[" + (id - 1).ToString() + "]",
-                    StepType = StepTypes.Default.ToString()
-                }
-            );
-
-            return result;
-        }
-
-        /// <summary>
-        /// InsertEng
-        /// </summary>
-        /// <param name = "id"> </param>
-        /// <param name = "step"> </param>
-        /// <param name = "parentId"> </param>
-        /// <returns> </returns>
-        public List<WebSpeechDto> InsertEng(long id, int step, long parentId)
-        {
-            var result = new List<WebSpeechDto>() { };
-            var startId = id + 1;
-
-            id = startId;
-            step++;
-            result.Add(
-                new WebSpeechDto()
-                {
-                    Id = id,
-                    Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
-                    Phrase = @"EMPTY",
-                    Answer = @"[""Do I post now?"",""Do I post now?"",""Do I add now?"",""Do I add now?""]",
-                    Host = "All",
-                    FinalStep = false,
-                    UserId = 0,
-                    Order = 0,
-                    Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
-                    Step = step,
-                    OperationEnable = true,
-                    ParentIds = "[" + parentId.ToString() + "]",
-                    StepType = StepTypes.Choice.ToString()
-                }
-            );
-
-            id++;
-            step++;
-            result.Add(
-                new WebSpeechDto()
-                {
-                    Id = id,
-                    Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
-                    Phrase = @"[[""no"",""not now"",""no thanks""]]",
-                    Answer = @"[""ok"",""ok"",""sure"",""ok""]",
-                    Host = "All",
-                    FinalStep = true,
-                    UserId = 0,
-                    Order = 0,
-                    Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
-                    Step = step,
-                    OperationEnable = true,
-                    ParentIds = "[" + startId.ToString() + "]",
-                    StepType = StepTypes.AddManually.ToString()
-                }
-            );
-
-            id++;
-            result.Add(
-                new WebSpeechDto()
-                {
-                    Id = id,
-                    Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
-                    Phrase = @"[[""yes"",""ok"",""yes alright"",""yes"",""ok"",""okay"",""ok go well""]]",
-                    Answer = @"[""ok"",""ok"",""sure"",""ok""]",
-                    Host = "All",
-                    FinalStep = false,
-                    UserId = 0,
-                    Order = 0,
-                    Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
-                    Step = step,
-                    OperationEnable = true,
-                    ParentIds = "[" + startId.ToString() + "]",
-                    StepType = StepTypes.AddNow.ToString()
-                }
-            );
-
-            id++;
-            step++;
-            result.Add(
-                new WebSpeechDto()
-                {
-                    Id = id,
-                    Name = WebSpeechTypes.SystemDialogueAddToNote.ToString() + "_" + id.ToString(),
-                    Phrase = @"EMPTY",
-                    Answer = @"[""Posted""]",
-                    Host = "All",
-                    FinalStep = true,
-                    UserId = 0,
-                    Order = 0,
-                    Type = WebSpeechTypes.SystemRequest.ToString(),
-                    SubType = WebSpeechTypes.SystemDialogueAddToNote.ToString(),
-                    Step = step,
-                    OperationEnable = true,
-                    ParentIds = "[" + (id - 1).ToString() + "]",
-                    StepType = StepTypes.Default.ToString()
-                }
-            );
-
-            return result;
+            return getRemindersResult;
         }
     }
 }

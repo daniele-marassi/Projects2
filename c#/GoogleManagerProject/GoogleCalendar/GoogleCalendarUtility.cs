@@ -366,8 +366,13 @@ namespace GoogleCalendar
                         else
                             ev.Summary = currentEvent.Summary;
 
-                        if (editCalendarEventRequest.Description != null)
+                        if (editCalendarEventRequest.Description != null && editCalendarEventRequest.DescriptionAppended == false)
                             ev.Description = editCalendarEventRequest.Description;
+                        else if (editCalendarEventRequest.Description != null && editCalendarEventRequest.DescriptionAppended == true)
+                        {
+                            ev.Description = currentEvent.Description;
+                            ev.Description += editCalendarEventRequest.Description;
+                        }
                         else
                             ev.Description = currentEvent.Description;
 
@@ -632,8 +637,13 @@ namespace GoogleCalendar
                         else
                             ev.Summary = currentEvent.Summary;
 
-                        if (editCalendarEventRequest.Description != null)
+                        if (editCalendarEventRequest.Description != null && editCalendarEventRequest.DescriptionAppended == false)
                             ev.Description = editCalendarEventRequest.Description;
+                        else if (editCalendarEventRequest.Description != null && editCalendarEventRequest.DescriptionAppended == true)
+                        {
+                            ev.Description = currentEvent.Description;
+                            ev.Description += editCalendarEventRequest.Description;
+                        }
                         else
                             ev.Description = currentEvent.Description;
 

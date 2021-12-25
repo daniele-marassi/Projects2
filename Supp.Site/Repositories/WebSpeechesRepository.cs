@@ -14,6 +14,7 @@ using System.Security.Cryptography;
 using System.Linq;
 using GoogleManagerModels;
 using GoogleCalendar;
+using Google.Apis.Calendar.v3.Data;
 
 namespace Supp.Site.Repositories
 {
@@ -443,6 +444,109 @@ namespace Supp.Site.Repositories
                     response.Successful = false;
                     response.ResultState = GoogleManagerModels.ResultType.Error;
                     response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
+                    response.OriginalException = null;
+                    logger.Error(ex.ToString());
+                    //throw ex;
+                }
+
+                return response;
+            }
+        }
+
+        public async Task<EventResult> EditLastReminder(string token, string userName, long userId, WebSpeechTypes webSpeechTypes, EditCalendarEventRequest editCalendarEventRequest)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                var response = new EventResult() { Data = new List<Event>(), ResultState = new GoogleManagerModels.ResultType() };
+
+                try
+                {
+                    var identity = userName + userId.ToString() + DateTime.Now.ToString("yyyyMMddHHmmssfff");
+
+                    var googleAccountRepository = new GoogleAccountsRepository() { };
+                    var googleAuthsRepository = new GoogleAuthsRepository() { };
+
+                    var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
+                    var googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
+
+                    var googleAccounts = googleAccountResult.Data.Where(_ => _.UserId == userId && _.AccountType == AccountType.Calendar.ToString()).ToList();
+                    var googleAuthIds = googleAccounts.Select(_ => _.GoogleAuthId).ToList();
+
+                    var errors = new List<string>() { };
+
+                    if (editCalendarEventRequest.SummaryToSearch == null) editCalendarEventRequest.SummaryToSearch = String.Empty;
+
+                    if (webSpeechTypes == WebSpeechTypes.EditNote && editCalendarEventRequest.SummaryToSearch.StartsWith("#Note") == false)
+                        editCalendarEventRequest.SummaryToSearch = "#Note" + " " + editCalendarEventRequest.SummaryToSearch.Trim();
+
+                    foreach (var account in googleAccounts)
+                    {
+                        var auth = googleAuthResult.Data.Where(_ => _.Id == account.GoogleAuthId).FirstOrDefault();
+                        var tokenFile = JsonConvert.DeserializeObject<TokenFile>(auth.TokenFileInJson);
+
+                        var googleCalendarUtility = new GoogleCalendarUtility();
+                        var _editCalendarEventRequest = new EditCalendarEventRequest()
+                        {
+                            Auth = new Auth()
+                            {
+                                Installed = new AuthProperties()
+                                {
+                                    Client_id = auth.Client_id,
+                                    Client_secret = auth.Client_secret,
+                                    Project_id = auth.Project_id
+                                }
+                            },
+                            TokenFile = tokenFile,
+                            Account = account.Account,
+                            TimeMin = editCalendarEventRequest.TimeMin,
+                            TimeMax = editCalendarEventRequest.TimeMax,
+                            SummaryToSearch = editCalendarEventRequest.SummaryToSearch,
+                            Description = editCalendarEventRequest.Description,
+                            Summary = editCalendarEventRequest.Summary,
+                            Color = editCalendarEventRequest.Color,
+                            EventDateEnd = editCalendarEventRequest.EventDateEnd,
+                            EventDateStart = editCalendarEventRequest.EventDateStart,
+                            IdToSearch = editCalendarEventRequest.IdToSearch,
+                            Location = editCalendarEventRequest.Location,
+                            NotificationMinutes = editCalendarEventRequest.NotificationMinutes,
+                            DescriptionAppended = editCalendarEventRequest.DescriptionAppended
+                        };
+                        var _event = googleCalendarUtility.EditLastCalendarEventBySummary(_editCalendarEventRequest);
+
+                        response.Data.AddRange(_event.Data);
+
+                        if (_event.Successful == false && response.Message != null && response.Message != String.Empty) errors.Add(_event.Message);
+                    }
+
+                    if (googleAccounts.Count == 0)
+                    {
+                        response.ResultState = GoogleManagerModels.ResultType.NotFound;
+                        errors.Add("No google accounts found!");
+                    }
+
+                    if (response.Data.Count == 0 && errors.Count == 0)
+                        response.ResultState = GoogleManagerModels.ResultType.NotFound;
+                    if (response.Data.Count > 0 && errors.Count == 0)
+                        response.ResultState = GoogleManagerModels.ResultType.Found;
+                    if (response.Data.Count > 0 && errors.Count > 0)
+                        response.ResultState = GoogleManagerModels.ResultType.FoundWithError;
+
+                    if (response.Data.Count == 0 && errors.Count > 0 && googleAccounts.Count > 0)
+                    {
+                        response.Successful = false;
+                        response.ResultState = GoogleManagerModels.ResultType.Error;
+                    }
+                    else
+                        response.Successful = true;
+
+                    if (errors.Count > 0)
+                        response.Message = JsonConvert.SerializeObject(errors);
+                }
+                catch (Exception ex)
+                {
+                    response.Successful = false;
+                    response.ResultState = GoogleManagerModels.ResultType.Error;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null ? ex.InnerException.Message : ex.Message;
                     response.OriginalException = null;
                     logger.Error(ex.ToString());
                     //throw ex;

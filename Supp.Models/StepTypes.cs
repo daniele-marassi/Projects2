@@ -11,7 +11,9 @@ namespace Supp.Models
         GetAnswer = 1,
         AddNow = 2,
         AddManually = 3,
-        Choice = 4
+        Choice = 4,
+        GetElementName = 5,
+        GetElementValue = 6
     }
 
     public class StepTypesUtility

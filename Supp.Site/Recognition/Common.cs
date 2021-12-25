@@ -180,7 +180,7 @@ namespace Supp.Site.Recognition
                     var getDataResult = GetData(result.Data);
 
                     result.Data = getDataResult.Data;
-                    shortcuts = getDataResult.Shortcuts.OrderBy(_ => _.Order).ToList();
+                    shortcuts = getDataResult.Shortcuts.OrderBy(_ => _.Order).ThenBy(_=>_.Title).ToList();
 
                     if (_id == 0 && _phrase != "" && _phrase != null && (_subType == "" || _subType == null || _subType == "null") && _step == 0)
                     {
@@ -197,20 +197,30 @@ namespace Supp.Site.Recognition
                     {
                         if (_subType == WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString())
                         {
-                            var requestsNotImplemented = dialogue.GetDialogueRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
-                            if (requestsNotImplemented != null && requestsNotImplemented.Count > 0)
+                            var dialogueRequestNotImplemented = dialogue.GetDialogueRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
+                            if (dialogueRequestNotImplemented != null && dialogueRequestNotImplemented.Count > 0)
                             {
-                                var dataResult = GetData(requestsNotImplemented);
+                                var dataResult = GetData(dialogueRequestNotImplemented);
                                 result.Data.AddRange(dataResult.Data);
                             }
                         }
 
-                        if (_subType == WebSpeechTypes.SystemDialogueAddToNote.ToString())
+                        if (_subType == WebSpeechTypes.SystemDialogueAddToNote.ToString() || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString())
                         {
-                            var requestsRequestAddToNote = dialogue.GetDialogueAddToNote(_claims.Configuration.General.Culture, lastWebSpeechId);
+                            var requestsRequestAddToNote = dialogue.GetDialogueAddToNote(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
                             if (requestsRequestAddToNote != null && requestsRequestAddToNote.Count > 0)
                             {
                                 var dataResult = GetData(requestsRequestAddToNote);
+                                result.Data.AddRange(dataResult.Data);
+                            }
+                        }
+
+                        if (_subType == WebSpeechTypes.SystemDialogueClearNote.ToString() || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString())
+                        {
+                            var requestsRequestClearNote = dialogue.GetDialogueClearNote(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
+                            if (requestsRequestClearNote != null && requestsRequestClearNote.Count > 0)
+                            {
+                                var dataResult = GetData(requestsRequestClearNote);
                                 result.Data.AddRange(dataResult.Data);
                             }
                         }
@@ -248,7 +258,7 @@ namespace Supp.Site.Recognition
                             data = GetAnswer(data);
                         }
 
-                        if (data != null && _subType != "" && _subType != null && _subType != "null") data = dialogue.Manage(data, _subType, _step, stepType, expiresInSeconds, _phrase, response, request);
+                        if (data != null && _subType != "" && _subType != null && _subType != "null") data = dialogue.Manage(data, _subType, _step, stepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId);
 
                         if (data == null && _subType != "" && _subType != null && _subType != "null")
                         {
@@ -360,7 +370,7 @@ namespace Supp.Site.Recognition
 
                     if (data != null && data.Type == WebSpeechTypes.Meteo.ToString())
                     {
-                        data.Answer = GetMeteoPhrase(_keysMatched, data.Parameters, _claims.Configuration.General.Culture.ToLower(), true);
+                        data.Answer = GetMeteoPhrase(data.Phrase, data.Parameters, _claims.Configuration.General.Culture.ToLower(), true);
                     }
 
                     if (data != null && data.Type == WebSpeechTypes.Time.ToString())
@@ -388,14 +398,25 @@ namespace Supp.Site.Recognition
 
                     if (data != null && data.Type == WebSpeechTypes.EditNote.ToString())
                     {
-                        var requestsNotImplemented = dialogue.GetDialogueAddToNote(_claims.Configuration.General.Culture, lastWebSpeechId);
-                        if (requestsNotImplemented != null && requestsNotImplemented.Count > 0)
+                        List<WebSpeechDto> dialogue = null;
+
+                        if(data.SubType == WebSpeechTypes.SystemDialogueAddToNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()) 
+                            dialogue = this.dialogue.GetDialogueAddToNote(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
+
+                        if (data.SubType == WebSpeechTypes.SystemDialogueClearNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString())
+                            dialogue = this.dialogue.GetDialogueClearNote(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
+
+                        if (dialogue != null && dialogue.Count > 0)
                         {
-                            var dataResult = GetData(requestsNotImplemented);
+                            var dataResult = GetData(dialogue);
 
-                            data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
+                            var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
 
-                            data = GetAnswer(data);
+                            _data = GetAnswer(_data);
+
+                            _data.Parameters = data.Parameters;
+
+                            data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId);
                         }
                     }
 
@@ -479,7 +500,7 @@ namespace Supp.Site.Recognition
                                     if (_claims.Configuration.General.Culture.ToLower() == "it-it") holidays = " Le festività di domani: ";
                                     if (_claims.Configuration.General.Culture.ToLower() == "en-us") holidays = " Tomorrow's holidays: ";
 
-                                    foreach (var item in getHolidaysTodayResult.Data)
+                                    foreach (var item in getHolidaysTomorrowResult.Data)
                                     {
                                         holidays += item.Summary;
                                     }
@@ -497,16 +518,16 @@ namespace Supp.Site.Recognition
                     {
                         if (_subType == null || _subType == "") _subType = WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString();
 
-                        var requestsNotImplemented = dialogue.GetDialogueRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
-                        if (requestsNotImplemented != null && requestsNotImplemented.Count > 0)
+                        var dialogueRequestNotImplemented = dialogue.GetDialogueRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
+                        if (dialogueRequestNotImplemented != null && dialogueRequestNotImplemented.Count > 0)
                         {
-                            var dataResult = GetData(requestsNotImplemented);
+                            var dataResult = GetData(dialogueRequestNotImplemented);
                             data = dataResult.Data.Where(_=>_.Step == 1).FirstOrDefault();
                         }
 
                         data = GetAnswer(data);
 
-                        data = dialogue.Manage(data, WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString(), _step, StepTypes.Default.ToString(), expiresInSeconds, _phrase, response, request);
+                        data = dialogue.Manage(data, WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString(), _step, StepTypes.Default.ToString(), expiresInSeconds, _phrase, response, request, _claims, userName, userId);
                     }
 
                     if (data == null) data = new WebSpeechDto() { Answer = "", Ehi = 0 };
@@ -734,6 +755,14 @@ namespace Supp.Site.Recognition
                 if (param.Contains(Days.Today.ToString(), StringComparison.InvariantCultureIgnoreCase)) day = Days.Today;
                 if (param.Contains(Days.Tomorrow.ToString(), StringComparison.InvariantCultureIgnoreCase)) day = Days.Tomorrow;
 
+                if ((day == Days.Tomorrow || day == Days.Domani) && partOfTheDay == PartsOfTheDayIta.NotSet)
+                {
+                    if (culture.Trim().ToLower() == "it-it")
+                        partOfTheDay = PartsOfTheDayIta.Mattina;
+
+                    if (culture.Trim().ToLower() == "en-us")
+                        partOfTheDay = PartsOfTheDayEng.Morning;
+                }
                 var meteo = MeteoManage(getMeteoResult.Data, culture, partOfTheDay, day, descriptionActive).ToString();
 
                 result = meteo;
@@ -814,7 +843,7 @@ namespace Supp.Site.Recognition
 
                 result += description;
 
-                result += " Ora ci sono " + details["temperature"].ToString().Replace(",", " e ") + " gradi";
+                result += " Temperatura " + details["temperature"].ToString().Replace(",", " e ") + " gradi";
 
                 result += ", umidità " + details["umidity"].ToString().Replace(",", " e ") + " percento";
 
@@ -829,7 +858,7 @@ namespace Supp.Site.Recognition
 
                 result += description;
 
-                result += " There are now " + details["temperature"].ToString().Replace(",", " and ") + " degrees";
+                result += " Temperature " + details["temperature"].ToString().Replace(",", " and ") + " degrees";
 
                 result += ", umidity " + details["umidity"].ToString().Replace(",", " and ") + " percent";
 
@@ -1012,7 +1041,7 @@ namespace Supp.Site.Recognition
                 {
                     try
                     {
-                        string access_token_cookie = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
 
                         var executionQueue = new ExecutionQueueDto() { FullPath = "*", Arguments = "*", Host = _hostSelected, Type = ExecutionQueueType.ForceHideApplication.ToString(), StateQueue = ExecutionQueueStateQueue.RunningStep2.ToString() };
                         var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
@@ -1027,7 +1056,7 @@ namespace Supp.Site.Recognition
                 {
                     try
                     {
-                        string access_token_cookie = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
 
                         var getExecutionQueuesByIdResult = await executionQueueRepo.GetExecutionQueuesById(_id, access_token_cookie);
                         var executionQueue = getExecutionQueuesByIdResult.Data.FirstOrDefault();

@@ -61,7 +61,7 @@ namespace Supp.Site.Controllers
 
                     ViewBag.CurrentFilter = searchString;
 
-                    string access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
 
                     result = await mediaRepo.GetAllMedia(access_token_cookie);
 

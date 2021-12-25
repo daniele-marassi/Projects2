@@ -53,5 +53,7 @@ namespace Supp.Models
         public bool RecognitionDisable { get; set; }
         public IEnumerable<Host> Hosts { get; set; }
         public IEnumerable<StepType> StepTypes { get { return Supp.Models.StepTypesUtility.Get(); } }
+        public string ElementName { get; set; }
+        public string ElementValue { get; set; }
     }
 }

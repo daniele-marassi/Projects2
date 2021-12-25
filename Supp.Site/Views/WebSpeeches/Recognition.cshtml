@@ -144,6 +144,9 @@
                 step=parseInt(DecodeUnicodeExtended(model['Step']));
             }
             catch (error) {}
+
+            //application = true; //to debug
+
             LogFunctionEnd();
         }
 
@@ -210,6 +213,9 @@
                 step=parseInt('@Model?.Step');
             }
             catch (error) {}
+
+            //application = true; //to debug
+
             LogFunctionEnd();
         }
         
@@ -342,6 +348,9 @@
             
             _message = _message.replace(/   /g, ' ');
             _message = _message.replace(/  /g, ' ');
+
+            _message = _message.replace(/\/n/g, ', ');
+            _message = _message.replace(/\/r/g, ', ');
 
             var message = '';
             var words = _message.split(' ');
@@ -491,7 +500,7 @@
 
         function InitPage(){
             LogFunctionStart();
-            //application = true;
+
             if(application == true){
                 document.getElementById('menu_button').style.display = 'inline';
                 document.getElementById('menu_button').style.marginLeft = '400px';
@@ -653,10 +662,11 @@
                     }
 
                     if(recognitionActive == true){
-                        //PartialReset();
+                        PartialReset();
                         //StopAnimateIntervals();
                         //PartialInitFinal();
-                        RecognitionEnable(true);
+                        //RecognitionEnable(true);
+                        StartButton(event);
                     }
                     if (event.error == 'no-speech') {
                         console.warn('info_no_speech');
@@ -675,8 +685,8 @@
                 recognition.onend = function () {
                     LogFunctionStart('recognition.onend');
                     if(recognitionActive == true){
-                        //PartialReset();
-                         if (IsMobile() == false) RecognitionEnable(true); //PartialInitFinal();
+                        PartialReset();
+                        if (IsMobile() == false) StartButton(event);//RecognitionEnable(true); //PartialInitFinal();
                     }
 
                     if(IsMobile() == true){
@@ -828,20 +838,30 @@
             //timesToReset = 20;
             //console.warn(countTheTimesToReset);
 
+            //console.warn('recognitionActive:'+recognitionActive + ' partialResetActive:'+partialResetActive+ ' countTheTimesToPartialReset:'+countTheTimesToPartialReset);
+
             // partial reset after ehi with wait countTheTimesToPartialReset
-            if(partialResetActive && countTheTimesToPartialReset == timesToReset && recognitionActive == true){
+            if(partialResetActive && countTheTimesToPartialReset == 10 && recognitionActive == true){
+                console.warn('TheTimesToPartialReset');
                 countTheTimesToPartialReset = 0;
                 //RecognitionEnable(true);
+                PartialReset();
             }
 
             if(partialResetActive && recognitionActive == true) countTheTimesToPartialReset++;
             else countTheTimesToPartialReset = 0;
 
+            //timesToReset = 12; //to debug
+            //resetActive = true; //to debug
+
+            //console.warn('recognitionActive:'+recognitionActive + ' resetActive:'+resetActive+ ' countTheTimesToReset:'+countTheTimesToReset);
+
             // reset after idle time countTheTimesToReset
-            if(resetActive && countTheTimesToReset == 10 && recognitionActive == true){
+            if(resetActive && countTheTimesToReset == timesToReset && recognitionActive == true){
+                console.warn('TheTimesToReset');
                 countTheTimesToReset = 0;
                 resetActive = false;  
-                Reset(false, true);
+                //Reset(false, true);
             }
 
             if(resetActive == true && recognitionActive == true) countTheTimesToReset++;
@@ -918,8 +938,8 @@
             countTheTimesToPartialReset = 0;
             countTheTimesToReset = 0;
             $("#sendPhrase_text").val('');
-            //document.getElementById('final_span').innerHTML = '';
-            //document.getElementById('interim_span').innerHTML = '';
+            document.getElementById('final_span').innerHTML = '';
+            document.getElementById('interim_span').innerHTML = '';
             LogFunctionEnd();
         }
 
@@ -955,7 +975,6 @@
 
                     Speak();
 
-                    partialResetActive = true;
                     LogFunctionEnd('initFinalTimeoutStep2');
                 }, 50);  
                 LogFunctionEnd('initFinalTimeoutStep1');
@@ -965,6 +984,7 @@
 
         function InitFinal(){
             LogFunctionStart();
+
             if(application == true) resetActive = true;
 
             clearInterval(serviceInterval);
@@ -999,6 +1019,7 @@
             LogFunctionStart();
             if(recognitionActive == true){
                 RecognitionDisable();
+                document.getElementById("recognitionEnableDisable_image").src = '/Images/micOff.png';
             } else {
                 RecognitionEnable(false);
                 document.getElementById("recognitionEnableDisable_image").src = '/Images/micOn.png';
@@ -1021,7 +1042,7 @@
             StopAnimateIntervals();
             clearInterval(animateIntervals['StopAnimateIntervalsListening']);
             animateIntervals['StopAnimateIntervalsListening'] = null;
-            document.getElementById("recognitionEnableDisable_image").src = '/Images/micOff.png';
+
             LogFunctionEnd();
         }
 
@@ -1037,9 +1058,9 @@
 
         function OpenShortcuts(){
             LogFunctionStart();
+            RecognitionEnableDisable();
             var element = document.getElementById("div_shortcuts");
             element.style.display = "block";
-            recognitionActive = false;
             LogFunctionStart();
         }
 
@@ -1047,7 +1068,7 @@
             LogFunctionStart();
             var element = document.getElementById("div_shortcuts");
             element.style.display = "none";
-            recognitionActive = true;
+            RecognitionEnableDisable();
             LogFunctionEnd();
         }
 
