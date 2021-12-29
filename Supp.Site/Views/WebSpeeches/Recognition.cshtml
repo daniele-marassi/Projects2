@@ -40,7 +40,7 @@
         var partialResetActive = false;
         var resetActive = false;
         var countTheTimesToPartialReset = 0;
-        var countTheTimesToReset = 0;
+        var countTheTimeToResetInSeconds = 0;
         var audioActive = true;
         var shortcuts;
         var synth = null;
@@ -51,7 +51,7 @@
         var actionShortcutTimeout = null;
         var sessionGuid = null;
         var voices;
-        var tmp_phrase  = '';
+        var phraseSended=false;
 
         //@*Model Variables*@
         var name = '';
@@ -76,7 +76,8 @@
         var type = '';
         var parameters = ''; 
         var ehi = 0;
-        var timesToReset = 0;
+        var timeToResetInSeconds = 0;
+        var timeToEhiTimeoutInSeconds = 0;
         var subType = ''; 
         var step = 0;
         var newWebSpeechRequestName= '';
@@ -133,9 +134,14 @@
                 ehi=parseInt(DecodeUnicodeExtended(model['Ehi']));
             }
             catch (error) {}
-            timesToReset = 0;
+            timeToResetInSeconds = 0;
             try {
-                timesToReset=parseInt(DecodeUnicodeExtended(model['TimesToReset']));
+                timeToResetInSeconds=parseInt(DecodeUnicodeExtended(model['TimeToResetInSeconds']));
+            }
+            catch (error) {}
+            timeToEhiTimeoutInSeconds = 0;
+            try {
+                timeToEhiTimeoutInSeconds=parseInt(DecodeUnicodeExtended(model['TimeToEhiTimeoutInSeconds']));
             }
             catch (error) {}
             subType = DecodeUnicodeExtended(model['SubType']);
@@ -199,10 +205,15 @@
             }
             catch (error) {}
             
-            timesToReset = 0;
-            
+            timeToResetInSeconds = 0;           
             try {
-                timesToReset=parseInt('@Model?.TimesToReset');
+                timeToResetInSeconds=parseInt('@Model?.TimeToResetInSeconds');
+            }
+            catch (error) {}
+
+            timeToEhiTimeoutInSeconds = 0;           
+            try {
+                timeToEhiTimeoutInSeconds=parseInt('@Model?.TimeToEhiTimeoutInSeconds');
             }
             catch (error) {}
             
@@ -473,14 +484,14 @@
             readOutLoudActive = false;
                     
             document.getElementById('final_span').innerHTML = '';
-            document.getElementById('interim_span').innerHTML = '';
 
             countTheTimesToPartialReset = 0;
             partialResetActive = false;
             resetActive = false;
-            countTheTimesToReset = 0;
+            countTheTimeToResetInSeconds = 0;
 
             if(ehi == 1 && recognitionActive == true) partialResetActive = true;  
+            else if(ehi == 1 && phraseSended == true) partialResetActive = true;
             else PartialReset();
 
             if(recognitionDisable == true) RecognitionDisable();
@@ -536,7 +547,7 @@
                 hosts = JSON.parse(hostsArrayString);
             }
             catch (error) {  
-                //if(recognitionActive == true) Reset(true, false); 
+ 
             }   
 
             if(hosts != null && hosts.length > 0 ){
@@ -560,6 +571,8 @@
                 if(_phrase != null && _phrase != ''){
                     var phraseTmp = _phrase;
 
+                    LogWithTime("Sended phrase: " + _phrase);
+
                     CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultSendPhrase");
                 }
             }
@@ -579,11 +592,17 @@
         function ResultSendPhrase(result){
             LogFunctionStart();
             VariablesAssignmentFromJson(result);
+            
+            phraseSended = true;
+            if(finalStep == false) ehi=1;
+            else ehi=0;
+
             Speak();
             Action(type, parameters);
 
             if(newWebSpeechRequestName != null && newWebSpeechRequestName != '' && newWebSpeechRequestName != 'null')  CallCreateWithParam(newWebSpeechRequestName);
-            if(recognitionDisable == true) RecognitionDisable();
+            if(recognitionDisable == true) RecognitionDisable();  
+
             LogFunctionEnd();
         }
 
@@ -662,11 +681,8 @@
                     }
 
                     if(recognitionActive == true){
-                        PartialReset();
-                        //StopAnimateIntervals();
-                        //PartialInitFinal();
-                        //RecognitionEnable(true);
-                        StartButton(event);
+                        if(partialResetActive == false) PartialReset(true,false);
+                        if (IsMobile() == false) StartButton(event);
                     }
                     if (event.error == 'no-speech') {
                         console.warn('info_no_speech');
@@ -685,8 +701,8 @@
                 recognition.onend = function () {
                     LogFunctionStart('recognition.onend');
                     if(recognitionActive == true){
-                        PartialReset();
-                        if (IsMobile() == false) StartButton(event);//RecognitionEnable(true); //PartialInitFinal();
+                        if(partialResetActive == false) PartialReset(true,false);
+                        if (IsMobile() == false) StartButton(event);
                     }
 
                     if(IsMobile() == true){
@@ -703,25 +719,17 @@
                         if(_phrase == null){
                             _phrase = event.results[i][0].transcript.toLowerCase().trim();
 
-                            if((_phrase == '' || _phrase == null) && recognitionActive == true && tmp_phrase != ''){  
-                                console.log(tmp_phrase);
-                                tmp_phrase = '';
-                            }
-                            if(tmp_phrase != '') tmp_phrase += ' ';
-                            tmp_phrase += _phrase;
-
                             if (_phrase != '' && _phrase != null) {
                                 countTheTimesToPartialReset = 0;
-                                countTheTimesToReset = 0;
+                                countTheTimeToResetInSeconds = 0;
 
                                 if(recognitionActive == true) StartAnimateIntervalsListening(10);
                                 if(recognitionActive == true) StopAnimateIntervalsListening(500);
-                                //if (recognitionActive == true) console.log(_phrase);
+
                                 var _phraseSplit = _phrase.split(" ");
                                 if (_phraseSplit.length > 0 && recognitionActive == true) {
                                     if (event.results[i].isFinal){
-                                        console.log(_phrase);
-                                        tmp_phrase = '';
+                                        LogWithTime("Recognition: " + _phrase);
                                         if (_phrase === listeningPhrase && ehi == 0 && _reset == false) {
                                             var audio = new Audio("/Files/Ehi.mp3");
                                             audio.play();
@@ -810,6 +818,15 @@
             LogFunctionEnd();
         }
 
+        function LogWithTime(value){
+            var date = new Date();
+            var dateString = date.toISOString().replace('T',' ').replace('Z','');
+            value = dateString + ' - ' + value;
+            console.log(value);  
+
+            return value;
+        }
+
         function LogFunctionStart(functionName){
             var date = new Date();
             var dateString = date.toISOString().replace('T',' ').replace('Z','');
@@ -835,37 +852,35 @@
         function Service() {
             if(voices == undefined || voices == null || voices.length == 0) voices = window.speechSynthesis.getVoices();
 
-            //timesToReset = 20;
-            //console.warn(countTheTimesToReset);
+            //timeToEhiTimeoutInSeconds = 10; // to debug
 
-            //console.warn('recognitionActive:'+recognitionActive + ' partialResetActive:'+partialResetActive+ ' countTheTimesToPartialReset:'+countTheTimesToPartialReset);
+            //console.log('ehi:'+ehi +' recognitionActive:'+recognitionActive + ' partialResetActive:'+partialResetActive+ ' countTheTimesToPartialReset:'+countTheTimesToPartialReset);
 
             // partial reset after ehi with wait countTheTimesToPartialReset
-            if(partialResetActive && countTheTimesToPartialReset == 10 && recognitionActive == true){
+            if(partialResetActive && countTheTimesToPartialReset == timeToEhiTimeoutInSeconds /*&& recognitionActive == true*/){
                 console.warn('TheTimesToPartialReset');
                 countTheTimesToPartialReset = 0;
-                //RecognitionEnable(true);
-                PartialReset();
+                PartialReset(false,true);
             }
 
-            if(partialResetActive && recognitionActive == true) countTheTimesToPartialReset++;
+            if(partialResetActive /*&& recognitionActive == true*/) countTheTimesToPartialReset++;
             else countTheTimesToPartialReset = 0;
 
-            //timesToReset = 12; //to debug
+            //timeToResetInSeconds = 12; //to debug
             //resetActive = true; //to debug
 
-            //console.warn('recognitionActive:'+recognitionActive + ' resetActive:'+resetActive+ ' countTheTimesToReset:'+countTheTimesToReset);
+            //console.warn('recognitionActive:'+recognitionActive + ' resetActive:'+resetActive+ ' countTheTimeToResetInSeconds:'+countTheTimeToResetInSeconds);
 
-            // reset after idle time countTheTimesToReset
-            if(resetActive && countTheTimesToReset == timesToReset && recognitionActive == true){
-                console.warn('TheTimesToReset');
-                countTheTimesToReset = 0;
+            // reset after idle time countTheTimeToResetInSeconds
+            if(resetActive && countTheTimeToResetInSeconds == timeToResetInSeconds && recognitionActive == true){
+                console.warn('TheTimeToResetInSeconds');
+                countTheTimeToResetInSeconds = 0;
                 resetActive = false;  
-                //Reset(false, true);
+                Reset(false, true);
             }
 
-            if(resetActive == true && recognitionActive == true) countTheTimesToReset++;
-            else countTheTimesToReset = 0;
+            if(resetActive == true && recognitionActive == true) countTheTimeToResetInSeconds++;
+            else countTheTimeToResetInSeconds = 0;
         }
 
         function SetAudio(){
@@ -900,6 +915,8 @@
                 var _answer = HexDecode(answer);
                 answer = null;
                 
+                LogWithTime("Answer: " + _answer);
+
                 ReadOutLoud(_answer, false); 
             } else {
                 PartialReset();
@@ -918,9 +935,9 @@
             LogFunctionEnd();
         }
 
-        function PartialReset(){
+        function PartialReset(excludeSpan, forceFinalStep){
             LogFunctionStart();
-            if(finalStep == false) {
+            if(finalStep == false && forceFinalStep != true) {
                 if(phrase != null && phrase != ''){           
 
                 }
@@ -931,15 +948,22 @@
                 subType = "";
                 id = 0;
             }
-
+            type = "";
+            parameters = "";
             ehi = 0;
             _phrase = null;
             audioActive = true;
+            phraseSended = false;
+            partialResetActive = false;
             countTheTimesToPartialReset = 0;
-            countTheTimesToReset = 0;
-            $("#sendPhrase_text").val('');
-            document.getElementById('final_span').innerHTML = '';
-            document.getElementById('interim_span').innerHTML = '';
+            countTheTimeToResetInSeconds = 0;
+            
+            if(excludeSpan != true)
+            {
+                $("#sendPhrase_text").val('');
+                document.getElementById('final_span').innerHTML = '';
+                document.getElementById('interim_span').innerHTML = '';
+            }
             LogFunctionEnd();
         }
 
@@ -1004,24 +1028,25 @@
             LogFunctionEnd();      
         }
 
-        function RecognitionEnable(partial){  
+        function RecognitionEnable(excludeSpan, forceFinalStep){  
             LogFunctionStart();
-            PartialReset();
+            PartialReset(excludeSpan, forceFinalStep);
             recognitionActive = true;
             recognitionDisable = false;
             audioActive = true;
-            if(partial == true) PartialInitFinal();
-            else InitFinal();
+            PartialInitFinal();
+
             LogFunctionEnd();
         }
 
         function RecognitionEnableDisable(){
             LogFunctionStart();
             if(recognitionActive == true){
+                PartialReset();
                 RecognitionDisable();
                 document.getElementById("recognitionEnableDisable_image").src = '/Images/micOff.png';
             } else {
-                RecognitionEnable(false);
+                RecognitionEnable(false, true);
                 document.getElementById("recognitionEnableDisable_image").src = '/Images/micOn.png';
             }
             LogFunctionEnd();
@@ -1029,11 +1054,9 @@
 
         function RecognitionDisable(){
             LogFunctionStart();
+            
             recognitionDisable = true;
             recognitionActive = false;
-            clearInterval(serviceInterval);
-            serviceInterval = null;
-            PartialReset();
             recognitionActive = false;
             audioActive = false;
             SetAudio();
@@ -1086,6 +1109,8 @@
                     var shortcut = shortcuts[i];
 
                     if (shortcut['Id'] == parseInt(id)) {
+
+                        LogWithTime("Selected shortcut: " + shortcut['Title']);
 
                         if (application == false && shortcut['Type'] == 'Link') {
                             var _url = shortcut['Action'].replace(/&amp;/g,'&');
@@ -1205,7 +1230,7 @@
 
         function SendPhraseTextKeyDown() {
             LogFunctionStart();
-            countTheTimesToReset = 0;
+            countTheTimeToResetInSeconds = 0;
             countTheTimesToPartialReset=0;
             LogFunctionEnd();
         }
@@ -1215,7 +1240,8 @@
 <div id="main" style="overflow:hidden;">
     <div style="text-align:center;">
         <div id="div_shortcuts" style="display: none; z-index: 999; width: 70%; position: absolute; background-color: rgb(50, 50, 50); left: 0; right: 0; margin:auto; box-shadow: 0 0rem 1rem rgba(150, 150, 150, 0.95) !important; border-radius: 25px;">
-            <div style="background-color: rgba(70, 70, 70, 0.95);  text-align:right; box-shadow: rgba(150, 150, 150, 0.25) 0 14px 12px -2px; border-radius: 25px;">
+            <div style="background-color: rgba(100, 100, 100, 0.95);  text-align:right; box-shadow: rgba(150, 150, 150, 0.25) 0 14px 12px -2px; border-radius: 25px;">
+                <a style="z-index:9999; color:#333; font-size:35px; position:absolute; left:10px;">Shortcuts</a>
                 <img class="btn shortcut-dark" id="shortcut_0" src="/Images/Shortcuts/close.png" alt="Close" style="height:50px; margin:5px;" onclick="ActionShortcut(0);">
             </div>
             <dl id="shortcutsContainer" class="row" style="max-height:600px; overflow-y:auto; " >

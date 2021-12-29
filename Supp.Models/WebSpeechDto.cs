@@ -45,7 +45,8 @@ namespace Supp.Models
         public long[] WebSpeechIds { get; set; }
         public string ShortcutsInJson { get; set; }
         public bool ResetAfterLoad { get; set; }
-        public int TimesToReset { get; set; }
+        public int TimeToResetInSeconds { get; set; }
+        public int TimeToEhiTimeoutInSeconds { get; set; }
         public bool OnlyRefresh { get; set; }
         public IEnumerable<WebSpeechType> WebSpeechTypes { get { return Supp.Models.WebSpeechTypesUtility.Get(); } }
         public IEnumerable<ShortcutImage> ShortcutImages { get; set; }

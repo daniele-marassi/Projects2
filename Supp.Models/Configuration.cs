@@ -28,7 +28,8 @@ namespace Supp.Models
             public string MeteoParameterToTheSalutation { get; set; }
             public bool DescriptionMeteoToTheSalutationActive { get; set; }
             public bool RemindersActive { get; set; }
-            public int TimesToReset { get; set; }
+            public int TimeToResetInSeconds { get; set; }
+            public int TimeToEhiTimeoutInSeconds { get; set; }
         }
     }
 }

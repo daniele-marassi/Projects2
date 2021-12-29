@@ -320,20 +320,20 @@ namespace Supp.Site.Repositories
                             TimeMin = timeMin,
                             TimeMax = timeMax
                         };
-                        var events = googleCalendarUtility.GetCalendarEvents(getCalendarEventsRequest);
+                        var getCalendarEventsResult = googleCalendarUtility.GetCalendarEvents(getCalendarEventsRequest);
 
                         if(webSpeechTypes == WebSpeechTypes.ReadRemindersToday || webSpeechTypes == WebSpeechTypes.ReadRemindersTomorrow)
-                            events.Data = events.Data.Where(_ => _.Summary.Contains("#Note", StringComparison.InvariantCultureIgnoreCase) == false).ToList();
+                            getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.Contains("#Note", StringComparison.InvariantCultureIgnoreCase) == false).ToList();
 
                         if (webSpeechTypes == WebSpeechTypes.ReadNotes)
-                            events.Data = events.Data.Where(_ => _.Summary.Contains("#Note", StringComparison.InvariantCultureIgnoreCase) == true).ToList();
+                            getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.Contains("#Note", StringComparison.InvariantCultureIgnoreCase) == true).ToList();
 
                         if(summaryToSearch != null && summaryToSearch != String.Empty)
-                            events.Data = events.Data.Where(_ => _.Summary.Contains(summaryToSearch, StringComparison.InvariantCultureIgnoreCase) == true).ToList();
+                            getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.Contains(summaryToSearch, StringComparison.InvariantCultureIgnoreCase) == true).ToList();
 
-                        response.Data.AddRange(events.Data);
+                        response.Data.AddRange(getCalendarEventsResult.Data);
 
-                        if(events.Successful == false && response.Message != null && response.Message != String.Empty) errors.Add(events.Message);
+                        if(getCalendarEventsResult.Successful == false && getCalendarEventsResult.Message != null && getCalendarEventsResult.Message != String.Empty) errors.Add(getCalendarEventsResult.Message);
                     }
 
                     if (googleAccounts.Count == 0)
@@ -408,11 +408,11 @@ namespace Supp.Site.Repositories
                         if (culture.Trim().ToLower() == "it-it") countryAndLanguageType = CountryAndLanguageType.it_italian;
                         if (culture.Trim().ToLower() == "en-us") countryAndLanguageType = CountryAndLanguageType.en_uk;
 
-                        var holidays = await googleCalendarUtility.GetHolidays(countryAndLanguageType, auth.GooglePublicKey, timeMin, timeMax);
+                        var getHolidaysResult = await googleCalendarUtility.GetHolidays(countryAndLanguageType, auth.GooglePublicKey, timeMin, timeMax);
 
-                        response.Data.AddRange(holidays.Data);
+                        response.Data.AddRange(getHolidaysResult.Data);
 
-                        if (holidays.Successful == false && response.Message != null && response.Message != String.Empty) errors.Add(holidays.Message);
+                        if (getHolidaysResult.Successful == false && getHolidaysResult.Message != null && getHolidaysResult.Message != String.Empty) errors.Add(getHolidaysResult.Message);
                     }
 
                     if (googleAccounts.Count == 0)
@@ -511,11 +511,11 @@ namespace Supp.Site.Repositories
                             NotificationMinutes = editCalendarEventRequest.NotificationMinutes,
                             DescriptionAppended = editCalendarEventRequest.DescriptionAppended
                         };
-                        var _event = googleCalendarUtility.EditLastCalendarEventBySummary(_editCalendarEventRequest);
+                        var editLastCalendarEventBySummaryResult = googleCalendarUtility.EditLastCalendarEventBySummary(_editCalendarEventRequest);
 
-                        response.Data.AddRange(_event.Data);
+                        response.Data.AddRange(editLastCalendarEventBySummaryResult.Data);
 
-                        if (_event.Successful == false && response.Message != null && response.Message != String.Empty) errors.Add(_event.Message);
+                        if (editLastCalendarEventBySummaryResult.Successful == false && editLastCalendarEventBySummaryResult.Message != null && editLastCalendarEventBySummaryResult.Message != String.Empty) errors.Add(editLastCalendarEventBySummaryResult.Message);
                     }
 
                     if (googleAccounts.Count == 0)

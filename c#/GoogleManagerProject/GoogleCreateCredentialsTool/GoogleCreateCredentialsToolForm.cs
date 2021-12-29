@@ -300,13 +300,13 @@ namespace GoogleCreateCredentials
                 }
 
                 //for test
-                GoogleAccountTypeCmb.Text = "Calendar";
-                GooglePublicKeyTxt.Text = "AIzaSyCdWVUdy3QmmYLjDwQWqP03gV49hfvWMhc";
-                GoogleAccountTxt.Text = "daniele.marassi";
-                FolderToFilterTxt.Text = "";
-                AddressTxt.Text = "http://localhost:52110";
-                UserNameTxt.Text = "daniele.marassi@gmail.com";
-                PasswordTxt.Text = "Enilno.00";
+                //GoogleAccountTypeCmb.Text = "Calendar";
+                //GooglePublicKeyTxt.Text = "AIzaSyCdWVUdy3QmmYLjDwQWqP03gV49hfvWMhc";
+                //GoogleAccountTxt.Text = "daniele.marassi";
+                //FolderToFilterTxt.Text = "";
+                //AddressTxt.Text = "http://localhost:52110";
+                //UserNameTxt.Text = "daniele.marassi@gmail.com";
+                //PasswordTxt.Text = "Enilno.00";
             }
             catch (Exception ex)
             {

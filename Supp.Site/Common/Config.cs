@@ -39,9 +39,9 @@ namespace Supp.Site.Common
                 public static bool DescriptionMeteoToTheSalutationActive { get; set; }
                 public static bool RemindersActive { get; set; }
                 public static string Culture { get; set; }
-                public static int TimesToReset { get; set; }
+                public static int TimeToResetInSeconds { get; set; }
+                public static int TimeToEhiTimeoutInSeconds { get; set; }
                 
-
                 public static string ConfigDefaultInJson
                 {
                     get
@@ -64,7 +64,8 @@ namespace Supp.Site.Common
                                 MeteoParameterToTheSalutation = GeneralSettings.Static.MeteoParameterToTheSalutation,
                                 DescriptionMeteoToTheSalutationActive = GeneralSettings.Static.DescriptionMeteoToTheSalutationActive,
                                 RemindersActive = GeneralSettings.Static.RemindersActive,
-                                TimesToReset = GeneralSettings.Static.TimesToReset,
+                                TimeToResetInSeconds = GeneralSettings.Static.TimeToResetInSeconds,
+                                TimeToEhiTimeoutInSeconds = GeneralSettings.Static.TimeToEhiTimeoutInSeconds
                             }
                         };
 
@@ -126,7 +127,8 @@ namespace Supp.Site.Common
                     GeneralSettings.Static.MeteoParameterToTheSalutation = configuration.GetSection("AppSettings:MeteoParameterToTheSalutation").Value;
                     GeneralSettings.Static.DescriptionMeteoToTheSalutationActive = bool.Parse(configuration.GetSection("AppSettings:DescriptionMeteoToTheSalutationActive").Value);
                     GeneralSettings.Static.RemindersActive = bool.Parse(configuration.GetSection("AppSettings:RemindersActive").Value);
-                    GeneralSettings.Static.TimesToReset = int.Parse(configuration.GetSection("AppSettings:TimesToReset").Value);
+                    GeneralSettings.Static.TimeToResetInSeconds = int.Parse(configuration.GetSection("AppSettings:TimeToResetInSeconds").Value);
+                    GeneralSettings.Static.TimeToEhiTimeoutInSeconds = int.Parse(configuration.GetSection("AppSettings:TimeToEhiTimeoutInSeconds").Value);
                 }
             }
         }

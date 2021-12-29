@@ -169,9 +169,8 @@ namespace Supp.Site.Recognition
                     if (result.Successful == false)
                     {
                         var error = $"Error - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetAllWebSpeeches)}] - Message: [{result.Message}]";
-                        //throw new Exception(error);
 
-                        data = new WebSpeechDto() { Answer = "", Ehi = 0, Error = error/*, ResetAfterLoad = true*/ };
+                        data = new WebSpeechDto() { Answer = "", Ehi = 0, Error = error };
                         return data;
                     }
 
@@ -310,6 +309,12 @@ namespace Supp.Site.Recognition
                             }
                         }
 
+                        if (!getRemindersResult.Successful)
+                        {
+                            if (_claims.Configuration.General.Culture.ToLower() == "it-it") answer += " Attenzione! probabilmente il token google è scaduto.";
+                            if (_claims.Configuration.General.Culture.ToLower() == "en-us") answer += " Attention! probably the google token has expired.";
+                        }
+
                         data.Answer = answer;
                     }
 
@@ -334,8 +339,23 @@ namespace Supp.Site.Recognition
                                 if (answer != "") answer += " ";
                                 answer += item.Summary.Replace("#Note ","") + ",";
                                 if (answer != "") answer += " ";
-                                answer += item.Description + ".";
+
+                                if (item.Description != String.Empty && item.Description != null)
+                                {
+                                    answer += item.Description + ".";
+                                }
+                                else
+                                {
+                                    if (_claims.Configuration.General.Culture.ToLower() == "it-it") answer += "vuota!.";
+                                    if (_claims.Configuration.General.Culture.ToLower() == "en-us") answer += "empty!.";
+                                }
                             }
+                        }
+
+                        if (!getRemindersResult.Successful)
+                        {
+                            if (_claims.Configuration.General.Culture.ToLower() == "it-it") answer += " Attenzione! probabilmente il token google è scaduto.";
+                            if (_claims.Configuration.General.Culture.ToLower() == "en-us") answer += " Attention! probably the google token has expired.";
                         }
 
                         data.Answer = answer;
@@ -346,13 +366,16 @@ namespace Supp.Site.Recognition
                         if (data.Parameters == null || data.Parameters == String.Empty)
                         {
                             var value = 0;
+                            if (_phrase == null || _phrase == "") _phrase = data.Phrase;
+
                             var words = _phrase.Trim().ToLower().Split(' ');
                             foreach (var word in words)
                             {
                                 try
                                 {
                                     value = int.Parse(word);
-                                    data.Parameters = value.ToString();
+                                    if (data.Parameters == null) data.Parameters = String.Empty;
+                                    data.Parameters += value.ToString();
                                 }
                                 catch (Exception)
                                 {}
@@ -512,7 +535,7 @@ namespace Supp.Site.Recognition
                     }
 
                     if (
-                        (_phrase != null && _phrase != "" && data == null && result != null && _phrase.Split(" ").Count() > 1)
+                        (_phrase != null && _phrase != "" && data == null && result != null )
                         || (data == null && _subType == WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString())
                     )
                     {
@@ -542,10 +565,11 @@ namespace Supp.Site.Recognition
                     data.Application = _application;
                     data.AlwaysShow = _alwaysShow;
                     data.ExecutionQueueId = _executionQueueId;
-                    data.TimesToReset = _claims.Configuration.Speech.TimesToReset;
+                    data.TimeToResetInSeconds = _claims.Configuration.Speech.TimeToResetInSeconds;
+                    data.TimeToEhiTimeoutInSeconds = _claims.Configuration.Speech.TimeToEhiTimeoutInSeconds; 
                     data.OnlyRefresh = _onlyRefresh;
 
-                    if ((_phrase != null && _phrase != "") && (data.FinalStep == false || _phrase == (data.ListeningWord1 + " " + data.ListeningWord2))) data.Ehi = 1;
+                    if ((_phrase != null && _phrase != "") && (data.FinalStep == false || _phrase == (data.ListeningWord1 + " " + data.ListeningWord2).Trim().ToLower())) data.Ehi = 1;
 
                     if (_reset == true && _alwaysShow == false)
                     {
@@ -638,14 +662,30 @@ namespace Supp.Site.Recognition
                                     var founded = false;
                                     foreach (var key in keysArray)
                                     {
-                                        var words = _phrase.Trim().ToLower().Split(' ');
+                                        var keys = key.ToString().Trim().ToLower().Split(' ');
 
-                                        if (!founded && words.Contains(key.ToString().Trim().ToLower()))
+                                        if (keys.Count() == 1)
                                         {
-                                            founded = true;
-                                            countMatch++;
-                                            if (phraseMatch != "") phraseMatch += " ";
-                                            phraseMatch += key.ToString();
+                                            var words = _phrase.Trim().ToLower().Split(' ');
+
+                                            if (!founded && words.Contains(key.ToString().Trim().ToLower()))
+                                            {
+                                                founded = true;
+                                                countMatch++;
+                                                if (phraseMatch != "") phraseMatch += " ";
+                                                phraseMatch += key.ToString();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (!founded)
+                                            {
+                                                var matchPrhareNoKeysResult = MatchPrhareNoKeys(key.ToString().Trim().ToLower(), _phrase, minMatch, countMatch, phraseMatch);
+                                                minMatch = matchPrhareNoKeysResult.MinMatch;
+                                                countMatch = matchPrhareNoKeysResult.CountMatch;
+                                                phraseMatch = matchPrhareNoKeysResult.PhraseMatch;
+                                                founded = matchPrhareNoKeysResult.Founded;
+                                            }
                                         }
                                     }
                                 }
@@ -655,26 +695,10 @@ namespace Supp.Site.Recognition
                 }
                 catch (Exception)
                 {
-                    try
-                    {
-                        var keysArray = item.Phrase.Split(' ').ToList();
-                        minMatch = keysArray.Count;
-                        countMatch = 0;
-                        phraseMatch = "";
-
-                        foreach (var key in keysArray)
-                        {
-                            if (_phrase.Trim().ToLower().Contains(key.ToString().Trim().ToLower()))
-                            {
-                                countMatch++;
-                                if (phraseMatch != "") phraseMatch += " ";
-                                phraseMatch += key.ToString();
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
-                    }
+                    var matchPrhareNoKeysResult = MatchPrhareNoKeys(item.Phrase, _phrase, minMatch, countMatch, phraseMatch);
+                    minMatch = matchPrhareNoKeysResult.MinMatch;
+                    countMatch = matchPrhareNoKeysResult.CountMatch;
+                    phraseMatch = matchPrhareNoKeysResult.PhraseMatch;
                 }
 
                 if (countMatch >= minMatch)
@@ -687,6 +711,49 @@ namespace Supp.Site.Recognition
             if (_data != null)
             {
                 result.Data = GetAnswer(_data);            
+            }
+
+            return result;
+        }
+
+        private (int MinMatch, int CountMatch, string PhraseMatch, bool Founded) MatchPrhareNoKeys(string itemPhrase, string _phrase, int minMatch, int countMatch, string phraseMatch)
+        {
+            (int MinMatch, int CountMatch, string PhraseMatch, bool Founded) result;
+            result.MinMatch = minMatch;
+            result.CountMatch = countMatch;
+            result.PhraseMatch = phraseMatch;
+            result.Founded = false;
+
+            var _countMatch = 0;
+            var _phraseMatch = "";
+            var _minMatch = 0;
+            var founded = false;
+
+            try
+            {
+                var keysArray = itemPhrase.Split(' ').ToList();
+                _minMatch = keysArray.Count;
+
+                foreach (var key in keysArray)
+                {
+                    if (_phrase.Trim().ToLower().Contains(key.ToString().Trim().ToLower()))
+                    {
+                        founded = true;
+                        _countMatch++;
+                        if (_phraseMatch != "") _phraseMatch += " ";
+                        _phraseMatch += key.ToString();
+                    }
+                }
+            }
+            catch (Exception)
+            {}
+
+            if (_countMatch >= result.MinMatch)
+            {
+                result.MinMatch = _minMatch;
+                result.CountMatch += _countMatch;
+                result.PhraseMatch += _phraseMatch;
+                result.Founded = founded;
             }
 
             return result;
