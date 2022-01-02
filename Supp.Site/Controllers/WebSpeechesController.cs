@@ -681,6 +681,8 @@ namespace Supp.Site.Controllers
                         bool.TryParse(_application?.ToString(), out application);
                     }
 
+                    //application = true; //to debug
+
                     if (_alwaysShow != null)
                     {
                         suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName, _alwaysShow.ToString(), expiresInSeconds);

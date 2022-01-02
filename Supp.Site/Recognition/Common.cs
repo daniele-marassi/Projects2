@@ -183,6 +183,9 @@ namespace Supp.Site.Recognition
 
                     if (_id == 0 && _phrase != "" && _phrase != null && (_subType == "" || _subType == null || _subType == "null") && _step == 0)
                     {
+
+                        var wakeUpScreenAfterEhiResult = WakeUpScreenAfterEhi(_application, _claims, access_token_cookie);
+
                         var matchPhraseResult = MatchPhrase(_phrase, result.Data, _claims, _id);
                         data = matchPhraseResult.Data;
                         _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
@@ -194,6 +197,8 @@ namespace Supp.Site.Recognition
                     }
                     else if (_id != 0 && _subType != "" && _subType != null && _subType != "null" && _step > 0)
                     {
+                        var wakeUpScreenAfterEhiResult = WakeUpScreenAfterEhi(_application, _claims, access_token_cookie);
+
                         if (_subType == WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString())
                         {
                             var dialogueRequestNotImplemented = dialogue.GetDialogueRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
@@ -404,10 +409,26 @@ namespace Supp.Site.Recognition
                         var month = now.ToString("MMMM", new CultureInfo(_claims.Configuration.General.Culture));
 
                         if (_claims.Configuration.General.Culture.ToLower() == "it-it")
-                            data.Answer = now.Hour.ToString() + " e " + now.Minute.ToString() + " minuti" + ", " + dayofweek + " " + now.Day.ToString() + " " + month;
+                        {
+                            data.Answer = now.Hour.ToString();
+
+                            if (now.Minute == 1) data.Answer += " e " + now.Minute.ToString() + " minuto, ";
+                            else if (now.Minute > 1) data.Answer += " e " + now.Minute.ToString() + " minuti, ";
+                            else data.Answer += ", ";
+
+                            data.Answer += dayofweek + " " + now.Day.ToString() + " " + month;
+                        }
 
                         if (_claims.Configuration.General.Culture.ToLower() == "en-us")
-                            data.Answer = now.Hour.ToString() + " and " + now.Minute.ToString() + " minutes" + ", " + dayofweek + " " + now.Day.ToString() + " " + month;
+                        {
+                            data.Answer = now.Hour.ToString();
+
+                            if (now.Minute == 1) data.Answer += " and " + now.Minute.ToString() + " minute, ";
+                            else if (now.Minute > 1) data.Answer += " and " + now.Minute.ToString() + " minutes, ";
+                            else data.Answer += ", ";
+
+                            data.Answer += dayofweek + " " + now.Day.ToString() + " " + month;
+                        }
                     }
 
                     if (data != null && data.Type == WebSpeechTypes.SystemWebSearch.ToString())
@@ -480,8 +501,23 @@ namespace Supp.Site.Recognition
                                     {
                                         reminders += item.Summary;
 
-                                        if (_claims.Configuration.General.Culture.ToLower() == "it-it") reminders += " alle " + item.EventDateStart.Value.Hour.ToString() + " e " + item.EventDateStart.Value.Minute.ToString() + " minuti.";
-                                        if (_claims.Configuration.General.Culture.ToLower() == "en-us") reminders += " at " + item.EventDateStart.Value.Hour.ToString() + " and " + item.EventDateStart.Value.Minute.ToString() + " minutes.";
+                                        if (_claims.Configuration.General.Culture.ToLower() == "it-it")
+                                        {
+                                            reminders += " alle " + item.EventDateStart.Value.Hour.ToString();
+
+                                            if (item.EventDateStart.Value.Minute == 1) reminders += " e " + item.EventDateStart.Value.Minute.ToString() + " minuto.";
+                                            else if (item.EventDateStart.Value.Minute > 1) reminders += " e " + item.EventDateStart.Value.Minute.ToString() + " minuti.";
+                                            else reminders += ".";
+                                        }
+
+                                        if (_claims.Configuration.General.Culture.ToLower() == "en-us")
+                                        {
+                                            reminders += " at " + item.EventDateStart.Value.Hour.ToString();
+
+                                            if (item.EventDateStart.Value.Minute == 1) reminders += " and " + item.EventDateStart.Value.Minute.ToString() + " minute.";
+                                            else if (item.EventDateStart.Value.Minute > 1) reminders += " and " + item.EventDateStart.Value.Minute.ToString() + " minutes.";
+                                            else reminders += ".";
+                                        }
                                     }
 
                                     data.Answer += reminders;
@@ -506,7 +542,7 @@ namespace Supp.Site.Recognition
 
                                     foreach (var item in getHolidaysTodayResult.Data)
                                     {
-                                        holidays += item.Summary;
+                                        holidays += item.Summary + ", ";
                                     }
 
                                     data.Answer += holidays;
@@ -525,7 +561,7 @@ namespace Supp.Site.Recognition
 
                                     foreach (var item in getHolidaysTomorrowResult.Data)
                                     {
-                                        holidays += item.Summary;
+                                        holidays += item.Summary + ", ";
                                     }
 
                                     data.Answer += holidays;
@@ -566,7 +602,7 @@ namespace Supp.Site.Recognition
                     data.AlwaysShow = _alwaysShow;
                     data.ExecutionQueueId = _executionQueueId;
                     data.TimeToResetInSeconds = _claims.Configuration.Speech.TimeToResetInSeconds;
-                    data.TimeToEhiTimeoutInSeconds = _claims.Configuration.Speech.TimeToEhiTimeoutInSeconds; 
+                    data.TimeToEhiTimeoutInSeconds = _claims.Configuration.Speech.TimeToEhiTimeoutInSeconds;
                     data.OnlyRefresh = _onlyRefresh;
 
                     if ((_phrase != null && _phrase != "") && (data.FinalStep == false || _phrase == (data.ListeningWord1 + " " + data.ListeningWord2).Trim().ToLower())) data.Ehi = 1;
@@ -591,6 +627,26 @@ namespace Supp.Site.Recognition
                     throw ex;
                 }
             }
+        }
+
+        /// <summary>
+        /// Wake Up Screen After Ehi
+        /// </summary>
+        /// <param name="_application"></param>
+        /// <param name="_claims"></param>
+        /// <param name="access_token_cookie"></param>
+        /// <returns></returns>
+        public async Task<ExecutionQueueResult> WakeUpScreenAfterEhi(bool _application, ClaimsDto _claims, string access_token_cookie)
+        {
+            var response = new ExecutionQueueResult() { Data = new List<ExecutionQueueDto>(), ResultState = Models.ResultType.None, Successful = true };
+
+            if (_application == true && _claims.Configuration.Speech.WakeUpScreenAfterEhiActive == true)
+            {
+                var executionQueue = new ExecutionQueueDto() { Host = _claims.Configuration.Speech.HostDefault, Type = ExecutionQueueType.WakeUpScreenAfterEhi.ToString() };
+                response = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
+            }
+
+            return response;
         }
 
         /// <summary>
@@ -910,11 +966,37 @@ namespace Supp.Site.Recognition
 
                 result += description;
 
-                result += " Temperatura " + details["temperature"].ToString().Replace(",", " e ") + " gradi";
+                var temperatureSplit = details["temperature"].ToString().Split(',');
+
+                result += " Temperatura " + temperatureSplit[0];
+
+                if (temperatureSplit.Length > 1)
+                {
+                    if (int.Parse(temperatureSplit[1]) == 1) result += " e " + int.Parse(temperatureSplit[1]) + " grado";
+                    else if (int.Parse(temperatureSplit[1]) > 1) result += " e " + int.Parse(temperatureSplit[1]) + " gradi";
+                }
+                else
+                {
+                    if (int.Parse(temperatureSplit[0]) == 1) result += " grado";
+                    else result += " gradi";
+                }
 
                 result += ", umidità " + details["umidity"].ToString().Replace(",", " e ") + " percento";
 
-                result += " e vento " + details["windIntensity"].ToString().Replace(",", " e ") + " chilometri orari.";
+                var windIntensitySplit = details["windIntensity"].ToString().Split(',');
+
+                result += " e vento " + windIntensitySplit[0];
+
+                if (windIntensitySplit.Length > 1)
+                {
+                    if (int.Parse(windIntensitySplit[1]) == 1) result += " e " + int.Parse(windIntensitySplit[1]) + " chilometro orario.";
+                    else if (int.Parse(windIntensitySplit[1]) > 1) result += " e " + int.Parse(windIntensitySplit[1]) + " chilometri orari.";
+                }
+                else
+                {
+                    if (int.Parse(windIntensitySplit[0]) == 1) result += " chilometro orario.";
+                    else result += " chilometri orari.";
+                }
             }
 
             if (culture.Trim().ToLower() == "en-us")
@@ -925,11 +1007,37 @@ namespace Supp.Site.Recognition
 
                 result += description;
 
-                result += " Temperature " + details["temperature"].ToString().Replace(",", " and ") + " degrees";
+                var temperatureSplit = details["temperature"].ToString().Split(',');
+
+                result += " Temperature " + temperatureSplit[0];
+
+                if (temperatureSplit.Length > 1)
+                {
+                    if (int.Parse(temperatureSplit[1]) == 1) result += " and " + int.Parse(temperatureSplit[1]) + " degre";
+                    else if (int.Parse(temperatureSplit[1]) > 1) result += " and " + int.Parse(temperatureSplit[1]) + " degrees";
+                }
+                else
+                {
+                    if (int.Parse(temperatureSplit[0]) == 1) result += " degre";
+                    else result += " degrees";
+                }
 
                 result += ", umidity " + details["umidity"].ToString().Replace(",", " and ") + " percent";
 
-                result += " and wind " + details["windIntensity"].ToString().Replace(",", " and ") + " kilometers per hour.";
+                var windIntensitySplit = details["windIntensity"].ToString().Split(',');
+
+                result += " and wind " + windIntensitySplit[0];
+
+                if (windIntensitySplit.Length > 1)
+                {
+                    if (int.Parse(windIntensitySplit[1]) == 1) result += " and " + int.Parse(windIntensitySplit[1]) + " kilometer per hour.";
+                    else if (int.Parse(windIntensitySplit[1]) > 1) result += " and " + int.Parse(windIntensitySplit[1]) + " kilometers per hour.";
+                }
+                else
+                {
+                    if (int.Parse(windIntensitySplit[0]) == 1) result += " kilometer per hour.";
+                    else result += " kilometers per hour.";
+                }
             }
 
             result = result.Replace("&amp;", "&");

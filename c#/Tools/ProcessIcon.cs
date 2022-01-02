@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Tools.Properties;
 using Tools.Songs;
+using Tools.WakeUpScreenAfterPowerBreak;
 
 namespace Tools
 {
@@ -21,7 +22,8 @@ namespace Tools
         NotifyIcon ni;
 		public static QueueService _QueueService;
 		public static SyncIpService _SyncIpService;
-		public static RenewNotesService _RenewNotesService;		
+		public static RenewNotesService _RenewNotesService;
+		public static WakeUpScreenAfterPowerBreakService _WakeUpScreenAfterPowerBreakService;
 		public static Speech _Speech;
 		public static SpeechService _SpeechService;
 		public static SongsManager _SongsManager;
@@ -30,6 +32,7 @@ namespace Tools
 		public static bool QueueServiceActive = true;
 		public static bool SyncIpServiceActive = true;
 		public static bool RenewNotesServiceActive = true;
+		public static bool WakeUpScreenAfterPowerBreakServiceActive = true;
 		public static bool SpeechServiceActive = true;
 		public static bool SpeechShowHideActive = false;
 		public static bool SongsManagerActive = true;
@@ -120,6 +123,20 @@ namespace Tools
 			else
 			{
 				ContextMenus.SetMenuItem("RenewNotesServiceMenuItem");
+			}
+
+			if (bool.Parse(ConfigurationManager.AppSettings["WakeUpScreenAfterPowerBreakService"]))
+			{
+				WakeUpScreenAfterPowerBreakServiceActive = true;
+
+				_WakeUpScreenAfterPowerBreakService = new WakeUpScreenAfterPowerBreakService();
+
+				System.Threading.Thread.Sleep(50);
+				Task.Run(() => _WakeUpScreenAfterPowerBreakService.Start());
+			}
+			else
+			{
+				ContextMenus.SetMenuItem("WakeUpScreenAfterPowerBreakServiceMenuItem");
 			}
 
 			if (bool.Parse(ConfigurationManager.AppSettings["Speech"]))

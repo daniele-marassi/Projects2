@@ -104,6 +104,18 @@ namespace Tools
 			sep = new ToolStripSeparator();
 			Common.ContextMenus.Menu.Items.Add(sep);
 
+			//WakeUpScreenAfterPowerBreakService
+			item = new ToolStripMenuItem();
+			item.Text = "Wake Up Screen After Power Break Service";
+			item.Name = "WakeUpScreenAfterPowerBreakServiceMenuItem";
+			item.Click += new EventHandler(WakeUpScreenAfterPowerBreakService_Click);
+			item.Image = Resources.ServiceActive;
+			Common.ContextMenus.Menu.Items.Add(item);
+
+			// Separator.
+			sep = new ToolStripSeparator();
+			Common.ContextMenus.Menu.Items.Add(sep);
+
 			// Speech Service.
 			item = new ToolStripMenuItem();
 			item.Text = "Speech Service";
@@ -199,6 +211,11 @@ namespace Tools
 		void RenewNotesService_Click(object sender, EventArgs e)
 		{
 			SetMenuItem("RenewNotesServiceMenuItem");
+		}
+
+		void WakeUpScreenAfterPowerBreakService_Click(object sender, EventArgs e)
+		{
+			SetMenuItem("WakeUpScreenAfterPowerBreakServiceMenuItem");
 		}
 
 		void SpeechService_Click(object sender, EventArgs e)
@@ -319,6 +336,33 @@ namespace Tools
 					item.Image = Resources.ServiceActive;
 					ProcessIcon._RenewNotesService = new RenewNotes.RenewNotesService();
 					Task.Run(() => ProcessIcon._RenewNotesService.Start());
+				}
+			}
+
+			if (itemName == "WakeUpScreenAfterPowerBreakServiceMenuItem")
+			{
+				var item = Common.ContextMenus.Menu.Items[itemName];
+
+				if (ProcessIcon.WakeUpScreenAfterPowerBreakServiceActive)
+				{
+					ProcessIcon.WakeUpScreenAfterPowerBreakServiceActive = false;
+
+					AddOrUpdateAppSettings("WakeUpScreenAfterPowerBreakService", ProcessIcon.WakeUpScreenAfterPowerBreakServiceActive.ToString());
+
+					item.Image = Resources.ServiceDisable;
+					if (ProcessIcon._WakeUpScreenAfterPowerBreakService != null)
+					{
+						ProcessIcon._WakeUpScreenAfterPowerBreakService.Stop();
+						ProcessIcon._WakeUpScreenAfterPowerBreakService = null;
+					}
+				}
+				else
+				{
+					ProcessIcon.WakeUpScreenAfterPowerBreakServiceActive = true;
+					AddOrUpdateAppSettings("WakeUpScreenAfterPowerBreakService", ProcessIcon.WakeUpScreenAfterPowerBreakServiceActive.ToString());
+					item.Image = Resources.ServiceActive;
+					ProcessIcon._WakeUpScreenAfterPowerBreakService = new WakeUpScreenAfterPowerBreak.WakeUpScreenAfterPowerBreakService();
+					Task.Run(() => ProcessIcon._WakeUpScreenAfterPowerBreakService.Start());
 				}
 			}
 

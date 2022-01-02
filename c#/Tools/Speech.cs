@@ -20,6 +20,7 @@ namespace Tools
     public class Speech
     {
         Utility utilty;
+        Common.Utility commonUtility;
         System.Collections.Specialized.NameValueCollection appSettings;
         int windowWidth;
         int windowHeight;
@@ -48,6 +49,7 @@ namespace Tools
         public Speech()
         {
             utilty = new Utility();
+            commonUtility = new Common.Utility();
             appSettings = ConfigurationManager.AppSettings;
             windowWidth = int.Parse(appSettings["WindowWidth"]);
             windowHeight = int.Parse(appSettings["WindowHeight"]);
@@ -158,16 +160,7 @@ namespace Tools
 
             var _processId = (int)result.ProcessId;
 
-            if(removeFocus) RemoveFocus();
-        }
-
-        public void RemoveFocus() 
-        {
-            Cursor.Position = new Point(workingAreaWidth - 520, workingAreaHeight + 20);
-
-            System.Threading.Thread.Sleep(1000);
-
-            VirtualMouse.LeftClick();
+            if (removeFocus) commonUtility.ClickOnTaskbar();
         }
 
         public void Stop()

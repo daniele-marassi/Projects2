@@ -41,6 +41,7 @@ namespace Tools.ExecutionQueue
         private NLogUtility nLogUtility = new NLogUtility();
         private int limitLogFileInMB = 0;
         Utility utilty;
+        Common.Utility commonUtility;
         System.Collections.Specialized.NameValueCollection appSettings;
         int windowWidth;
         int windowHeight;
@@ -55,6 +56,7 @@ namespace Tools.ExecutionQueue
         {
             InitializeComponent();
             utilty = new Utility();
+            commonUtility = new Common.Utility();
             appSettings = ConfigurationManager.AppSettings;
             windowWidth = int.Parse(appSettings["WindowWidth"]);
             windowHeight = int.Parse(appSettings["WindowHeight"]);
@@ -147,6 +149,11 @@ namespace Tools.ExecutionQueue
                                 item.StateQueue = ExecutionQueueStateQueue.AttemptToStart.ToString();
                             }
 
+                            if (item.Type == ExecutionQueueType.WakeUpScreenAfterEhi.ToString())
+                            {
+                                item.StateQueue = ExecutionQueueStateQueue.Executed.ToString();
+                            }
+
                             var updateExecutionQueueResult = await _repo.UpdateExecutionQueue(item);
 
                             if (!updateExecutionQueueResult.Successful)
@@ -203,6 +210,11 @@ namespace Tools.ExecutionQueue
                                 if (item.Type == ExecutionQueueType.Other.ToString())
                                 {
                                     //TODO
+                                }
+
+                                if (item.Type == ExecutionQueueType.WakeUpScreenAfterEhi.ToString())
+                                {
+                                    commonUtility.ClickOnTaskbar();
                                 }
 
                                 if (oldUpdateError != null)

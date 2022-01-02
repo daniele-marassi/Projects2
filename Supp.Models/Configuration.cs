@@ -30,6 +30,7 @@ namespace Supp.Models
             public bool RemindersActive { get; set; }
             public int TimeToResetInSeconds { get; set; }
             public int TimeToEhiTimeoutInSeconds { get; set; }
+            public bool WakeUpScreenAfterEhiActive { get; set; }
         }
     }
 }

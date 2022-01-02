@@ -322,6 +322,10 @@
       <Project>{0ecca25e-d738-40a1-b00b-d7750115ee67}</Project>
       <Name>SyncIp</Name>
     </ProjectReference>
+    <ProjectReference Include="WakeUpScreenAfterPowerBreakService\WakeUpScreenAfterPowerBreak.csproj">
+      <Project>{FD342BA0-DE9A-49A0-8FCC-472771FDBF81}</Project>
+      <Name>WakeUpScreenAfterPowerBreak</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

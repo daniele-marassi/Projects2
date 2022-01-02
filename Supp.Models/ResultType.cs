@@ -11,6 +11,7 @@ namespace Supp.Models
         Deleted = 3,
         NotFound = 4,
         Found = 5,
-        Failed = 6
+        Failed = 6,
+        None = 7
     }
 }

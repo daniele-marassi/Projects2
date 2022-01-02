@@ -11,6 +11,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Windows.Forms;
+using System.Drawing;
+using Additional;
 
 namespace Tools.Common
 {
@@ -83,6 +86,18 @@ namespace Tools.Common
             }
 
             return result;
+        }
+
+        public void ClickOnTaskbar()
+        {
+            var workingAreaWidth = Screen.PrimaryScreen.WorkingArea.Width;
+            var workingAreaHeight = Screen.PrimaryScreen.WorkingArea.Height;
+
+            Cursor.Position = new Point(workingAreaWidth - 520, workingAreaHeight + 20);
+
+            System.Threading.Thread.Sleep(100);
+
+            VirtualMouse.LeftClick();
         }
     }
 }

@@ -41,7 +41,8 @@ namespace Supp.Site.Common
                 public static string Culture { get; set; }
                 public static int TimeToResetInSeconds { get; set; }
                 public static int TimeToEhiTimeoutInSeconds { get; set; }
-                
+                public static bool WakeUpScreenAfterEhiActive { get; set; }
+
                 public static string ConfigDefaultInJson
                 {
                     get
@@ -65,7 +66,8 @@ namespace Supp.Site.Common
                                 DescriptionMeteoToTheSalutationActive = GeneralSettings.Static.DescriptionMeteoToTheSalutationActive,
                                 RemindersActive = GeneralSettings.Static.RemindersActive,
                                 TimeToResetInSeconds = GeneralSettings.Static.TimeToResetInSeconds,
-                                TimeToEhiTimeoutInSeconds = GeneralSettings.Static.TimeToEhiTimeoutInSeconds
+                                TimeToEhiTimeoutInSeconds = GeneralSettings.Static.TimeToEhiTimeoutInSeconds,
+                                WakeUpScreenAfterEhiActive = GeneralSettings.Static.WakeUpScreenAfterEhiActive
                             }
                         };
 
@@ -129,6 +131,7 @@ namespace Supp.Site.Common
                     GeneralSettings.Static.RemindersActive = bool.Parse(configuration.GetSection("AppSettings:RemindersActive").Value);
                     GeneralSettings.Static.TimeToResetInSeconds = int.Parse(configuration.GetSection("AppSettings:TimeToResetInSeconds").Value);
                     GeneralSettings.Static.TimeToEhiTimeoutInSeconds = int.Parse(configuration.GetSection("AppSettings:TimeToEhiTimeoutInSeconds").Value);
+                    GeneralSettings.Static.RemindersActive = bool.Parse(configuration.GetSection("AppSettings:WakeUpScreenAfterEhiActive").Value);
                 }
             }
         }

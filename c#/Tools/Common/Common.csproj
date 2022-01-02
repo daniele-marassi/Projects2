@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Additional, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6ba42aab34563ad8, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Songs\External_library\Additional.dll</HintPath>
+    </Reference>
     <Reference Include="AxInterop.WMPLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WMPLib.1.0.0\lib\AxInterop.WMPLib.dll</HintPath>
     </Reference>

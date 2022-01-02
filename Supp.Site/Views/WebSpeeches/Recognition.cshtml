@@ -487,7 +487,6 @@
 
             countTheTimesToPartialReset = 0;
             partialResetActive = false;
-            resetActive = false;
             countTheTimeToResetInSeconds = 0;
 
             if(ehi == 1 && recognitionActive == true) partialResetActive = true;  
@@ -857,19 +856,19 @@
             //console.log('ehi:'+ehi +' recognitionActive:'+recognitionActive + ' partialResetActive:'+partialResetActive+ ' countTheTimesToPartialReset:'+countTheTimesToPartialReset);
 
             // partial reset after ehi with wait countTheTimesToPartialReset
-            if(partialResetActive && countTheTimesToPartialReset == timeToEhiTimeoutInSeconds /*&& recognitionActive == true*/){
+            if(partialResetActive && countTheTimesToPartialReset == timeToEhiTimeoutInSeconds){
                 console.warn('TheTimesToPartialReset');
                 countTheTimesToPartialReset = 0;
                 PartialReset(false,true);
             }
 
-            if(partialResetActive /*&& recognitionActive == true*/) countTheTimesToPartialReset++;
+            if(partialResetActive) countTheTimesToPartialReset++;
             else countTheTimesToPartialReset = 0;
 
             //timeToResetInSeconds = 12; //to debug
             //resetActive = true; //to debug
 
-            //console.warn('recognitionActive:'+recognitionActive + ' resetActive:'+resetActive+ ' countTheTimeToResetInSeconds:'+countTheTimeToResetInSeconds);
+            //console.log('recognitionActive:'+recognitionActive + ' resetActive:'+resetActive+ ' countTheTimeToResetInSeconds:'+countTheTimeToResetInSeconds);
 
             // reset after idle time countTheTimeToResetInSeconds
             if(resetActive && countTheTimeToResetInSeconds == timeToResetInSeconds && recognitionActive == true){
@@ -955,8 +954,8 @@
             audioActive = true;
             phraseSended = false;
             partialResetActive = false;
-            countTheTimesToPartialReset = 0;
-            countTheTimeToResetInSeconds = 0;
+            //countTheTimesToPartialReset = 0;
+            //countTheTimeToResetInSeconds = 0;
             
             if(excludeSpan != true)
             {
@@ -1035,7 +1034,7 @@
             recognitionDisable = false;
             audioActive = true;
             PartialInitFinal();
-
+            document.getElementById("recognitionEnableDisable_image").src = '/Images/micOn.png';
             LogFunctionEnd();
         }
 
@@ -1043,20 +1042,16 @@
             LogFunctionStart();
             if(recognitionActive == true){
                 PartialReset();
-                RecognitionDisable();
-                document.getElementById("recognitionEnableDisable_image").src = '/Images/micOff.png';
+                RecognitionDisable();     
             } else {
                 RecognitionEnable(false, true);
-                document.getElementById("recognitionEnableDisable_image").src = '/Images/micOn.png';
             }
             LogFunctionEnd();
         }
 
         function RecognitionDisable(){
             LogFunctionStart();
-            
             recognitionDisable = true;
-            recognitionActive = false;
             recognitionActive = false;
             audioActive = false;
             SetAudio();
@@ -1065,7 +1060,7 @@
             StopAnimateIntervals();
             clearInterval(animateIntervals['StopAnimateIntervalsListening']);
             animateIntervals['StopAnimateIntervalsListening'] = null;
-
+            document.getElementById("recognitionEnableDisable_image").src = '/Images/micOff.png';
             LogFunctionEnd();
         }
 
@@ -1081,7 +1076,6 @@
 
         function OpenShortcuts(){
             LogFunctionStart();
-            RecognitionEnableDisable();
             var element = document.getElementById("div_shortcuts");
             element.style.display = "block";
             LogFunctionStart();
@@ -1091,7 +1085,7 @@
             LogFunctionStart();
             var element = document.getElementById("div_shortcuts");
             element.style.display = "none";
-            RecognitionEnableDisable();
+
             LogFunctionEnd();
         }
 
@@ -1100,40 +1094,35 @@
             clearTimeout(actionShortcutTimeout);       
             actionShortcutTimeout = null;
 
-            if (parseInt(id) == 0) {
-                actionShortcutTimeout = setTimeout(function () {
-                    CloseShortcuts();
-                }, 50);
-            } else {
-                for (var i = 0; i < shortcuts.length; ++i) {
-                    var shortcut = shortcuts[i];
+            for (var i = 0; i < shortcuts.length; ++i) {
+                var shortcut = shortcuts[i];
 
-                    if (shortcut['Id'] == parseInt(id)) {
+                if (shortcut['Id'] == parseInt(id)) {
 
-                        LogWithTime("Selected shortcut: " + shortcut['Title']);
+                    LogWithTime("Selected shortcut: " + shortcut['Title']);
 
-                        if (application == false && shortcut['Type'] == 'Link') {
-                            var _url = shortcut['Action'].replace(/&amp;/g,'&');
-                            _url = DecodeUnicodeExtended(_url);
+                    if (application == false && shortcut['Type'] == 'Link') {
+                        var _url = shortcut['Action'].replace(/&amp;/g,'&');
+                        _url = DecodeUnicodeExtended(_url);
 
-                            window.open(_url);
-                        }
-                        else if (application == true && shortcut['Type'] == 'Link') {
-                            var _url = shortcut['Action'].replace(/&amp;/g,'&');
-                            _url = DecodeUnicodeExtended(_url);
+                        window.open(_url);
+                    }
+                    else if (application == true && shortcut['Type'] == 'Link') {
+                        var _url = shortcut['Action'].replace(/&amp;/g,'&');
+                        _url = DecodeUnicodeExtended(_url);
 
-                            window.open(_url, "open link", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
-                        }
-                        else {
-                            CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + shortcut['Id'] + '&_hostSelected=' + $("#hosts_cmb option:selected").text() + '&_application=' + application), "ResultActionShortcut");
-                        }
+                        window.open(_url, "open link", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
+                    }
+                    else {
+                        CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + shortcut['Id'] + '&_hostSelected=' + $("#hosts_cmb option:selected").text() + '&_application=' + application), "ResultActionShortcut");
                     }
                 }
+            }     
+            
+            actionShortcutTimeout = setTimeout(function () { 
+                CloseShortcuts();               
+            }, 50); 
 
-                actionShortcutTimeout = setTimeout(function () {
-                    CloseShortcuts();
-                }, 50);          
-            }
             LogFunctionEnd();
         }
 

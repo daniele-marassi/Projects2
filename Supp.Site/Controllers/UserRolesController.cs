@@ -100,16 +100,21 @@ namespace Supp.Site.Controllers
                     else if (!String.IsNullOrEmpty(searchString))
                     {
                         var _userIds = users.Where(_ => _.UserFullName.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())).Select(_ => _.Id).ToList();
+                        var _userIdsByUsername = users.Where(_ => _.UserName.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())).Select(_ => _.Id).ToList();
                         var _userRoleTypeIds = userRoleTypes.Where(_ => _.TypeName.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())).Select(_ => _.Id).ToList();
 
                         data = data.Where(_ =>
                             _userIds.Contains(_.UserId)
+                            || _userIdsByUsername.Contains(_.UserId)
                             || _userRoleTypeIds.Contains(_.UserRoleTypeId)
                         );
                     }
 
                     switch (sortOrder)
                     {
+                        case "UserName":
+                            data = data.OrderBy(x => x.Users.Where(_ => _.Id == x.UserId).Select(_ => _.UserName).FirstOrDefault());
+                            break;
                         case "UserFullName":
                             data = data.OrderBy(x => x.Users.Where(_ => _.Id == x.UserId).Select(_ => _.UserFullName).FirstOrDefault());
                             break;

@@ -7,6 +7,7 @@ namespace Tools.ExecutionQueue.Models
         SystemRunExe = 1,
         Other = 2,
         SongsPlayer = 3,
-        ForceHideApplication = 4
+        ForceHideApplication = 4,
+        WakeUpScreenAfterEhi = 5
     }
 }
