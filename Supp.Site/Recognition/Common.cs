@@ -387,7 +387,11 @@ namespace Supp.Site.Recognition
                             }
                         }
 
-                        var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = _hostSelected, Type = data.Type };
+                        var hostSelected = _hostSelected;
+
+                        if (data.Host.Trim().ToLower() != "all") hostSelected = data.Host;
+
+                        var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = hostSelected, Type = data.Type };
                         var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
 
                         if (addExecutionQueueResult.Successful)
