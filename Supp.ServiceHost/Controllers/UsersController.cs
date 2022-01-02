@@ -28,7 +28,7 @@ namespace Supp.ServiceHost.Controllers
             _config = config;
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetAllUsers")] //<host>/api/Users/GetAllUsers
         public async Task<IActionResult> GetAllUsers()
         {
@@ -37,7 +37,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetUser")] //<host>/api/Users/GetUser/5
         public async Task<IActionResult> GetUser(long id)
         {
@@ -46,7 +46,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpPut("UpdateUser")] //<host>/api/Users/UpdateUser/5
         public async Task<IActionResult> UpdateUser(long id, UserDto data)
         {
@@ -65,7 +65,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpPost("AddUser")] //<host>/api/Users/AddUser
         public async Task<IActionResult> AddUser(UserDto data)
         {
@@ -79,7 +79,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpDelete("DeleteUser")] //<host>/api/Users/DeleteUser/5
         public async Task<IActionResult> DeleteUser(long id)
         {

@@ -28,7 +28,7 @@ namespace Supp.ServiceHost.Controllers
             _config = config;
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetAllAuthentications")] //<host>/api/Authentications/GetAllAuthentications
         public async Task<IActionResult> GetAllAuthentications()
         {
@@ -37,7 +37,7 @@ namespace Supp.ServiceHost.Controllers
 			return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetAuthentication")] //<host>/api/Authentications/GetAuthentication/5
         public async Task<IActionResult> GetAuthentication(long id)
         {
@@ -83,7 +83,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpPost("AddAuthentication")] //<host>/api/Authentications/AddAuthentication
         public async Task<IActionResult> AddAuthentication(AuthenticationDto data)
         {
@@ -97,7 +97,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpDelete("DeleteAuthentication")] //<host>/api/Authentications/DeleteAuthentication/5
         public async Task<IActionResult> DeleteAuthentication(long id)
         {

@@ -102,7 +102,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpDelete("ClearStructureMedia")] //<host>/api/Media/ClearStructureMedia
         public async Task<IActionResult> ClearStructureMedia(string path)
         {

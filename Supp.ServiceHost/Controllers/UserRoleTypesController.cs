@@ -28,7 +28,7 @@ namespace Supp.ServiceHost.Controllers
             _config = config;
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetAllUserRoleTypes")] //<host>/api/UserRoleTypes/GetAllUserRoleTypes
         public async Task<IActionResult> GetAllUserRoleTypes()
         {
@@ -37,7 +37,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetUserRoleType")] //<host>/api/UserRoleTypes/GetUserRoleType/5
         public async Task<IActionResult> GetUserRoleType(long id)
         {
@@ -46,7 +46,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpPut("UpdateUserRoleType")] //<host>/api/UserRoleTypes/UpdateUserRoleType/5
         public async Task<IActionResult> UpdateUserRoleType(long id, UserRoleTypeDto data)
         {
@@ -65,7 +65,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpPost("AddUserRoleType")] //<host>/api/UserRoleTypes/AddUserRoleType
         public async Task<IActionResult> AddUserRoleType(UserRoleTypeDto data)
         {
@@ -79,7 +79,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpDelete("DeleteUserRoleType")] //<host>/api/UserRoleTypes/DeleteUserRoleType/5
         public async Task<IActionResult> DeleteUserRoleType(long id)
         {

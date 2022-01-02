@@ -28,7 +28,7 @@ namespace Supp.ServiceHost.Controllers
             _config = config;
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetAllUserRoles")] //<host>/api/UserRoles/GetAllUserRoles
         public async Task<IActionResult> GetAllUserRoles()
         {
@@ -37,7 +37,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetUserRole")] //<host>/api/UserRoles/GetUserRole/5
         public async Task<IActionResult> GetUserRole(long id)
         {
@@ -46,7 +46,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpPut("UpdateUserRole")] //<host>/api/UserRoles/UpdateUserRole/5
         public async Task<IActionResult> UpdateUserRole(long id, UserRoleDto data)
         {
@@ -65,7 +65,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpPost("AddUserRole")] //<host>/api/UserRoles/AddUserRole
         public async Task<IActionResult> AddUserRole(UserRoleDto data)
         {
@@ -79,7 +79,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpDelete("DeleteUserRole")] //<host>/api/UserRoles/DeleteUserRole/5
         public async Task<IActionResult> DeleteUserRole(long id)
         {

@@ -28,7 +28,7 @@ namespace Supp.ServiceHost.Controllers
             _config = config;
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetAllExecutionQueues")] //<host>/api/ExecutionQueues/GetAllExecutionQueues
         public async Task<IActionResult> GetAllExecutionQueues()
         {
@@ -37,7 +37,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetExecutionQueue")] //<host>/api/ExecutionQueues/GetExecutionQueue/5
         public async Task<IActionResult> GetExecutionQueue(long id)
         {
@@ -46,7 +46,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpPut("UpdateExecutionQueue")] //<host>/api/ExecutionQueues/UpdateExecutionQueue/5
         public async Task<IActionResult> UpdateExecutionQueue(long id, ExecutionQueueDto data)
         {
@@ -65,7 +65,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpPost("AddExecutionQueue")] //<host>/api/ExecutionQueues/AddExecutionQueue
         public async Task<IActionResult> AddExecutionQueue(ExecutionQueueDto data)
         {
@@ -79,7 +79,7 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin)]
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
         [HttpDelete("DeleteExecutionQueue")] //<host>/api/ExecutionQueues/DeleteExecutionQueue/5
         public async Task<IActionResult> DeleteExecutionQueue(long id)
         {

@@ -84,7 +84,7 @@
                                             <div class="dropdown-divider"></div>
                                             @Html.ActionLink("Media Box", "MediaBox", "Media", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
 
-                                            @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0)
+                                            @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0)
                                             {
                                                 <div class="dropdown-divider"></div>
                                                 @Html.ActionLink("List Media", "Index", "Media", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
@@ -105,7 +105,7 @@
                                             <div class="dropdown-divider"></div>
                                             @Html.ActionLink("Add Google Accounts", "AddGoogleAccounts", "GoogleAccounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
 
-                                            @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0)
+                                            @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0)
                                             {
                                                 <div class="dropdown-divider"></div>
                                                 @Html.ActionLink("List Google Authorization", "Index", "GoogleAuths", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
@@ -116,7 +116,7 @@
                                     </li>
                                 }
 
-                                @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0)
+                                @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0)
                                 {
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
@@ -152,7 +152,7 @@
                                             Web Speech
                                         </a>
                                         <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
-                                            @if (claims.Roles.Where(_ => _.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0)
+                                            @if (claims.Roles.Where(_ => _.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0)
                                             {
                                                 <div class="dropdown-divider"></div>
                                                 @Html.ActionLink("List Execution Queue", "Index", "ExecutionQueues", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
