@@ -374,6 +374,16 @@ namespace Supp.Site.Repositories
             }
         }
 
+        /// <summary>
+        /// Get Holidays
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="userName"></param>
+        /// <param name="userId"></param>
+        /// <param name="timeMin"></param>
+        /// <param name="timeMax"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public async Task<HolidaysResult> GetHolidays(string token, string userName, long userId, DateTime timeMin, DateTime timeMax, string culture)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
@@ -453,6 +463,15 @@ namespace Supp.Site.Repositories
             }
         }
 
+        /// <summary>
+        /// Edit Last Reminder
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="userName"></param>
+        /// <param name="userId"></param>
+        /// <param name="webSpeechTypes"></param>
+        /// <param name="editCalendarEventRequest"></param>
+        /// <returns></returns>
         public async Task<EventResult> EditLastReminder(string token, string userName, long userId, WebSpeechTypes webSpeechTypes, EditCalendarEventRequest editCalendarEventRequest)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
@@ -517,6 +536,215 @@ namespace Supp.Site.Repositories
 
                         if (editLastCalendarEventBySummaryResult.Successful == false && editLastCalendarEventBySummaryResult.Message != null && editLastCalendarEventBySummaryResult.Message != String.Empty) errors.Add(editLastCalendarEventBySummaryResult.Message);
                     }
+
+                    if (googleAccounts.Count == 0)
+                    {
+                        response.ResultState = GoogleManagerModels.ResultType.NotFound;
+                        errors.Add("No google accounts found!");
+                    }
+
+                    if (response.Data.Count == 0 && errors.Count == 0)
+                        response.ResultState = GoogleManagerModels.ResultType.NotFound;
+                    if (response.Data.Count > 0 && errors.Count == 0)
+                        response.ResultState = GoogleManagerModels.ResultType.Found;
+                    if (response.Data.Count > 0 && errors.Count > 0)
+                        response.ResultState = GoogleManagerModels.ResultType.FoundWithError;
+
+                    if (response.Data.Count == 0 && errors.Count > 0 && googleAccounts.Count > 0)
+                    {
+                        response.Successful = false;
+                        response.ResultState = GoogleManagerModels.ResultType.Error;
+                    }
+                    else
+                        response.Successful = true;
+
+                    if (errors.Count > 0)
+                        response.Message = JsonConvert.SerializeObject(errors);
+                }
+                catch (Exception ex)
+                {
+                    response.Successful = false;
+                    response.ResultState = GoogleManagerModels.ResultType.Error;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null ? ex.InnerException.Message : ex.Message;
+                    response.OriginalException = null;
+                    logger.Error(ex.ToString());
+                    //throw ex;
+                }
+
+                return response;
+            }
+        }
+
+        /// <summary>
+        /// Delete Last Reminder
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="userName"></param>
+        /// <param name="userId"></param>
+        /// <param name="webSpeechTypes"></param>
+        /// <param name="deleteCalendarEventsRequest"></param>
+        /// <returns></returns>
+        public async Task<EventResult> DeleteLastReminder(string token, string userName, long userId, WebSpeechTypes webSpeechTypes, DeleteCalendarEventsRequest deleteCalendarEventsRequest)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                var response = new EventResult() { Data = new List<Event>(), ResultState = new GoogleManagerModels.ResultType() };
+
+                try
+                {
+                    var identity = userName + userId.ToString() + DateTime.Now.ToString("yyyyMMddHHmmssfff");
+
+                    var googleAccountRepository = new GoogleAccountsRepository() { };
+                    var googleAuthsRepository = new GoogleAuthsRepository() { };
+
+                    var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
+                    var googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
+
+                    var googleAccounts = googleAccountResult.Data.Where(_ => _.UserId == userId && _.AccountType == AccountType.Calendar.ToString()).ToList();
+                    var googleAuthIds = googleAccounts.Select(_ => _.GoogleAuthId).ToList();
+
+                    var errors = new List<string>() { };
+
+                    if (deleteCalendarEventsRequest.Summary == null) deleteCalendarEventsRequest.Summary = String.Empty;
+
+                    if (webSpeechTypes == WebSpeechTypes.EditNote && deleteCalendarEventsRequest.Summary.StartsWith("#Note") == false)
+                        deleteCalendarEventsRequest.Summary = "#Note" + " " + deleteCalendarEventsRequest.Summary.Trim();
+
+                    foreach (var account in googleAccounts)
+                    {
+                        var auth = googleAuthResult.Data.Where(_ => _.Id == account.GoogleAuthId).FirstOrDefault();
+                        var tokenFile = JsonConvert.DeserializeObject<TokenFile>(auth.TokenFileInJson);
+
+                        var googleCalendarUtility = new GoogleCalendarUtility();
+                        var _deleteCalendarEventsRequest = new DeleteCalendarEventsRequest()
+                        {
+                            Auth = new Auth()
+                            {
+                                Installed = new AuthProperties()
+                                {
+                                    Client_id = auth.Client_id,
+                                    Client_secret = auth.Client_secret,
+                                    Project_id = auth.Project_id
+                                }
+                            },
+                            TokenFile = tokenFile,
+                            Account = account.Account,
+                            TimeMin = deleteCalendarEventsRequest.TimeMin,
+                            TimeMax = deleteCalendarEventsRequest.TimeMax,
+                            Summary = deleteCalendarEventsRequest.Summary
+                        };
+                        var deleteLastCalendarEventBySummaryResult = googleCalendarUtility.DeleteLastCalendarEventBySummary(_deleteCalendarEventsRequest);
+
+                        response.Data.AddRange(deleteLastCalendarEventBySummaryResult.Data);
+
+                        if (deleteLastCalendarEventBySummaryResult.Successful == false && deleteLastCalendarEventBySummaryResult.Message != null && deleteLastCalendarEventBySummaryResult.Message != String.Empty) errors.Add(deleteLastCalendarEventBySummaryResult.Message);
+                    }
+
+                    if (googleAccounts.Count == 0)
+                    {
+                        response.ResultState = GoogleManagerModels.ResultType.NotFound;
+                        errors.Add("No google accounts found!");
+                    }
+
+                    if (response.Data.Count == 0 && errors.Count == 0)
+                        response.ResultState = GoogleManagerModels.ResultType.NotFound;
+                    if (response.Data.Count > 0 && errors.Count == 0)
+                        response.ResultState = GoogleManagerModels.ResultType.Found;
+                    if (response.Data.Count > 0 && errors.Count > 0)
+                        response.ResultState = GoogleManagerModels.ResultType.FoundWithError;
+
+                    if (response.Data.Count == 0 && errors.Count > 0 && googleAccounts.Count > 0)
+                    {
+                        response.Successful = false;
+                        response.ResultState = GoogleManagerModels.ResultType.Error;
+                    }
+                    else
+                        response.Successful = true;
+
+                    if (errors.Count > 0)
+                        response.Message = JsonConvert.SerializeObject(errors);
+                }
+                catch (Exception ex)
+                {
+                    response.Successful = false;
+                    response.ResultState = GoogleManagerModels.ResultType.Error;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null ? ex.InnerException.Message : ex.Message;
+                    response.OriginalException = null;
+                    logger.Error(ex.ToString());
+                    //throw ex;
+                }
+
+                return response;
+            }
+        }
+
+        /// <summary>
+        /// Create Reminder
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="userName"></param>
+        /// <param name="userId"></param>
+        /// <param name="webSpeechTypes"></param>
+        /// <param name="createCalendarEventsRequest"></param>
+        /// <returns></returns>
+        public async Task<EventResult> CreateReminder(string token, string userName, long userId, WebSpeechTypes webSpeechTypes, CreateCalendarEventRequest createCalendarEventsRequest, string accountName)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                var response = new EventResult() { Data = new List<Event>(), ResultState = new GoogleManagerModels.ResultType() };
+
+                try
+                {
+                    var identity = userName + userId.ToString() + DateTime.Now.ToString("yyyyMMddHHmmssfff");
+
+                    var googleAccountRepository = new GoogleAccountsRepository() { };
+                    var googleAuthsRepository = new GoogleAuthsRepository() { };
+
+                    var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
+                    var googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
+
+                    var googleAccounts = googleAccountResult.Data.Where(_ => _.UserId == userId && _.AccountType == AccountType.Calendar.ToString()).ToList();
+                    var googleAuthIds = googleAccounts.Select(_ => _.GoogleAuthId).ToList();
+
+                    var errors = new List<string>() { };
+
+                    if (createCalendarEventsRequest.Summary == null) createCalendarEventsRequest.Summary = String.Empty;
+
+                    if (webSpeechTypes == WebSpeechTypes.EditNote && createCalendarEventsRequest.Summary.StartsWith("#Note") == false)
+                        createCalendarEventsRequest.Summary = "#Note" + " " + createCalendarEventsRequest.Summary.Trim();
+
+                    var account = googleAccounts.Where(_=>_.Account.Trim().ToLower() == accountName.Trim().ToLower()).FirstOrDefault();
+
+                    var auth = googleAuthResult.Data.Where(_ => _.Id == account.GoogleAuthId).FirstOrDefault();
+                    var tokenFile = JsonConvert.DeserializeObject<TokenFile>(auth.TokenFileInJson);
+
+                    var googleCalendarUtility = new GoogleCalendarUtility();
+                    var _createCalendarEventRequest = new CreateCalendarEventRequest()
+                    {
+                        Auth = new Auth()
+                        {
+                            Installed = new AuthProperties()
+                            {
+                                Client_id = auth.Client_id,
+                                Client_secret = auth.Client_secret,
+                                Project_id = auth.Project_id
+                            }
+                        },
+                        TokenFile = tokenFile,
+                        Account = account.Account,
+                        Summary = createCalendarEventsRequest.Summary,
+                        Color = createCalendarEventsRequest.Color,
+                        Description = createCalendarEventsRequest.Description,
+                        EventDateStart = createCalendarEventsRequest.EventDateStart,
+                        EventDateEnd = createCalendarEventsRequest.EventDateEnd,
+                        Location = createCalendarEventsRequest.Location,
+                        NotificationMinutes = createCalendarEventsRequest.NotificationMinutes
+                    };
+                    var createCalendarEventResult = googleCalendarUtility.CreateCalendarEvent(createCalendarEventsRequest);
+
+                    response.Data.AddRange(createCalendarEventResult.Data);
+
+                    if (createCalendarEventResult.Successful == false && createCalendarEventResult.Message != null && createCalendarEventResult.Message != String.Empty) errors.Add(createCalendarEventResult.Message);
 
                     if (googleAccounts.Count == 0)
                     {

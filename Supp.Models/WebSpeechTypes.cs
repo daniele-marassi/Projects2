@@ -22,18 +22,25 @@ namespace Supp.Models
         SystemReadNotes = 12,
         EditNote = 13,
         SystemEditNote = 14,
-        SystemDeleteNote = 15,
-        ReadReminder = 16,
-        ReadRemindersToday = 17,
-        ReadRemindersTomorrow = 18,
-        SystemEditReminder = 19,
-        SystemDeleteReminder = 20,
-        SystemDialogueRequestNotImplemented = 21,
-        SystemDialogueAddToNote = 22,
-        SystemDialogueAddToNoteWithName = 23,
-        SystemDialogueClearNote = 24,
-        SystemDialogueClearNoteWithName = 25,
-        SystemDialogueGeneric = 26
+        DeleteNote = 15,
+        SystemDeleteNote = 16,
+        ReadReminder = 17,
+        ReadRemindersToday = 18,
+        ReadRemindersTomorrow = 19,
+        SystemEditReminder = 20,
+        SystemDeleteReminder = 21,
+        SystemDialogueRequestNotImplemented = 22,
+        SystemDialogueAddToNote = 23,
+        SystemDialogueAddToNoteWithName = 24,
+        SystemDialogueClearNote = 25,
+        SystemDialogueClearNoteWithName = 26,
+        SystemDialogueGeneric = 27,
+        CreateNote = 28,
+        SystemCreateNote = 29,
+        SystemDialogueCreateNote = 30,
+        SystemDialogueCreateNoteWithName = 31,
+        SystemDialogueDeleteNote = 32,
+        SystemDialogueDeleteNoteWithName = 33
     }
 
     public class WebSpeechTypesUtility
@@ -50,6 +57,9 @@ namespace Supp.Models
             {
                 webSpeechTypes.Add(new WebSpeechType() { Id = item.ToString(), Name = item.ToString() });
             }
+
+            webSpeechTypes = webSpeechTypes.OrderBy(_ => _.Name).ToList();
+
             return webSpeechTypes;
         }
     }

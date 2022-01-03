@@ -30,6 +30,9 @@ namespace Supp.Models
             {
                 stepTypes.Add(new StepType() { Id = item.ToString(), Name = item.ToString() });
             }
+
+            stepTypes = stepTypes.OrderBy(_ => _.Name).ToList();
+
             return stepTypes;
         }
     }

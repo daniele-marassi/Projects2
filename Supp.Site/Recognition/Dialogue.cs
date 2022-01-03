@@ -252,27 +252,27 @@ namespace Supp.Site.Recognition
         }
 
         /// <summary>
-        /// Get Dialogue RequestNotImplemented
+        /// Get Dialogue Request Not Implemented
         /// </summary>
         /// <param name="culture"></param>
         /// <param name="lastWebSpeechId"></param>
         /// <returns></returns>
         public List<WebSpeechDto> GetDialogueRequestNotImplemented(string culture, long lastWebSpeechId)
         {
-            var dialogueRequestNotImplemented = new DialogueRequestNotImplemented();
-            return dialogueRequestNotImplemented.Get(culture, lastWebSpeechId);
+            var dialogue = new DialogueRequestNotImplemented();
+            return dialogue.Get(culture, lastWebSpeechId);
         }
 
         /// <summary>
-        /// Get Dialogue AddToNote
+        /// Get Dialogue Add To Note
         /// </summary>
         /// <param name="culture"></param>
         /// <param name="lastWebSpeechId"></param>
         /// <returns></returns>
         public List<WebSpeechDto> GetDialogueAddToNote(string culture, long lastWebSpeechId, string _subType)
         {
-            var dialogueAddToNote = new DialogueAddToNote();
-            return dialogueAddToNote.Get(culture, lastWebSpeechId, _subType);
+            var dialogue = new DialogueAddToNote();
+            return dialogue.Get(culture, lastWebSpeechId, _subType);
         }
 
         /// <summary>
@@ -284,8 +284,32 @@ namespace Supp.Site.Recognition
         /// <returns></returns>
         public List<WebSpeechDto> GetDialogueClearNote(string culture, long lastWebSpeechId, string _subType)
         {
-            var dialogueClearNote = new DialogueClearNote();
-            return dialogueClearNote.Get(culture, lastWebSpeechId, _subType);
+            var dialogue = new DialogueClearNote();
+            return dialogue.Get(culture, lastWebSpeechId, _subType);
+        }
+
+        /// <summary>
+        /// Get Dialogue Create Note
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <param name="lastWebSpeechId"></param>
+        /// <returns></returns>
+        public List<WebSpeechDto> GetDialogueCreateNote(string culture, long lastWebSpeechId, string _subType)
+        {
+            var dialogue = new DialogueCreateNote();
+            return dialogue.Get(culture, lastWebSpeechId, _subType);
+        }
+
+        /// <summary>
+        /// Get Dialogue Delete Note
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <param name="lastWebSpeechId"></param>
+        /// <returns></returns>
+        public List<WebSpeechDto> GetDialogueDeleteNote(string culture, long lastWebSpeechId, string _subType)
+        {
+            var dialogue = new DialogueDeleteNote();
+            return dialogue.Get(culture, lastWebSpeechId, _subType);
         }
     }
 }
