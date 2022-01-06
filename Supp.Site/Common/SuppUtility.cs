@@ -15,6 +15,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using static Supp.Site.Common.Config;
 
 namespace Supp.Site.Common
@@ -24,18 +25,48 @@ namespace Supp.Site.Common
         private readonly static Logger classLogger = LogManager.GetCurrentClassLogger();
         private readonly NLogUtility nLogUtility = new NLogUtility();
 
-        /// <summary>  
-        /// Set Cookie 
+        /// <summary>
+        /// Set Cookie
         /// </summary>
-        /// <param name="response"> HttpResponse </param>  
-        /// <param name="key">key (unique indentifier)</param>  
-        /// <param name="value">value to store in cookie object</param>  
-        /// <param name="expireInSeconds">expire In Seconds</param>
-        public void SetCookie(HttpResponse response, string key, string value, int? expireInSeconds)
+        /// <param name="response"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="expireInSeconds"></param>
+        /// <param name="onlySpecificKey"></param>
+        public void SetCookie(HttpResponse response, string key, string value, int? expireInSeconds, bool onlySpecificKey = false)
         {
             CookieOptions option = new CookieOptions();
             option.Expires = DateTime.Now.AddSeconds((double)expireInSeconds);
-            response.Cookies.Append(key, value, option);
+
+            if (value == null) value = String.Empty;
+
+            if (onlySpecificKey == false)
+            {
+                value = HttpUtility.UrlEncode(value);
+
+                var cookieCharacterLimit = (4096 - key.Length) - 10;
+                var i = 0;
+
+                while (value != String.Empty)
+                {
+                    cookieCharacterLimit = cookieCharacterLimit - i.ToString().Length - 1;
+                    var _value = "";
+                    if (value.Length < cookieCharacterLimit) _value = value.Substring(0, value.Length);
+                    else _value = value.Substring(0, cookieCharacterLimit);
+
+                    value = value.Substring(_value.Length, value.Length - _value.Length);
+
+                    _value = HttpUtility.UrlDecode(_value);
+
+                    response.Cookies.Append(key + "_" + i.ToString(), _value, option);
+
+                    i++;
+                }
+            }
+            else
+            {
+                response.Cookies.Append(key, value, option);
+            }
         }
 
         /// <summary>
@@ -46,8 +77,19 @@ namespace Supp.Site.Common
         /// <returns></returns>
         public string ReadCookie(HttpRequest request, string key)
         {
-            string value = String.Empty;
-            if (request != null && request.Cookies[key] != null) value = request.Cookies[key];
+            var i = 0;
+            var _key = key + "_" + i.ToString();
+            var value = "";
+
+            while (request != null && request.Cookies[_key] != null)
+            {
+                value += request.Cookies[_key];
+                i++;
+                _key = key + "_" + i.ToString();
+            }
+
+            value = HttpUtility.UrlDecode(value);
+
             return value;
         }
 
@@ -55,14 +97,29 @@ namespace Supp.Site.Common
         /// Remove Cookie
         /// </summary>
         /// <param name="response"></param>
+        /// <param name="request"></param>
         /// <param name="key"></param>
         public void RemoveCookie(HttpResponse response, HttpRequest request, string key)
         {
-            response.Cookies.Delete(key);
-            if (ReadCookie(request, key) != String.Empty)
+            var i = 0;
+            var _key = key + "_" + i.ToString();
+
+            while (request != null && request.Cookies[_key] != null)
             {
-                SetCookie(response, key, String.Empty, 0);
-            }         
+                response.Cookies.Delete(_key);
+                i++;
+                _key = key + "_" + i.ToString();
+            }
+
+            i = 0;
+            _key = key + "_" + i.ToString();
+
+            while (request != null && request.Cookies[_key] != null)
+            {
+                SetCookie(response, _key, String.Empty, 0, true);
+                i++;
+                _key = key + "_" + i.ToString();
+            }        
         }
 
         /// <summary>

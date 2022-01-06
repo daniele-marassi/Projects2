@@ -13,7 +13,8 @@ namespace Supp.Models
         AddManually = 3,
         Choice = 4,
         GetElementName = 5,
-        GetElementValue = 6
+        GetElementValue = 6,
+        Execute = 7
     }
 
     public class StepTypesUtility

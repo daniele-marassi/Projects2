@@ -1,58 +1,58 @@
-﻿function DecodeUnicode(str) {
-    str = decodeURIComponent(str);
-    str = str.replace(new RegExp('/u0022', 'g'), '"');
+﻿function DecodeUnicode(_value) {
+    _value = decodeURIComponent(_value);
+    _value = _value.replace(new RegExp('/u0022', 'g'), '"');
 
-    str = str.replace(new RegExp('/U00E0', 'g'), "à");
-    str = str.replace(new RegExp('/U00E8', 'g'), "è");
-    str = str.replace(new RegExp('/U00F2', 'g'), "ò");
-    str = str.replace(new RegExp('/U00F9', 'g'), "ù");
-    str = str.replace(new RegExp('/U00EC', 'g'), "ì");
+    _value = _value.replace(new RegExp('/U00E0', 'g'), "à");
+    _value = _value.replace(new RegExp('/U00E8', 'g'), "è");
+    _value = _value.replace(new RegExp('/U00F2', 'g'), "ò");
+    _value = _value.replace(new RegExp('/U00F9', 'g'), "ù");
+    _value = _value.replace(new RegExp('/U00EC', 'g'), "ì");
 
-    str = str.replace(new RegExp('/U00C0', 'g'), "à");
-    str = str.replace(new RegExp('/U00C8', 'g'), "è");
-    str = str.replace(new RegExp('/U00D2', 'g'), "ò");
-    str = str.replace(new RegExp('/U00D9', 'g'), "ù");
-    str = str.replace(new RegExp('/U00CC', 'g'), "ì");
+    _value = _value.replace(new RegExp('/U00C0', 'g'), "à");
+    _value = _value.replace(new RegExp('/U00C8', 'g'), "è");
+    _value = _value.replace(new RegExp('/U00D2', 'g'), "ò");
+    _value = _value.replace(new RegExp('/U00D9', 'g'), "ù");
+    _value = _value.replace(new RegExp('/U00CC', 'g'), "ì");
 
-    str = str.replace(new RegExp('/U0026', 'g'), "&");
-    str = str.replace(new RegExp('/u0026', 'g'), "&");
+    _value = _value.replace(new RegExp('/U0026', 'g'), "&");
+    _value = _value.replace(new RegExp('/u0026', 'g'), "&");
 
-    str = str.replace(new RegExp('/U0027', 'g'), "'");
+    _value = _value.replace(new RegExp('/U0027', 'g'), "'");
 
-    str = str.replace(new RegExp('/U00D', 'g'), " ");
-    str = str.replace(new RegExp('/U00A', 'g'), " ");
+    _value = _value.replace(new RegExp('/U00D', 'g'), " ");
+    _value = _value.replace(new RegExp('/U00A', 'g'), " ");
 
-    str = str.replace(new RegExp('/u00E0', 'g'), "à");
-    str = str.replace(new RegExp('/u00E8', 'g'), "è");
-    str = str.replace(new RegExp('/u00F2', 'g'), "ò");
-    str = str.replace(new RegExp('/u00F9', 'g'), "ù");
-    str = str.replace(new RegExp('/u00EC', 'g'), "ì");
+    _value = _value.replace(new RegExp('/u00E0', 'g'), "à");
+    _value = _value.replace(new RegExp('/u00E8', 'g'), "è");
+    _value = _value.replace(new RegExp('/u00F2', 'g'), "ò");
+    _value = _value.replace(new RegExp('/u00F9', 'g'), "ù");
+    _value = _value.replace(new RegExp('/u00EC', 'g'), "ì");
 
-    str = str.replace(new RegExp('/u00C0', 'g'), "à");
-    str = str.replace(new RegExp('/u00C8', 'g'), "è");
-    str = str.replace(new RegExp('/u00D2', 'g'), "ò");
-    str = str.replace(new RegExp('/u00D9', 'g'), "ù");
-    str = str.replace(new RegExp('/u00CC', 'g'), "ì");
+    _value = _value.replace(new RegExp('/u00C0', 'g'), "à");
+    _value = _value.replace(new RegExp('/u00C8', 'g'), "è");
+    _value = _value.replace(new RegExp('/u00D2', 'g'), "ò");
+    _value = _value.replace(new RegExp('/u00D9', 'g'), "ù");
+    _value = _value.replace(new RegExp('/u00CC', 'g'), "ì");
 
-    str = str.replace(new RegExp('/u0027', 'g'), "'");
+    _value = _value.replace(new RegExp('/u0027', 'g'), "'");
 
-    str = str.replace(new RegExp('/u00D', 'g'), " ");
-    str = str.replace(new RegExp('/u00A', 'g'), " ");
+    _value = _value.replace(new RegExp('/u00D', 'g'), " ");
+    _value = _value.replace(new RegExp('/u00A', 'g'), " ");
 
-    str = str.replace(new RegExp('/u002B', 'g'), "+");
+    _value = _value.replace(new RegExp('/u002B', 'g'), "+");
 
-    str = str.replace(new RegExp('/u00F1', 'g'), "ñ");
+    _value = _value.replace(new RegExp('/u00F1', 'g'), "ñ");
 
-    return str;
+    return _value;
 }
 
-function DecodeUnicodeExtended(str) {
+function DecodeUnicodeExtended(_value) {
 
-    str = DecodeUnicode(str);
+    _value = DecodeUnicode(_value);
 
-    str = str.replace(new RegExp('null', 'g'), "");
+    _value = _value.replace(new RegExp('null', 'g'), "");
 
-    return str;
+    return _value;
 }
 
 function GetBoolean(value) {

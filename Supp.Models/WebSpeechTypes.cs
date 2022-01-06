@@ -40,7 +40,10 @@ namespace Supp.Models
         SystemDialogueCreateNote = 30,
         SystemDialogueCreateNoteWithName = 31,
         SystemDialogueDeleteNote = 32,
-        SystemDialogueDeleteNoteWithName = 33
+        SystemDialogueDeleteNoteWithName = 33,
+        WebSearch = 34,
+        SystemDialogueWebSearch = 35,
+        SystemDialogueRunExe = 36
     }
 
     public class WebSpeechTypesUtility
