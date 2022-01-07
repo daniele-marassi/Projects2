@@ -7,9 +7,7 @@ namespace Supp.Models
 {
     public enum WebSpeechTypes
     {
-        SystemRunExe = 0,
         SystemRequest = 1,
-        RunExe = 2,
         Request = 3,
         Link = 4,
         Firefox = 5,
@@ -43,7 +41,13 @@ namespace Supp.Models
         SystemDialogueDeleteNoteWithName = 33,
         WebSearch = 34,
         SystemDialogueWebSearch = 35,
-        SystemDialogueRunExe = 36
+        SystemDialogueRunExe = 36,
+        SystemRunExe = 37,
+        RunExe = 38,
+        SystemRunExeWithNumericParameter = 39,
+        RunExeWithNumericParameter = 40,
+        SystemRunExeWithNotNumericParameter = 41,
+        RunExeWithNotNumericParameter = 42
     }
 
     public class WebSpeechTypesUtility

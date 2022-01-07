@@ -138,7 +138,7 @@ namespace Supp.Site.Recognition
         /// <returns></returns>
         public async Task<WebSpeechDto> RunExe(WebSpeechDto data, string _phrase, string _hostSelected, string access_token_cookie, ExecutionQueuesRepository executionQueueRepo)
         {
-            if (data.Parameters == null || data.Parameters == String.Empty)
+            if (data.Type == WebSpeechTypes.RunExeWithNumericParameter.ToString() || data.Type == WebSpeechTypes.SystemRunExeWithNumericParameter.ToString())
             {
                 var value = 0;
                 if (_phrase == null || _phrase == "") _phrase = data.Phrase;
@@ -157,11 +157,25 @@ namespace Supp.Site.Recognition
                 }
             }
 
+            if (data.Type == WebSpeechTypes.RunExeWithNotNumericParameter.ToString() || data.Type == WebSpeechTypes.SystemRunExeWithNotNumericParameter.ToString())
+            {
+                var value = 0;
+                if (_phrase == null || _phrase == "") _phrase = data.Phrase;
+
+                try
+                {
+                    if (data.Parameters == null) data.Parameters = String.Empty;
+                    data.Parameters += _phrase.ToString();
+                }
+                catch (Exception)
+                { }
+            }
+
             var hostSelected = _hostSelected;
 
             if (data.Host.Trim().ToLower() != "all") hostSelected = data.Host;
 
-            var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = hostSelected, Type = data.Type };
+            var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = hostSelected, Type = WebSpeechTypes.RunExe.ToString() };
             var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
 
             if (addExecutionQueueResult.Successful)

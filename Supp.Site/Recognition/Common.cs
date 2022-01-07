@@ -385,9 +385,22 @@ namespace Supp.Site.Recognition
                         data.Answer = answer;
                     }
 
-                    if (data != null && (data.Type == WebSpeechTypes.SystemRunExe.ToString() || data.Type == WebSpeechTypes.RunExe.ToString()) && data.OperationEnable == true && data.Step == 0)
+                    if (
+                            data != null 
+                            && (
+                                data.Type == WebSpeechTypes.SystemRunExe.ToString() 
+                                || data.Type == WebSpeechTypes.RunExe.ToString()
+                                || data.Type == WebSpeechTypes.SystemRunExeWithNotNumericParameter.ToString()
+                                || data.Type == WebSpeechTypes.RunExeWithNotNumericParameter.ToString()
+                                || data.Type == WebSpeechTypes.SystemRunExeWithNumericParameter.ToString()
+                                || data.Type == WebSpeechTypes.RunExeWithNumericParameter.ToString()
+                                ) 
+                            && data.OperationEnable == true && data.Step == 0
+                        )
                     {
-                        if (data.SubType == WebSpeechTypes.SystemDialogueRunExe.ToString())
+                        var phrase = GetValueFromPronouncedPhrase(_phrase, _keysMatched).Trim();
+
+                        if (data.SubType == WebSpeechTypes.SystemDialogueRunExe.ToString() && (phrase == null || phrase == String.Empty))
                         {
                             List<WebSpeechDto> dialogue = null;
 
@@ -404,13 +417,14 @@ namespace Supp.Site.Recognition
 
                                 _data.Parameters = data.Parameters;
                                 _data.Operation = data.Operation;
+                                _data.Type = data.Type;
 
-                                data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);
+                                data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, phrase, response, request, _claims, userName, userId, _hostSelected);
                             }
                         }
                         else
                         {
-                            data = await dialogue.RunExe(data, _phrase, _hostSelected, access_token_cookie, executionQueueRepo);
+                            data = await dialogue.RunExe(data, phrase, _hostSelected, access_token_cookie, executionQueueRepo);
 
                             if (data.ExecutionQueueId != 0)
                             {
@@ -476,6 +490,7 @@ namespace Supp.Site.Recognition
                                 _data = GetAnswer(_data);
 
                                 _data.Parameters = data.Parameters;
+                                _data.Type = data.Type;
 
                                 data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);
                             }
@@ -507,6 +522,7 @@ namespace Supp.Site.Recognition
                             _data = GetAnswer(_data);
 
                             _data.Parameters = data.Parameters;
+                            //_data.Type = data.Type;
 
                             data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);
                         }
@@ -528,6 +544,7 @@ namespace Supp.Site.Recognition
                             _data = GetAnswer(_data);
 
                             _data.Parameters = data.Parameters;
+                            //_data.Type = data.Type;
 
                             data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);
                         }
@@ -549,6 +566,7 @@ namespace Supp.Site.Recognition
                             _data = GetAnswer(_data);
 
                             _data.Parameters = data.Parameters;
+                            //_data.Type = data.Type;
 
                             data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);
                         }

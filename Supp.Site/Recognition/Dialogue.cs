@@ -67,7 +67,7 @@ namespace Supp.Site.Recognition
                     name = suppUtility.FirstLetterToUpper(_phrase.Trim().Replace(' ', '_'));
                 }
 
-                newWebSpeech = new WebSpeechDto() { Name = name, Phrase = @"[[""" + _phrase + @"""]]", Host = "All", Type = WebSpeechTypes.Request.ToString(), FinalStep = true, OperationEnable = data.OperationEnable, PrivateInstruction = true, Ico = "/Images/Shortcuts/generic.png", Operation = data.Operation, Parameters = data.Parameters};
+                newWebSpeech = new WebSpeechDto() { Name = name, Phrase = @"[[""" + _phrase + @"""]]", Host = "All", Type = data.Type, FinalStep = true, OperationEnable = data.OperationEnable, PrivateInstruction = true, Ico = "/Images/Shortcuts/generic.png", Operation = data.Operation, Parameters = data.Parameters};
 
                 newWebSpeechString = JsonConvert.SerializeObject(newWebSpeech);
 
@@ -85,6 +85,7 @@ namespace Supp.Site.Recognition
                         newWebSpeech = JsonConvert.DeserializeObject<WebSpeechDto>(newWebSpeechString);
                         data.Operation = newWebSpeech.Operation;
                         data.Parameters = newWebSpeech.Parameters;
+                        data.Type = newWebSpeech.Type;
                     }
                     catch (Exception)
                     {
@@ -149,6 +150,8 @@ namespace Supp.Site.Recognition
             if (_stepType == StepTypes.AddManually.ToString() && data?.FinalStep == true && (_subType == WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString()))
             {
                 suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
+
+                newWebSpeech.Ico = "/Images/Shortcuts/answer.png";
 
                 try
                 {
@@ -309,7 +312,7 @@ namespace Supp.Site.Recognition
             {
                 var dialogueWebSearch = new DialogueWebSearch();
 
-                data.Type = WebSpeechTypes.SystemWebSearch.ToString();
+                //data.Type = WebSpeechTypes.SystemWebSearch.ToString();
 
                 var webSearchResult = dialogueWebSearch.WebSearch(data, _phrase).GetAwaiter().GetResult();
 
@@ -351,7 +354,7 @@ namespace Supp.Site.Recognition
                 )
             {
                 var dialogueRunExe = new DialogueRunExe();
-                data.Type = WebSpeechTypes.SystemRunExe.ToString();
+                //data.Type = WebSpeechTypes.SystemRunExe.ToString();
 
                 var runExeResult = dialogueRunExe.RunExe(data, _phrase, _hostSelected, access_token_cookie, executionQueueRepo).GetAwaiter().GetResult();
 

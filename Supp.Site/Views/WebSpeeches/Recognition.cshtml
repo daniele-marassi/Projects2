@@ -1230,6 +1230,15 @@
             countTheTimesToPartialReset=0;
             LogFunctionEnd();
         }
+
+        function CheckPopUpBlock() {
+            LogFunctionStart();
+            var popupblock = false;
+            var test = window.open('','','width=1,height=1');
+            if (!test) popupblock = true; else test.close();
+            if (popupblock) alert('The pop-up blocker is ON!');
+            LogFunctionEnd();
+        }
     </script>
 }
     
@@ -1294,6 +1303,7 @@
             answer = null;
             synth= null;
             speech = null;
+            CheckPopUpBlock();
             Reset(false, onlyRefresh);
         } else { 
 		    InitPage();
