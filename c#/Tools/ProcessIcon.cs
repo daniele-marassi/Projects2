@@ -34,7 +34,7 @@ namespace Tools
 		public static bool RenewNotesServiceActive = true;
 		public static bool WakeUpScreenAfterPowerBreakServiceActive = true;
 		public static bool SpeechServiceActive = true;
-		public static bool SpeechShowHideActive = false;
+		public static int SpeechShowHideActive = -1;
 		public static bool SongsManagerActive = true;
 		
 		/// <summary>

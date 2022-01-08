@@ -124,10 +124,13 @@ namespace Tools
             defaultPlaybackDevice.Volume = percent;
         }
 
-        public void Start(bool removeFocus = true)
+        public void Start(bool removeFocus = true, bool windowNormalFormat = false, bool hide= false)
         {
             var suppSiteSpeechAppUrlParamsString = "";
             (int? ProcessId, string Error) result;
+            result.ProcessId = 0;
+            result.Error = String.Empty;
+
             if (suppSiteSpeechAppUrlParamsArray.Count() > 0) suppSiteSpeechAppUrl += "?";
 
             foreach (var item in suppSiteSpeechAppUrlParamsArray)
@@ -154,9 +157,17 @@ namespace Tools
             if (taskBarInfo.Position == TaskBarLocation.TOP || taskBarInfo.Position == TaskBarLocation.BOTTOM) taskBarHeight = taskBarInfo.Amount;
             if (taskBarInfo.Position == TaskBarLocation.LEFT || taskBarInfo.Position == TaskBarLocation.RIGHT) taskBarWidth = taskBarInfo.Amount;
 
-            if (fullScreen && alwaysShow) result = utilty.RunAS(browserPath, browserExeName, $"--chrome-frame --enable-speech-dispatcher --window-size={workingAreaWidth + 20},{workingAreaHeight + taskBarHeight+10} --window-position={-10},{-(taskBarHeight)} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
-            else if (!fullScreen && alwaysShow) result = utilty.RunAS(browserPath, browserExeName, $"--chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={(workingAreaWidth - windowWidth) + 10},{(workingAreaHeight - windowHeight) + 10} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
-            else result = utilty.RunAS(browserPath, browserExeName, $"--chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={windowX},{windowY} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
+            if (hide == true)
+            {
+                windowX = 0;
+                windowY = workingAreaHeight;
+            }
+
+            if (fullScreen && alwaysShow && windowNormalFormat == false && hide == false) result = utilty.RunAS(browserPath, browserExeName, $"--chrome-frame --enable-speech-dispatcher --window-size={workingAreaWidth + 20},{workingAreaHeight + taskBarHeight+10} --window-position={-10},{-(taskBarHeight)} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
+            else if (!fullScreen && alwaysShow && windowNormalFormat == false && hide == false) result = utilty.RunAS(browserPath, browserExeName, $"--chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={(workingAreaWidth - windowWidth) + 10},{(workingAreaHeight - windowHeight) + 10} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
+            else if (windowNormalFormat == false && hide == true) result = utilty.RunAS(browserPath, browserExeName, $"--chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={windowX},{windowY} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
+            else if (windowNormalFormat && hide == false) 
+                result = utilty.RunAS(browserPath, browserExeName, $"--new-window --enable-speech-dispatcher --window-size={workingAreaWidth},{workingAreaHeight} --window-position={0},{0} {suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
 
             var _processId = (int)result.ProcessId;
 
@@ -169,17 +180,17 @@ namespace Tools
             utilty.KillProcessByWindowCaption(windowCaption);
         }
 
-        public void Show()
+        public void Show(bool windowNormalFormat = false)
         {
             //windowWidth = 530;
             //windowHeight = 600;
             IntPtr result = default(IntPtr);
             try
             {     
-                if(fullScreen) result = utilty.MoveExtWindow(windowCaption, -10, -40, workingAreaWidth + 20, workingAreaHeight + 50);
-                else result = utilty.MoveExtWindow(windowCaption, (workingAreaWidth - windowWidth) + 10, (workingAreaHeight - windowHeight) + 10, windowWidth, windowHeight);
+                if(fullScreen && windowNormalFormat == false) result = utilty.MoveExtWindow(windowCaption, -10, -40, workingAreaWidth + 20, workingAreaHeight + 50);
+                else if(windowNormalFormat == false) result = utilty.MoveExtWindow(windowCaption, (workingAreaWidth - windowWidth) + 10, (workingAreaHeight - windowHeight) + 10, windowWidth, windowHeight);
 
-                if (result == default(IntPtr)) Start(false);
+                if (result == default(IntPtr) || windowNormalFormat) Start(false, windowNormalFormat);
 
                 if (!alwaysShow)
                 {
@@ -190,6 +201,11 @@ namespace Tools
             catch (Exception)
             {
             }
+        }
+
+        public void HideAfterShow()
+        {
+            Start(false, false, true);
         }
 
         public void Hide()
