@@ -1485,5 +1485,23 @@ namespace Additional
 
             }
         }
+
+        /// <summary>
+        /// Set Focus By Proces
+        /// </summary>
+        /// <param name="proces"></param>
+        public void SetFocusByProcess(Process proces)
+        {
+            try
+            {
+                var activatedHandle = GetForegroundWindow();
+
+                SetFocus(new HandleRef(null, proces.MainWindowHandle));
+            }
+            catch (Exception)
+            {
+
+            }
+        }
     }
 }

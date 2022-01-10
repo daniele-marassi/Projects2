@@ -42,7 +42,7 @@ namespace Tools.Common
             _json = _json.Replace(@"""", @"@DOUBLEQUOTES@");
             _json = _json.Replace(@" ", @"@SPACE@");
 
-            var result = RunExe(Path.Combine(rootPath, "External_tools", "MessagesPopUp.exe"), _json, true).GetAwaiter().GetResult();
+            var result = RunExe(Path.Combine(rootPath, "External_tools", "MessagesPopUp.exe"), _json, false).GetAwaiter().GetResult();
         }
 
         /// <summary>

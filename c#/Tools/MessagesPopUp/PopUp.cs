@@ -5,6 +5,8 @@ using System.Timers;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Web.Script.Serialization;
+using System.Diagnostics;
+using Additional;
 
 namespace Tools.MessagesPopUp
 {
@@ -33,13 +35,20 @@ namespace Tools.MessagesPopUp
             json = json.Replace(@"@DOUBLEQUOTES@", @"""");
             json = json.Replace(@"@SPACE@", @" ");
 
-            var _json = @"{""Title"":""title"",""Message"":""message"",""Type"":""Error"",""TimeToClosePopUpInMilliseconds"":20000}";
+            var _json = @"{""Title"":""title"",""Message"":""message111111"",""Type"":""Error"",""TimeToClosePopUpInMilliseconds"":200000000}";
 
             //json = _json;
 
             try
             {
                 parameters = new JavaScriptSerializer().Deserialize<Argument>(json);
+
+                var processAlreadyActive = ProcessAlreadyActive();
+
+                if (processAlreadyActive > 0)
+                {
+                    parameters.TimeToClosePopUpInMilliseconds = parameters.TimeToClosePopUpInMilliseconds * processAlreadyActive;
+                }
 
                 Tmr_Set();
                 TmrAnimationStart_Set();
@@ -120,7 +129,32 @@ namespace Tools.MessagesPopUp
         {
             this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - width + _width,
                                    Screen.PrimaryScreen.WorkingArea.Height - height + _height);
+        }
 
+        public int ProcessAlreadyActive()
+        {
+            var result = 0;
+            try
+            {
+                Process[] process = Process.GetProcessesByName(nameof(MessagesPopUp));
+
+                if (process.Count() > 1)
+                {
+                    process = process.OrderBy(_ => _.Id).ToArray();
+                    var firstProcess = process.FirstOrDefault();
+
+                    var utility = new Utility();
+                    utility.SetFocusByProcess(firstProcess);
+
+                }
+
+                result = process.Count();
+            }
+            catch (Exception)
+            {
+            }
+
+            return result;
         }
 
         private void PopUp_Load(object sender, EventArgs e)

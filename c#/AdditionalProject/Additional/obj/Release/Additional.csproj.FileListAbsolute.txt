@@ -92,7 +92,7 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\Additional\bin\Releas
 C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\Additional\bin\Release\System.Data.SQLite.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\Additional\bin\Release\System.Data.SQLite.dll.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\Additional\bin\Release\System.ValueTuple.xml
-C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\Additional\obj\Release\Additional.csprojAssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\Additional\obj\Release\Additional.csproj.AssemblyReference.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\Additional\obj\Release\Additional.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\Additional\obj\Release\Additional.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\Additional\obj\Release\Additional.dll

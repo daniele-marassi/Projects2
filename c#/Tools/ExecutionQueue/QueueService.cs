@@ -204,7 +204,7 @@ namespace Tools.ExecutionQueue
                                 if (item.Type == ExecutionQueueType.RunExe.ToString() || item.Type == ExecutionQueueType.SystemRunExe.ToString())
                                 {
                                     //Task.Run(() => RunExeAndUpdateDbAsync(item));
-                                    await RunExeAndUpdateDbAsync(item, true);
+                                    await RunExeAndUpdateDbAsync(item, false);
                                 }
 
                                 if (item.Type == ExecutionQueueType.Other.ToString())

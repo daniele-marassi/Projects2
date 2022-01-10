@@ -15,13 +15,13 @@
     @Html.ValidationSummary(true)
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>
-        //101
-        var final_transcript = '';
+        //@*101*@
+        var final_transcript = "";
         var recognizing = false;
         var ignore_onend = true;
         var recognition = null;
         var _phrase = null;
-        var listeningPhrase = '';
+        var listeningPhrase = "";
         var r = [];
         var ellipseStep = [];
         var animateIntervals = [];
@@ -31,7 +31,7 @@
         var serviceInterval = null;
         var hosts = [];
         var _reset = false;
-        var hosts_cmb_string ='';
+        var hosts_cmb_string ="";
         var two_line = /\n\n/g;
         var one_line = /\n/g;
         var first_char = /\S/;
@@ -55,33 +55,33 @@
         var shortcutsOpen = false;
 
         //@*Model Variables*@
-        var name = '';
-        var answer = '';
-        var startAnswer = '';
+        var name = "";
+        var answer = "";
+        var startAnswer = "";
         var finalStep = false;
-        var hostsArrayString = '';
-        var _error = '';
+        var hostsArrayString = "";
+        var _error = "";
         var application = false;
         var alwaysShow = false;
         var resetAfterLoad = false;
         var recognitionDisable = false;
         var onlyRefresh = false;
-        var culture = '';
-        var id = '';
-        var hostSelected = '';
-        var phrase = '';
-        var listeningWord1 = '';
-        var listeningWord2 = '';
-        var executionQueueId = '';
-        var shortcutsInJson = '';
-        var type = '';
-        var parameters = ''; 
+        var culture = "";
+        var id = "";
+        var hostSelected = "";
+        var phrase = "";
+        var listeningWord1 = "";
+        var listeningWord2 = "";
+        var executionQueueId = "";
+        var shortcutsInJson = "";
+        var type = "";
+        var parameters = ""; 
         var ehi = 0;
         var timeToResetInSeconds = 0;
         var timeToEhiTimeoutInSeconds = 0;
-        var subType = ''; 
+        var subType = ""; 
         var step = 0;
-        var newWebSpeechRequestName= '';
+        var newWebSpeechRequestName= "";
         //@*Model Variables*@
 
         function VariablesAssignmentFromJson(jsonString) {
@@ -513,8 +513,8 @@
             LogFunctionStart();
 
             if(application == true){
-                document.getElementById('menu_button').style.display = 'inline';
-                document.getElementById('menu_button').style.marginLeft = '400px';
+                document.getElementById("menu_button").style.display = "inline";
+                document.getElementById("menu_button").style.marginLeft = "400px";
 
                 var element = document.getElementById("menu_items");
                 element.classList.remove("flex-sm-row-reverse");
@@ -524,9 +524,18 @@
 
                 element = document.getElementById("navbarBrand");
                 element.classList.remove("flex-sm-row-reverse");
-                element.style.color = '#333';
+                element.style.color = "#333";
 
-                document.getElementById('footerContainer').style.color = '#333';  
+                document.getElementById("footerContainer").style.color = "#333";  
+
+                var ellipse = document.getElementById("svg_ellipse");
+                ellipse.setAttribute("viewBox", "23.8 -13 153 140");
+ 
+                document.getElementById("hosts_cmb_container").style.marginTop="-19.8%";
+                 
+                var ellipse6 = document.getElementById("ellipse6");
+                ellipse6.setAttribute("rx", "46");
+                ellipse6.setAttribute("ry", "46");
             }
 
             document.getElementById("sendPhrase_text")
@@ -1253,7 +1262,7 @@
             </dl>
         </div>
         <div id="div_ellipse" style="margin-top:50px;">
-            <svg viewBox="14.3 -13 172 140" xmlns="http://www.w3.org/2000/svg">
+            <svg id="svg_ellipse" viewBox="14.3 -13 172 140" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <filter id="blurMe">
                         <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
@@ -1264,7 +1273,7 @@
                 <ellipse id="ellipse3" cx="100" cy="50" rx="50" ry="50" style="fill: #026aad;" filter="url(#blurMe)"/>
                 <ellipse id="ellipse4" cx="100" cy="50" rx="50" ry="50" style="fill: #7a1cc9;" filter="url(#blurMe)"/>
                 <ellipse id="ellipse5" cx="100" cy="50" rx="50" ry="50" style="fill: #c22b10;" filter="url(#blurMe)"/>
-                <ellipse id="ellipse6" cx="100" cy="50" rx="48" ry="48" style=" cursor:pointer;" onclick="EllipseClick();"  class="btn ellipse-dark" />
+                <ellipse id="ellipse6" cx="100" cy="50" rx="46.5" ry="46.5" style=" cursor:pointer;" onclick="EllipseClick();"  class="btn ellipse-dark" />
             </svg>
         </div>
         <div id="hosts_cmb_container" style="text-align:center; margin-top:-17%;">
