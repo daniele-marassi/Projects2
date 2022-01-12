@@ -6,7 +6,7 @@ using Additional;
 using Tools.Properties;
 using System.Threading.Tasks;
 using System.Configuration;
-using Tools.AboutBox;
+using AboutBox;
 using Tools.Songs;
 
 namespace Tools

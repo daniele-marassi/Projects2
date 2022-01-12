@@ -1,0 +1,21 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "55d23ca9-9506-46c2-94be-8b856315b78d": {
+      "ProjectGuid": "55d23ca9-9506-46c2-94be-8b856315b78d",
+      "DisplayName": "Shut",
+      "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "File esterni",
+      "ColorIndex": -1
+    },
+    "b9466864-1158-409a-9312-5eb002ec0b60": {
+      "ProjectGuid": "b9466864-1158-409a-9312-5eb002ec0b60",
+      "DisplayName": "AboutBox",
+      "ColorIndex": 1
+    }
+  },
+  "NextColorIndex": 2
+}

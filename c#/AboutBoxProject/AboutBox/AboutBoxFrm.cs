@@ -5,7 +5,7 @@ using System.Drawing.Text;
 using System.IO;
 using System.Windows.Forms;
 
-namespace Tools.AboutBox
+namespace AboutBox
 {
     public partial class AboutBoxFrm : Form
 	{

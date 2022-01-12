@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "b9466864-1158-409a-9312-5eb002ec0b60": {
+      "ProjectGuid": "b9466864-1158-409a-9312-5eb002ec0b60",
+      "DisplayName": "AboutBox",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}

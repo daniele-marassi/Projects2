@@ -1,4 +1,4 @@
-﻿namespace Tools.AboutBox
+﻿namespace AboutBox
 {
 	partial class AboutBoxFrm
 	{

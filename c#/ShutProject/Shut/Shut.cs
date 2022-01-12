@@ -1,4 +1,4 @@
-﻿using Tools.AboutBox;
+﻿using AboutBox;
 using Additional;
 using Microsoft.Win32;
 using System;
@@ -15,7 +15,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Tools.AboutBox;
 
 namespace Shut
 {
@@ -96,13 +95,14 @@ namespace Shut
             this.TransparencyKey = Color.Gray;
             this.BackColor = Color.Gray;
             this.Hide();
-           
+
             Inizialize();
             LoadFonts();
             SetFonts();
 
-            this.Icon = new Icon("Resources/Shut.ico");
-            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None); 
+            this.Icon = new Icon($"{System.IO.Path.GetDirectoryName(Application.ExecutablePath)}\\Resources\\Shut.ico");
+            
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             style = config.AppSettings.Settings["Style"].Value;
             StartHook();
 
