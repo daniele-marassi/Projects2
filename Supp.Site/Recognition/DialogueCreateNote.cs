@@ -177,18 +177,19 @@ namespace Supp.Site.Recognition
             return result;
         }
 
-        public async Task<EventResult> CreateNote(WebSpeechDto dto, string token, string userName, long userId)
+        public async Task<EventResult> CreateNote(WebSpeechDto dto, string token, string userName, long userId, ClaimsDto _claims)
         {
-            //var timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00");
-            //var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
+            dto.EventDateStart = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00");
+            dto.EventDateEnd = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
 
-            //var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = dto.ElementName, Description = dto.ElementValue, Color = GoogleCalendarColors.Default, EventDateStart , EventDateEnd, Location, NotificationMinutes };
+            var notificationMinutes = new List<int?>() { /*5, 10*/ };
+            var color = GoogleCalendarColors.Blueberry;
 
-            //var getRemindersResult = await webSpeecheRepo.CreateReminder(token, userName, userId, WebSpeechTypes.CreateNote, createCalendarEventRequest, account);
+            var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = dto.ElementName, Description = dto.ElementValue, Color = color, EventDateStart = dto.EventDateStart, EventDateEnd = dto.EventDateEnd, Location = dto.Location, NotificationMinutes = notificationMinutes };
 
-            //return getRemindersResult;
+            var getRemindersResult = await webSpeecheRepo.CreateReminder(token, userName, userId, WebSpeechTypes.CreateNote, createCalendarEventRequest, _claims.Configuration.Speech.GoogleCalendarAccount);
 
-            return new EventResult();
+            return getRemindersResult;
         }
     }
 }

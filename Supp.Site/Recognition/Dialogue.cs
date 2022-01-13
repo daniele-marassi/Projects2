@@ -8,14 +8,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static Supp.Site.Common.Config;
+using GoogleManagerModels;
+using Additional;
 
 namespace Supp.Site.Recognition
 {
     public class Dialogue
     {
+        private readonly Utility utility;
         private readonly SuppUtility suppUtility;
         private readonly DialogueAddToNote dialogueAddToNote;
+        private readonly DialogueCreateNote dialogueCreateNote;
         private readonly DialogueClearNote dialogueClearNote;
+        private readonly DialogueDeleteNote dialogueDeleteNote;
+        private readonly DialogueCreateReminder dialogueCreateReminder;
+        private readonly DialogueDeleteReminder dialogueDeleteReminder;
         private readonly WebSpeechesRepository webSpeecheRepo;
         private readonly ExecutionQueuesRepository executionQueueRepo;
 
@@ -24,9 +31,14 @@ namespace Supp.Site.Recognition
         {
             suppUtility = new SuppUtility();
             dialogueAddToNote = new DialogueAddToNote();
+            dialogueCreateNote = new DialogueCreateNote();
+            dialogueDeleteNote = new DialogueDeleteNote();
             dialogueClearNote = new DialogueClearNote();
+            dialogueCreateReminder = new DialogueCreateReminder();
+            dialogueDeleteReminder = new DialogueDeleteReminder();
             webSpeecheRepo = new WebSpeechesRepository();
-            executionQueueRepo = new ExecutionQueuesRepository(); 
+            executionQueueRepo = new ExecutionQueuesRepository();
+            utility = new Utility();
         }
 
         /// <summary>
@@ -119,6 +131,12 @@ namespace Supp.Site.Recognition
             newWebSpeech = manageRunExeResult.NewWebSpeech;
             data = manageRunExeResult.Data;
 
+            // Manage Reminder
+            var manageReminderResult = ManageReminder(setCookie, newWebSpeech, _stepType, expiresInSeconds, _subType, _phrase, data, _step, userName, userId, response, request, _claims, access_token_cookie);
+            setCookie = manageRunExeResult.SetCookie;
+            newWebSpeech = manageRunExeResult.NewWebSpeech;
+            data = manageRunExeResult.Data;
+
             if (setCookie)
             {
                 newWebSpeechString = JsonConvert.SerializeObject(newWebSpeech);
@@ -194,7 +212,12 @@ namespace Supp.Site.Recognition
             if (_stepType == StepTypes.GetElementName.ToString()
                 && (
                         _subType == WebSpeechTypes.SystemDialogueAddToNote.ToString()
+
                         || _subType == WebSpeechTypes.SystemDialogueClearNote.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteNote.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueCreateNote.ToString()
                    )
                )
             {
@@ -209,13 +232,24 @@ namespace Supp.Site.Recognition
 
                         || _subType == WebSpeechTypes.SystemDialogueClearNote.ToString()
                         || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteNote.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueCreateNote.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString()
                    )
                )
             {
                 if (
                     (
                         _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()
+
                         || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString()
                     )
                         && data.Parameters != null && data.Parameters != String.Empty
                    )
@@ -232,47 +266,114 @@ namespace Supp.Site.Recognition
                 && (
                         _subType == WebSpeechTypes.SystemDialogueAddToNote.ToString()
                         || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueCreateNote.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueClearNote.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteNote.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()
                     )
                 )
             {
-                var eventResult = dialogueAddToNote.AddElementInNote(newWebSpeech, access_token_cookie, userName, userId).GetAwaiter().GetResult();
+                var eventResult = new EventResult();
+
+                if (_subType == WebSpeechTypes.SystemDialogueAddToNote.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString())
+                eventResult = dialogueAddToNote.AddElementInNote(newWebSpeech, access_token_cookie, userName, userId).GetAwaiter().GetResult();
+
+                if (_subType == WebSpeechTypes.SystemDialogueClearNote.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString())
+                    eventResult = dialogueClearNote.ClearNote(newWebSpeech, access_token_cookie, userName, userId).GetAwaiter().GetResult();
+
+                if (_subType == WebSpeechTypes.SystemDialogueCreateNote.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString())
+                    eventResult = dialogueCreateNote.CreateNote(newWebSpeech, access_token_cookie, userName, userId, _claims).GetAwaiter().GetResult();
+
+                if (_subType == WebSpeechTypes.SystemDialogueDeleteNote.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString())
+                    eventResult = dialogueDeleteNote.DeleteNote(newWebSpeech, access_token_cookie, userName, userId).GetAwaiter().GetResult();
 
                 if (!eventResult.Successful)
                 {
                     newWebSpeech.FinalStep = true;
 
                     if (_claims.Configuration.General.Culture.ToLower() == "it-it")
-                        newWebSpeech.Answer = "Errore: aggiungi elemento nella nota";
+                        newWebSpeech.Answer = "Errore: " + suppUtility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
 
                     if (_claims.Configuration.General.Culture.ToLower() == "en-us")
-                        newWebSpeech.Answer = "Error: Add Element In Note";
+                        newWebSpeech.Answer = "Error: " + suppUtility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
                 }
             }
 
-            if (
-                (
-                    (_step > 0 && _stepType == StepTypes.GetElementValue.ToString())
+            result.SetCookie = setCookie;
+            result.NewWebSpeech = newWebSpeech;
+            result.Data = data;
 
-                    || (_step == 0 && data?.FinalStep == true)
+            return result;
+        }
 
-                )
+        private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageReminder(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, ClaimsDto _claims, string access_token_cookie)
+        {
+            (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) result;
+
+            result.SetCookie = false;
+            result.NewWebSpeech = null;
+            result.Data = null;
+
+            if (_stepType == StepTypes.GetElementName.ToString()
                 && (
-                        _subType == WebSpeechTypes.SystemDialogueClearNote.ToString()
-                        || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString()
+                        _subType == WebSpeechTypes.SystemDialogueDeleteReminder.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString()
                    )
+               )
+            {
+                newWebSpeech.ElementName = _phrase.Trim();
+                setCookie = true;
+            }
+
+            if (_stepType == StepTypes.GetElementValue.ToString()
+                && (
+                        _subType == WebSpeechTypes.SystemDialogueDeleteReminder.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString()
+                   )
+               )
+            {
+                newWebSpeech.ElementValue = _phrase.Trim();
+                setCookie = true;
+            }
+
+            if (
+                _step > 0 && _stepType == StepTypes.GetElementValue.ToString()
+                && (
+                        _subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteReminder.ToString()
+
+                    )
                 )
             {
-                var eventResult = dialogueClearNote.ClearNote(newWebSpeech, access_token_cookie, userName, userId).GetAwaiter().GetResult();
+                var eventResult = new EventResult();
+
+                if (_subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString())
+                    eventResult = dialogueCreateReminder.CreateReminder(newWebSpeech, access_token_cookie, userName, userId, _claims).GetAwaiter().GetResult();
+
+                if (_subType == WebSpeechTypes.SystemDialogueDeleteReminder.ToString())
+                    eventResult = dialogueDeleteReminder.DeleteReminder(newWebSpeech, access_token_cookie, userName, userId).GetAwaiter().GetResult();
 
                 if (!eventResult.Successful)
                 {
                     newWebSpeech.FinalStep = true;
 
                     if (_claims.Configuration.General.Culture.ToLower() == "it-it")
-                        newWebSpeech.Answer = "Errore: nel pulire la nota";
+                        newWebSpeech.Answer = "Errore: " + suppUtility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
 
                     if (_claims.Configuration.General.Culture.ToLower() == "en-us")
-                        newWebSpeech.Answer = "Error: in cleaning the note";
+                        newWebSpeech.Answer = "Error: " + suppUtility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
                 }
             }
 
@@ -385,11 +486,11 @@ namespace Supp.Site.Recognition
         /// </summary>
         /// <param name="culture"></param>
         /// <param name="lastWebSpeechId"></param>
+        /// <param name="_subType"></param>
         /// <returns></returns>
         public List<WebSpeechDto> GetDialogueAddToNote(string culture, long lastWebSpeechId, string _subType)
         {
-            var dialogue = new DialogueAddToNote();
-            return dialogue.Get(culture, lastWebSpeechId, _subType);
+            return dialogueAddToNote.Get(culture, lastWebSpeechId, _subType);
         }
 
         /// <summary>
@@ -401,8 +502,7 @@ namespace Supp.Site.Recognition
         /// <returns></returns>
         public List<WebSpeechDto> GetDialogueClearNote(string culture, long lastWebSpeechId, string _subType)
         {
-            var dialogue = new DialogueClearNote();
-            return dialogue.Get(culture, lastWebSpeechId, _subType);
+            return dialogueClearNote.Get(culture, lastWebSpeechId, _subType);
         }
 
         /// <summary>
@@ -410,11 +510,11 @@ namespace Supp.Site.Recognition
         /// </summary>
         /// <param name="culture"></param>
         /// <param name="lastWebSpeechId"></param>
+        /// <param name="_subType"></param>
         /// <returns></returns>
         public List<WebSpeechDto> GetDialogueCreateNote(string culture, long lastWebSpeechId, string _subType)
         {
-            var dialogue = new DialogueCreateNote();
-            return dialogue.Get(culture, lastWebSpeechId, _subType);
+            return dialogueCreateNote.Get(culture, lastWebSpeechId, _subType);
         }
 
         /// <summary>
@@ -422,6 +522,7 @@ namespace Supp.Site.Recognition
         /// </summary>
         /// <param name="culture"></param>
         /// <param name="lastWebSpeechId"></param>
+        /// <param name="_subType"></param>
         /// <returns></returns>
         public List<WebSpeechDto> GetDialogueDeleteNote(string culture, long lastWebSpeechId, string _subType)
         {
@@ -468,6 +569,30 @@ namespace Supp.Site.Recognition
         {
             var dialogue = new DialogueRunExe();
             return dialogue.Get(culture, lastWebSpeechId, _subType);
+        }
+
+        /// <summary>
+        /// Get Dialogue Create Remider
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <param name="lastWebSpeechId"></param>
+        /// <param name="_subType"></param>
+        /// <returns></returns>
+        public List<WebSpeechDto> GetDialogueCreateReminder(string culture, long lastWebSpeechId, string _subType)
+        {
+            return dialogueCreateReminder.Get(culture, lastWebSpeechId, _subType);
+        }
+
+        /// <summary>
+        /// Get Dialogue Delete Remider
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <param name="lastWebSpeechId"></param>
+        /// <param name="_subType"></param>
+        /// <returns></returns>
+        public List<WebSpeechDto> GetDialogueDeleteReminder(string culture, long lastWebSpeechId, string _subType)
+        {
+            return dialogueDeleteReminder.Get(culture, lastWebSpeechId, _subType);
         }
     }
 }

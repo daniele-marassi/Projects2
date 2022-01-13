@@ -42,6 +42,8 @@ namespace Supp.Site.Common
                 public static int TimeToResetInSeconds { get; set; }
                 public static int TimeToEhiTimeoutInSeconds { get; set; }
                 public static bool WakeUpScreenAfterEhiActive { get; set; }
+                public static string GoogleCalendarAccount { get; set; }
+                
 
                 public static string ConfigDefaultInJson
                 {
@@ -67,7 +69,8 @@ namespace Supp.Site.Common
                                 RemindersActive = GeneralSettings.Static.RemindersActive,
                                 TimeToResetInSeconds = GeneralSettings.Static.TimeToResetInSeconds,
                                 TimeToEhiTimeoutInSeconds = GeneralSettings.Static.TimeToEhiTimeoutInSeconds,
-                                WakeUpScreenAfterEhiActive = GeneralSettings.Static.WakeUpScreenAfterEhiActive
+                                WakeUpScreenAfterEhiActive = GeneralSettings.Static.WakeUpScreenAfterEhiActive,
+                                GoogleCalendarAccount = GeneralSettings.Static.GoogleCalendarAccount
                             }
                         };
 
@@ -132,6 +135,7 @@ namespace Supp.Site.Common
                     GeneralSettings.Static.TimeToResetInSeconds = int.Parse(configuration.GetSection("AppSettings:TimeToResetInSeconds").Value);
                     GeneralSettings.Static.TimeToEhiTimeoutInSeconds = int.Parse(configuration.GetSection("AppSettings:TimeToEhiTimeoutInSeconds").Value);
                     GeneralSettings.Static.RemindersActive = bool.Parse(configuration.GetSection("AppSettings:WakeUpScreenAfterEhiActive").Value);
+                    GeneralSettings.Static.GoogleCalendarAccount = configuration.GetSection("AppSettings:GoogleCalendarAccount").Value;
                 }
             }
         }

@@ -198,7 +198,7 @@ namespace Supp.Site.Common
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        public static string SplitCamelCase(string str)
+        public string SplitCamelCase(string str)
         {
             return Regex.Replace(
                 Regex.Replace(

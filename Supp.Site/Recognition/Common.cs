@@ -218,9 +218,49 @@ namespace Supp.Site.Recognition
                             }
                         }
 
+                        if (_subType == WebSpeechTypes.SystemDialogueCreateNote.ToString() || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString())
+                        {
+                            var requests = dialogue.GetDialogueCreateNote(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
+                            if (requests != null && requests.Count > 0)
+                            {
+                                var dataResult = GetData(requests);
+                                result.Data.AddRange(dataResult.Data);
+                            }
+                        }
+
+                        if (_subType == WebSpeechTypes.SystemDialogueDeleteNote.ToString() || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString())
+                        {
+                            var requests = dialogue.GetDialogueDeleteNote(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
+                            if (requests != null && requests.Count > 0)
+                            {
+                                var dataResult = GetData(requests);
+                                result.Data.AddRange(dataResult.Data);
+                            }
+                        }
+
                         if (_subType == WebSpeechTypes.SystemDialogueClearNote.ToString() || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString())
                         {
                             var requests = dialogue.GetDialogueClearNote(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
+                            if (requests != null && requests.Count > 0)
+                            {
+                                var dataResult = GetData(requests);
+                                result.Data.AddRange(dataResult.Data);
+                            }
+                        }
+
+                        if (_subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString())
+                        {
+                            var requests = dialogue.GetDialogueCreateReminder(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
+                            if (requests != null && requests.Count > 0)
+                            {
+                                var dataResult = GetData(requests);
+                                result.Data.AddRange(dataResult.Data);
+                            }
+                        }
+
+                        if (_subType == WebSpeechTypes.SystemDialogueDeleteReminder.ToString())
+                        {
+                            var requests = dialogue.GetDialogueDeleteReminder(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
                             if (requests != null && requests.Count > 0)
                             {
                                 var dataResult = GetData(requests);
@@ -503,7 +543,18 @@ namespace Supp.Site.Recognition
                         }
                     }
 
-                    if (data != null && (data.Type == WebSpeechTypes.EditNote.ToString() || data.Type == WebSpeechTypes.SystemEditNote.ToString()))
+                    if (data != null && 
+                        (
+                            data.Type == WebSpeechTypes.EditNote.ToString() 
+                            || data.Type == WebSpeechTypes.SystemEditNote.ToString()
+
+                            || data.Type == WebSpeechTypes.CreateNote.ToString()
+                            || data.Type == WebSpeechTypes.SystemCreateNote.ToString()
+
+                            || data.Type == WebSpeechTypes.DeleteNote.ToString() 
+                            || data.Type == WebSpeechTypes.SystemDeleteNote.ToString()
+                        )
+                    )
                     {
                         List<WebSpeechDto> dialogue = null;
 
@@ -513,27 +564,11 @@ namespace Supp.Site.Recognition
                         if (data.SubType == WebSpeechTypes.SystemDialogueClearNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString())
                             dialogue = this.dialogue.GetDialogueClearNote(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
 
-                        if (dialogue != null && dialogue.Count > 0)
-                        {
-                            var dataResult = GetData(dialogue);
-
-                            var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
-
-                            _data = GetAnswer(_data);
-
-                            _data.Parameters = data.Parameters;
-                            //_data.Type = data.Type;
-
-                            data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);
-                        }
-                    }
-
-                    if (data != null && (data.Type == WebSpeechTypes.CreateNote.ToString() || data.Type == WebSpeechTypes.SystemCreateNote.ToString()))
-                    {
-                        List<WebSpeechDto> dialogue = null;
-
                         if (data.SubType == WebSpeechTypes.SystemDialogueCreateNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString())
-                            dialogue = this.dialogue.GetDialogueAddToNote(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
+                            dialogue = this.dialogue.GetDialogueCreateNote(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
+
+                        if (data.SubType == WebSpeechTypes.SystemDialogueDeleteNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString())
+                            dialogue = this.dialogue.GetDialogueDeleteNote(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
 
                         if (dialogue != null && dialogue.Count > 0)
                         {
@@ -550,12 +585,23 @@ namespace Supp.Site.Recognition
                         }
                     }
 
-                    if (data != null && (data.Type == WebSpeechTypes.DeleteNote.ToString() || data.Type == WebSpeechTypes.SystemDeleteNote.ToString()))
+                    if (data != null &&
+                        (
+                            data.Type == WebSpeechTypes.CreateReminder.ToString()
+                            || data.Type == WebSpeechTypes.SystemCreateReminder.ToString()
+
+                            || data.Type == WebSpeechTypes.DeleteReminder.ToString()
+                            || data.Type == WebSpeechTypes.SystemDeleteReminder.ToString()
+                        )
+                    )
                     {
                         List<WebSpeechDto> dialogue = null;
 
-                        if (data.SubType == WebSpeechTypes.SystemDialogueCreateNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString())
-                            dialogue = this.dialogue.GetDialogueAddToNote(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
+                        if (data.SubType == WebSpeechTypes.SystemDialogueCreateReminder.ToString())
+                            dialogue = this.dialogue.GetDialogueCreateReminder(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
+
+                        if (data.SubType == WebSpeechTypes.SystemDialogueDeleteReminder.ToString())
+                            dialogue = this.dialogue.GetDialogueDeleteReminder(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
 
                         if (dialogue != null && dialogue.Count > 0)
                         {

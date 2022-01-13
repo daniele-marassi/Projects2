@@ -56,5 +56,8 @@ namespace Supp.Models
         public IEnumerable<StepType> StepTypes { get { return Supp.Models.StepTypesUtility.Get(); } }
         public string ElementName { get; set; }
         public string ElementValue { get; set; }
+        public DateTime EventDateStart { get; set; }
+        public DateTime EventDateEnd { get; set; }
+        public string Location { get; set; }
     }
 }

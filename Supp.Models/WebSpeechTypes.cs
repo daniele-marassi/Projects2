@@ -47,7 +47,12 @@ namespace Supp.Models
         SystemRunExeWithNumericParameter = 39,
         RunExeWithNumericParameter = 40,
         SystemRunExeWithNotNumericParameter = 41,
-        RunExeWithNotNumericParameter = 42
+        RunExeWithNotNumericParameter = 42,
+        SystemDialogueCreateReminder = 43,
+        SystemDialogueDeleteReminder = 44,
+        CreateReminder = 45,
+        DeleteReminder = 46,
+        SystemCreateReminder = 47
     }
 
     public class WebSpeechTypesUtility
