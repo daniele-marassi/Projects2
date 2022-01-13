@@ -928,6 +928,9 @@
                 LogWithTime("Answer: " + _answer);
 
                 ReadOutLoud(_answer, false); 
+            } else if(finalStep == false && subType != null && subType != '' ){
+                var phraseTmp = "";
+                CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionPhrase");
             } else {
                 PartialReset();
             }

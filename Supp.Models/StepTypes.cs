@@ -9,8 +9,8 @@ namespace Supp.Models
     {
         Default = 0,
         GetAnswer = 1,
-        AddNow = 2,
-        AddManually = 3,
+        ApplyNow = 2,
+        ApplyManually = 3,
         Choice = 4,
         GetElementName = 5,
         GetElementValue = 6,

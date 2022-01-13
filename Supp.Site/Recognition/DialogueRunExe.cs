@@ -62,6 +62,28 @@ namespace Supp.Site.Recognition
                         Id = id,
                         Name = _subType + "_" + id.ToString(),
                         Phrase = @"EMPTY",
+                        Answer = null,
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.Execute.ToString()
+                    }
+                );
+
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
                         Answer = @"[""ok"",""va bene""]",
                         Host = "All",
                         FinalStep = true,
@@ -98,6 +120,28 @@ namespace Supp.Site.Recognition
                         OperationEnable = true,
                         ParentIds = "",
                         StepType = StepTypes.GetElementValue.ToString()
+                    }
+                );
+
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = null,
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.Execute.ToString()
                     }
                 );
 
@@ -159,7 +203,6 @@ namespace Supp.Site.Recognition
 
             if (data.Type == WebSpeechTypes.RunExeWithNotNumericParameter.ToString() || data.Type == WebSpeechTypes.SystemRunExeWithNotNumericParameter.ToString())
             {
-                var value = 0;
                 if (_phrase == null || _phrase == "") _phrase = data.Phrase;
 
                 try

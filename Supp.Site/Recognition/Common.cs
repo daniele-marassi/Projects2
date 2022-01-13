@@ -508,13 +508,13 @@ namespace Supp.Site.Recognition
                         }
                     }
 
-                    if (data != null && (data.Type == WebSpeechTypes.SystemWebSearch.ToString() || data.Type == WebSpeechTypes.WebSearch.ToString()))
+                    if (data != null && (data.Type == WebSpeechTypes.SystemWebSearch.ToString() || data.Type == WebSpeechTypes.WebSearch.ToString()) && _step == 0)
                     {
                         var dialogueWebSearch = new DialogueWebSearch();
 
                         var phrase = GetValueFromPronouncedPhrase(_phrase, _keysMatched).Trim();
 
-                        if (phrase == null || phrase == String.Empty)
+                        if (phrase == null || phrase == String.Empty || (data.SubType == WebSpeechTypes.SystemDialogueWebSearch.ToString() && data.FinalStep == false))
                         {
                             List<WebSpeechDto> dialogue = null;
 
@@ -532,7 +532,7 @@ namespace Supp.Site.Recognition
                                 _data.Parameters = data.Parameters;
                                 _data.Type = data.Type;
 
-                                data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);
+                                data = this.dialogue.Manage(_data, _data.SubType, _step, _data.StepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);
                             }
                         }
                         else

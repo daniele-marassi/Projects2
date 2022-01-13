@@ -41,7 +41,7 @@ namespace Supp.Site.Recognition
                         Id = id,
                         Name = _subType + "_" + id.ToString(),
                         Phrase = @"EMPTY",
-                        Answer = @"[""Dimmi il nome della nota"",""Qual'è il nome della nota?""]",
+                        Answer = @"[""Dimmi il titolo del promemoria"",""Qual'è il titolo del promemoria?"",""Dimmi il titolo dell'evento"",""Qual'è il titolo dell'evento?""]",
                         Host = "All",
                         FinalStep = false,
                         UserId = 0,
@@ -55,6 +55,27 @@ namespace Supp.Site.Recognition
                     }
                 );
 
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = null,
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.ApplyNow.ToString()
+                    }
+                );
 
                 id++;
                 step++;
@@ -89,7 +110,7 @@ namespace Supp.Site.Recognition
                         Id = id,
                         Name = _subType + "_" + id.ToString(),
                         Phrase = @"EMPTY",
-                        Answer = @"[""Tell me the name of the reminder"",""What is the name of the reminder?""]",
+                        Answer = @"[""Tell me the title of the memo"",""What is the title of the memo?"",""Tell me the title of the event"",""What is the title of the event?""]",
                         Host = "All",
                         FinalStep = false,
                         UserId = 0,
@@ -100,6 +121,28 @@ namespace Supp.Site.Recognition
                         OperationEnable = true,
                         ParentIds = "",
                         StepType = StepTypes.GetElementName.ToString()
+                    }
+                );
+
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = null,
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.ApplyNow.ToString()
                     }
                 );
 

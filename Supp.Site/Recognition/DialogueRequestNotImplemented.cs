@@ -287,7 +287,7 @@ namespace Supp.Site.Recognition
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + startId.ToString() + "]",
-                    StepType = StepTypes.AddManually.ToString()
+                    StepType = StepTypes.ApplyManually.ToString()
                 }
             );
 
@@ -308,7 +308,7 @@ namespace Supp.Site.Recognition
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + startId.ToString() + "]",
-                    StepType = StepTypes.AddNow.ToString()
+                    StepType = StepTypes.ApplyNow.ToString()
                 }
             );
 
@@ -462,7 +462,7 @@ namespace Supp.Site.Recognition
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + startId.ToString() + "]",
-                    StepType = StepTypes.AddManually.ToString()
+                    StepType = StepTypes.ApplyManually.ToString()
                 }
             );
 
@@ -483,7 +483,7 @@ namespace Supp.Site.Recognition
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + startId.ToString() + "]",
-                    StepType = StepTypes.AddNow.ToString()
+                    StepType = StepTypes.ApplyNow.ToString()
                 }
             );
 

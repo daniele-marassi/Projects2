@@ -89,6 +89,28 @@ namespace Supp.Site.Recognition
                         Id = id,
                         Name = _subType + "_" + id.ToString(),
                         Phrase = @"EMPTY",
+                        Answer = null,
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.ApplyNow.ToString()
+                    }
+                );
+
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
                         Answer = @"[""Inserito""]",
                         Host = "All",
                         FinalStep = true,
@@ -148,6 +170,28 @@ namespace Supp.Site.Recognition
                         OperationEnable = true,
                         ParentIds = _subType == WebSpeechTypes.SystemDialogueAddToNote.ToString() ? "[" + (id - 1).ToString() + "]" : "",
                         StepType = StepTypes.GetElementValue.ToString()
+                    }
+                );
+
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = null,
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.ApplyNow.ToString()
                     }
                 );
 

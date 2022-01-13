@@ -62,6 +62,28 @@ namespace Supp.Site.Recognition
                         Id = id,
                         Name = _subType + "_" + id.ToString(),
                         Phrase = @"EMPTY",
+                        Answer = null,
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.Execute.ToString()
+                    }
+                );
+
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
                         Answer = @"[""ok"",""va bene""]",
                         Host = "All",
                         FinalStep = true,
@@ -109,6 +131,28 @@ namespace Supp.Site.Recognition
                         Id = id,
                         Name = _subType + "_" + id.ToString(),
                         Phrase = @"EMPTY",
+                        Answer = null,
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.Execute.ToString()
+                    }
+                );
+
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
                         Answer = @"[""ok"",""okay""]",
                         Host = "All",
                         FinalStep = true,
@@ -136,6 +180,7 @@ namespace Supp.Site.Recognition
         public async Task<WebSpeechDto> WebSearch(WebSpeechDto dto, string phrase)
         {
             //HttpUtility.UrlEncode(phrase.Replace(" ", "+"));
+            if (phrase == null) phrase = "";
             string url = "http://www.google.com/search?q=" + phrase.Trim().Replace(" ", "+");
             dto.Parameters = url;
 
