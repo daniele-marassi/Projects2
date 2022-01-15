@@ -82,6 +82,11 @@
                 @Html.DropDownListFor(x => x.StepType, new SelectList(Model.StepTypes, "Id", "Name", Model.StepType), "-- Select --", new {@class="select" })
                 @Html.ValidationMessageFor(x => x.StepType)
             </div>
+            <div class="form-group">
+                <label asp-for="ElementIndex" class="control-label"></label>
+                <input asp-for="ElementIndex" class="form-control textBoxCustom" />
+                <span asp-validation-for="ElementIndex" class="text-danger"></span>
+            </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="FinalStep" /> @Html.DisplayNameFor(model => model.FinalStep)

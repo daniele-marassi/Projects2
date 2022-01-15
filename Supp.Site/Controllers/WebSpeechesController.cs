@@ -161,6 +161,9 @@ namespace Supp.Site.Controllers
                         case "StepType":
                             data = data.OrderBy(_ => _.StepType);
                             break;
+                        case "ElementIndex":
+                            data = data.OrderBy(_ => _.ElementIndex);
+                            break;
                         default:
                             data = data.OrderBy(_ => _.Name);
                             break;
@@ -360,7 +363,7 @@ namespace Supp.Site.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Phrase,Operation,OperationEnable,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,SubType,Step,StepType,InsDateTime")] WebSpeechDto dto)
+        public async Task<IActionResult> Create([Bind("Id,Name,Phrase,Operation,OperationEnable,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,SubType,Step,StepType,ElementIndex,InsDateTime")] WebSpeechDto dto)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -467,7 +470,7 @@ namespace Supp.Site.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Phrase,Operation,OperationEnable,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,SubType,Step,StepType,InsDateTime")] WebSpeechDto dto)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Phrase,Operation,OperationEnable,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,SubType,Step,StepType,ElementIndex,InsDateTime")] WebSpeechDto dto)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
