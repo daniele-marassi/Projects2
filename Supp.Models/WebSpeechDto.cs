@@ -25,6 +25,7 @@ namespace Supp.Models
         public string SubType { get; set; }
         public int Step { get; set; }
         public string StepType { get; set; }
+        public int ElementIndex { get; set; }
         public DateTime InsDateTime { get; set; }
 
         public string HostsArray { get; set; }
@@ -54,10 +55,15 @@ namespace Supp.Models
         public bool RecognitionDisable { get; set; }
         public IEnumerable<Host> Hosts { get; set; }
         public IEnumerable<StepType> StepTypes { get { return Supp.Models.StepTypesUtility.Get(); } }
-        public string ElementName { get; set; }
-        public string ElementValue { get; set; }
+        public Element[] Elements { get; set; }
         public DateTime EventDateStart { get; set; }
         public DateTime EventDateEnd { get; set; }
         public string Location { get; set; }
+    }
+
+    public class Element
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
     }
 }

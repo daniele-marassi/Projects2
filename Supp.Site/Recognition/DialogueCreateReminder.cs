@@ -51,7 +51,8 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "",
-                        StepType = StepTypes.GetElementName.ToString()
+                        StepType = StepTypes.GetElementName.ToString(),
+                        ElementIndex = 0
                     }
                 );
 
@@ -63,7 +64,7 @@ namespace Supp.Site.Recognition
                         Id = id,
                         Name = _subType + "_" + id.ToString(),
                         Phrase = @"EMPTY",
-                        Answer = @"[""Cosa devo aggiungere?"",""Dimmi cosa devo aggiungere""]",
+                        Answer = @"[""Cosa inserisco nella descrizione?"",""Dimmi cosa devo inserire nella descrizione""]",
                         Host = "All",
                         FinalStep = false,
                         UserId = 0,
@@ -73,7 +74,8 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.GetElementValue.ToString()
+                        StepType = StepTypes.GetElementValue.ToString(),
+                        ElementIndex = 0
                     }
                 );
 
@@ -95,7 +97,8 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.ApplyNow.ToString()
+                        StepType = StepTypes.ApplyNow.ToString(),
+                        ElementIndex = 0
                     }
                 );
 
@@ -117,7 +120,8 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.Default.ToString()
+                        StepType = StepTypes.Default.ToString(),
+                        ElementIndex = 0
                     }
                 );
             }
@@ -135,7 +139,7 @@ namespace Supp.Site.Recognition
             var notificationMinutes = new List<int?>() { 5, 10 };
             var color = GoogleCalendarColors.Blueberry;
 
-            var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = dto.ElementName, Description = dto.ElementValue, Color = color, EventDateStart = dto.EventDateStart, EventDateEnd = dto.EventDateEnd, Location = dto.Location, NotificationMinutes = notificationMinutes };
+            var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = dto.Elements[dto.ElementIndex].Name, Description = dto.Elements[dto.ElementIndex].Value, Color = color, EventDateStart = dto.EventDateStart, EventDateEnd = dto.EventDateEnd, Location = dto.Location, NotificationMinutes = notificationMinutes };
 
             var getRemindersResult = await webSpeecheRepo.CreateReminder(token, userName, userId, WebSpeechTypes.CreateReminder, createCalendarEventRequest, _claims.Configuration.Speech.GoogleCalendarAccount);
 

@@ -53,7 +53,8 @@ namespace Supp.Site.Recognition
                             Step = step,
                             OperationEnable = true,
                             ParentIds = "",
-                            StepType = StepTypes.GetElementName.ToString()
+                            StepType = StepTypes.GetElementName.ToString(),
+                            ElementIndex = 0
                         }
                     );
                 }
@@ -77,7 +78,8 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.ApplyNow.ToString()
+                        StepType = StepTypes.ApplyNow.ToString(),
+                        ElementIndex = 0
                     }
                 );
 
@@ -99,7 +101,8 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = _subType == WebSpeechTypes.SystemDialogueClearNote.ToString() ? "[" + (id - 1).ToString() + "]" : "",
-                        StepType = StepTypes.GetElementValue.ToString()
+                        StepType = StepTypes.GetElementValue.ToString(),
+                        ElementIndex = 0
                     }
                 );
             }
@@ -126,7 +129,8 @@ namespace Supp.Site.Recognition
                             Step = step,
                             OperationEnable = true,
                             ParentIds = "",
-                            StepType = StepTypes.GetElementName.ToString()
+                            StepType = StepTypes.GetElementName.ToString(),
+                            ElementIndex = 0
                         }
                     );
                 }
@@ -150,7 +154,8 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.ApplyNow.ToString()
+                        StepType = StepTypes.ApplyNow.ToString(),
+                        ElementIndex = 0
                     }
                 );
 
@@ -172,7 +177,8 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = _subType == WebSpeechTypes.SystemDialogueClearNote.ToString() ? "[" + (id - 1).ToString() + "]" : "",
-                        StepType = StepTypes.GetElementValue.ToString()
+                        StepType = StepTypes.GetElementValue.ToString(),
+                        ElementIndex = 0
                     }
                 );
             }
@@ -185,7 +191,7 @@ namespace Supp.Site.Recognition
             var timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00");
             var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
 
-            var editCalendarEventRequest = new EditCalendarEventRequest() { SummaryToSearch = dto.ElementName, Description = String.Empty, TimeMax = timeMax, TimeMin = timeMin, DescriptionAppended = false };
+            var editCalendarEventRequest = new EditCalendarEventRequest() { SummaryToSearch = dto.Elements[dto.ElementIndex].Name, Description = String.Empty, TimeMax = timeMax, TimeMin = timeMin, DescriptionAppended = false };
 
             var getRemindersResult = await webSpeecheRepo.EditLastReminder(token, userName, userId, WebSpeechTypes.EditNote, editCalendarEventRequest);
 
