@@ -33,34 +33,53 @@ namespace Supp.Site.Recognition
 
             if (culture.ToLower() == "it-it")
             {
-                if (_subType == WebSpeechTypes.SystemDialogueCreateNote.ToString())
-                {
-                    id = startId;
-                    step++;
-                    result.Add(
-                        new WebSpeechDto()
-                        {
-                            Id = id,
-                            Name = _subType + "_" + id.ToString(),
-                            Phrase = @"EMPTY",
-                            Answer = @"[""Dimmi il nome della nota"",""Qual'è il nome della nota?""]",
-                            Host = "All",
-                            FinalStep = false,
-                            UserId = 0,
-                            Order = 0,
-                            Type = WebSpeechTypes.SystemRequest.ToString(),
-                            SubType = _subType,
-                            Step = step,
-                            OperationEnable = true,
-                            ParentIds = "",
-                            StepType = StepTypes.GetElementName.ToString(),
-                            ElementIndex = 0
-                        }
-                    );
-                }
+                id = startId;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = @"[""Dimmi il nome della nota"",""Qual'è il nome della nota?""]",
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "",
+                        StepType = StepTypes.Default.ToString(),
+                        ElementIndex = 0
+                    }
+                );
 
-                if (_subType == WebSpeechTypes.SystemDialogueCreateNote.ToString()) id++;
-                if (_subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString()) id = startId;
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = null,
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.GetElementValue.ToString(),
+                        ElementIndex = 1
+                    }
+                );
+
+                id++;
                 step++;
                 result.Add(
                     new WebSpeechDto()
@@ -77,9 +96,32 @@ namespace Supp.Site.Recognition
                         SubType = _subType,
                         Step = step,
                         OperationEnable = true,
-                        ParentIds = _subType == WebSpeechTypes.SystemDialogueCreateNote.ToString() ? "[" + (id - 1).ToString() + "]" : "",
-                        StepType = StepTypes.GetElementValue.ToString(),
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.Default.ToString(),
                         ElementIndex = 0
+                    }
+                );
+
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = null,
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.GetElementValue.ToString(),
+                        ElementIndex = 2
                     }
                 );
 
@@ -150,13 +192,35 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "",
-                        StepType = StepTypes.GetElementName.ToString(),
+                        StepType = StepTypes.Default.ToString(),
                         ElementIndex = 0
                     }
                 );
 
-                if (_subType == WebSpeechTypes.SystemDialogueCreateNote.ToString()) id++;
-                if (_subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString()) id = startId;
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = null,
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.GetElementValue.ToString(),
+                        ElementIndex = 1
+                    }
+                );
+
+                id++;
                 step++;
                 result.Add(
                     new WebSpeechDto()
@@ -173,9 +237,32 @@ namespace Supp.Site.Recognition
                         SubType = _subType,
                         Step = step,
                         OperationEnable = true,
-                        ParentIds = _subType == WebSpeechTypes.SystemDialogueCreateNote.ToString() ? "[" + (id - 1).ToString() + "]" : "",
-                        StepType = StepTypes.GetElementValue.ToString(),
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.Default.ToString(),
                         ElementIndex = 0
+                    }
+                );
+
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = null,
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.GetElementValue.ToString(),
+                        ElementIndex = 2
                     }
                 );
 
@@ -231,13 +318,14 @@ namespace Supp.Site.Recognition
 
         public async Task<EventResult> CreateNote(WebSpeechDto dto, string token, string userName, long userId, ClaimsDto _claims)
         {
-            dto.EventDateStart = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00");
-            dto.EventDateEnd = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
+            var eventDateStart = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00");
+            var eventDateEnd = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
 
             var notificationMinutes = new List<int?>() { /*5, 10*/ };
             var color = GoogleCalendarColors.Blueberry;
+            var location = "";
 
-            var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = dto.Elements[dto.ElementIndex].Name, Description = dto.Elements[dto.ElementIndex].Value, Color = color, EventDateStart = dto.EventDateStart, EventDateEnd = dto.EventDateEnd, Location = dto.Location, NotificationMinutes = notificationMinutes };
+            var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = dto.Elements[1].Value, Description = dto.Elements[2].Value, Color = color, EventDateStart = eventDateStart, EventDateEnd = eventDateEnd, Location = location, NotificationMinutes = notificationMinutes };
 
             var getRemindersResult = await webSpeecheRepo.CreateReminder(token, userName, userId, WebSpeechTypes.CreateNote, createCalendarEventRequest, _claims.Configuration.Speech.GoogleCalendarAccount);
 

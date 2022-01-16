@@ -50,8 +50,31 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "",
-                        StepType = StepTypes.GetElementValue.ToString(),
+                        StepType = StepTypes.Default.ToString(),
                         ElementIndex = 0
+                    }
+                );
+
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = null,
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.GetElementValue.ToString(),
+                        ElementIndex = 1
                     }
                 );
 
@@ -122,8 +145,31 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "",
-                        StepType = StepTypes.GetElementValue.ToString(),
+                        StepType = StepTypes.Default.ToString(),
                         ElementIndex = 0
+                    }
+                );
+
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = null,
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.GetElementValue.ToString(),
+                        ElementIndex = 1
                     }
                 );
 

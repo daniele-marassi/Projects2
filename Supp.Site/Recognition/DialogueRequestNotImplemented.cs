@@ -379,8 +379,31 @@ namespace Supp.Site.Recognition
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + parentId.ToString() + "]",
-                    StepType = StepTypes.GetAnswer.ToString(),
+                    StepType = StepTypes.Ask.ToString(),
                     ElementIndex = 0
+                }
+            );
+
+            id++;
+            step++;
+            result.Add(
+                new WebSpeechDto()
+                {
+                    Id = id,
+                    Name = WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString() + "_" + id.ToString(),
+                    Phrase = @"EMPTY",
+                    Answer = null,
+                    Host = "All",
+                    FinalStep = false,
+                    UserId = 0,
+                    Order = 0,
+                    Type = WebSpeechTypes.SystemRequest.ToString(),
+                    SubType = WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString(),
+                    Step = step,
+                    OperationEnable = true,
+                    ParentIds = "[" + (id - 1).ToString() + "]",
+                    StepType = StepTypes.GetElementValue.ToString(),
+                    ElementIndex = 1
                 }
             );
 
@@ -406,7 +429,7 @@ namespace Supp.Site.Recognition
                     Id = id,
                     Name = WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString() + "_" + id.ToString(),
                     Phrase = @"[[""Altro""]]",
-                    Answer = @"[""Ora preparo""]",
+                    Answer = @"[""Non implementato!""]",
                     Host = "All",
                     FinalStep = true,
                     UserId = 0,
@@ -560,8 +583,31 @@ namespace Supp.Site.Recognition
                     Step = step,
                     OperationEnable = true,
                     ParentIds = "[" + parentId.ToString() + "]",
-                    StepType = StepTypes.GetAnswer.ToString(),
+                    StepType = StepTypes.Ask.ToString(),
                     ElementIndex = 0
+                }
+            );
+
+            id++;
+            step++;
+            result.Add(
+                new WebSpeechDto()
+                {
+                    Id = id,
+                    Name = WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString() + "_" + id.ToString(),
+                    Phrase = @"EMPTY",
+                    Answer = null,
+                    Host = "All",
+                    FinalStep = false,
+                    UserId = 0,
+                    Order = 0,
+                    Type = WebSpeechTypes.SystemRequest.ToString(),
+                    SubType = WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString(),
+                    Step = step,
+                    OperationEnable = true,
+                    ParentIds = "[" + (id - 1).ToString() + "]",
+                    StepType = StepTypes.GetElementValue.ToString(),
+                    ElementIndex = 1
                 }
             );
 
@@ -587,7 +633,7 @@ namespace Supp.Site.Recognition
                    Id = id,
                    Name = WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString() + "_" + id.ToString(),
                    Phrase = @"[[""Other""]]",
-                   Answer = @"[""Now I prepare""]",
+                   Answer = @"[""Not implemented!""]",
                    Host = "All",
                    FinalStep = true,
                    UserId = 0,

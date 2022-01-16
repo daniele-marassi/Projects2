@@ -8,13 +8,12 @@ namespace Supp.Models
     public enum StepTypes
     {
         Default = 0,
-        GetAnswer = 1,
         ApplyNow = 2,
         ApplyManually = 3,
         Choice = 4,
-        GetElementName = 5,
-        GetElementValue = 6,
-        Execute = 7
+        GetElementValue = 5,
+        Execute = 6,
+        Ask = 7
     }
 
     public class StepTypesUtility

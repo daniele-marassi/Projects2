@@ -56,14 +56,10 @@ namespace Supp.Models
         public IEnumerable<Host> Hosts { get; set; }
         public IEnumerable<StepType> StepTypes { get { return Supp.Models.StepTypesUtility.Get(); } }
         public Element[] Elements { get; set; }
-        public DateTime EventDateStart { get; set; }
-        public DateTime EventDateEnd { get; set; }
-        public string Location { get; set; }
     }
 
     public class Element
     {
-        public string Name { get; set; }
         public string Value { get; set; }
     }
 }

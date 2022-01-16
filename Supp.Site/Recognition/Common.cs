@@ -250,7 +250,7 @@ namespace Supp.Site.Recognition
 
                         if (_subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString())
                         {
-                            var requests = dialogue.GetDialogueCreateReminder(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
+                            var requests = dialogue.GetDialogueCreateReminder(_claims.Configuration.General.Culture, lastWebSpeechId, _subType, request);
                             if (requests != null && requests.Count > 0)
                             {
                                 var dataResult = GetData(requests);
@@ -598,7 +598,7 @@ namespace Supp.Site.Recognition
                         List<WebSpeechDto> dialogue = null;
 
                         if (data.SubType == WebSpeechTypes.SystemDialogueCreateReminder.ToString())
-                            dialogue = this.dialogue.GetDialogueCreateReminder(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
+                            dialogue = this.dialogue.GetDialogueCreateReminder(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType, request);
 
                         if (data.SubType == WebSpeechTypes.SystemDialogueDeleteReminder.ToString())
                             dialogue = this.dialogue.GetDialogueDeleteReminder(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);

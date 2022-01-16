@@ -47,12 +47,12 @@ namespace Supp.Site.Recognition
 
             if (elements == null || elements.Length == 0)
             {
-                result = new Element[1];
+                result = new Element[2];
                 elements = result;
             }
             else
             {
-                result = new Element[elements.Length + 1];
+                result = new Element[elements.Length + 2];
                 for (int i = 0; i < elements.Length; i++)
                 {
                     result[i] = elements[i];
@@ -60,7 +60,7 @@ namespace Supp.Site.Recognition
             }
 
             if(result[index] == null) 
-                result[index] = new Element() { Name = String.Empty, Value = String.Empty };
+                result[index] = new Element() { Value = String.Empty };
 
             return result;
         }
@@ -103,7 +103,7 @@ namespace Supp.Site.Recognition
                     name = suppUtility.FirstLetterToUpper(_phrase.Trim().Replace(' ', '_'));
                 }
 
-                newWebSpeech = new WebSpeechDto() { Name = name, Phrase = @"[[""" + _phrase + @"""]]", Host = "All", Type = data.Type, FinalStep = true, OperationEnable = data.OperationEnable, PrivateInstruction = true, Ico = "/Images/Shortcuts/generic.png", Operation = data.Operation, Parameters = data.Parameters, ElementIndex = data.ElementIndex};
+                newWebSpeech = new WebSpeechDto() { Name = name, Phrase = @"[[""" + _phrase + @"""]]", Host = "All", Type = data.Type, FinalStep = true, OperationEnable = data.OperationEnable, PrivateInstruction = true, Ico = "/Images/Shortcuts/generic.png", Operation = data.Operation, Parameters = data.Parameters, ElementIndex = data.ElementIndex, SubType = data.SubType, StepType = data.StepType};
 
                 newWebSpeech.Elements = InitElements(newWebSpeech.Elements, newWebSpeech.ElementIndex);
 
@@ -122,12 +122,14 @@ namespace Supp.Site.Recognition
                     {
                         newWebSpeech = JsonConvert.DeserializeObject<WebSpeechDto>(newWebSpeechString);
                         newWebSpeech.ElementIndex = data.ElementIndex;
-
+                        newWebSpeech.SubType = data.SubType;
+                        newWebSpeech.StepType = data.StepType;
                         newWebSpeech.Elements = InitElements(newWebSpeech.Elements, newWebSpeech.ElementIndex);
 
                         data.Operation = newWebSpeech.Operation;
                         data.Parameters = newWebSpeech.Parameters;
                         data.Type = newWebSpeech.Type;
+                       
                     }
                     catch (Exception)
                     {
@@ -138,31 +140,31 @@ namespace Supp.Site.Recognition
             var setCookie = false;
 
             // Manage RequestNotImplemented
-            var manageRequestNotImplementedResult = ManageRequestNotImplemented(setCookie, newWebSpeech, _stepType, expiresInSeconds, _subType, _phrase, data, _step, userName, userId, response, request, _claims, access_token_cookie);
+            var manageRequestNotImplementedResult = ManageRequestNotImplemented(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, _claims, access_token_cookie);
             setCookie = manageRequestNotImplementedResult.SetCookie;
             newWebSpeech = manageRequestNotImplementedResult.NewWebSpeech;
             data = manageRequestNotImplementedResult.Data;
 
             // Manage Note
-            var manageNoteResult = ManageNote(setCookie, newWebSpeech, _stepType, expiresInSeconds, _subType, _phrase, data, _step, userName, userId, response, request, _claims, access_token_cookie);
+            var manageNoteResult = ManageNote(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, _claims, access_token_cookie);
             setCookie = manageNoteResult.SetCookie;
             newWebSpeech = manageNoteResult.NewWebSpeech;
             data = manageNoteResult.Data;
 
             // Manage WebSearch
-            var manageWebSearchResult = ManageWebSearch(setCookie, newWebSpeech, _stepType, expiresInSeconds, _subType, _phrase, data, _step, userName, userId, response, request, _claims);
+            var manageWebSearchResult = ManageWebSearch(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, _claims);
             setCookie = manageWebSearchResult.SetCookie;
             newWebSpeech = manageWebSearchResult.NewWebSpeech;
             data = manageWebSearchResult.Data;
 
             // Manage RunExe
-            var manageRunExeResult = ManageRunExe(setCookie, newWebSpeech, _stepType, expiresInSeconds, _subType, _phrase, data, _step, userName, userId, response, request, _claims, _hostSelected, access_token_cookie);
+            var manageRunExeResult = ManageRunExe(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, _claims, _hostSelected, access_token_cookie);
             setCookie = manageRunExeResult.SetCookie;
             newWebSpeech = manageRunExeResult.NewWebSpeech;
             data = manageRunExeResult.Data;
 
             // Manage Reminder
-            var manageReminderResult = ManageReminder(setCookie, newWebSpeech, _stepType, expiresInSeconds, _subType, _phrase, data, _step, userName, userId, response, request, _claims, access_token_cookie);
+            var manageReminderResult = ManageReminder(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, _claims, access_token_cookie);
             setCookie = manageRunExeResult.SetCookie;
             newWebSpeech = manageRunExeResult.NewWebSpeech;
             data = manageRunExeResult.Data;
@@ -185,17 +187,18 @@ namespace Supp.Site.Recognition
             result.NewWebSpeech = null;
             result.Data = null;
 
-            if (_stepType == StepTypes.GetAnswer.ToString()
+            if (_stepType == StepTypes.GetElementValue.ToString() 
+                && newWebSpeech.ElementIndex == 1
                 && (
                     _subType == WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString()
                    )
                )
             {
-                newWebSpeech.Answer = @"[""" + _phrase.Trim() + @"""]";
+                newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = _phrase.Trim();
                 setCookie = true;
             }
 
-            if (_stepType == StepTypes.ApplyManually.ToString() && data?.FinalStep == true && (_subType == WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString()))
+            if (_stepType == StepTypes.ApplyManually.ToString() && _subType == WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString())
             {
                 suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
 
@@ -204,6 +207,7 @@ namespace Supp.Site.Recognition
                 try
                 {
                     data.NewWebSpeechRequestName = newWebSpeech.Name;
+                    newWebSpeech.Answer = @"[""" + newWebSpeech.Elements[1].Value + @"""]";
                     suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteNewWebSpeechDtoInJsonCookieName + "_" + newWebSpeech.Name, JsonConvert.SerializeObject(newWebSpeech), expiresInSeconds);
                 }
                 catch (Exception)
@@ -211,7 +215,7 @@ namespace Supp.Site.Recognition
                 }
             }
 
-            if (_stepType == StepTypes.ApplyNow.ToString() && data?.FinalStep == true && (_subType == WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString()))
+            if (_stepType == StepTypes.ApplyNow.ToString() && _subType == WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString())
             {
                 suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
 
@@ -239,7 +243,8 @@ namespace Supp.Site.Recognition
             result.NewWebSpeech = null;
             result.Data = null;
 
-            if (_stepType == StepTypes.GetElementName.ToString() && newWebSpeech.ElementIndex == 0
+            if (_stepType == StepTypes.GetElementValue.ToString() 
+                && newWebSpeech.ElementIndex == 1
                 && (
                         _subType == WebSpeechTypes.SystemDialogueAddToNote.ToString()
 
@@ -251,11 +256,31 @@ namespace Supp.Site.Recognition
                    )
                )
             {
-                newWebSpeech.Elements[newWebSpeech.ElementIndex].Name = _phrase.Trim();
+                newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = _phrase.Trim();
                 setCookie = true;
             }
 
-            if (_stepType == StepTypes.GetElementValue.ToString() && newWebSpeech.ElementIndex == 0
+            if (_stepType == StepTypes.ApplyNow.ToString()
+                && (
+                        _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString()
+                   )
+               )
+            {
+                var index = newWebSpeech.ElementIndex;
+                if (newWebSpeech.Elements[index] == null)
+                    newWebSpeech.Elements[index] = new Element() { Value = String.Empty };
+                newWebSpeech.Elements[index].Value = data.Parameters.Trim();
+                setCookie = true;
+            }
+
+            if (_stepType == StepTypes.GetElementValue.ToString() 
+                && newWebSpeech.ElementIndex == 2
                 && (
                         _subType == WebSpeechTypes.SystemDialogueAddToNote.ToString()
                         || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()
@@ -284,7 +309,10 @@ namespace Supp.Site.Recognition
                         && data.Parameters != null && data.Parameters != String.Empty
                    )
                 {
-                    newWebSpeech.Elements[newWebSpeech.ElementIndex].Name = data.Parameters.Trim();
+                    var index = newWebSpeech.ElementIndex - 1;
+                    if (newWebSpeech.Elements[index] == null)
+                        newWebSpeech.Elements[index] = new Element() { Value = String.Empty };
+                    newWebSpeech.Elements[index].Value = data.Parameters.Trim();
                 }
 
                 newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = _phrase.Trim();
@@ -292,7 +320,7 @@ namespace Supp.Site.Recognition
             }
 
             if (
-                _step > 0 && _stepType == StepTypes.ApplyNow.ToString()
+                _stepType == StepTypes.ApplyNow.ToString()
                 && (
                         _subType == WebSpeechTypes.SystemDialogueAddToNote.ToString()
                         || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()
@@ -345,6 +373,60 @@ namespace Supp.Site.Recognition
             return result;
         }
 
+        private string GetPhrase(string phrase)
+        {
+            //ITA
+            if (phrase.Trim().ToLower() == "niente") phrase = "";
+            if (phrase.Trim().ToLower() == "nulla") phrase = "";
+
+            if (phrase.Trim().ToLower() == "non inserire") phrase = "";
+            if (phrase.Trim().ToLower() == "non inserire niente") phrase = "";
+            if (phrase.Trim().ToLower() == "non inserire nulla") phrase = "";
+
+            if (phrase.Trim().ToLower() == "non aggiungere") phrase = "";
+            if (phrase.Trim().ToLower() == "non aggiungere niente") phrase = "";
+            if (phrase.Trim().ToLower() == "non aggiungere nulla") phrase = "";
+
+            if (phrase.Trim().ToLower() == "non metterci niente") phrase = "";
+            if (phrase.Trim().ToLower() == "non metterci nulla") phrase = "";
+
+            if (phrase.Trim().ToLower() == "lascia vuoto") phrase = "";
+            if (phrase.Trim().ToLower() == "vuoto") phrase = "";
+            if (phrase.Trim().ToLower() == "lascia stare") phrase = "";
+
+            //ENG
+            if (phrase.Trim().ToLower() == "nothing") phrase = "";
+            if (phrase.Trim().ToLower() == "nothing") phrase = "";
+
+            if (phrase.Trim().ToLower() == "do not insert") phrase = "";
+            if (phrase.Trim().ToLower() == "do not insert anything") phrase = "";
+            if (phrase.Trim().ToLower() == "do not insert anything") phrase = "";
+
+            if (phrase.Trim().ToLower() == "do not add") phrase = "";
+            if (phrase.Trim().ToLower() == "do not add anything") phrase = "";
+            if (phrase.Trim().ToLower() == "do not add anything") phrase = "";
+
+            if (phrase.Trim().ToLower() == "do not put anything in it") phrase = "";
+            if (phrase.Trim().ToLower() == "do not put anything in it") phrase = "";
+
+            if (phrase.Trim().ToLower() == "don't insert") phrase = "";
+            if (phrase.Trim().ToLower() == "don't insert anything") phrase = "";
+            if (phrase.Trim().ToLower() == "don't insert anything") phrase = "";
+
+            if (phrase.Trim().ToLower() == "don't add") phrase = "";
+            if (phrase.Trim().ToLower() == "don't add anything") phrase = "";
+            if (phrase.Trim().ToLower() == "don't add anything") phrase = "";
+
+            if (phrase.Trim().ToLower() == "don't put anything in it") phrase = "";
+            if (phrase.Trim().ToLower() == "don't put anything in it") phrase = "";
+
+            if (phrase.Trim().ToLower() == "leave blank") phrase = "";
+            if (phrase.Trim().ToLower() == "empty") phrase = "";
+            if (phrase.Trim().ToLower() == "leave it alone") phrase = "";
+
+            return phrase;
+        }
+
         private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageReminder(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, ClaimsDto _claims, string access_token_cookie)
         {
             (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) result;
@@ -353,7 +435,7 @@ namespace Supp.Site.Recognition
             result.NewWebSpeech = null;
             result.Data = null;
 
-            if (_stepType == StepTypes.GetElementName.ToString() && newWebSpeech.ElementIndex == 0
+            if (_stepType == StepTypes.GetElementValue.ToString()
                 && (
                         _subType == WebSpeechTypes.SystemDialogueDeleteReminder.ToString()
 
@@ -361,24 +443,12 @@ namespace Supp.Site.Recognition
                    )
                )
             {
-                newWebSpeech.Elements[newWebSpeech.ElementIndex].Name = _phrase.Trim();
-                setCookie = true;
-            }
-
-            if (_stepType == StepTypes.GetElementValue.ToString() && newWebSpeech.ElementIndex == 0
-                && (
-                        _subType == WebSpeechTypes.SystemDialogueDeleteReminder.ToString()
-
-                        || _subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString()
-                   )
-               )
-            {
-                newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = _phrase.Trim();
+                newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = GetPhrase(_phrase.Trim());
                 setCookie = true;
             }
 
             if (
-                _step > 0 && _stepType == StepTypes.ApplyNow.ToString()
+                _stepType == StepTypes.ApplyNow.ToString()
                 && (
                         _subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString()
 
@@ -422,7 +492,8 @@ namespace Supp.Site.Recognition
             result.NewWebSpeech = null;
             result.Data = null;
 
-            if (_stepType == StepTypes.GetElementValue.ToString() && newWebSpeech.ElementIndex == 0
+            if (_stepType == StepTypes.GetElementValue.ToString() 
+                && newWebSpeech.ElementIndex == 0
                 && (
                         _subType == WebSpeechTypes.SystemDialogueWebSearch.ToString()
                    )
@@ -433,9 +504,7 @@ namespace Supp.Site.Recognition
             }
 
             if (
-                (
-                    (_step > 0 && _stepType == StepTypes.Execute.ToString())
-                )
+                _stepType == StepTypes.Execute.ToString()
                 && (
                         _subType == WebSpeechTypes.SystemDialogueWebSearch.ToString()
                    )
@@ -465,7 +534,8 @@ namespace Supp.Site.Recognition
             result.NewWebSpeech = null;
             result.Data = null;
 
-            if (_stepType == StepTypes.GetElementValue.ToString() && newWebSpeech.ElementIndex == 0
+            if (_stepType == StepTypes.GetElementValue.ToString() 
+                && newWebSpeech.ElementIndex == 0
                 && (
                         _subType == WebSpeechTypes.SystemDialogueRunExe.ToString()
                    )
@@ -476,9 +546,7 @@ namespace Supp.Site.Recognition
             }
 
             if (
-                (
-                    (_step > 0 && _stepType == StepTypes.Execute.ToString())
-                )
+                _stepType == StepTypes.Execute.ToString()
                 && (
                         _subType == WebSpeechTypes.SystemDialogueRunExe.ToString()
                    )
@@ -607,10 +675,11 @@ namespace Supp.Site.Recognition
         /// <param name="culture"></param>
         /// <param name="lastWebSpeechId"></param>
         /// <param name="_subType"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
-        public List<WebSpeechDto> GetDialogueCreateReminder(string culture, long lastWebSpeechId, string _subType)
+        public List<WebSpeechDto> GetDialogueCreateReminder(string culture, long lastWebSpeechId, string _subType, HttpRequest request)
         {
-            return dialogueCreateReminder.Get(culture, lastWebSpeechId, _subType);
+            return dialogueCreateReminder.Get(culture, lastWebSpeechId, _subType, request);
         }
 
         /// <summary>

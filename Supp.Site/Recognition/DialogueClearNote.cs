@@ -53,8 +53,31 @@ namespace Supp.Site.Recognition
                             Step = step,
                             OperationEnable = true,
                             ParentIds = "",
-                            StepType = StepTypes.GetElementName.ToString(),
+                            StepType = StepTypes.Ask.ToString(),
                             ElementIndex = 0
+                        }
+                    );
+
+                    id++;
+                    step++;
+                    result.Add(
+                        new WebSpeechDto()
+                        {
+                            Id = id,
+                            Name = _subType + "_" + id.ToString(),
+                            Phrase = @"EMPTY",
+                            Answer = null,
+                            Host = "All",
+                            FinalStep = false,
+                            UserId = 0,
+                            Order = 0,
+                            Type = WebSpeechTypes.SystemRequest.ToString(),
+                            SubType = _subType,
+                            Step = step,
+                            OperationEnable = true,
+                            ParentIds = "[" + (id - 1).ToString() + "]",
+                            StepType = StepTypes.GetElementValue.ToString(),
+                            ElementIndex = 1
                         }
                     );
                 }
@@ -77,9 +100,9 @@ namespace Supp.Site.Recognition
                         SubType = _subType,
                         Step = step,
                         OperationEnable = true,
-                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        ParentIds = _subType == WebSpeechTypes.SystemDialogueClearNote.ToString() ? "[" + (id - 1).ToString() + "]" : "",
                         StepType = StepTypes.ApplyNow.ToString(),
-                        ElementIndex = 0
+                        ElementIndex = 1
                     }
                 );
 
@@ -100,7 +123,7 @@ namespace Supp.Site.Recognition
                         SubType = _subType,
                         Step = step,
                         OperationEnable = true,
-                        ParentIds = _subType == WebSpeechTypes.SystemDialogueClearNote.ToString() ? "[" + (id - 1).ToString() + "]" : "",
+                        ParentIds = "[" + (id - 1).ToString() + "]",
                         StepType = StepTypes.GetElementValue.ToString(),
                         ElementIndex = 0
                     }
@@ -129,8 +152,31 @@ namespace Supp.Site.Recognition
                             Step = step,
                             OperationEnable = true,
                             ParentIds = "",
-                            StepType = StepTypes.GetElementName.ToString(),
+                            StepType = StepTypes.Default.ToString(),
                             ElementIndex = 0
+                        }
+                    );
+
+                    id++;
+                    step++;
+                    result.Add(
+                        new WebSpeechDto()
+                        {
+                            Id = id,
+                            Name = _subType + "_" + id.ToString(),
+                            Phrase = @"EMPTY",
+                            Answer = null,
+                            Host = "All",
+                            FinalStep = false,
+                            UserId = 0,
+                            Order = 0,
+                            Type = WebSpeechTypes.SystemRequest.ToString(),
+                            SubType = _subType,
+                            Step = step,
+                            OperationEnable = true,
+                            ParentIds = "[" + (id - 1).ToString() + "]",
+                            StepType = StepTypes.GetElementValue.ToString(),
+                            ElementIndex = 1
                         }
                     );
                 }
@@ -153,9 +199,9 @@ namespace Supp.Site.Recognition
                         SubType = _subType,
                         Step = step,
                         OperationEnable = true,
-                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        ParentIds = _subType == WebSpeechTypes.SystemDialogueClearNote.ToString() ? "[" + (id - 1).ToString() + "]" : "",
                         StepType = StepTypes.ApplyNow.ToString(),
-                        ElementIndex = 0
+                        ElementIndex = 1
                     }
                 );
 
@@ -176,7 +222,7 @@ namespace Supp.Site.Recognition
                         SubType = _subType,
                         Step = step,
                         OperationEnable = true,
-                        ParentIds = _subType == WebSpeechTypes.SystemDialogueClearNote.ToString() ? "[" + (id - 1).ToString() + "]" : "",
+                        ParentIds = "[" + (id - 1).ToString() + "]",
                         StepType = StepTypes.GetElementValue.ToString(),
                         ElementIndex = 0
                     }
@@ -191,7 +237,7 @@ namespace Supp.Site.Recognition
             var timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00");
             var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
 
-            var editCalendarEventRequest = new EditCalendarEventRequest() { SummaryToSearch = dto.Elements[dto.ElementIndex].Name, Description = String.Empty, TimeMax = timeMax, TimeMin = timeMin, DescriptionAppended = false };
+            var editCalendarEventRequest = new EditCalendarEventRequest() { SummaryToSearch = dto.Elements[1].Value, Description = String.Empty, TimeMax = timeMax, TimeMin = timeMin, DescriptionAppended = false };
 
             var getRemindersResult = await webSpeecheRepo.EditLastReminder(token, userName, userId, WebSpeechTypes.EditNote, editCalendarEventRequest);
 
