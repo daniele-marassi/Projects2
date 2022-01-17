@@ -270,7 +270,7 @@ namespace Supp.Site.Recognition
 
             if (data.Host.Trim().ToLower() != "all") hostSelected = data.Host;
 
-            var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = hostSelected, Type = WebSpeechTypes.RunExe.ToString() };
+            var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = hostSelected, Type = WebSpeechTypes.RunExe.ToString(), WebSpeechId = data.Id, ScheduledDateTime = DateTime.Now };
             var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
 
             if (addExecutionQueueResult.Successful)

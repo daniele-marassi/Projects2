@@ -14,3 +14,4 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\obj\Debug\Reposi
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\obj\Debug\RepositionSpeech.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\obj\Debug\RepositionSpeech.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\obj\Debug\RepositionSpeech.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\obj\Debug\RepositionSpeech.csproj.AssemblyReference.cache

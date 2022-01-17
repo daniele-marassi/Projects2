@@ -493,7 +493,7 @@ namespace Supp.Site.Recognition
             result.Data = null;
 
             if (_stepType == StepTypes.GetElementValue.ToString() 
-                && newWebSpeech.ElementIndex == 0
+                && newWebSpeech.ElementIndex == 1
                 && (
                         _subType == WebSpeechTypes.SystemDialogueWebSearch.ToString()
                    )
@@ -514,7 +514,7 @@ namespace Supp.Site.Recognition
 
                 //data.Type = WebSpeechTypes.SystemWebSearch.ToString();
 
-                var webSearchResult = dialogueWebSearch.WebSearch(data, newWebSpeech.Elements[newWebSpeech.ElementIndex].Value).GetAwaiter().GetResult();
+                var webSearchResult = dialogueWebSearch.WebSearch(data, newWebSpeech.Elements[1].Value).GetAwaiter().GetResult();
 
                 data.Parameters = webSearchResult.Parameters;
             }
@@ -535,7 +535,7 @@ namespace Supp.Site.Recognition
             result.Data = null;
 
             if (_stepType == StepTypes.GetElementValue.ToString() 
-                && newWebSpeech.ElementIndex == 0
+                && newWebSpeech.ElementIndex == 1
                 && (
                         _subType == WebSpeechTypes.SystemDialogueRunExe.ToString()
                    )
@@ -555,7 +555,7 @@ namespace Supp.Site.Recognition
                 var dialogueRunExe = new DialogueRunExe();
                 //data.Type = WebSpeechTypes.SystemRunExe.ToString();
 
-                var runExeResult = dialogueRunExe.RunExe(data, newWebSpeech.Elements[newWebSpeech.ElementIndex].Value, _hostSelected, access_token_cookie, executionQueueRepo).GetAwaiter().GetResult();
+                var runExeResult = dialogueRunExe.RunExe(data, newWebSpeech.Elements[1].Value, _hostSelected, access_token_cookie, executionQueueRepo).GetAwaiter().GetResult();
 
                 data.Parameters = runExeResult.Parameters;
             }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Tools.ExecutionQueue.Models
@@ -11,9 +12,11 @@ namespace Tools.ExecutionQueue.Models
         public string FullPath { get; set; }
         public string Arguments { get; set; }
         public string Output { get; set; }
+        public long WebSpeechId { get; set; }
+        public DateTime ScheduledDateTime { get; set; }
         public string Host { get; set; }
         public string StateQueue { get; set; }
         [DataType(DataType.DateTime)]
-        public System.DateTime InsDateTime { get; }
+        public DateTime InsDateTime { get; }
     }
 }

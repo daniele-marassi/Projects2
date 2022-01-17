@@ -82,7 +82,7 @@ namespace Supp.Site.Controllers
                             || _.Output.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                         );
                     }
-
+                    
                     switch (sortOrder)
                     {
                         case "Host":
@@ -102,6 +102,12 @@ namespace Supp.Site.Controllers
                             break;
                         case "Output":
                             data = data.OrderBy(_ => _.Output);
+                            break;
+                        case "WebSpeechId":
+                            data = data.OrderBy(_ => _.WebSpeechId);
+                            break;
+                        case "ScheduledDateTime":
+                            data = data.OrderBy(_ => _.ScheduledDateTime);
                             break;
                         case "InsDateTime":
                             data = data.OrderBy(_ => _.InsDateTime);
@@ -180,7 +186,7 @@ namespace Supp.Site.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Type,FullPath,Arguments,Output,Host,StateQueue,InsDateTime")] ExecutionQueueDto dto)
+        public async Task<IActionResult> Create([Bind("Id,Type,FullPath,Arguments,Output,WebSpeechId,ScheduledDateTime,Host,StateQueue,InsDateTime")] ExecutionQueueDto dto)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -193,6 +199,9 @@ namespace Supp.Site.Controllers
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
                         var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+
+                        if (dto.ScheduledDateTime == null) dto.ScheduledDateTime = DateTime.Now;
+
                         var result = await executionQueueRepo.AddExecutionQueue(dto, access_token_cookie);
 
                         data.AddRange(result.Data);
@@ -250,7 +259,7 @@ namespace Supp.Site.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Type,FullPath,Arguments,Output,Host,StateQueue,InsDateTime")] ExecutionQueueDto dto)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Type,FullPath,Arguments,Output,WebSpeechId,ScheduledDateTime,Host,StateQueue,InsDateTime")] ExecutionQueueDto dto)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -269,6 +278,9 @@ namespace Supp.Site.Controllers
                             throw new Exception($"Error [Id not exists!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
                         var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+
+                        if (dto.ScheduledDateTime == null) dto.ScheduledDateTime = DateTime.Now;
+
                         var result = await executionQueueRepo.UpdateExecutionQueue(dto, access_token_cookie);
 
                         if (!result.Successful)

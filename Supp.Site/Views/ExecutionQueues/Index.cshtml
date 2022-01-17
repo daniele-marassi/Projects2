@@ -45,6 +45,12 @@
                         @Html.ActionLink("Output", "Index", new { sortOrder = "Output", currentFilter = ViewBag.CurrentFilter })
                     </th>
                     <th id="selectable">
+                        @Html.ActionLink("WebSpeech Id", "Index", new { sortOrder = "WebSpeechId", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("Scheduled DateTime", "Index", new { sortOrder = "ScheduledDateTime", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
                         @Html.ActionLink("Host", "Index", new { sortOrder = "Host", currentFilter = ViewBag.CurrentFilter })
                     </th>
                     <th id="selectable">
@@ -77,6 +83,12 @@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Output)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.WebSpeechId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ScheduledDateTime)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Host)

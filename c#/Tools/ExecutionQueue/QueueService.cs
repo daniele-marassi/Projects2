@@ -108,13 +108,14 @@ namespace Tools.ExecutionQueue
             {
                 try
                 {
+                    var now = DateTime.Now;
                     var getAllExecutionQueuesResult = await _repo.GetAllExecutionQueues();
 
                     if (getAllExecutionQueuesResult.Successful)
                     {
-                        var newQueue = getAllExecutionQueuesResult.Data.Where(_ => _.Host?.Trim().ToLower() == host.Trim().ToLower() && _.StateQueue == null).OrderBy(_ => _.Id).ToList();
+                        var newQueue = getAllExecutionQueuesResult.Data.Where(_ => _.Host?.Trim().ToLower() == host.Trim().ToLower() && _.StateQueue == null && _.ScheduledDateTime <= now).OrderBy(_ => _.Id).ToList();
 
-                        var runningQueue = getAllExecutionQueuesResult.Data.Where(_ => _.Host?.Trim().ToLower() == host.Trim().ToLower() && _.StateQueue == ExecutionQueueStateQueue.RunningStep2.ToString()).OrderBy(_ => _.Id).ToList();
+                        var runningQueue = getAllExecutionQueuesResult.Data.Where(_ => _.Host?.Trim().ToLower() == host.Trim().ToLower() && _.StateQueue == ExecutionQueueStateQueue.RunningStep2.ToString() && _.ScheduledDateTime <= now).OrderBy(_ => _.Id).ToList();
 
                         foreach (var item in runningQueue)
                         {

@@ -167,6 +167,8 @@ CREATE TABLE [dbo].[ExecutionQueues](
 	[FullPath] [nvarchar](4000) NULL,
 	[Arguments] [nvarchar](4000) NULL,
 	[Output] [nvarchar](max) NULL,
+	[WebSpeechId] [bigint] NULL,
+	[ScheduledDateTime] [datetime] NULL,
 	[Host] [nvarchar](256) NULL,
 	[StateQueue] [nvarchar](256) NULL,
 	[InsDateTime] [datetime] NOT NULL,

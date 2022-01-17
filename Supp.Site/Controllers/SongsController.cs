@@ -660,7 +660,7 @@ namespace Supp.Site.Controllers
 
                         if (webSpeech != null)
                         {
-                            var executionQueue = new ExecutionQueueDto() { FullPath = webSpeech.Operation, Arguments = volume, Host = _hostSelected, Type = webSpeech.Type };
+                            var executionQueue = new ExecutionQueueDto() { FullPath = webSpeech.Operation, Arguments = volume, Host = _hostSelected, Type = webSpeech.Type, WebSpeechId = 0, ScheduledDateTime = DateTime.Now };
                             var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
                         }
                     }
@@ -712,7 +712,7 @@ namespace Supp.Site.Controllers
                         arguments.Id = data.Id;
                         arguments.FullPath = data.FullPath;
 
-                        var executionQueue = new ExecutionQueueDto() { Arguments = JsonConvert.SerializeObject(arguments), Host = _hostSelected, Type = "SongsPlayer" };
+                        var executionQueue = new ExecutionQueueDto() { Arguments = JsonConvert.SerializeObject(arguments), Host = _hostSelected, Type = "SongsPlayer", WebSpeechId = 0, ScheduledDateTime = DateTime.Now };
                         var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
 
                         if (addExecutionQueueResult.Successful)

@@ -17,3 +17,4 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\MessagesP
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.csproj.AssemblyReference.cache

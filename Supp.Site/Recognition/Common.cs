@@ -830,7 +830,7 @@ namespace Supp.Site.Recognition
 
             if (_application == true && _claims.Configuration.Speech.WakeUpScreenAfterEhiActive == true)
             {
-                var executionQueue = new ExecutionQueueDto() { Host = _claims.Configuration.Speech.HostDefault, Type = ExecutionQueueType.WakeUpScreenAfterEhi.ToString() };
+                var executionQueue = new ExecutionQueueDto() { Host = _claims.Configuration.Speech.HostDefault, Type = ExecutionQueueType.WakeUpScreenAfterEhi.ToString(), WebSpeechId = 0, ScheduledDateTime = DateTime.Now };
                 response = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
             }
 
@@ -1379,7 +1379,7 @@ namespace Supp.Site.Recognition
                     {
                         var access_token_cookie = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
 
-                        var executionQueue = new ExecutionQueueDto() { FullPath = "*", Arguments = "*", Host = _hostSelected, Type = ExecutionQueueType.ForceHideApplication.ToString(), StateQueue = ExecutionQueueStateQueue.RunningStep2.ToString() };
+                        var executionQueue = new ExecutionQueueDto() { FullPath = "*", Arguments = "*", Host = _hostSelected, Type = ExecutionQueueType.ForceHideApplication.ToString(), StateQueue = ExecutionQueueStateQueue.RunningStep2.ToString(), WebSpeechId = 0, ScheduledDateTime = DateTime.Now };
                         var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
                     }
                     catch (Exception ex)
