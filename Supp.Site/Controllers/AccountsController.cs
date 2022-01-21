@@ -13,6 +13,7 @@ using static Supp.Site.Common.Config;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Cryptography;
 using Additional.NLog;
+using Additional;
 
 namespace Supp.Site.Controllers
 {
@@ -25,6 +26,7 @@ namespace Supp.Site.Controllers
         private readonly UserRoleTypesRepository userRoleTypeRepo;
         private readonly AuthenticationsRepository authenticationRepo;
         private readonly SuppUtility suppUtility;
+        private readonly Utility utility;
 
         public AccountsController()
         {
@@ -33,6 +35,7 @@ namespace Supp.Site.Controllers
             userRepo = new UsersRepository();
             userRoleTypeRepo = new UserRoleTypesRepository();
             suppUtility = new SuppUtility();
+            utility = new Utility();
         }
 
         // GET: Accounts/Create
@@ -108,7 +111,7 @@ namespace Supp.Site.Controllers
 
                         using (MD5 md5Hash = MD5.Create())
                         {
-                            passwordMd5 = Common.SuppUtility.GetMd5Hash(md5Hash, dto.Password);
+                            passwordMd5 = utility.GetMd5Hash(md5Hash, dto.Password);
                         }
 
                         //Check
@@ -211,7 +214,7 @@ namespace Supp.Site.Controllers
 
                         using (MD5 md5Hash = MD5.Create())
                         {
-                            passwordMd5 = Common.SuppUtility.GetMd5Hash(md5Hash, GeneralSettings.Constants.DefaultPassword);
+                            passwordMd5 = utility.GetMd5Hash(md5Hash, GeneralSettings.Constants.DefaultPassword);
                         }
 
                         var authenticationDto = getAuthenticationResult.Data.Where(_ => _.Enable == true).OrderBy(_ => _.Id).LastOrDefault();
@@ -285,8 +288,8 @@ namespace Supp.Site.Controllers
 
                         using (MD5 md5Hash = MD5.Create())
                         {
-                            passwordMd5 = Common.SuppUtility.GetMd5Hash(md5Hash, dto.NewPassword);
-                            oldPasswordMd5 = Common.SuppUtility.GetMd5Hash(md5Hash, dto.OldPassword);
+                            passwordMd5 = utility.GetMd5Hash(md5Hash, dto.NewPassword);
+                            oldPasswordMd5 = utility.GetMd5Hash(md5Hash, dto.OldPassword);
                         }
 
                         //Check
@@ -520,7 +523,7 @@ namespace Supp.Site.Controllers
 
                         using (MD5 md5Hash = MD5.Create())
                         {
-                            passwordMd5 = Common.SuppUtility.GetMd5Hash(md5Hash, GeneralSettings.Constants.DefaultPassword);
+                            passwordMd5 = utility.GetMd5Hash(md5Hash, GeneralSettings.Constants.DefaultPassword);
                         }
 
                         var authenticationDto = getAuthenticationResult.Data.OrderBy(_ => _.Id).LastOrDefault();

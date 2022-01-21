@@ -246,6 +246,7 @@ namespace Supp.Site.Recognition
                     {
                         value = int.Parse(word);
                         if (data.Parameters == null) data.Parameters = String.Empty;
+                        if (data.Parameters != "") data.Parameters += " ";
                         data.Parameters += value.ToString();
                     }
                     catch (Exception)

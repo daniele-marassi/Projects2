@@ -28,6 +28,8 @@ namespace Supp.Site.Recognition
         private readonly WebSpeechesRepository webSpeecheRepo;
         private readonly ExecutionQueuesRepository executionQueueRepo;
         private readonly Dialogue dialogue;
+        private readonly Utility utility;
+        private readonly PhraseInDateTimeManager phraseInDateTimeManager;
 
         public Common()
         {
@@ -35,6 +37,8 @@ namespace Supp.Site.Recognition
             webSpeecheRepo = new WebSpeechesRepository();
             executionQueueRepo = new ExecutionQueuesRepository();
             dialogue = new Dialogue();
+            utility = new Utility();
+            phraseInDateTimeManager = new PhraseInDateTimeManager();
         }
 
         /// <summary>
@@ -319,6 +323,14 @@ namespace Supp.Site.Recognition
                         {
                             data = items.FirstOrDefault();
                             data = GetAnswer(data);
+                        }
+
+                        if ((stepType == StepTypes.GetElementDateTime.ToString() || stepType == StepTypes.GetElementDate.ToString() || stepType == StepTypes.GetElementTime.ToString()))
+                        {
+                            var value = phraseInDateTimeManager.Convert(_phrase, _claims.Configuration.General.Culture);
+
+                            if (value == null) data = null;
+                            else _phrase = value.ToString();
                         }
 
                         if (data != null && _subType != "" && _subType != null && _subType != "null") data = dialogue.Manage(data, _subType, _step, stepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);

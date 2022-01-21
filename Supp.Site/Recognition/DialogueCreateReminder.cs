@@ -186,7 +186,7 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.GetElementValue.ToString(),
+                        StepType = StepTypes.GetElementDateTime.ToString(),
                         ElementIndex = 3
                     }
                 );
@@ -232,7 +232,7 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.GetElementValue.ToString(),
+                        StepType = StepTypes.GetElementTime.ToString(),
                         ElementIndex = 4
                     }
                 );
@@ -278,7 +278,7 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.GetElementValue.ToString(),
+                        StepType = StepTypes.GetElementDateTime.ToString(),
                         ElementIndex = 5
                     }
                 );
@@ -324,7 +324,7 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.GetElementValue.ToString(),
+                        StepType = StepTypes.GetElementTime.ToString(),
                         ElementIndex = 6
                     }
                 );
@@ -492,14 +492,7 @@ namespace Supp.Site.Recognition
             return getRemindersResult;
         }
 
-        public string ConvertValueInDateTime(string value)
-        {
-            var result = "";
-
-            return result;
-        }
-
-        public List<int?> ConvertValueInMinutesList(string value)
+        public List<int?> ConvertPhraseInMinutesList(string value)
         {
             List<int?> result= null;
 

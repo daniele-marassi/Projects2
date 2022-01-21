@@ -12,6 +12,7 @@ using X.PagedList;
 using static Supp.Site.Common.Config;
 using System.Security.Cryptography;
 using Additional.NLog;
+using Additional;
 
 namespace Supp.Site.Controllers
 {
@@ -22,12 +23,14 @@ namespace Supp.Site.Controllers
         private readonly AuthenticationsRepository authenticationRepo;
         private readonly SuppUtility suppUtility;
         private readonly UsersRepository userRepo;
+        private readonly Utility utility;
 
         public AuthenticationsController()
         {
             authenticationRepo = new AuthenticationsRepository();
             suppUtility = new SuppUtility();
             userRepo = new UsersRepository();
+            utility = new Utility();
         }
 
         // GET: Authentications
@@ -248,7 +251,7 @@ namespace Supp.Site.Controllers
 
                         using (MD5 md5Hash = MD5.Create())
                         {
-                            passwordMd5 = Common.SuppUtility.GetMd5Hash(md5Hash, dto.Password);
+                            passwordMd5 = utility.GetMd5Hash(md5Hash, dto.Password);
                         }
 
                         dto.Password = passwordMd5;

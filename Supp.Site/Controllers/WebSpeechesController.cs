@@ -43,6 +43,7 @@ namespace Supp.Site.Controllers
         private readonly SuppUtility suppUtility;
         private readonly AuthenticationsRepository authenticationRepo;
         private readonly Supp.Site.Recognition.Common recognitionCommon;
+        private readonly Utility utility;
 
         public WebSpeechesController()
         {
@@ -51,6 +52,7 @@ namespace Supp.Site.Controllers
             suppUtility = new SuppUtility();
             authenticationRepo = new AuthenticationsRepository();
             recognitionCommon = new Recognition.Common();
+            utility = new Utility();
         }
 
         // GET: WebSpeeches
@@ -700,7 +702,7 @@ namespace Supp.Site.Controllers
 
                         using (MD5 md5Hash = MD5.Create())
                         {
-                            passwordMd5 = Common.SuppUtility.GetMd5Hash(md5Hash, _password);
+                            passwordMd5 = utility.GetMd5Hash(md5Hash, _password);
                         }
 
                         suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName, passwordMd5, expiresInSeconds);

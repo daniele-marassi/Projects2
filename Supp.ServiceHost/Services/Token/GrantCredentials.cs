@@ -30,6 +30,7 @@ namespace Supp.ServiceHost.Services.Token
         private IUserRolesRepository iUserRolesRepo;
         private static Logger classLogger = LogManager.GetCurrentClassLogger();
         private NLogUtility nLogUtility = new NLogUtility();
+        private Additional.Utility utility;
 
         public GrantCredentials(SuppDatabaseContext context)
         {
@@ -37,6 +38,7 @@ namespace Supp.ServiceHost.Services.Token
             iUsersRepo = new UsersRepository(context);
             iUserRoleTypesRepo = new UserRoleTypesRepository(context);
             iUserRolesRepo = new UserRolesRepository(context);
+            utility = new Additional.Utility();
         }
 
         /// <summary>
@@ -99,7 +101,7 @@ namespace Supp.ServiceHost.Services.Token
                     {
                         using (MD5 md5Hash = MD5.Create())
                         {
-                            passwordMd5 = Common.SuppUtility.GetMd5Hash(md5Hash, password);
+                            passwordMd5 = utility.GetMd5Hash(md5Hash, password);
                         }
                     }
                     else passwordMd5 = password;

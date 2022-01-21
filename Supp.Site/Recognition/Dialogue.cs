@@ -100,7 +100,7 @@ namespace Supp.Site.Recognition
                 }
                 else
                 {
-                    name = suppUtility.FirstLetterToUpper(_phrase.Trim().Replace(' ', '_'));
+                    name = utility.FirstLetterToUpper(_phrase.Trim().Replace(' ', '_'));
                 }
 
                 newWebSpeech = new WebSpeechDto() { Name = name, Phrase = @"[[""" + _phrase + @"""]]", Host = "All", Type = data.Type, FinalStep = true, OperationEnable = data.OperationEnable, PrivateInstruction = true, Ico = "/Images/Shortcuts/generic.png", Operation = data.Operation, Parameters = data.Parameters, ElementIndex = data.ElementIndex, SubType = data.SubType, StepType = data.StepType};
@@ -359,10 +359,10 @@ namespace Supp.Site.Recognition
                     newWebSpeech.FinalStep = true;
 
                     if (_claims.Configuration.General.Culture.ToLower() == "it-it")
-                        newWebSpeech.Answer = "Errore: " + suppUtility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
+                        newWebSpeech.Answer = "Errore: " + utility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
 
                     if (_claims.Configuration.General.Culture.ToLower() == "en-us")
-                        newWebSpeech.Answer = "Error: " + suppUtility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
+                        newWebSpeech.Answer = "Error: " + utility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
                 }
             }
 
@@ -447,6 +447,16 @@ namespace Supp.Site.Recognition
                 setCookie = true;
             }
 
+            if ((_stepType == StepTypes.GetElementDateTime.ToString() || _stepType == StepTypes.GetElementDate.ToString() || _stepType == StepTypes.GetElementTime.ToString())
+                && (
+                        _subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString()
+                   )
+               )
+            {
+                newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = _phrase.Trim();
+                setCookie = true;
+            }
+
             if (
                 _stepType == StepTypes.ApplyNow.ToString()
                 && (
@@ -470,10 +480,10 @@ namespace Supp.Site.Recognition
                     newWebSpeech.FinalStep = true;
 
                     if (_claims.Configuration.General.Culture.ToLower() == "it-it")
-                        newWebSpeech.Answer = "Errore: " + suppUtility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
+                        newWebSpeech.Answer = "Errore: " + utility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
 
                     if (_claims.Configuration.General.Culture.ToLower() == "en-us")
-                        newWebSpeech.Answer = "Error: " + suppUtility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
+                        newWebSpeech.Answer = "Error: " + utility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
                 }
             }
 

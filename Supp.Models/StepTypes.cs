@@ -13,7 +13,10 @@ namespace Supp.Models
         Choice = 4,
         GetElementValue = 5,
         Execute = 6,
-        Ask = 7
+        Ask = 7,
+        GetElementDateTime = 8,
+        GetElementDate = 9,
+        GetElementTime = 10
     }
 
     public class StepTypesUtility
