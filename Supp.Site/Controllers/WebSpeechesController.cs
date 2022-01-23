@@ -243,9 +243,10 @@ namespace Supp.Site.Controllers
                     path = path.Replace(@"bin\Debug\netcoreapp3.1", "");
 
                     var d = new DirectoryInfo(Path.Combine(path, @"wwwroot\Images\Shortcuts"));
-                    FileInfo[] Files = d.GetFiles("*.png");
+                    var files = d.GetFiles("*.png").ToList();
+                    files.AddRange(d.GetFiles("*.gif").ToList());
 
-                    foreach (FileInfo file in Files)
+                    foreach (FileInfo file in files)
                     {
                         var ico = file.FullName.Replace(Path.Combine(path, "wwwroot"), "").Replace(@"\", "/");
                         shortcutImages.Add(new ShortcutImage() { Id = ico.Trim(), Name = file.Name.Trim() });

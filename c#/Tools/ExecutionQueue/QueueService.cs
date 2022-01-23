@@ -175,7 +175,21 @@ namespace Tools.ExecutionQueue
                             {
                                 if (item.Type == ExecutionQueueType.SongsPlayer.ToString())
                                 {
-                                    var arguments = JsonConvert.DeserializeObject<(string Command, long Id, string FullPath)>(item.Arguments);
+                                    (string Command, long Id, string FullPath) arguments;
+
+                                    arguments.Command = "";
+                                    arguments.Id = 0;
+                                    arguments.FullPath = "";
+                                    var failed = false;
+
+                                    try
+                                    {
+                                        arguments = JsonConvert.DeserializeObject<(string Command, long Id, string FullPath)>(item.Arguments);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        failed = true;
+                                    }
 
                                     if (arguments.Command == "play" || arguments.Command == "forward" || arguments.Command == "previous")
                                     {
@@ -186,7 +200,7 @@ namespace Tools.ExecutionQueue
                                             var song = getSongsByIdResult.Data.FirstOrDefault();
 
                                             item.FullPath = songsPlayer;
-                                            item.Arguments = @""""+ arguments.FullPath + @"""";
+                                            item.Arguments = @"""" + arguments.FullPath + @"""";
 
                                             await RunExeAndUpdateDbAsync(item, false);
 
@@ -199,6 +213,12 @@ namespace Tools.ExecutionQueue
                                     if (arguments.Command == "stop")
                                     {
                                         EndTask(Path.GetFileName(songsPlayer));
+                                    }
+
+                                    if(failed)
+                                    {
+                                        item.StateQueue = ExecutionQueueStateQueue.Failed.ToString();
+                                        updateExecutionQueueResult = await _repo.UpdateExecutionQueue(item);
                                     }
                                 }
 

@@ -44,7 +44,7 @@ namespace Supp.Site.Common
             {
                 value = HttpUtility.UrlEncode(value);
 
-                var cookieCharacterLimit = (4096 - key.Length) - 10;
+                var cookieCharacterLimit = (4096 - key.Length) - 100;
                 var i = 0;
 
                 while (value != String.Empty)

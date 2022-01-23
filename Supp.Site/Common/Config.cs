@@ -109,7 +109,8 @@ namespace Supp.Site.Common
                 public const string SuppSiteSongsPositionCookieName = "SuppSiteSongsPosition";
                 public const string SuppSiteSongIdCookieName = "SuppSiteSongId";
                 public const string SuppSitePlayListSelectedCookieName = "SuppSitePlayListSelected";
-                public const string SuppSiteNewWebSpeechDtoInJsonCookieName = "SuppSiteNewWebSpeechDtoInJson";                
+                public const string SuppSiteNewWebSpeechDtoInJsonCookieName = "SuppSiteNewWebSpeechDtoInJson";
+                public const string SuppSiteTimerParamInJsonCookieName = "SuppSiteTimerParamInJson";
             }
 
             public static void SetGeneralSettings(IConfiguration configuration)

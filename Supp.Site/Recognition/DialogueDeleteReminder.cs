@@ -120,7 +120,7 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.GetElementValue.ToString(),
+                        StepType = StepTypes.Default.ToString(),
                         ElementIndex = 0
                     }
                 );
@@ -215,7 +215,7 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.GetElementValue.ToString(),
+                        StepType = StepTypes.Default.ToString(),
                         ElementIndex = 0
                     }
                 );

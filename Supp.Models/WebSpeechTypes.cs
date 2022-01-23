@@ -52,7 +52,14 @@ namespace Supp.Models
         SystemDialogueDeleteReminder = 44,
         CreateReminder = 45,
         DeleteReminder = 46,
-        SystemCreateReminder = 47
+        SystemCreateReminder = 47,
+        SetTimer = 48,
+        SystemSetTimer = 49,
+        SystemDialogueSetTimer = 50,
+        ReadThermostat = 51,
+        SystemReadThermostat = 52,
+        SetThermostat = 53,
+        SystemSetThermostat = 54
     }
 
     public class WebSpeechTypesUtility

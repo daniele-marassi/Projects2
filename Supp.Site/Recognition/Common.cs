@@ -242,6 +242,16 @@ namespace Supp.Site.Recognition
                             }
                         }
 
+                        if (_subType == WebSpeechTypes.SystemDialogueSetTimer.ToString())
+                        {
+                            var requests = dialogue.GetDialogueSetTimer(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
+                            if (requests != null && requests.Count > 0)
+                            {
+                                var dataResult = GetData(requests);
+                                result.Data.AddRange(dataResult.Data);
+                            }
+                        }
+
                         if (_subType == WebSpeechTypes.SystemDialogueClearNote.ToString() || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString())
                         {
                             var requests = dialogue.GetDialogueClearNote(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
@@ -323,6 +333,7 @@ namespace Supp.Site.Recognition
                         {
                             data = items.FirstOrDefault();
                             data = GetAnswer(data);
+                            stepType = data.StepType;
                         }
 
                         if ((stepType == StepTypes.GetElementDateTime.ToString() || stepType == StepTypes.GetElementDate.ToString() || stepType == StepTypes.GetElementTime.ToString()))
@@ -476,12 +487,56 @@ namespace Supp.Site.Recognition
                         }
                         else
                         {
-                            data = await dialogue.RunExe(data, phrase, _hostSelected, access_token_cookie, executionQueueRepo);
+                            data = await dialogue.RunExe(data, phrase, _hostSelected, access_token_cookie, executionQueueRepo, _claims);
 
                             if (data.ExecutionQueueId != 0)
                             {
                                 _executionQueueId = data.ExecutionQueueId;
                             }
+                        }
+                    }
+
+                    if (
+                            data != null
+                            && (
+                                data.Type == WebSpeechTypes.SystemSetTimer.ToString()
+                                || data.Type == WebSpeechTypes.SetTimer.ToString()
+                                )
+                            && data.OperationEnable == true && data.Step == 0
+                        )
+                    {
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteTimerParamInJsonCookieName);
+
+                        if (_phrase == null) _phrase = "";
+                        var date = phraseInDateTimeManager.Convert(_phrase, _claims.Configuration.General.Culture);
+
+                        data.Parameters = data.Parameters.Replace("NAME", _claims.Name);
+
+                        if (data.SubType == WebSpeechTypes.SystemDialogueSetTimer.ToString() && (date == null))
+                        {
+                            List<WebSpeechDto> dialogue = null;
+
+                            if (data.SubType == WebSpeechTypes.SystemDialogueSetTimer.ToString())
+                                dialogue = this.dialogue.GetDialogueSetTimer(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
+
+                            if (dialogue != null && dialogue.Count > 0)
+                            {
+                                var dataResult = GetData(dialogue);
+
+                                var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
+
+                                _data = GetAnswer(_data);
+
+                                _data.Parameters = data.Parameters;
+                                _data.Operation = data.Operation;
+                                _data.Type = data.Type;
+
+                                data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, date.ToString(), response, request, _claims, userName, userId, _hostSelected);
+                            }
+                        }
+                        else
+                        {
+                            data = await dialogue.SetTimer(data, access_token_cookie, userName, userId, _claims, response, expiresInSeconds, (DateTime)date);
                         }
                     }
 

@@ -22,6 +22,14 @@ function SetCookie(name, value, expireDateString, path) {
     document.cookie = name + "=" + value + "; " + expires + "; path=" + path;
 }
 
+function DeleteCookie(name, path) {
+    if (path == undefined || path == "") {
+        path = "/";
+    }
+    var expires = "expires=" + "Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = name + "=" + "" + "; " + expires + "; path=" + path;
+}
+
 function ConvertCamelCase(str) {
     return InsertSpaces(str.replace(/(^| )(\w)/g, function (x) {
         return x.toUpperCase();

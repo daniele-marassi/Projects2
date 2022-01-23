@@ -53,6 +53,12 @@
         var voices;
         var phraseSended=false;
         var shortcutsOpen = false;
+        var ehiRecognitedAudio = null;
+        var timerActive = false;
+        var timerParamInJson = null;
+        var timerParam = null;
+        var timerParamPhrase = null;
+        var timerParamDate = null;
 
         //@*Model Variables*@
         var name = "";
@@ -340,7 +346,7 @@
             }
         }
 
-        function ReadOutLoud(_message, _finalStep) {
+        function ReadOutLoud(_message, _finalStep, resetTimer) {
             LogFunctionStart();
             readOutLoudActive = true;
             recognitionActive = false;
@@ -436,10 +442,10 @@
 
             if(speakIsSuccesuful == false || speakHasError == true) {
                 console.warn('speakIsSuccesuful:' + speakIsSuccesuful + ' - speakHasError:' + speakHasError + ' _error:'+_error);
-                EndReadOutLoud();
+                EndReadOutLoud(resetTimer);
 
                 setTimeout(function () {
-                    ReadOutLoud(messageBCK, _finalStep);
+                    ReadOutLoud(messageBCK, _finalStep, resetTimer);
                 }, 50);        
 
                 return 0;
@@ -448,23 +454,24 @@
             speech.onend = function(event) {
                 LogFunctionStart('speech.onend');
                 if (_finalStep == true || readOutLoudActive == false || _message == null || _message == ''){
-                    EndReadOutLoud();
+                    EndReadOutLoud(resetTimer);
                 } else {
                     if(synth != null) synth.cancel();
                     synth= null;
                     speech = null;
-                    ReadOutLoud(_message, _finalStep); 
+                    ReadOutLoud(_message, _finalStep, resetTimer); 
                 }
                 LogFunctionEnd('speech.onend');
             }
             LogFunctionEnd();
         }
 
-        function EndReadOutLoud(){
+        function EndReadOutLoud(resetTimer){
             LogFunctionStart();
             if(synth != null) synth.cancel();
             synth= null;
             speech = null;
+            if(resetTimer == true) timerActive = false;
 
             if(recognition != null && IsMobile() == false){                  
                 try {
@@ -582,6 +589,7 @@
 
                     LogWithTime("Sended phrase: " + _phrase);
 
+                    ehiRecognitedAudio.play();
                     CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultSendPhrase");
                 }
             }
@@ -740,22 +748,19 @@
                                     if (event.results[i].isFinal){
                                         LogWithTime("Recognition: " + _phrase);
                                         if (_phrase === listeningPhrase && ehi == 0 && _reset == false) {
-                                            var audio = new Audio("/Files/Ehi.mp3");
-                                            audio.play();
+                                            ehiRecognitedAudio.play();
                                             
                                             var phraseTmp = _phrase;
 
                                             CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionEhi");
                                         } else if (ehi == 1 && _phrase != listeningPhrase && _phrase != null && _phrase != '' && _reset == false) {
-                                            var audio = new Audio("/Files/Ehi.mp3");
-                                            audio.play();
+                                            ehiRecognitedAudio.play();
 
                                             var phraseTmp = _phrase;
 
                                             CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionPhrase");
                                         } else if (ehi == 0 && _phrase != listeningPhrase && _phrase.includes(listeningPhrase) && _phrase != null && _phrase != '' && _reset == false) {
-                                            var audio = new Audio("/Files/Ehi.mp3");
-                                            audio.play();
+                                            ehiRecognitedAudio.play();
 
                                             var phraseTmp = _phrase;
                                             var start = phraseTmp.indexOf(listeningPhrase); 
@@ -860,6 +865,31 @@
         }
 
         function Service() {
+            if(timerActive == false){
+                timerParamInJson = GetCookie("SuppSiteTimerParamInJson_0");
+                timerParamInJson = DecodeUnicode(timerParamInJson);
+
+                if(timerParamInJson != null && timerParamInJson != "" && timerParamInJson != "null"){
+                    timerActive = true;
+                    DeleteCookie("SuppSiteTimerParamInJson_0");
+                    timerParam = JSON.parse(timerParamInJson);
+                    timerParamPhrase = DecodeUnicodeExtended(timerParam['Phrase']);
+                    timerParamDate = Date.parse(DecodeUnicodeExtended(timerParam['Date']));
+                }
+            }
+
+            var now = new Date();
+            var difference = (now - timerParamDate) / 1000;
+
+            if(timerParamDate != null && now >= timerParamDate && difference < 60){
+                timerParamInJson = null;
+                timerParam = null;
+                timerParamDate = null;
+                ehiRecognitedAudio.play();
+                ReadOutLoud(timerParamPhrase, false, true);
+                timerParamPhrase = null;
+            }
+
             if(voices == undefined || voices == null || voices.length == 0) voices = window.speechSynthesis.getVoices();
 
             //timeToEhiTimeoutInSeconds = 10; // to debug
@@ -927,7 +957,7 @@
                 
                 LogWithTime("Answer: " + _answer);
 
-                ReadOutLoud(_answer, false); 
+                ReadOutLoud(_answer, false, false); 
             } else if(finalStep == false && subType != null && subType != '' ){
                 var phraseTmp = "";
                 CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionPhrase");
@@ -1022,13 +1052,14 @@
         function InitFinal(){
             LogFunctionStart();
 
+            ehiRecognitedAudio = new Audio("/Files/Ehi.mp3");
+
             if(application == true) resetActive = true;
 
             clearInterval(serviceInterval);
             serviceInterval = setInterval( function() { Service(); }, 1000);
             
             PartialInitFinal();  
-
             var _shortcutsInJson = (shortcutsInJson).replace(/&quot;/g, '"');
             shortcuts = JSON.parse(_shortcutsInJson);
             
@@ -1110,6 +1141,8 @@
             clearTimeout(actionShortcutTimeout);       
             actionShortcutTimeout = null;
 
+            ehiRecognitedAudio.play();
+
             for (var i = 0; i < shortcuts.length; ++i) {
                 var shortcut = shortcuts[i];
 
@@ -1155,37 +1188,45 @@
             LogFunctionEnd();
         }
 
-        function Action(type, link){
+        function Action(type, param){
             LogFunctionStart();
-            link = DecodeUnicode(link);
 
-            if(application == false && type == 'Link' && link != null && link != '' ){
-                var _url = link.replace(/&amp;/g,'&');
+            if(application == false && type == 'Link' && param != null && param != '' ){
+                param = DecodeUnicode(param);
+                var _url = param.replace(/&amp;/g,'&');
                 _url = DecodeUnicodeExtended(_url);
 
                 window.open(_url);
             }
 
-            else if(application == true && type == 'Link' && link != null && link != ''){
-                var _url = link.replace(/&amp;/g,'&');
+            else if(application == true && type == 'Link' && param != null && param != ''){
+                param = DecodeUnicode(param);
+                var _url = param.replace(/&amp;/g,'&');
                 _url = DecodeUnicodeExtended(_url);
 
-                window.open(_url, "open link", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
+                window.open(_url, "open param", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
             } 
 
-            else if(application == false && (type == 'SystemWebSearch' || type == 'WebSearch') && link != null && link != ''){
-                var _url = link.replace(/&amp;/g,'&');
+            else if(application == false && (type == 'SystemWebSearch' || type == 'WebSearch') && param != null && param != ''){
+                param = DecodeUnicode(param);
+                var _url = param.replace(/&amp;/g,'&');
                 _url = DecodeUnicodeExtended(_url);
 
                 window.open(_url);
             }
 
-            else if(application == true && (type == 'SystemWebSearch' || type == 'WebSearch') && link != null && link != ''){
-                var _url = link.replace(/&amp;/g,'&');
+            else if(application == true && (type == 'SystemWebSearch' || type == 'WebSearch') && param != null && param != ''){
+                param = DecodeUnicode(param);
+                var _url = param.replace(/&amp;/g,'&');
                 _url = DecodeUnicodeExtended(_url);
 
                 window.open(_url, "search", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
             }
+
+            else if((type == 'SystemSetTimer' || type == 'Timer')){
+
+            }
+
             LogFunctionEnd();
         }
 

@@ -740,7 +740,7 @@ namespace Supp.Site.Repositories
                         Location = createCalendarEventsRequest.Location,
                         NotificationMinutes = createCalendarEventsRequest.NotificationMinutes
                     };
-                    var createCalendarEventResult = googleCalendarUtility.CreateCalendarEvent(createCalendarEventsRequest);
+                    var createCalendarEventResult = googleCalendarUtility.CreateCalendarEvent(_createCalendarEventRequest);
 
                     response.Data.AddRange(createCalendarEventResult.Data);
 

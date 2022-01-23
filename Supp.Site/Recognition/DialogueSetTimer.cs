@@ -1,21 +1,26 @@
-﻿using Additional;
-using GoogleManagerModels;
+﻿using GoogleManagerModels;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Supp.Models;
+using Supp.Site.Common;
 using Supp.Site.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Supp.Site.Common.Config;
 
 namespace Supp.Site.Recognition
 {
-    public class DialogueRunExe
+    public class DialogueSetTimer
     {
-        private PhraseInDateTimeManager phraseInDateTimeManager;
-        public DialogueRunExe()
+        private readonly WebSpeechesRepository webSpeecheRepo;
+        private SuppUtility suppUtility;
+
+        public DialogueSetTimer()
         {
-            phraseInDateTimeManager = new PhraseInDateTimeManager();
+            webSpeecheRepo = new WebSpeechesRepository();
+            suppUtility = new SuppUtility();
         }
 
         /// <summary>
@@ -42,7 +47,7 @@ namespace Supp.Site.Recognition
                         Id = id,
                         Name = _subType + "_" + id.ToString(),
                         Phrase = @"EMPTY",
-                        Answer = @"[""Dimmi il valore"",""Qual'è il valore?""]",
+                        Answer = @"[""Dimmi quando"",""Quando?""]",
                         Host = "All",
                         FinalStep = false,
                         UserId = 0,
@@ -75,7 +80,7 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.GetElementValue.ToString(),
+                        StepType = StepTypes.GetElementDateTime.ToString(),
                         ElementIndex = 1
                     }
                 );
@@ -98,8 +103,8 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.Execute.ToString(),
-                        ElementIndex = 0
+                        StepType = StepTypes.ApplyNow.ToString(),
+                        ElementIndex = 1
                     }
                 );
 
@@ -111,7 +116,7 @@ namespace Supp.Site.Recognition
                         Id = id,
                         Name = _subType + "_" + id.ToString(),
                         Phrase = @"EMPTY",
-                        Answer = @"[""ok"",""va bene""]",
+                        Answer = @"[""Avviato""]",
                         Host = "All",
                         FinalStep = true,
                         UserId = 0,
@@ -137,7 +142,7 @@ namespace Supp.Site.Recognition
                         Id = id,
                         Name = _subType + "_" + id.ToString(),
                         Phrase = @"EMPTY",
-                        Answer = @"[""Tell me the value"",""What is the value?""]",
+                        Answer = @"[""Tell me when"",""When?""]",
                         Host = "All",
                         FinalStep = false,
                         UserId = 0,
@@ -170,7 +175,7 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.GetElementValue.ToString(),
+                        StepType = StepTypes.GetElementDateTime.ToString(),
                         ElementIndex = 1
                     }
                 );
@@ -193,8 +198,8 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.Execute.ToString(),
-                        ElementIndex = 0
+                        StepType = StepTypes.ApplyNow.ToString(),
+                        ElementIndex = 1
                     }
                 );
 
@@ -206,7 +211,7 @@ namespace Supp.Site.Recognition
                         Id = id,
                         Name = _subType + "_" + id.ToString(),
                         Phrase = @"EMPTY",
-                        Answer = @"[""ok"",""okay""]",
+                        Answer = @"[""Started""]",
                         Host = "All",
                         FinalStep = true,
                         UserId = 0,
@@ -225,73 +230,45 @@ namespace Supp.Site.Recognition
             return result;
         }
 
-        /// <summary>
-        /// Run Exe
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="_phrase"></param>
-        /// <param name="_hostSelected"></param>
-        /// <param name="access_token_cookie"></param>
-        /// <param name="executionQueueRepo"></param>
-        /// <returns></returns>
-        public async Task<WebSpeechDto> RunExe(WebSpeechDto data, string _phrase, string _hostSelected, string access_token_cookie, ExecutionQueuesRepository executionQueueRepo, ClaimsDto _claims)
+        public async Task<EventResult> SetTimer(WebSpeechDto dto, string token, string userName, long userId, ClaimsDto _claims, HttpResponse response, int expiresInSeconds, DateTime timerDate)
         {
-            if (data.Type == WebSpeechTypes.RunExeWithNumericParameter.ToString() || data.Type == WebSpeechTypes.SystemRunExeWithNumericParameter.ToString())
-            {
-                var value = 0;
-                if (_phrase == null || _phrase == "") _phrase = data.Phrase;
+            var eventDateStart = timerDate; //.AddMinutes(-1);
+            var eventDateEnd = timerDate.AddMinutes(2);
 
-                var words = _phrase.Trim().ToLower().Split(' ');
-                foreach (var word in words)
-                {
-                    try
-                    {
-                        value = int.Parse(word);
-                        if (data.Parameters == null) data.Parameters = String.Empty;
-                        if (data.Parameters != "") data.Parameters += " ";
-                        data.Parameters += value.ToString();
-                    }
-                    catch (Exception)
-                    { }
-                }
+            var notificationMinutes = new List<int?>() {0};
+            var color = GoogleCalendarColors.Flamingo;
+            var location = "";
+
+            var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = "#Timer", Description = "", Color = color, EventDateStart = eventDateStart, EventDateEnd = eventDateEnd, Location = location, NotificationMinutes = notificationMinutes };
+
+            var getRemindersResult = await webSpeecheRepo.CreateReminder(token, userName, userId, WebSpeechTypes.CreateNote, createCalendarEventRequest, _claims.Configuration.Speech.GoogleCalendarAccount);
+
+            var param = dto.Parameters.Replace("'", @"""");
+            var rnd = new Random();
+            var parameters = new List<string>() { };
+
+            try
+            {
+                parameters = JsonConvert.DeserializeObject<List<string>>(param);
+            }
+            catch (Exception)
+            {
+                parameters.Add(dto.Parameters);
             }
 
-            if (data.Type == WebSpeechTypes.RunExeWithNotNumericParameter.ToString() || data.Type == WebSpeechTypes.SystemRunExeWithNotNumericParameter.ToString())
-            {
-                if (_phrase == null || _phrase == "") _phrase = data.Phrase;
+            var x = rnd.Next(0, parameters.Count());
 
-                try
-                {
-                    if (data.Parameters == null) data.Parameters = String.Empty;
-                    data.Parameters += _phrase.ToString();
-                }
-                catch (Exception)
-                { }
-            }
+            var timerParam = new TimerParam() { Phrase = parameters[x], Date = timerDate.ToString("yyyy-MM-dd HH:mm:ss.fff") };
 
-            var scheduledDateTime = DateTime.Now;
+            suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteTimerParamInJsonCookieName, JsonConvert.SerializeObject(timerParam), expiresInSeconds);
 
-            if (_phrase != null && _phrase != "")
-            {
-                var value = phraseInDateTimeManager.Convert(_phrase, _claims.Configuration.General.Culture);
-                if (value != null) scheduledDateTime = (DateTime)value;
-            }
-
-            var hostSelected = _hostSelected;
-
-            if (data.Host.Trim().ToLower() != "all") hostSelected = data.Host;
-
-            var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = hostSelected, Type = WebSpeechTypes.RunExe.ToString(), WebSpeechId = data.Id, ScheduledDateTime = scheduledDateTime };
-            var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
-
-            if (addExecutionQueueResult.Successful)
-            {
-                data.ExecutionQueueId = addExecutionQueueResult.Data.FirstOrDefault().Id;
-            }
-            else
-                data.ExecutionQueueId = 0;
-
-            return data;
+            return getRemindersResult;
         }
+    }
+
+    public class TimerParam
+    {
+        public string Phrase { get; set; }
+        public string Date { get; set; }
     }
 }

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using static Supp.Site.Common.Config;
 using GoogleManagerModels;
 using Additional;
+using System.Globalization;
 
 namespace Supp.Site.Recognition
 {
@@ -25,6 +26,8 @@ namespace Supp.Site.Recognition
         private readonly DialogueDeleteReminder dialogueDeleteReminder;
         private readonly WebSpeechesRepository webSpeecheRepo;
         private readonly ExecutionQueuesRepository executionQueueRepo;
+        private readonly DialogueSetTimer dialogueSetTimer;
+        private readonly PhraseInDateTimeManager phraseInDateTimeManager;
 
 
         public Dialogue()
@@ -39,6 +42,8 @@ namespace Supp.Site.Recognition
             webSpeecheRepo = new WebSpeechesRepository();
             executionQueueRepo = new ExecutionQueuesRepository();
             utility = new Utility();
+            dialogueSetTimer = new DialogueSetTimer();
+            phraseInDateTimeManager = new PhraseInDateTimeManager();
         }
 
         private Element[] InitElements(Element[] elements, int index)
@@ -93,7 +98,7 @@ namespace Supp.Site.Recognition
 
                 var name = String.Empty;
 
-                if (_phrase == null)
+                if (_phrase == null || _phrase == "")
                 {
                     _phrase = String.Empty;
                     name = "NewImplemented" + "_" + DateTime.Now.ToString("yyyyMMddhhmmss");
@@ -129,7 +134,6 @@ namespace Supp.Site.Recognition
                         data.Operation = newWebSpeech.Operation;
                         data.Parameters = newWebSpeech.Parameters;
                         data.Type = newWebSpeech.Type;
-                       
                     }
                     catch (Exception)
                     {
@@ -168,6 +172,12 @@ namespace Supp.Site.Recognition
             setCookie = manageRunExeResult.SetCookie;
             newWebSpeech = manageRunExeResult.NewWebSpeech;
             data = manageRunExeResult.Data;
+
+            // Manage Timer
+            var manageTimerResult = ManageTimer(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, _claims, access_token_cookie);
+            setCookie = manageTimerResult.SetCookie;
+            newWebSpeech = manageTimerResult.NewWebSpeech;
+            data = manageTimerResult.Data;
 
             if (setCookie)
             {
@@ -565,9 +575,71 @@ namespace Supp.Site.Recognition
                 var dialogueRunExe = new DialogueRunExe();
                 //data.Type = WebSpeechTypes.SystemRunExe.ToString();
 
-                var runExeResult = dialogueRunExe.RunExe(data, newWebSpeech.Elements[1].Value, _hostSelected, access_token_cookie, executionQueueRepo).GetAwaiter().GetResult();
+                var runExeResult = dialogueRunExe.RunExe(data, newWebSpeech.Elements[1].Value, _hostSelected, access_token_cookie, executionQueueRepo, _claims).GetAwaiter().GetResult();
 
                 data.Parameters = runExeResult.Parameters;
+            }
+
+            result.SetCookie = setCookie;
+            result.NewWebSpeech = newWebSpeech;
+            result.Data = data;
+
+            return result;
+        }
+
+        private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageTimer(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, ClaimsDto _claims, string access_token_cookie)
+        {
+            (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) result;
+
+            result.SetCookie = false;
+            result.NewWebSpeech = null;
+            result.Data = null;
+
+            if (_stepType == StepTypes.GetElementDateTime.ToString()
+                && newWebSpeech.ElementIndex == 1
+                && (
+                        _subType == WebSpeechTypes.SystemDialogueSetTimer.ToString()
+                   )
+               )
+            {
+                var index = newWebSpeech.ElementIndex;
+                if (newWebSpeech.Elements[index] == null)
+                    newWebSpeech.Elements[index] = new Element() { Value = String.Empty };
+                newWebSpeech.Elements[index].Value = _phrase.Trim();
+                setCookie = true;
+            }
+
+            if (
+                _stepType == StepTypes.ApplyNow.ToString()
+                && (
+                        _subType == WebSpeechTypes.SystemDialogueSetTimer.ToString()
+                    )
+                )
+            {
+                var eventResult = new EventResult();
+
+                if (_subType == WebSpeechTypes.SystemDialogueSetTimer.ToString())
+                {
+                    var cultureInfo = default(CultureInfo);
+                    if (_claims.Configuration.General.Culture.ToLower() == "it-it")
+                        cultureInfo = new CultureInfo("it-IT");
+                    if (_claims.Configuration.General.Culture.ToLower() == "en-us")
+                        cultureInfo = new CultureInfo("en-US");
+
+                    var date = DateTime.Parse(newWebSpeech.Elements[1].Value, cultureInfo);
+                    eventResult = dialogueSetTimer.SetTimer(newWebSpeech, access_token_cookie, userName, userId, _claims, response, expiresInSeconds, date).GetAwaiter().GetResult();
+                }
+
+                if (!eventResult.Successful)
+                {
+                    newWebSpeech.FinalStep = true;
+
+                    if (_claims.Configuration.General.Culture.ToLower() == "it-it")
+                        newWebSpeech.Answer = "Errore: " + utility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
+
+                    if (_claims.Configuration.General.Culture.ToLower() == "en-us")
+                        newWebSpeech.Answer = "Error: " + utility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
+                }
             }
 
             result.SetCookie = setCookie;
@@ -639,6 +711,19 @@ namespace Supp.Site.Recognition
         }
 
         /// <summary>
+        /// Get Dialogue Set Timer
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <param name="lastWebSpeechId"></param>
+        /// <param name="_subType"></param>
+        /// <returns></returns>
+        public List<WebSpeechDto> GetDialogueSetTimer(string culture, long lastWebSpeechId, string _subType)
+        {
+            var dialogue = new DialogueSetTimer();
+            return dialogue.Get(culture, lastWebSpeechId, _subType);
+        }
+
+        /// <summary>
         /// Get Dialogue Web Search
         /// </summary>
         /// <param name="culture"></param>
@@ -660,10 +745,19 @@ namespace Supp.Site.Recognition
         /// <param name="access_token_cookie"></param>
         /// <param name="executionQueueRepo"></param>
         /// <returns></returns>
-        public async Task<WebSpeechDto> RunExe(WebSpeechDto data, string _phrase, string _hostSelected, string access_token_cookie, ExecutionQueuesRepository executionQueueRepo)
+        public async Task<WebSpeechDto> RunExe(WebSpeechDto data, string _phrase, string _hostSelected, string access_token_cookie, ExecutionQueuesRepository executionQueueRepo, ClaimsDto _claims)
         {
             var dialogue = new DialogueRunExe();
-            return await dialogue.RunExe(data, _phrase, _hostSelected, access_token_cookie, executionQueueRepo);
+            return await dialogue.RunExe(data, _phrase, _hostSelected, access_token_cookie, executionQueueRepo, _claims);
+        }
+
+        public async Task<WebSpeechDto> SetTimer(WebSpeechDto dto, string token, string userName, long userId, ClaimsDto _claims, HttpResponse response, int expiresInSeconds, DateTime timerDate)
+        {
+            var dialogue = new DialogueSetTimer();
+
+            var setTimerResult = await dialogue.SetTimer(dto, token, userName, userId, _claims, response, expiresInSeconds, timerDate);
+
+            return dto;
         }
 
         /// <summary>
