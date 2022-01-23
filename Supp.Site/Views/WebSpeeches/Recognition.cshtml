@@ -886,7 +886,7 @@
 
                 if(timerParamInJson != null && timerParamInJson != "" && timerParamInJson != "null"){
                     timerActive = true;
-                    DeleteCookie("SuppSiteTimerParamInJson_0");
+                    
                     timerParam = JSON.parse(timerParamInJson);
                     timerParamPhrase = DecodeUnicodeExtended(timerParam['Phrase']);
                     timerParamDate = Date.parse(DecodeUnicodeExtended(timerParam['Date']));
@@ -902,7 +902,7 @@
                     CirlceProgressBar(0, GetTimeRemain(difference));
                 }
 
-                var percent = 100 - (difference / initialDifference * 100);
+                var percent = /*100 -*/ (difference / initialDifference * 100);
 
                 CirlceProgressBar(percent, GetTimeRemain(difference));
 
@@ -912,6 +912,7 @@
                     timerParam = null;
                     timerParamDate = null;
                     initialDifference = null;
+                    DeleteCookie("SuppSiteTimerParamInJson_0");
                     document.getElementById('progress').style.display = "none";
                     ehiRecognitedAudio.play();
                     ReadOutLoud(timerParamPhrase, false, true);

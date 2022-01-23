@@ -1,4 +1,5 @@
-﻿using GoogleManagerModels;
+﻿using Additional;
+using GoogleManagerModels;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Supp.Models;
@@ -15,10 +16,12 @@ namespace Supp.Site.Recognition
     public class DialogueCreateReminder
     {
         private readonly WebSpeechesRepository webSpeecheRepo;
+        private readonly Utility utility;
 
         public DialogueCreateReminder()
         {
             webSpeecheRepo = new WebSpeechesRepository();
+            utility = new Utility();
         }
 
         /// <summary>
@@ -191,51 +194,54 @@ namespace Supp.Site.Recognition
                     }
                 );
 
-                id++;
-                step++;
-                result.Add(
-                    new WebSpeechDto()
-                    {
-                        Id = id,
-                        Name = _subType + "_" + id.ToString(),
-                        Phrase = @"EMPTY",
-                        Answer = @"[""a che ora inizia?"",""Dimmi l'ora inizia""]",
-                        Host = "All",
-                        FinalStep = false,
-                        UserId = 0,
-                        Order = 0,
-                        Type = WebSpeechTypes.SystemRequest.ToString(),
-                        SubType = _subType,
-                        Step = step,
-                        OperationEnable = true,
-                        ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.Ask.ToString(),
-                        ElementIndex = 0
-                    }
-                );
+                if (newWebSpeech.Elements == null || newWebSpeech.Elements.Length < 4 || newWebSpeech.Elements[3] == null || newWebSpeech.Elements[3].Value.Contains("00:00:11"))
+                {
+                    id++;
+                    step++;
+                    result.Add(
+                        new WebSpeechDto()
+                        {
+                            Id = id,
+                            Name = _subType + "_" + id.ToString(),
+                            Phrase = @"EMPTY",
+                            Answer = @"[""a che ora inizia?"",""Dimmi l'ora inizia""]",
+                            Host = "All",
+                            FinalStep = false,
+                            UserId = 0,
+                            Order = 0,
+                            Type = WebSpeechTypes.SystemRequest.ToString(),
+                            SubType = _subType,
+                            Step = step,
+                            OperationEnable = true,
+                            ParentIds = "[" + (id - 1).ToString() + "]",
+                            StepType = StepTypes.Ask.ToString(),
+                            ElementIndex = 0
+                        }
+                    );
 
-                id++;
-                step++;
-                result.Add(
-                    new WebSpeechDto()
-                    {
-                        Id = id,
-                        Name = _subType + "_" + id.ToString(),
-                        Phrase = @"EMPTY",
-                        Answer = null,
-                        Host = "All",
-                        FinalStep = false,
-                        UserId = 0,
-                        Order = 0,
-                        Type = WebSpeechTypes.SystemRequest.ToString(),
-                        SubType = _subType,
-                        Step = step,
-                        OperationEnable = true,
-                        ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.GetElementTime.ToString(),
-                        ElementIndex = 4
-                    }
-                );
+                    id++;
+                    step++;
+                    result.Add(
+                        new WebSpeechDto()
+                        {
+                            Id = id,
+                            Name = _subType + "_" + id.ToString(),
+                            Phrase = @"EMPTY",
+                            Answer = null,
+                            Host = "All",
+                            FinalStep = false,
+                            UserId = 0,
+                            Order = 0,
+                            Type = WebSpeechTypes.SystemRequest.ToString(),
+                            SubType = _subType,
+                            Step = step,
+                            OperationEnable = true,
+                            ParentIds = "[" + (id - 1).ToString() + "]",
+                            StepType = StepTypes.GetElementTime.ToString(),
+                            ElementIndex = 4
+                        }
+                    );
+                }
 
                 id++;
                 step++;
@@ -283,51 +289,54 @@ namespace Supp.Site.Recognition
                     }
                 );
 
-                id++;
-                step++;
-                result.Add(
-                    new WebSpeechDto()
-                    {
-                        Id = id,
-                        Name = _subType + "_" + id.ToString(),
-                        Phrase = @"EMPTY",
-                        Answer = @"[""A che ora finisce?"",""Dimmi l'ora di fine""]",
-                        Host = "All",
-                        FinalStep = false,
-                        UserId = 0,
-                        Order = 0,
-                        Type = WebSpeechTypes.SystemRequest.ToString(),
-                        SubType = _subType,
-                        Step = step,
-                        OperationEnable = true,
-                        ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.Ask.ToString(),
-                        ElementIndex = 0
-                    }
-                );
+                if (newWebSpeech.Elements == null || newWebSpeech.Elements.Length < 6 || newWebSpeech.Elements[5] == null || newWebSpeech.Elements[5].Value.Contains("00:00:11"))
+                {
+                    id++;
+                    step++;
+                    result.Add(
+                        new WebSpeechDto()
+                        {
+                            Id = id,
+                            Name = _subType + "_" + id.ToString(),
+                            Phrase = @"EMPTY",
+                            Answer = @"[""A che ora finisce?"",""Dimmi l'ora di fine""]",
+                            Host = "All",
+                            FinalStep = false,
+                            UserId = 0,
+                            Order = 0,
+                            Type = WebSpeechTypes.SystemRequest.ToString(),
+                            SubType = _subType,
+                            Step = step,
+                            OperationEnable = true,
+                            ParentIds = "[" + (id - 1).ToString() + "]",
+                            StepType = StepTypes.Ask.ToString(),
+                            ElementIndex = 0
+                        }
+                    );
 
-                id++;
-                step++;
-                result.Add(
-                    new WebSpeechDto()
-                    {
-                        Id = id,
-                        Name = _subType + "_" + id.ToString(),
-                        Phrase = @"EMPTY",
-                        Answer = null,
-                        Host = "All",
-                        FinalStep = false,
-                        UserId = 0,
-                        Order = 0,
-                        Type = WebSpeechTypes.SystemRequest.ToString(),
-                        SubType = _subType,
-                        Step = step,
-                        OperationEnable = true,
-                        ParentIds = "[" + (id - 1).ToString() + "]",
-                        StepType = StepTypes.GetElementTime.ToString(),
-                        ElementIndex = 6
-                    }
-                );
+                    id++;
+                    step++;
+                    result.Add(
+                        new WebSpeechDto()
+                        {
+                            Id = id,
+                            Name = _subType + "_" + id.ToString(),
+                            Phrase = @"EMPTY",
+                            Answer = null,
+                            Host = "All",
+                            FinalStep = false,
+                            UserId = 0,
+                            Order = 0,
+                            Type = WebSpeechTypes.SystemRequest.ToString(),
+                            SubType = _subType,
+                            Step = step,
+                            OperationEnable = true,
+                            ParentIds = "[" + (id - 1).ToString() + "]",
+                            StepType = StepTypes.GetElementTime.ToString(),
+                            ElementIndex = 6
+                        }
+                    );
+                }
 
                 id++;
                 step++;
@@ -478,12 +487,24 @@ namespace Supp.Site.Recognition
 
         public async Task<EventResult> CreateReminder(WebSpeechDto dto, string token, string userName, long userId, ClaimsDto _claims)
         {
-            var eventDateStart = DateTime.Parse(dto.Elements[4].Value);
-            var eventDateEnd = DateTime.Parse(dto.Elements[6].Value);
+            var eventDateStart = DateTime.Parse(dto.Elements[3].Value);
+            var eventDateEnd = DateTime.Parse(dto.Elements[5].Value);
+            if (dto.Elements[4] != null)
+            {
+                var timeStart = DateTime.Parse(dto.Elements[4].Value);
+                eventDateStart = DateTime.Parse(eventDateStart.Day + "/" + eventDateStart.Month + "/" + eventDateStart.Year + " " + timeStart.Hour + ":" + timeStart.Minute + ":" + timeStart.Second);
+            }
 
-            var notificationMinutes = new List<int?>() { 5, 10 };
-            var color = GetGoogleCalendarColor(dto.Elements[7].Value);
-            var location = dto.Elements[8].Value;
+            if (dto.Elements[4] != null)
+            {
+                var timeEnd = DateTime.Parse(dto.Elements[6].Value);
+                eventDateEnd = DateTime.Parse(eventDateEnd.Day + "/" + eventDateEnd.Month + "/" + eventDateEnd.Year + " " + timeEnd.Hour + ":" + timeEnd.Minute + ":" + timeEnd.Second);
+            }
+            
+
+            var notificationMinutes = new List<int?>() { 180, 60 };
+            var color = GetGoogleCalendarColor(utility.FirstLetterToUpper(dto.Elements[8].Value.ToLower()));
+            var location = dto.Elements[7].Value;
 
             var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = dto.Elements[1].Value, Description = dto.Elements[2].Value, Color = color, EventDateStart = eventDateStart, EventDateEnd = eventDateEnd, Location = location, NotificationMinutes = notificationMinutes };
 

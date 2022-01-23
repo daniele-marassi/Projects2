@@ -336,8 +336,14 @@ namespace Supp.Site.Recognition
                             stepType = data.StepType;
                         }
 
-                        if ((stepType == StepTypes.GetElementDateTime.ToString() || stepType == StepTypes.GetElementDate.ToString() || stepType == StepTypes.GetElementTime.ToString()))
+                        if (data != null && (stepType == StepTypes.GetElementDateTime.ToString() || stepType == StepTypes.GetElementDate.ToString() || stepType == StepTypes.GetElementTime.ToString()))
                         {
+                            if (data.Elements == null)
+                            {
+                                data.Elements = new Element[2];
+                                data.Elements[0] = new Element() { Value = String.Empty };
+                            }
+                            data.Elements[0].Value = _phrase.Trim();
                             var value = phraseInDateTimeManager.Convert(_phrase, _claims.Configuration.General.Culture);
 
                             if (value == null) data = null;
@@ -621,6 +627,7 @@ namespace Supp.Site.Recognition
                             || data.Type == WebSpeechTypes.DeleteNote.ToString() 
                             || data.Type == WebSpeechTypes.SystemDeleteNote.ToString()
                         )
+                         && _step == 0
                     )
                     {
                         List<WebSpeechDto> dialogue = null;
@@ -660,6 +667,7 @@ namespace Supp.Site.Recognition
                             || data.Type == WebSpeechTypes.DeleteReminder.ToString()
                             || data.Type == WebSpeechTypes.SystemDeleteReminder.ToString()
                         )
+                         && _step == 0
                     )
                     {
                         List<WebSpeechDto> dialogue = null;

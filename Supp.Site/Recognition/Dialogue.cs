@@ -130,10 +130,12 @@ namespace Supp.Site.Recognition
                         newWebSpeech.SubType = data.SubType;
                         newWebSpeech.StepType = data.StepType;
                         newWebSpeech.Elements = InitElements(newWebSpeech.Elements, newWebSpeech.ElementIndex);
-
+                        if (data.Elements != null && data.Elements.Length > 0)
+                            newWebSpeech.Elements[0] = data.Elements[0];
                         data.Operation = newWebSpeech.Operation;
                         data.Parameters = newWebSpeech.Parameters;
                         data.Type = newWebSpeech.Type;
+                        data.Elements = newWebSpeech.Elements;
                     }
                     catch (Exception)
                     {
@@ -169,9 +171,9 @@ namespace Supp.Site.Recognition
 
             // Manage Reminder
             var manageReminderResult = ManageReminder(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, _claims, access_token_cookie);
-            setCookie = manageRunExeResult.SetCookie;
-            newWebSpeech = manageRunExeResult.NewWebSpeech;
-            data = manageRunExeResult.Data;
+            setCookie = manageReminderResult.SetCookie;
+            newWebSpeech = manageReminderResult.NewWebSpeech;
+            data = manageReminderResult.Data;
 
             // Manage Timer
             var manageTimerResult = ManageTimer(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, _claims, access_token_cookie);

@@ -1,4 +1,5 @@
-﻿using GoogleManagerModels;
+﻿using Additional;
+using GoogleManagerModels;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Supp.Models;
@@ -16,11 +17,13 @@ namespace Supp.Site.Recognition
     {
         private readonly WebSpeechesRepository webSpeecheRepo;
         private SuppUtility suppUtility;
+        private PhraseInDateTimeManager phraseInDateTimeManager;
 
         public DialogueSetTimer()
         {
             webSpeecheRepo = new WebSpeechesRepository();
             suppUtility = new SuppUtility();
+            phraseInDateTimeManager = new PhraseInDateTimeManager();
         }
 
         /// <summary>
@@ -233,11 +236,14 @@ namespace Supp.Site.Recognition
         public async Task<EventResult> SetTimer(WebSpeechDto dto, string token, string userName, long userId, ClaimsDto _claims, HttpResponse response, int expiresInSeconds, DateTime timerDate)
         {
             var getRemindersResult = new EventResult() { ResultState = GoogleManagerModels.ResultType.None, Successful = true };
+
+            if(dto.Elements != null && dto.Elements[0] != null) timerDate = (DateTime)phraseInDateTimeManager.Convert(dto.Elements[0].Value, _claims.Configuration.General.Culture);
+
             TimeSpan ts = timerDate - DateTime.Now;
-            if (ts.TotalMinutes >= 10)
+            if (ts.TotalMinutes > 9)
             {
                 var eventDateStart = timerDate; //.AddMinutes(-1);
-                var eventDateEnd = timerDate.AddMinutes(2);
+                var eventDateEnd = timerDate.AddMinutes(10);
 
                 var notificationMinutes = new List<int?>() { 0 };
                 var color = GoogleCalendarColors.Flamingo;
