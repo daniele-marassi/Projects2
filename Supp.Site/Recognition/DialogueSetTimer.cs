@@ -232,17 +232,21 @@ namespace Supp.Site.Recognition
 
         public async Task<EventResult> SetTimer(WebSpeechDto dto, string token, string userName, long userId, ClaimsDto _claims, HttpResponse response, int expiresInSeconds, DateTime timerDate)
         {
-            var eventDateStart = timerDate; //.AddMinutes(-1);
-            var eventDateEnd = timerDate.AddMinutes(2);
+            var getRemindersResult = new EventResult() { ResultState = GoogleManagerModels.ResultType.None, Successful = true };
+            TimeSpan ts = timerDate - DateTime.Now;
+            if (ts.TotalMinutes >= 10)
+            {
+                var eventDateStart = timerDate; //.AddMinutes(-1);
+                var eventDateEnd = timerDate.AddMinutes(2);
 
-            var notificationMinutes = new List<int?>() {0};
-            var color = GoogleCalendarColors.Flamingo;
-            var location = "";
+                var notificationMinutes = new List<int?>() { 0 };
+                var color = GoogleCalendarColors.Flamingo;
+                var location = "";
 
-            var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = "#Timer", Description = "", Color = color, EventDateStart = eventDateStart, EventDateEnd = eventDateEnd, Location = location, NotificationMinutes = notificationMinutes };
+                var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = "#Timer", Description = "", Color = color, EventDateStart = eventDateStart, EventDateEnd = eventDateEnd, Location = location, NotificationMinutes = notificationMinutes };
 
-            var getRemindersResult = await webSpeecheRepo.CreateReminder(token, userName, userId, WebSpeechTypes.CreateNote, createCalendarEventRequest, _claims.Configuration.Speech.GoogleCalendarAccount);
-
+                getRemindersResult = await webSpeecheRepo.CreateReminder(token, userName, userId, WebSpeechTypes.CreateNote, createCalendarEventRequest, _claims.Configuration.Speech.GoogleCalendarAccount);
+            }
             var param = dto.Parameters.Replace("'", @"""");
             var rnd = new Random();
             var parameters = new List<string>() { };

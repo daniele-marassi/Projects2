@@ -59,6 +59,7 @@
         var timerParam = null;
         var timerParamPhrase = null;
         var timerParamDate = null;
+        var initialDifference = null;
 
         //@*Model Variables*@
         var name = "";
@@ -864,6 +865,20 @@
             return value;
         }
 
+        function GetTimeRemain(difference){
+            var _difference = (difference / 60);
+            var _seconds = (_difference % 1) * 60;
+            var _minutes = Math.floor(_difference);
+            var _time = "";
+
+            if(_minutes >= 1) _time += _minutes;
+            if(_minutes < 1) _time += 0;
+            if(_time != "" && _seconds != 0)_time += ":";
+            if(_seconds != 0) _time += _seconds.toFixed(0);
+            
+            return _time;
+        }
+
         function Service() {
             if(timerActive == false){
                 timerParamInJson = GetCookie("SuppSiteTimerParamInJson_0");
@@ -878,16 +893,30 @@
                 }
             }
 
-            var now = new Date();
-            var difference = (now - timerParamDate) / 1000;
+            if(timerActive == true){
+                var now = new Date();
+                var difference = (-(now - timerParamDate)) / 1000;
+                if(initialDifference == null){
+                    initialDifference = difference;
+                    document.getElementById('progress').style.display = "block";
+                    CirlceProgressBar(0, GetTimeRemain(difference));
+                }
 
-            if(timerParamDate != null && now >= timerParamDate && difference < 60){
-                timerParamInJson = null;
-                timerParam = null;
-                timerParamDate = null;
-                ehiRecognitedAudio.play();
-                ReadOutLoud(timerParamPhrase, false, true);
-                timerParamPhrase = null;
+                var percent = 100 - (difference / initialDifference * 100);
+
+                CirlceProgressBar(percent, GetTimeRemain(difference));
+
+                if(timerParamDate != null && now >= timerParamDate && difference < 60){
+                    timerActive = false;
+                    timerParamInJson = null;
+                    timerParam = null;
+                    timerParamDate = null;
+                    initialDifference = null;
+                    document.getElementById('progress').style.display = "none";
+                    ehiRecognitedAudio.play();
+                    ReadOutLoud(timerParamPhrase, false, true);
+                    timerParamPhrase = null;
+                }
             }
 
             if(voices == undefined || voices == null || voices.length == 0) voices = window.speechSynthesis.getVoices();
@@ -1085,6 +1114,7 @@
 
         function RecognitionEnableDisable(){
             LogFunctionStart();
+            ehiRecognitedAudio.play();
             if(recognitionActive == true){
                 PartialReset();
                 RecognitionDisable();     
@@ -1269,6 +1299,7 @@
 
 	    function EllipseClick() {
            LogFunctionStart();
+           ehiRecognitedAudio.play();
 	       if(readOutLoudActive == false) OpenShortcuts();
            if(readOutLoudActive == true){
                 readOutLoudActive = false;
@@ -1292,15 +1323,33 @@
             if (popupblock) alert('The pop-up blocker is ON!');
             LogFunctionEnd();
         }
+
+        function CirlceProgressBar(percent, value){
+            $("#progress").attr("data-percentage", parseInt(percent).toString());
+            document.getElementById('progress_value').innerHTML = value; 
+        }
     </script>
 }
     
 <div id="main" style="overflow:hidden;">
+	<div class="progress" data-percentage="0" id="progress" style="position: absolute; margin-top:50px; width: 90px; height: 90px; display:none;">
+		<span class="progress-left">
+			<span class="progress-bar"></span>
+		</span>
+		<span class="progress-right">
+			<span class="progress-bar"></span>
+		</span>
+		<div class="progress-value">
+			<div id="progress_value" style="font-size:20px;">
+				0
+			</div>
+		</div>
+	</div>
     <div style="text-align:center;">
         <div id="div_shortcuts" style="display: none; z-index: 999; width: 70%; position: absolute; background-color: rgba(0, 0, 0, 0.80); left: 0; right: 0; margin:auto; box-shadow: 0 0rem 1rem rgba(150, 150, 150, 0.95) !important; border-radius: 25px;">
             <div style="background-color: rgba(0, 0, 0, 0.95);  text-align:right; box-shadow: rgba(150, 150, 150, 0.25) 0 14px 12px -2px; border-radius: 25px;">
                 <a style="z-index:9999; color:#333; font-size:35px; position:absolute; left:10px;">Shortcuts</a>
-                <img class="btn shortcut-dark" id="shortcut_0" src="/Images/Shortcuts/close.png" alt="Close" style="height:50px; margin:5px;" onclick="ActionShortcut(0);">
+                <img class="btn shortcut-dark" id="shortcut_0" src="/Images/Shortcuts/close.png" alt="Close" style="height:80px; margin:5px;" onclick="ActionShortcut(0);">
             </div>
             <dl id="shortcutsContainer" class="row" style="max-height:600px; overflow-y:auto; " >
             </dl>
