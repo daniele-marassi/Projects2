@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [Supp.DataBase]    Script Date: 24/01/2022 13:45:38 ******/
+/****** Object:  Database [Supp.DataBase]    Script Date: 24/01/2022 17:54:01 ******/
 CREATE DATABASE [Supp.DataBase]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -78,15 +78,15 @@ ALTER DATABASE [Supp.DataBase] SET QUERY_STORE = OFF
 GO
 USE [Supp.DataBase]
 GO
-/****** Object:  User [Admin]    Script Date: 24/01/2022 13:45:39 ******/
+/****** Object:  User [Admin]    Script Date: 24/01/2022 17:54:01 ******/
 CREATE USER [Admin] FOR LOGIN [Admin] WITH DEFAULT_SCHEMA=[dbo]
 GO
 ALTER ROLE [db_owner] ADD MEMBER [Admin]
 GO
-/****** Object:  Schema [auth]    Script Date: 24/01/2022 13:45:39 ******/
+/****** Object:  Schema [auth]    Script Date: 24/01/2022 17:54:01 ******/
 CREATE SCHEMA [auth]
 GO
-/****** Object:  Table [auth].[Authentications]    Script Date: 24/01/2022 13:45:39 ******/
+/****** Object:  Table [auth].[Authentications]    Script Date: 24/01/2022 17:54:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -107,7 +107,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[UserRoles]    Script Date: 24/01/2022 13:45:39 ******/
+/****** Object:  Table [auth].[UserRoles]    Script Date: 24/01/2022 17:54:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -123,7 +123,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[UserRoleTypes]    Script Date: 24/01/2022 13:45:39 ******/
+/****** Object:  Table [auth].[UserRoleTypes]    Script Date: 24/01/2022 17:54:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -138,7 +138,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[Users]    Script Date: 24/01/2022 13:45:39 ******/
+/****** Object:  Table [auth].[Users]    Script Date: 24/01/2022 17:54:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -156,7 +156,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ExecutionQueues]    Script Date: 24/01/2022 13:45:39 ******/
+/****** Object:  Table [dbo].[ExecutionQueues]    Script Date: 24/01/2022 17:54:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -178,7 +178,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[GoogleAccounts]    Script Date: 24/01/2022 13:45:39 ******/
+/****** Object:  Table [dbo].[GoogleAccounts]    Script Date: 24/01/2022 17:54:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -197,7 +197,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[GoogleAuths]    Script Date: 24/01/2022 13:45:39 ******/
+/****** Object:  Table [dbo].[GoogleAuths]    Script Date: 24/01/2022 17:54:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -216,7 +216,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Media]    Script Date: 24/01/2022 13:45:39 ******/
+/****** Object:  Table [dbo].[Media]    Script Date: 24/01/2022 17:54:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -254,7 +254,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[MediaConfigurations]    Script Date: 24/01/2022 13:45:39 ******/
+/****** Object:  Table [dbo].[MediaConfigurations]    Script Date: 24/01/2022 17:54:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -271,7 +271,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Songs]    Script Date: 24/01/2022 13:45:39 ******/
+/****** Object:  Table [dbo].[Songs]    Script Date: 24/01/2022 17:54:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -290,7 +290,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[WebSpeeches]    Script Date: 24/01/2022 13:45:39 ******/
+/****** Object:  Table [dbo].[WebSpeeches]    Script Date: 24/01/2022 17:54:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -370,9 +370,9 @@ INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (10, N'Meteo_Domani:_Notte', N'[["meteo", "tempo"], ["domani"], ["notte"]]', NULL, N'trieste-domani-32006', N'All', NULL, 1, 0, NULL, N'/Images/Shortcuts/meteo.png', 0, N'Meteo', 1, NULL, 0, NULL, 0, CAST(N'2021-06-01T23:57:41.000' AS DateTime))
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (11, N'Ora', N'[["ora","ore"]]', NULL, NULL, N'All', NULL, 1, 0, NULL, N'/Images/Shortcuts/clock.png', 0, N'Time', 1, NULL, 0, NULL, 0, CAST(N'2021-12-18T22:01:14.000' AS DateTime))
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (12, N'Volume:_al_n_percento', N'[["volume"], ["a", "al"]]', N'C:\Program Files (x86)\Commands\Volume\volume_with_percentage.exe', NULL, N'All', N'["ok","va bene","certo","bene"]', 1, 4, N'null', N'/Images/Shortcuts/volume-percentage.png', 0, N'RunExeWithNumericParameter', 1, N'SystemDialogueRunExe', 0, NULL, 0, CAST(N'2021-08-14T23:14:07.000' AS DateTime))
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (13, N'Promemoria:_Oggi', N'[["appuntamenti", "appuntamento",  "promemoria", "da fare"], ["oggi"]]', NULL, NULL, N'All', NULL, 1, 0, NULL, N'/Images/Shortcuts/reminder-read.png', 0, N'ReadRemindersToday', 1, NULL, 0, NULL, 0, CAST(N'2021-12-08T23:26:27.000' AS DateTime))
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (14, N'Promemoria:_Domani', N'[["appuntamenti", "appuntamento",  "promemoria", "da fare"], ["domani"]]', NULL, NULL, N'All', NULL, 1, 0, NULL, N'/Images/Shortcuts/reminder-read.png', 0, N'ReadRemindersTomorrow', 1, NULL, 0, NULL, 0, CAST(N'2021-12-08T23:27:47.000' AS DateTime))
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (15, N'Lista_Spesa', N'[["lista"], ["spesa"]]', NULL, N'lista spesa', N'All', NULL, 1, 0, NULL, N'/Images/Shortcuts/buy-read.png', 0, N'ReadNotes', 1, NULL, 0, NULL, 0, CAST(N'2021-12-08T23:30:18.000' AS DateTime))
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (13, N'Promemoria:_Oggi', N'[["appuntamenti", "appuntamento",  "promemoria", "da fare","eventi","memo"], ["oggi"]]', NULL, NULL, N'All', NULL, 1, 0, NULL, N'/Images/Shortcuts/reminder-read.png', 0, N'ReadRemindersToday', 1, NULL, 0, NULL, 0, CAST(N'2021-12-08T23:26:27.000' AS DateTime))
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (14, N'Promemoria:_Domani', N'[["appuntamenti", "appuntamento",  "promemoria", "da fare","eventi","memo"], ["domani"]]', NULL, NULL, N'All', NULL, 1, 0, NULL, N'/Images/Shortcuts/reminder-read.png', 0, N'ReadRemindersTomorrow', 1, NULL, 0, NULL, 0, CAST(N'2021-12-08T23:27:47.000' AS DateTime))
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (15, N'Lista_Spesa', N'[["spesa"]]', NULL, N'lista spesa', N'All', NULL, 1, 0, N'null', N'/Images/Shortcuts/buy-read.png', 0, N'ReadNotes', 1, NULL, 0, NULL, 0, CAST(N'2021-12-08T23:30:18.000' AS DateTime))
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (16, N'Nota:_Scrivi', N'[["scrivi","aggiungi","inserisci","accoda"],["nota","note"]]', NULL, NULL, N'All', NULL, 0, 0, NULL, N'/Images/Shortcuts/note-write.png', 0, N'EditNote', 1, N'SystemDialogueAddToNote', 0, NULL, 0, CAST(N'2021-12-19T21:51:58.000' AS DateTime))
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (17, N'Nota:_Pulisci', N'[["pulisci","svuota"],["nota","note"]]', NULL, NULL, N'All', NULL, 0, 0, NULL, N'/Images/Shortcuts/note-clear.png', 0, N'EditNote', 1, N'SystemDialogueClearNote', 0, NULL, 0, CAST(N'2021-12-23T15:54:49.000' AS DateTime))
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (18, N'Cerca_in_browser', N'[["cerca","trova"]]', NULL, NULL, N'All', NULL, 1, 0, NULL, N'/Images/Shortcuts/google.png', 0, N'WebSearch', 1, N'SystemDialogueWebSearch', 0, NULL, 0, CAST(N'2021-05-27T23:17:49.220' AS DateTime))
@@ -411,16 +411,16 @@ INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (54, N'Volume:_Percentage', N'[["volume"], ["a", "al"]]', N'C:\Program Files (x86)\Commands\Volume\volume_with_percentage.exe', NULL, N'All', N'["ok","va bene","certo","bene"]', 1, 5, NULL, N'/Images/Shortcuts/volume-percentage.png', 0, N'RunExeWithNumericParameter', 1, N'SystemDialogueRunExe', 0, NULL, 0, CAST(N'2022-01-04T20:51:00.897' AS DateTime))
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (56, N'Credenziali_Google', N'[["Credenziali"],["Google"]]', N'C:\Program Files (x86)\GoogleCreateCredentialsTool\GoogleCreateCredentials.exe', NULL, N'All', N'["ok","va bene","certo","bene"]', 1, 4, N'null', N'/Images/Shortcuts/generic.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2022-01-08T10:10:37.000' AS DateTime))
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (58, N'Credenziali_Google', N'[["Credenziali"],["Google"]]', N'C:\Program Files (x86)\GoogleCreateCredentialsTool\GoogleCreateCredentials.exe', NULL, N'All', N'["ok","va bene","certo","bene"]', 1, 5, N'null', N'/Images/Shortcuts/generic.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2022-01-09T11:36:09.053' AS DateTime))
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (61, N'Promemoria_Esteso:_Crea', N'[["crea","inserisci","nuovo"],["appuntamento","promemoria","evento"],["esteso","completo","full","extended","estesa","completa"]]', NULL, NULL, N'All', NULL, 0, 0, NULL, N'/Images/Shortcuts/reminder-create.png', 0, N'CreateExtendedReminder', 1, N'SystemDialogueCreateExtendedReminder', 0, NULL, 0, CAST(N'2022-01-13T17:18:36.450' AS DateTime))
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (62, N'Promemoria:_Elimina', N'[["elimina","rimuovi","cancella"],["appuntamento","promemoria","evento"]]', NULL, NULL, N'All', NULL, 0, 0, NULL, N'/Images/Shortcuts/reminder-delete.png', 0, N'DeleteReminder', 1, N'SystemDialogueDeleteReminder', 0, NULL, 0, CAST(N'2022-01-13T17:18:53.587' AS DateTime))
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (63, N'Timer:_Set', N'[["timer"], ["imposta", "aggiungi","avvia"]]', N'', N'[''Ehi NAME, il tempo è scaduto!'',''Ehi NAME, è finito il tempo'']', N'All', N'["Avviato"]', 1, 0, NULL, N'/Images/Shortcuts/timer.gif', 0, N'SetTimer', 1, N'SystemDialogueSetTimer', 0, NULL, 0, CAST(N'2022-01-22T14:26:54.283' AS DateTime))
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (61, N'Promemoria_Esteso:_Crea', N'[["crea","inserisci","nuovo"],["appuntamento","promemoria","evento","memo"],["esteso","completo","full","extended","estesa","completa"]]', NULL, NULL, N'All', NULL, 0, 0, NULL, N'/Images/Shortcuts/reminder-create.png', 0, N'CreateExtendedReminder', 1, N'SystemDialogueCreateExtendedReminder', 0, NULL, 0, CAST(N'2022-01-13T17:18:36.450' AS DateTime))
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (62, N'Promemoria:_Elimina', N'[["elimina","rimuovi","cancella"],["appuntamento","promemoria","evento","memo"]]', NULL, NULL, N'All', NULL, 0, 0, NULL, N'/Images/Shortcuts/reminder-delete.png', 0, N'DeleteReminder', 1, N'SystemDialogueDeleteReminder', 0, NULL, 0, CAST(N'2022-01-13T17:18:53.587' AS DateTime))
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (63, N'Timer:_Set', N'[["timer"], ["imposta", "aggiungi","avvia","set","crea","start"]]', N'', N'[''Ehi NAME, il tempo è scaduto!'',''Ehi NAME, è finito il tempo'']', N'All', N'["Avviato"]', 1, 0, NULL, N'/Images/Shortcuts/timer.gif', 0, N'SetTimer', 1, N'SystemDialogueSetTimer', 0, NULL, 0, CAST(N'2022-01-22T14:26:54.283' AS DateTime))
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (64, N'Shutdown_PC', N'[["pc", "computer"], ["spegni", "chiudi", "shutdown"]]', N'C:\Program Files (x86)\Shut\Shut.exe', N'shutdown', N'EV-PC', N'["ok","va bene","certo","bene"]', 1, 5, NULL, N'/Images/Shortcuts/shutdown.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2022-01-23T10:02:11.610' AS DateTime))
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (65, N'Restart', N'[["pc", "computer"], ["restart", "riavvia"]]', N'C:\Program Files (x86)\Shut\Shut.exe', N'restart', N'All', N'["ok","va bene","certo","bene"]', 1, 5, NULL, N'/Images/Shortcuts/restart.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2022-01-23T10:02:54.310' AS DateTime))
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (66, N'Promemoria:_Crea', N'[["crea","inserisci","nuovo"],["appuntamento","promemoria","evento"]]', NULL, NULL, N'All', NULL, 0, 0, NULL, N'/Images/Shortcuts/reminder-create.png', 0, N'CreateReminder', 1, N'SystemDialogueCreateReminder', 0, NULL, 0, CAST(N'2022-01-24T12:15:15.397' AS DateTime))
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime]) VALUES (66, N'Promemoria:_Crea', N'[["crea","inserisci","nuovo"],["appuntamento","promemoria","evento","memo"]]', NULL, NULL, N'All', NULL, 0, 0, NULL, N'/Images/Shortcuts/reminder-create.png', 0, N'CreateReminder', 1, N'SystemDialogueCreateReminder', 0, NULL, 0, CAST(N'2022-01-24T12:15:15.397' AS DateTime))
 SET IDENTITY_INSERT [dbo].[WebSpeeches] OFF
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__UserRole__F9B8A48B19E8FF47]    Script Date: 24/01/2022 13:45:41 ******/
+/****** Object:  Index [UQ__UserRole__F9B8A48B19E8FF47]    Script Date: 24/01/2022 17:54:02 ******/
 ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED 
 (
 	[Type] ASC
@@ -428,7 +428,7 @@ ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__UserRole__F9B8A48BC8D95E58]    Script Date: 24/01/2022 13:45:41 ******/
+/****** Object:  Index [UQ__UserRole__F9B8A48BC8D95E58]    Script Date: 24/01/2022 17:54:02 ******/
 ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED 
 (
 	[Type] ASC
@@ -436,7 +436,7 @@ ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__Users__C9F2845699A9457B]    Script Date: 24/01/2022 13:45:41 ******/
+/****** Object:  Index [UQ__Users__C9F2845699A9457B]    Script Date: 24/01/2022 17:54:02 ******/
 ALTER TABLE [auth].[Users] ADD UNIQUE NONCLUSTERED 
 (
 	[UserName] ASC
@@ -444,7 +444,7 @@ ALTER TABLE [auth].[Users] ADD UNIQUE NONCLUSTERED
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__Users__C9F28456E4139C74]    Script Date: 24/01/2022 13:45:41 ******/
+/****** Object:  Index [UQ__Users__C9F28456E4139C74]    Script Date: 24/01/2022 17:54:02 ******/
 ALTER TABLE [auth].[Users] ADD UNIQUE NONCLUSTERED 
 (
 	[UserName] ASC
@@ -452,7 +452,7 @@ ALTER TABLE [auth].[Users] ADD UNIQUE NONCLUSTERED
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__WebSpeec__A20D08325E0C1009]    Script Date: 24/01/2022 13:45:41 ******/
+/****** Object:  Index [UQ__WebSpeec__A20D08325E0C1009]    Script Date: 24/01/2022 17:54:02 ******/
 ALTER TABLE [dbo].[WebSpeeches] ADD UNIQUE NONCLUSTERED 
 (
 	[Name] ASC,

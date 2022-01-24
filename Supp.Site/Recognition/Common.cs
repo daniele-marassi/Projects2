@@ -1021,11 +1021,12 @@ namespace Supp.Site.Recognition
                                         {
                                             if (!founded)
                                             {
-                                                var matchPrhareNoKeysResult = MatchPrhareNoKeys(key.ToString().Trim().ToLower(), _phrase, minMatch, countMatch, phraseMatch);
+                                                var matchPrhareNoKeysResult = MatchPrhareNoKeys(key.ToString().Trim().ToLower(), _phrase, minMatch, countMatch, phraseMatch, previousCountMatch);
                                                 minMatch = matchPrhareNoKeysResult.MinMatch;
                                                 countMatch = matchPrhareNoKeysResult.CountMatch;
                                                 phraseMatch = matchPrhareNoKeysResult.PhraseMatch;
                                                 founded = matchPrhareNoKeysResult.Founded;
+                                                previousCountMatch = matchPrhareNoKeysResult.PreviousCountMatch;
                                             }
                                         }
                                     }
@@ -1036,10 +1037,11 @@ namespace Supp.Site.Recognition
                 }
                 catch (Exception)
                 {
-                    var matchPrhareNoKeysResult = MatchPrhareNoKeys(item.Phrase, _phrase, minMatch, countMatch, phraseMatch);
+                    var matchPrhareNoKeysResult = MatchPrhareNoKeys(item.Phrase, _phrase, minMatch, countMatch, phraseMatch, previousCountMatch);
                     minMatch = matchPrhareNoKeysResult.MinMatch;
                     countMatch = matchPrhareNoKeysResult.CountMatch;
                     phraseMatch = matchPrhareNoKeysResult.PhraseMatch;
+                    previousCountMatch = matchPrhareNoKeysResult.PreviousCountMatch;
                 }
 
                 if (countMatch >= minMatch && countMatch > previousCountMatch)
@@ -1059,13 +1061,14 @@ namespace Supp.Site.Recognition
             return result;
         }
 
-        private (int MinMatch, int CountMatch, string PhraseMatch, bool Founded) MatchPrhareNoKeys(string itemPhrase, string _phrase, int minMatch, int countMatch, string phraseMatch)
+        private (int MinMatch, int CountMatch, string PhraseMatch, bool Founded, int PreviousCountMatch) MatchPrhareNoKeys(string itemPhrase, string _phrase, int minMatch, int countMatch, string phraseMatch, int previousCountMatch)
         {
-            (int MinMatch, int CountMatch, string PhraseMatch, bool Founded) result;
+            (int MinMatch, int CountMatch, string PhraseMatch, bool Founded, int PreviousCountMatch) result;
             result.MinMatch = minMatch;
             result.CountMatch = countMatch;
             result.PhraseMatch = phraseMatch;
             result.Founded = false;
+            result.PreviousCountMatch = previousCountMatch;
 
             var _countMatch = 0;
             var _phraseMatch = "";
@@ -1091,12 +1094,14 @@ namespace Supp.Site.Recognition
             catch (Exception)
             {}
 
-            if (_countMatch >= result.MinMatch)
+            if (_countMatch >= result.MinMatch && _countMatch > result.PreviousCountMatch)
             {
+                previousCountMatch = countMatch;
                 result.MinMatch = _minMatch;
                 result.CountMatch += _countMatch;
                 result.PhraseMatch += _phraseMatch;
                 result.Founded = founded;
+                result.PreviousCountMatch = previousCountMatch;
             }
 
             return result;

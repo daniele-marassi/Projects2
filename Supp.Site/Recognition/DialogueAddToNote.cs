@@ -329,11 +329,23 @@ namespace Supp.Site.Recognition
             var timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00");
             var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
 
-            var editCalendarEventRequest = new EditCalendarEventRequest() { SummaryToSearch = dto.Elements[1].Value, Description = "\n"+ dto.Elements[2].Value, TimeMax = timeMax, TimeMin = timeMin, DescriptionAppended = true };
+            var summaryToSearch = dto.Elements[1].Value;
+            var desc = dto.Elements[2].Value;
 
-            var getRemindersResult = await webSpeecheRepo.EditLastReminder(token, userName, userId, WebSpeechTypes.EditNote, editCalendarEventRequest);
+            var getRemindersResult = await webSpeecheRepo.GetReminders(token, userName, userId, timeMin, timeMax, WebSpeechTypes.ReadNotes, summaryToSearch);
 
-            return getRemindersResult;
+            if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
+            {
+                var data = getRemindersResult.Data.FirstOrDefault();
+                if (data.Description != null && data.Description != "")
+                    desc = "\n" + desc;
+            }
+
+            var editCalendarEventRequest = new EditCalendarEventRequest() { SummaryToSearch = summaryToSearch, Description = desc, TimeMax = timeMax, TimeMin = timeMin, DescriptionAppended = true };
+
+            var editLastReminderResult = await webSpeecheRepo.EditLastReminder(token, userName, userId, WebSpeechTypes.EditNote, editCalendarEventRequest);
+
+            return editLastReminderResult;
         }
     }
 }
