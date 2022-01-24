@@ -15,7 +15,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using static Supp.Site.Common.Config;
 using Additional.NLog;
-using Microsoft.AspNet.Identity;
+
 using Newtonsoft.Json;
 using System.Web;
 

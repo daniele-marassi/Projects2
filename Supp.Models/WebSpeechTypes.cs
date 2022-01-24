@@ -48,18 +48,21 @@ namespace Supp.Models
         RunExeWithNumericParameter = 40,
         SystemRunExeWithNotNumericParameter = 41,
         RunExeWithNotNumericParameter = 42,
-        SystemDialogueCreateReminder = 43,
+        SystemDialogueCreateExtendedReminder = 43,
         SystemDialogueDeleteReminder = 44,
-        CreateReminder = 45,
+        CreateExtendedReminder = 45,
         DeleteReminder = 46,
-        SystemCreateReminder = 47,
+        SystemCreateExtendedReminder = 47,
         SetTimer = 48,
         SystemSetTimer = 49,
         SystemDialogueSetTimer = 50,
         ReadThermostat = 51,
         SystemReadThermostat = 52,
         SetThermostat = 53,
-        SystemSetThermostat = 54
+        SystemSetThermostat = 54,
+        SystemDialogueCreateReminder = 55,
+        CreateReminder = 56,
+        SystemCreateReminder = 57,
     }
 
     public class WebSpeechTypesUtility

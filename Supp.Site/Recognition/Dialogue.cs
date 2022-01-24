@@ -22,6 +22,7 @@ namespace Supp.Site.Recognition
         private readonly DialogueCreateNote dialogueCreateNote;
         private readonly DialogueClearNote dialogueClearNote;
         private readonly DialogueDeleteNote dialogueDeleteNote;
+        private readonly DialogueCreateExtendedReminder dialogueCreateExtendedReminder;
         private readonly DialogueCreateReminder dialogueCreateReminder;
         private readonly DialogueDeleteReminder dialogueDeleteReminder;
         private readonly WebSpeechesRepository webSpeecheRepo;
@@ -37,6 +38,7 @@ namespace Supp.Site.Recognition
             dialogueCreateNote = new DialogueCreateNote();
             dialogueDeleteNote = new DialogueDeleteNote();
             dialogueClearNote = new DialogueClearNote();
+            dialogueCreateExtendedReminder = new DialogueCreateExtendedReminder();
             dialogueCreateReminder = new DialogueCreateReminder();
             dialogueDeleteReminder = new DialogueDeleteReminder();
             webSpeecheRepo = new WebSpeechesRepository();
@@ -451,6 +453,8 @@ namespace Supp.Site.Recognition
                 && (
                         _subType == WebSpeechTypes.SystemDialogueDeleteReminder.ToString()
 
+                        || _subType == WebSpeechTypes.SystemDialogueCreateExtendedReminder.ToString()
+
                         || _subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString()
                    )
                )
@@ -461,7 +465,9 @@ namespace Supp.Site.Recognition
 
             if ((_stepType == StepTypes.GetElementDateTime.ToString() || _stepType == StepTypes.GetElementDate.ToString() || _stepType == StepTypes.GetElementTime.ToString())
                 && (
-                        _subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString()
+                        _subType == WebSpeechTypes.SystemDialogueCreateExtendedReminder.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString()
                    )
                )
             {
@@ -472,7 +478,9 @@ namespace Supp.Site.Recognition
             if (
                 _stepType == StepTypes.ApplyNow.ToString()
                 && (
-                        _subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString()
+                        _subType == WebSpeechTypes.SystemDialogueCreateExtendedReminder.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString()
 
                         || _subType == WebSpeechTypes.SystemDialogueDeleteReminder.ToString()
 
@@ -480,6 +488,9 @@ namespace Supp.Site.Recognition
                 )
             {
                 var eventResult = new EventResult();
+
+                if (_subType == WebSpeechTypes.SystemDialogueCreateExtendedReminder.ToString())
+                    eventResult = dialogueCreateExtendedReminder.CreateExtendedReminder(newWebSpeech, access_token_cookie, userName, userId, _claims).GetAwaiter().GetResult();
 
                 if (_subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString())
                     eventResult = dialogueCreateReminder.CreateReminder(newWebSpeech, access_token_cookie, userName, userId, _claims).GetAwaiter().GetResult();
@@ -773,6 +784,19 @@ namespace Supp.Site.Recognition
         {
             var dialogue = new DialogueRunExe();
             return dialogue.Get(culture, lastWebSpeechId, _subType);
+        }
+
+        /// <summary>
+        /// Get Dialogue Create Extended Remider
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <param name="lastWebSpeechId"></param>
+        /// <param name="_subType"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public List<WebSpeechDto> GetDialogueCreateExtendedReminder(string culture, long lastWebSpeechId, string _subType, HttpRequest request)
+        {
+            return dialogueCreateExtendedReminder.Get(culture, lastWebSpeechId, _subType, request);
         }
 
         /// <summary>

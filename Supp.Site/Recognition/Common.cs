@@ -262,6 +262,16 @@ namespace Supp.Site.Recognition
                             }
                         }
 
+                        if (_subType == WebSpeechTypes.SystemDialogueCreateExtendedReminder.ToString())
+                        {
+                            var requests = dialogue.GetDialogueCreateExtendedReminder(_claims.Configuration.General.Culture, lastWebSpeechId, _subType, request);
+                            if (requests != null && requests.Count > 0)
+                            {
+                                var dataResult = GetData(requests);
+                                result.Data.AddRange(dataResult.Data);
+                            }
+                        }
+
                         if (_subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString())
                         {
                             var requests = dialogue.GetDialogueCreateReminder(_claims.Configuration.General.Culture, lastWebSpeechId, _subType, request);
@@ -387,19 +397,23 @@ namespace Supp.Site.Recognition
 
                         var answer = "";
 
-                        if (_claims.Configuration.General.Culture.ToLower() == "it-it" && data.Type == WebSpeechTypes.ReadRemindersToday.ToString()) answer = "I promemoria di oggi:";
-                        if (_claims.Configuration.General.Culture.ToLower() == "en-us" && data.Type == WebSpeechTypes.ReadRemindersToday.ToString()) answer = "Today's reminders:";
-
-                        if (_claims.Configuration.General.Culture.ToLower() == "it-it" && data.Type == WebSpeechTypes.ReadRemindersTomorrow.ToString()) answer = "I promemoria di domani:";
-                        if (_claims.Configuration.General.Culture.ToLower() == "en-us" && data.Type == WebSpeechTypes.ReadRemindersTomorrow.ToString()) answer = "Tomorrow's reminders:";
-
                         if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
                         {
-                            foreach (var item in getRemindersResult.Data)
-                            {
-                                if (answer != "") answer += " ";
-                                answer += item.Summary + ".";
-                            }
+                            var reminders = ReadReminders(_claims, getRemindersResult.Data, data.Type);
+                            if (answer != "") answer += " ";
+                            answer += reminders;
+                        }
+
+                        if (getRemindersResult.Successful)
+                        {
+                            if (answer != "") answer += " ";
+                            answer += await GetHolidays(_claims, access_token_cookie, userName, userId, data.Type);
+                        }
+
+                        if (getRemindersResult.Successful && answer == "")
+                        {
+                            if (_claims.Configuration.General.Culture.ToLower() == "it-it") answer += " Vuoto.";
+                            if (_claims.Configuration.General.Culture.ToLower() == "en-us") answer += " Empty.";
                         }
 
                         if (!getRemindersResult.Successful)
@@ -661,7 +675,10 @@ namespace Supp.Site.Recognition
 
                     if (data != null &&
                         (
-                            data.Type == WebSpeechTypes.CreateReminder.ToString()
+                            data.Type == WebSpeechTypes.CreateExtendedReminder.ToString()
+                            || data.Type == WebSpeechTypes.SystemCreateExtendedReminder.ToString()
+
+                            || data.Type == WebSpeechTypes.CreateReminder.ToString()
                             || data.Type == WebSpeechTypes.SystemCreateReminder.ToString()
 
                             || data.Type == WebSpeechTypes.DeleteReminder.ToString()
@@ -671,6 +688,9 @@ namespace Supp.Site.Recognition
                     )
                     {
                         List<WebSpeechDto> dialogue = null;
+
+                        if (data.SubType == WebSpeechTypes.SystemDialogueCreateExtendedReminder.ToString())
+                            dialogue = this.dialogue.GetDialogueCreateExtendedReminder(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType, request);
 
                         if (data.SubType == WebSpeechTypes.SystemDialogueCreateReminder.ToString())
                             dialogue = this.dialogue.GetDialogueCreateReminder(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType, request);
@@ -721,79 +741,21 @@ namespace Supp.Site.Recognition
 
                                 if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
                                 {
-                                    var reminders = "";
-
-                                    if (_claims.Configuration.General.Culture.ToLower() == "it-it") reminders = "I promemoria di oggi:";
-                                    if (_claims.Configuration.General.Culture.ToLower() == "en-us") reminders = "Today's reminders:";
-
-                                    foreach (var item in getRemindersResult.Data)
-                                    {
-                                        reminders += item.Summary;
-
-                                        if (_claims.Configuration.General.Culture.ToLower() == "it-it")
-                                        {
-                                            reminders += " alle " + item.EventDateStart.Value.Hour.ToString();
-
-                                            if (item.EventDateStart.Value.Minute == 1) reminders += " e " + item.EventDateStart.Value.Minute.ToString() + " minuto.";
-                                            else if (item.EventDateStart.Value.Minute > 1) reminders += " e " + item.EventDateStart.Value.Minute.ToString() + " minuti.";
-                                            else reminders += ".";
-                                        }
-
-                                        if (_claims.Configuration.General.Culture.ToLower() == "en-us")
-                                        {
-                                            reminders += " at " + item.EventDateStart.Value.Hour.ToString();
-
-                                            if (item.EventDateStart.Value.Minute == 1) reminders += " and " + item.EventDateStart.Value.Minute.ToString() + " minute.";
-                                            else if (item.EventDateStart.Value.Minute > 1) reminders += " and " + item.EventDateStart.Value.Minute.ToString() + " minutes.";
-                                            else reminders += ".";
-                                        }
-                                    }
+                                    var reminders = ReadReminders(_claims, getRemindersResult.Data, WebSpeechTypes.ReadRemindersToday.ToString());
 
                                     data.Answer += reminders;
+                                }
+
+                                if (getRemindersResult.Successful)
+                                {
+                                    if (data.Answer != "") data.Answer += " ";
+                                    data.Answer += await GetHolidays(_claims, access_token_cookie, userName, userId, data.Type);
                                 }
 
                                 if (!getRemindersResult.Successful)
                                 {
                                     if (_claims.Configuration.General.Culture.ToLower() == "it-it") data.Answer += " Attenzione! probabilmente il token google è scaduto.";
                                     if (_claims.Configuration.General.Culture.ToLower() == "en-us") data.Answer += " Attention! probably the google token has expired.";
-                                }
-
-                                timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00");
-                                timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
-
-                                var getHolidaysTodayResult = await webSpeecheRepo.GetHolidays(access_token_cookie, userName, userId, timeMin, timeMax, _claims.Configuration.General.Culture);
-
-                                if (getHolidaysTodayResult.Successful && getHolidaysTodayResult.Data.Count > 0)
-                                {
-                                    var holidays = "";
-                                    if (_claims.Configuration.General.Culture.ToLower() == "it-it") holidays = " Le festività di oggi: ";
-                                    if (_claims.Configuration.General.Culture.ToLower() == "en-us") holidays = " Today's holidays: ";
-
-                                    foreach (var item in getHolidaysTodayResult.Data)
-                                    {
-                                        holidays += item.Summary + ", ";
-                                    }
-
-                                    data.Answer += holidays;
-                                }
-
-                                timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00").AddDays(1);
-                                timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59").AddDays(1);
-
-                                var getHolidaysTomorrowResult = await webSpeecheRepo.GetHolidays(access_token_cookie, userName, userId, timeMin, timeMax, _claims.Configuration.General.Culture);
-
-                                if (getHolidaysTomorrowResult.Successful && getHolidaysTomorrowResult.Data.Count > 0)
-                                {
-                                    var holidays = "";
-                                    if (_claims.Configuration.General.Culture.ToLower() == "it-it") holidays = " Le festività di domani: ";
-                                    if (_claims.Configuration.General.Culture.ToLower() == "en-us") holidays = " Tomorrow's holidays: ";
-
-                                    foreach (var item in getHolidaysTomorrowResult.Data)
-                                    {
-                                        holidays += item.Summary + ", ";
-                                    }
-
-                                    data.Answer += holidays;
                                 }
                             }
                         }
@@ -856,6 +818,92 @@ namespace Supp.Site.Recognition
                     throw ex;
                 }
             }
+        }
+
+        private async Task<string> GetHolidays(ClaimsDto _claims, string access_token_cookie, string userName, long userId, string type)
+        {
+            var result = "";
+            var timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00");
+            var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
+
+            if (type == WebSpeechTypes.ReadRemindersToday.ToString())
+            {
+                var getHolidaysTodayResult = await webSpeecheRepo.GetHolidays(access_token_cookie, userName, userId, timeMin, timeMax, _claims.Configuration.General.Culture);
+
+                if (getHolidaysTodayResult.Successful && getHolidaysTodayResult.Data.Count > 0)
+                {
+                    var holidays = "";
+                    if (_claims.Configuration.General.Culture.ToLower() == "it-it") holidays = " Le festività di oggi: ";
+                    if (_claims.Configuration.General.Culture.ToLower() == "en-us") holidays = " Today's holidays: ";
+
+                    foreach (var item in getHolidaysTodayResult.Data)
+                    {
+                        holidays += item.Summary + ", ";
+                    }
+
+                    result += holidays;
+                }
+            }
+
+            if (type == WebSpeechTypes.ReadRemindersToday.ToString() || type == WebSpeechTypes.ReadRemindersTomorrow.ToString())
+            {
+                timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00").AddDays(1);
+                timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59").AddDays(1);
+
+                var getHolidaysTomorrowResult = await webSpeecheRepo.GetHolidays(access_token_cookie, userName, userId, timeMin, timeMax, _claims.Configuration.General.Culture);
+
+                if (getHolidaysTomorrowResult.Successful && getHolidaysTomorrowResult.Data.Count > 0)
+                {
+                    var holidays = "";
+                    if (_claims.Configuration.General.Culture.ToLower() == "it-it") holidays = " Le festività di domani: ";
+                    if (_claims.Configuration.General.Culture.ToLower() == "en-us") holidays = " Tomorrow's holidays: ";
+
+                    foreach (var item in getHolidaysTomorrowResult.Data)
+                    {
+                        holidays += item.Summary + ", ";
+                    }
+
+                    result += holidays;
+                }
+            }
+
+            return result;
+        }
+
+        private string ReadReminders(ClaimsDto _claims, List<CalendarEvent> data, string type)
+        {
+            var reminders = "";
+
+            if (_claims.Configuration.General.Culture.ToLower() == "it-it" && type == WebSpeechTypes.ReadRemindersToday.ToString()) reminders = "I promemoria di oggi:";
+            if (_claims.Configuration.General.Culture.ToLower() == "en-us" && type == WebSpeechTypes.ReadRemindersToday.ToString()) reminders = "Today's reminders:";
+                                                                              
+            if (_claims.Configuration.General.Culture.ToLower() == "it-it" && type == WebSpeechTypes.ReadRemindersTomorrow.ToString()) reminders = "I promemoria di domani:";
+            if (_claims.Configuration.General.Culture.ToLower() == "en-us" && type == WebSpeechTypes.ReadRemindersTomorrow.ToString()) reminders = "Tomorrow's reminders:";
+
+            foreach (var item in data)
+            {
+                reminders += item.Summary;
+
+                if (_claims.Configuration.General.Culture.ToLower() == "it-it")
+                {
+                    reminders += " alle " + item.EventDateStart.Value.Hour.ToString();
+
+                    if (item.EventDateStart.Value.Minute == 1) reminders += " e " + item.EventDateStart.Value.Minute.ToString() + " minuto.";
+                    else if (item.EventDateStart.Value.Minute > 1) reminders += " e " + item.EventDateStart.Value.Minute.ToString() + " minuti.";
+                    else reminders += ".";
+                }
+
+                if (_claims.Configuration.General.Culture.ToLower() == "en-us")
+                {
+                    reminders += " at " + item.EventDateStart.Value.Hour.ToString();
+
+                    if (item.EventDateStart.Value.Minute == 1) reminders += " and " + item.EventDateStart.Value.Minute.ToString() + " minute.";
+                    else if (item.EventDateStart.Value.Minute > 1) reminders += " and " + item.EventDateStart.Value.Minute.ToString() + " minutes.";
+                    else reminders += ".";
+                }
+            }
+
+            return reminders;
         }
 
         /// <summary>
