@@ -93,7 +93,7 @@ namespace Supp.Site.Recognition
             return result;
         }
 
-        public List<long> GetParentIds(string parentIds)
+        private List<long> GetParentIds(string parentIds)
         {
             var _parentIds = new List<long>() { };
 
@@ -966,6 +966,7 @@ namespace Supp.Site.Recognition
         /// <param name="_phrase"></param>
         /// <param name="webSpeechlist"></param>
         /// <param name="_claims"></param>
+        /// <param name="actualWebSpeechId"></param>
         /// <returns></returns>
         public (WebSpeechDto Data, string WebSpeechKeysMatched) MatchPhrase(string _phrase, List<WebSpeechDto> webSpeechlist, ClaimsDto _claims, long actualWebSpeechId)
         {
@@ -976,6 +977,7 @@ namespace Supp.Site.Recognition
             var minMatch = 0;
             var countMatch = 0;
             var phraseMatch = "";
+            var previousCountMatch = 0;
 
             foreach (var item in webSpeechlist)
             {
@@ -1040,8 +1042,9 @@ namespace Supp.Site.Recognition
                     phraseMatch = matchPrhareNoKeysResult.PhraseMatch;
                 }
 
-                if (countMatch >= minMatch)
+                if (countMatch >= minMatch && countMatch > previousCountMatch)
                 {
+                    previousCountMatch = countMatch;
                     _data = item;
                     result.WebSpeechKeysMatched = phraseMatch;
                     countMatch = 0;
@@ -1337,6 +1340,12 @@ namespace Supp.Site.Recognition
             return result;
         }
 
+        /// <summary>
+        /// Get Prevision Prhase
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <param name="previsionIndex"></param>
+        /// <returns></returns>
         public string GetPrevisionPrhase(string culture, int previsionIndex)
         {
             var result = "";
