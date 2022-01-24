@@ -381,6 +381,8 @@ namespace Supp.Site.Repositories
                     foreach (var account in googleAccounts)
                     {
                         var auth = googleAuthResult.Data.Where(_ => _.Id == account.GoogleAuthId).FirstOrDefault();
+                        var tokenFile = JsonConvert.DeserializeObject<TokenFile>(auth.TokenFileInJson);
+                        var accessProperties = JsonConvert.DeserializeObject<AccessProperties>(tokenFile.Content);
                         requests = new List<ManagerRequest>() 
                         { 
                             new ManagerRequest()
@@ -402,7 +404,8 @@ namespace Supp.Site.Repositories
                                 MaxThumbnailSize = mediaConfiguration.MaxThumbnailSize, 
                                 MinThumbnailSize = mediaConfiguration.MinThumbnailSize,
                                 TokenFileInJson = auth.TokenFileInJson,
-                                GooglePublicKey = auth.GooglePublicKey
+                                GooglePublicKey = auth.GooglePublicKey,
+                                RefreshToken = accessProperties.Refresh_token
                             }
                         };
                     }

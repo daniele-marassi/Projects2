@@ -1,3 +1,4 @@
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\bin\Debug\External_library\Additional.dll.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\bin\Debug\External_library\Additional.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\bin\Debug\External_library\Additional.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\bin\Debug\MessagesPopUp.exe.config

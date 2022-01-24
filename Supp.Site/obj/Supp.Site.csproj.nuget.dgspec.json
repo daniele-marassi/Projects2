@@ -84,6 +84,10 @@
               "target": "Package",
               "version": "[5.0.2, )"
             },
+            "MediaToolkit": {
+              "target": "Package",
+              "version": "[1.1.0.1, )"
+            },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[3.1.11, )"
@@ -110,9 +114,17 @@
               "target": "Package",
               "version": "[4.7.13, )"
             },
+            "NReco.VideoConverter": {
+              "target": "Package",
+              "version": "[1.1.4, )"
+            },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.1, )"
+            },
+            "System.Configuration.ConfigurationManager": {
+              "target": "Package",
+              "version": "[6.0.0, )"
             },
             "System.Linq": {
               "target": "Package",

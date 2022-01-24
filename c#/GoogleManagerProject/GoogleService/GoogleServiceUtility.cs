@@ -20,6 +20,8 @@ using System.Threading.Tasks;
 using Google.Apis.Drive.v3;
 using Newtonsoft.Json;
 using Google.Apis.Keep.v1;
+using Google.Apis.Auth.OAuth2.Flows;
+using Google.Apis.Auth.OAuth2.Responses;
 
 namespace GoogleService
 {
@@ -633,11 +635,24 @@ namespace GoogleService
                     {
                         s_cts.CancelAfter(60000);
 
-                        credential = GoogleWebAuthorizationBroker.AuthorizeAsync(new ClientSecrets { ClientId = managerRequest.Auth.Installed.Client_id, ClientSecret = managerRequest.Auth.Installed.Client_secret }
-                                                                             , scopes.ToArray()
-                                                                             , managerRequest.Account
-                                                                             , s_cts.Token
-                                                                             , new FileDataStore(tokenFilePath, true)).Result;  
+                        if (managerRequest.RefreshToken == null)
+                        {
+                            credential = GoogleWebAuthorizationBroker.AuthorizeAsync(new ClientSecrets { ClientId = managerRequest.Auth.Installed.Client_id, ClientSecret = managerRequest.Auth.Installed.Client_secret }
+                                                                                 , scopes.ToArray()
+                                                                                 , managerRequest.Account
+                                                                                 , s_cts.Token
+                                                                                 , new FileDataStore(tokenFilePath, true)).Result;
+                        }
+                        else
+                        {
+                            var init = new GoogleAuthorizationCodeFlow.Initializer
+                            {
+                                ClientSecrets = new ClientSecrets { ClientId = managerRequest.Auth.Installed.Client_id, ClientSecret = managerRequest.Auth.Installed.Client_secret },
+                                Scopes = scopes.ToArray()
+                            };
+                            var token = new TokenResponse { RefreshToken = managerRequest.RefreshToken };
+                            credential = new UserCredential(new Google.Apis.Auth.OAuth2.Flows.AuthorizationCodeFlow(init), "", token);
+                        }
                     }
                     catch (TaskCanceledException ex)
                     {

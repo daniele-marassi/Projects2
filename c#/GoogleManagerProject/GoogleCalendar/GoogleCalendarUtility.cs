@@ -102,7 +102,6 @@ namespace GoogleCalendar
             {
                 var appPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
                 var accessProperties = JsonConvert.DeserializeObject<AccessProperties>(tokenFile.Content);
-                //accessProperties.Expires_in = 13599;
 
                 var resourcesPath = Path.Combine(appPath, "Resources");
                 if (!Directory.Exists(resourcesPath)) Directory.CreateDirectory(resourcesPath);
@@ -117,7 +116,7 @@ namespace GoogleCalendar
 
                 var googleServiceUtility = new GoogleServiceUtility();
 
-                var managerRequest = new ManagerRequest() { Auth = auth, Account = account };
+                var managerRequest = new ManagerRequest() { Auth = auth, Account = account, RefreshToken = accessProperties.Refresh_token };
 
                 var service = new CalendarService(new BaseClientService.Initializer()
                 {

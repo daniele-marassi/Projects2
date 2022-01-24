@@ -19,5 +19,6 @@ namespace GoogleManagerModels
         public Auth Auth { get; set; }
         public string TokenFileInJson { get; set; }
         public string GooglePublicKey { get; set; }
+        public string RefreshToken { get; set; }
     }
 }

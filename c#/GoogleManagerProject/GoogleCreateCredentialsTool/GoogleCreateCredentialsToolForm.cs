@@ -62,7 +62,7 @@ namespace GoogleCreateCredentials
 
                         var auth = JsonConvert.DeserializeObject<Auth>(credentialsText);
                         var googleServiceUtility = new GoogleServiceUtility();
-                        var request = new ManagerRequest() { Auth = auth, Account = account };
+                        var request = new ManagerRequest() { Auth = auth, Account = account, RefreshToken = null };
 
                         AccountType accountType = AccountType.Drive;
 

@@ -30,7 +30,7 @@ namespace WindowsFormsApp2
             var authInJson = @"{""installed"":{""client_id"":""982569746577-4lnrb3udcu2dqqk2u2mts0j2rqmiripd.apps.googleusercontent.com"",""project_id"":""ace-case-311111"",""auth_uri"":""https://accounts.google.com/o/oauth2/auth"",""token_uri"":""https://oauth2.googleapis.com/token"",""auth_provider_x509_cert_url"":""https://www.googleapis.com/oauth2/v1/certs"",""client_secret"":""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"",""redirect_uris"":[""urn:ietf:wg:oauth:2.0:oob"",""http://localhost""]}}";
             var auth = JsonConvert.DeserializeObject<Auth>(authInJson);
 
-            var tokenFileInJson = @"{""FileName"":""Google.Apis.Auth.OAuth2.Responses.TokenResponse-daniele.marassi"",""Content"":""{\""access_token\"":\""ya29.a0ARrdaM_hEf2somCePpt5n4t5gtn3NApqpM2umG1bWLnIRXkjRv61zb_d-4tsdFM53MM0-70lTziBn-i_r6f8WoqxUnwQ7DTWyqLm4VJxCeof6X0iVQMK0yROQFXdzHNtaj3e1ujRZObABFFNT1PZ6yOIHrER\"",\""token_type\"":\""Bearer\"",\""expires_in\"":3599,\""refresh_token\"":\""1//092bvmBG_sMJqCgYIARAAGAkSNwF-L9IrTv6wmWF3fTpC7mfSMao7wTbk7LsK8--mXsMMrxIwywC1vdA8_3McbiB_vzS8bxmkeUg\"",\""scope\"":\""https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar\"",\""Issued\"":\""2021-12-01T14:44:01.710+01:00\"",\""IssuedUtc\"":\""2021-12-01T13:44:01.710Z\""}""}";
+            var tokenFileInJson = @"{""FileName"":""Google.Apis.Auth.OAuth2.Responses.TokenResponse-daniele.marassi"",""Content"":""{\""access_token\"":\""ya29.A0ARrdaM9eSbl1_LYOJb0NNN7kyB3Bk3CFpxkxiXqRGWQioS7mzwzuBqZsOmDCYpElsfeEj5EV_ddiiWv5PtRBKTiL_Y0Aq6DGJL5hpmyl4ZSlvSK5ioiHCswodiALMoq7DJW40EOlCyFDEFzmhd1AgQl9WmcW\"",\""token_type\"":\""Bearer\"",\""expires_in\"":3599,\""refresh_token\"":\""1//09J32u3ehZQgfCgYIARAAGAkSNwF-L9Irs-BqoMFG5EcP3vFWLs8-qKnbOOKTY5hIAhlW21MifNN520s37vZnFswjCFdYdRUIckc\"",\""scope\"":\""https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar\"",\""Issued\"":\""2022-01-19T18:42:44.280+01:00\"",\""IssuedUtc\"":\""2022-01-19T17:42:44.280Z\""}""}";
             var tokenFile = JsonConvert.DeserializeObject<TokenFile>(tokenFileInJson);
 
             var googlePublicKey = "AIzaSyCdWVUdy3QmmYLjDwQWqP03gV49hfvWMhc";
@@ -61,7 +61,6 @@ namespace WindowsFormsApp2
             {
                 var appPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
                 var accessProperties = JsonConvert.DeserializeObject<AccessProperties>(tokenFile.Content);
-                accessProperties.Expires_in = 3599;
 
                 var resourcesPath = Path.Combine(appPath, "Resources");
                 if (!Directory.Exists(resourcesPath)) Directory.CreateDirectory(resourcesPath);
@@ -76,7 +75,7 @@ namespace WindowsFormsApp2
 
                 var googleServiceUtility = new GoogleServiceUtility();
 
-                var managerRequest = new ManagerRequest() { Auth = auth, Account = account };
+                var managerRequest = new ManagerRequest() { Auth = auth, Account = account, RefreshToken = accessProperties.Refresh_token };
 
                 var service = new KeepService(new BaseClientService.Initializer()
                 {

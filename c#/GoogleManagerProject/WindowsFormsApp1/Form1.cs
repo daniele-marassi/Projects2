@@ -33,7 +33,7 @@ namespace WindowsFormsApp1
             var authInJson = @"{""installed"":{""client_id"":""982569746577-4lnrb3udcu2dqqk2u2mts0j2rqmiripd.apps.googleusercontent.com"",""project_id"":""ace-case-311111"",""auth_uri"":""https://accounts.google.com/o/oauth2/auth"",""token_uri"":""https://oauth2.googleapis.com/token"",""auth_provider_x509_cert_url"":""https://www.googleapis.com/oauth2/v1/certs"",""client_secret"":""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"",""redirect_uris"":[""urn:ietf:wg:oauth:2.0:oob"",""http://localhost""]}}";
             var auth = JsonConvert.DeserializeObject<Auth>(authInJson);
 
-            var tokenFileInJson = @"{""FileName"":""Google.Apis.Auth.OAuth2.Responses.TokenResponse-daniele.marassi"",""Content"":""{\""access_token\"":\""ya29.a0ARrdaM_h-abAodFhrP0txJuJWHbgoSS-tzjijpzsZnCOZ60BagdvWCpDBvHykDPKXnkKCeRkrsePS2vbilgm5kyakxUlQv4DoEyYs2EoY8q5LWDXTEl4HOlCqzZ9yI3rDnUXB8OoJKLQNngNqrKpXxYxzSoH\"",\""token_type\"":\""Bearer\"",\""expires_in\"":3599,\""refresh_token\"":\""1//09bAjvh-QiAWMCgYIARAAGAkSNwF-L9IrMqu4dVDlN9RpUe3Uq3tPOiS6gVQ4DAcTpuwuDIh4uRrdGvEGwixJ59LUQb3QqlXXsio\"",\""scope\"":\""https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar\"",\""Issued\"":\""2021-12-19T10:46:16.158+01:00\"",\""IssuedUtc\"":\""2021-12-19T09:46:16.158Z\""}""}";
+            var tokenFileInJson = @"{""FileName"":""Google.Apis.Auth.OAuth2.Responses.TokenResponse-daniele.marassi"",""Content"":""{\""access_token\"":\""ya29.A0ARrdaM9eSbl1_LYOJb0NNN7kyB3Bk3CFpxkxiXqRGWQioS7mzwzuBqZsOmDCYpElsfeEj5EV_ddiiWv5PtRBKTiL_Y0Aq6DGJL5hpmyl4ZSlvSK5ioiHCswodiALMoq7DJW40EOlCyFDEFzmhd1AgQl9WmcW\"",\""token_type\"":\""Bearer\"",\""expires_in\"":3599,\""refresh_token\"":\""1//09J32u3ehZQgfCgYIARAAGAkSNwF-L9Irs-BqoMFG5EcP3vFWLs8-qKnbOOKTY5hIAhlW21MifNN520s37vZnFswjCFdYdRUIckc\"",\""scope\"":\""https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar\"",\""Issued\"":\""2022-01-19T18:42:44.280+01:00\"",\""IssuedUtc\"":\""2022-01-19T17:42:44.280Z\""}""}";
             var tokenFile = JsonConvert.DeserializeObject<TokenFile>(tokenFileInJson);
 
             var googlePublicKey = "AIzaSyCdWVUdy3QmmYLjDwQWqP03gV49hfvWMhc";
@@ -67,29 +67,29 @@ namespace WindowsFormsApp1
 
             //var ttt = 0;
 
-            var editCalendarEventRequest = new EditCalendarEventRequest()
-            {
-                Auth = auth,
-                TokenFile = tokenFile,
-                Account = "daniele.marassi",
+            //var editCalendarEventRequest = new EditCalendarEventRequest()
+            //{
+            //    Auth = auth,
+            //    TokenFile = tokenFile,
+            //    Account = "daniele.marassi",
 
-                //Description = "Description 1",
-                //Location = "via giulia, 1 Trieste",
-                //Summary = "Summary 1",
-                //EventDateStart = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00"),
-                //EventDateEnd = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59"),
-                //NotificationMinutes = new List<int?>() { 5, 10 },
-                //Color = GoogleCalendarColors.Blueberry,
-                TimeMin = DateTime.Parse(DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd") + " 00:00:00"),
-                TimeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59"),
+            //    //Description = "Description 1",
+            //    //Location = "via giulia, 1 Trieste",
+            //    //Summary = "Summary 1",
+            //    //EventDateStart = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00"),
+            //    //EventDateEnd = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59"),
+            //    //NotificationMinutes = new List<int?>() { 5, 10 },
+            //    //Color = GoogleCalendarColors.Blueberry,
+            //    TimeMin = DateTime.Parse(DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd") + " 00:00:00"),
+            //    TimeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59"),
 
-                SummaryToSearch = "#Note lista spesa",
-                Description = String.Empty,
-                DescriptionAppended = false
-            };
+            //    SummaryToSearch = "#Note lista spesa",
+            //    Description = String.Empty,
+            //    DescriptionAppended = false
+            //};
 
-            var calendarEventUpdated = googleCalendarUtility.EditLastCalendarEventBySummary(editCalendarEventRequest);
-            var tt = 0;
+            //var calendarEventUpdated = googleCalendarUtility.EditLastCalendarEventBySummary(editCalendarEventRequest);
+            //var tt = 0;
 
             //var deleteCalendarEventsRequest = new DeleteCalendarEventsRequest()
             //{
@@ -119,41 +119,41 @@ namespace WindowsFormsApp1
             //    listBox1.Items.Add(item.Summary);
             //}
 
-            //var timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00").AddDays(-7);
-            //var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
+            var timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00").AddDays(-7);
+            var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
 
-            //var calendarEventsRequest = new CalendarEventsRequest()
-            //{
-            //    Auth = auth,
-            //    TokenFile = tokenFile,
-            //    Account = "daniele.marassi",
-            //    TimeMin = timeMin,
-            //    TimeMax = timeMax
-            //};
+            var calendarEventsRequest = new CalendarEventsRequest()
+            {
+                Auth = auth,
+                TokenFile = tokenFile,
+                Account = "daniele.marassi",
+                TimeMin = timeMin,
+                TimeMax = timeMax
+            };
 
-            //var getCalendarEventsResult = googleCalendarUtility.GetCalendarEvents(calendarEventsRequest);
+            var getCalendarEventsResult = googleCalendarUtility.GetCalendarEvents(calendarEventsRequest);
 
-            //if (getCalendarEventsResult.Successful)
-            //{
-            //    foreach (var item in getCalendarEventsResult.Data.Where(_ => _.Summary.Contains("#Note")).ToList())
-            //    {
-            //        var editCalendarEventRequest = new EditCalendarEventRequest()
-            //        {
-            //            Auth = auth,
-            //            TokenFile = tokenFile,
-            //            Account = "daniele.marassi",
-            //            IdToSearch = item.Id,
-            //            EventDateStart = DateTime.Parse(item.EventDateStart.Value.ToString("yyyy-MM-dd") + " 00:00:00"),
-            //            EventDateEnd = DateTime.Parse(item.EventDateStart.Value.ToString("yyyy-MM-dd") + " 23:59:59"),
-            //            TimeMin = DateTime.Parse(item.EventDateStart.Value.ToString("yyyy-MM-dd") + " 00:00:00"),
-            //            TimeMax = DateTime.Parse(item.EventDateStart.Value.ToString("yyyy-MM-dd") + " 23:59:59")
-            //        };
+            if (getCalendarEventsResult.Successful)
+            {
+                foreach (var item in getCalendarEventsResult.Data.Where(_ => _.Summary.Contains("#Note")).ToList())
+                {
+                    //var editCalendarEventRequest = new EditCalendarEventRequest()
+                    //{
+                    //    Auth = auth,
+                    //    TokenFile = tokenFile,
+                    //    Account = "daniele.marassi",
+                    //    IdToSearch = item.Id,
+                    //    EventDateStart = DateTime.Parse(item.EventDateStart.Value.ToString("yyyy-MM-dd") + " 00:00:00"),
+                    //    EventDateEnd = DateTime.Parse(item.EventDateStart.Value.ToString("yyyy-MM-dd") + " 23:59:59"),
+                    //    TimeMin = DateTime.Parse(item.EventDateStart.Value.ToString("yyyy-MM-dd") + " 00:00:00"),
+                    //    TimeMax = DateTime.Parse(item.EventDateStart.Value.ToString("yyyy-MM-dd") + " 23:59:59")
+                    //};
 
-            //        var calendarEventUpdated = googleCalendarUtility.EditCalendarEventById(editCalendarEventRequest);
+                    //var calendarEventUpdated = googleCalendarUtility.EditCalendarEventById(editCalendarEventRequest);
 
-            //        var ttt = 0;
-            //    }
-            //}
+                    var ttt = 0;
+                }
+            }
         }
     }
 }

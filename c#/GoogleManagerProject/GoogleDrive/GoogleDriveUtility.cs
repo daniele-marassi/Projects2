@@ -42,7 +42,6 @@ namespace GoogleDrive
                     {
                         var tokenFile = JsonConvert.DeserializeObject<TokenFile>(request.TokenFileInJson);
                         var accessProperties = JsonConvert.DeserializeObject<AccessProperties>(tokenFile.Content);
-                        accessProperties.Expires_in = 3599;
 
                         var resourcesPath = Path.Combine(appPath, "Resources");
                         if (!Directory.Exists(resourcesPath)) Directory.CreateDirectory(resourcesPath);
