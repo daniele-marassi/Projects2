@@ -1629,19 +1629,28 @@ namespace Additional
         /// <param name="password"></param>
         /// <param name="serviceGuid">Guid or BluetoothService.Xxx </param>
         /// <returns></returns>
-        public (string Message, bool Successful) ReconnectBluetoothDevice(string deviceName, string password, Guid serviceGuid)
+        public (string Message, bool Successful, bool PairAlreadyExists) ReconnectBluetoothDevice(string deviceName, string password, Guid serviceGuid)
         {
-            (string Message, bool Successful) result;
+            (string Message, bool Successful, bool PairAlreadyExists) result;
             result.Message = "";
             result.Successful = false;
+            result.PairAlreadyExists = false;
+
             var bluetoothDeviceInfo = GetBluetoothDeviceByName(GetBluetoothDevices(), deviceName);
 
             if (bluetoothDeviceInfo != null)
-                result = ConnectBluetoothDevice(bluetoothDeviceInfo.DeviceAddress, password, serviceGuid);
+            {
+                var connectResult = ConnectBluetoothDevice(bluetoothDeviceInfo.DeviceAddress, password, serviceGuid);
+
+                result.Message = connectResult.Message;
+                result.Successful = connectResult.Successful;
+                result.PairAlreadyExists = false;
+            }
             else
             {
                 result.Message = "The device is already paired.";
                 result.Successful = true;
+                result.PairAlreadyExists = true;
             }
 
             return result;
@@ -1748,6 +1757,66 @@ namespace Additional
                 {
                 }
             }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Set Default Audio Device
+        /// </summary>
+        /// <param name="deviceName"></param>
+        /// <param name="exeFullPath"> FullPath of the file SetDefaultAudioDeviceByName.exe</param>
+        /// <returns></returns>
+        public (string Output, string Error) SetDefaultAudioDevice(string deviceName, string exeFullPath)
+        {
+            (string Output, string Error) result = RunExe(exeFullPath, @"""" + deviceName + @"""", true).GetAwaiter().GetResult();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Run Exe
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <param name="arguments"></param>
+        /// <param name="async"></param>
+        /// <returns></returns>
+        public async Task<(string Output, string Error)> RunExe(string fullPath, string arguments, bool async)
+        {
+            (string Output, string Error) result;
+            result.Output = null;
+            result.Error = null;
+
+            try
+            {
+                Process process = new Process();
+                process.StartInfo.FileName = fullPath;
+                process.StartInfo.Arguments = arguments;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = async;
+                process.StartInfo.RedirectStandardError = async;
+                process.Start();
+
+                if (async)
+                {
+                    result.Output = process.StandardOutput.ReadToEnd();
+
+                    result.Error = process.StandardError.ReadToEnd();
+                    process.WaitForExit();
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Error = ex.Message;
+            }
+            finally
+            {
+                if (result.Output != null && result.Output != String.Empty) Console.WriteLine("Output: " + result.Output);
+                if (result.Error != null && result.Error != String.Empty) Console.WriteLine("Error: " + result.Error);
+            }
+
+            if (result.Output != null) result.Output = result.Output.Replace(System.Environment.NewLine, "");
+            if (result.Error != null) result.Error = result.Error.Replace(System.Environment.NewLine, "");
 
             return result;
         }

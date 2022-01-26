@@ -5,7 +5,12 @@
       "ProjectGuid": "826cd13f-46c5-47ca-b91c-a8b6e2e3c099",
       "DisplayName": "Additional",
       "ColorIndex": 0
+    },
+    "4a1c5353-6b2e-4ed7-a692-a71c73255d7d": {
+      "ProjectGuid": "4a1c5353-6b2e-4ed7-a692-a71c73255d7d",
+      "DisplayName": "SetDefaultAudioDeviceByName",
+      "ColorIndex": 1
     }
   },
-  "NextColorIndex": 1
+  "NextColorIndex": 2
 }

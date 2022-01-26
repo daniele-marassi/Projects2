@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "4a1c5353-6b2e-4ed7-a692-a71c73255d7d": {
+      "ProjectGuid": "4a1c5353-6b2e-4ed7-a692-a71c73255d7d",
+      "DisplayName": "SetDefaultAudioDeviceByName",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}

@@ -41,51 +41,9 @@ namespace Tools.Common
 
             _json = _json.Replace(@"""", @"@DOUBLEQUOTES@");
             _json = _json.Replace(@" ", @"@SPACE@");
+            var utility = new Additional.Utility();
 
-            var result = RunExe(Path.Combine(rootPath, "External_tools", "MessagesPopUp.exe"), _json, false).GetAwaiter().GetResult();
-        }
-
-        /// <summary>
-        /// RunExeAsync
-        /// </summary>
-        /// <param name="fullPath"></param>
-        /// <param name="arguments"></param>
-        /// <returns></returns>
-        public static async Task<(string Output, string Error)> RunExe(string fullPath, string arguments, bool async)
-        {
-            (string Output, string Error) result;
-            result.Output = null;
-            result.Error = null;
-
-            try
-            {
-                Process process = new Process();
-                process.StartInfo.FileName = fullPath;
-                process.StartInfo.Arguments = arguments;
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = async;
-                process.StartInfo.RedirectStandardError = async;
-                process.Start();
-
-                if (async)
-                {
-                    result.Output = process.StandardOutput.ReadToEnd();
-
-                    result.Error = process.StandardError.ReadToEnd();
-                    process.WaitForExit();
-                }
-            }
-            catch (Exception ex)
-            {
-                result.Error = ex.Message;
-            }
-            finally
-            {
-                if (result.Output != null && result.Output != String.Empty) Console.WriteLine("Output: " + result.Output);
-                if (result.Error != null && result.Error != String.Empty) Console.WriteLine("Error: " + result.Error);
-            }
-
-            return result;
+            var result = utility.RunExe(Path.Combine(rootPath, "External_tools", "MessagesPopUp.exe"), _json, false).GetAwaiter().GetResult();
         }
 
         public void ClickOnTaskbar()

@@ -12,6 +12,7 @@ using InTheHand.Net;
 using InTheHand.Net.Sockets;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace Tools.ReconnectBluetoothDevice
 {
@@ -29,6 +30,7 @@ namespace Tools.ReconnectBluetoothDevice
         private string[] bluetoothDeviceList;
         private string[] bluetoothDevicePasswordList;
         private string[] bluetoothDeviceServiceGuidOrBluetoothServiceNameList;
+        private string[] bluetoothDeviceTypeList;
 
         public ReconnectBluetoothDeviceService()
         {
@@ -40,6 +42,7 @@ namespace Tools.ReconnectBluetoothDevice
             bluetoothDeviceList = new string[0];
             bluetoothDevicePasswordList = new string[0];
             bluetoothDeviceServiceGuidOrBluetoothServiceNameList = new string[0];
+            bluetoothDeviceTypeList = new string[0];
 
             var value = "";
 
@@ -51,6 +54,9 @@ namespace Tools.ReconnectBluetoothDevice
 
             value = ConfigurationManager.AppSettings["BluetoothDeviceServiceGuidOrBluetoothServiceNameList"];
             if (value != null) bluetoothDeviceServiceGuidOrBluetoothServiceNameList = value.Split(',');
+
+            value = ConfigurationManager.AppSettings["BluetoothDeviceTypeList"];
+            if (value != null) bluetoothDeviceTypeList = value.Split(',');
 
             this.ServiceName = "ReconnectBluetoothDeviceService";
             utility = new Utility();
@@ -93,7 +99,7 @@ namespace Tools.ReconnectBluetoothDevice
                             }                           
                         }
 
-                        (string Message, bool Successful) reconnectBluetoothDeviceResult = utility.ReconnectBluetoothDevice(bluetoothDeviceList[i].ToString(), bluetoothDevicePasswordList[i].ToString(), guid);
+                        var reconnectBluetoothDeviceResult = utility.ReconnectBluetoothDevice(bluetoothDeviceList[i].ToString(), bluetoothDevicePasswordList[i].ToString(), guid);
 
                         if (!reconnectBluetoothDeviceResult.Successful && (showError == null || reconnectBluetoothDeviceResult.Message != showError))
                         {
@@ -116,6 +122,12 @@ namespace Tools.ReconnectBluetoothDevice
                                 showError = null;
                                 logger.Info(reconnectBluetoothDeviceResult.Message);
                             }
+                        }
+
+                        if (reconnectBluetoothDeviceResult.Successful && bluetoothDeviceTypeList[i].ToString().ToLower() == "audio" && reconnectBluetoothDeviceResult.PairAlreadyExists == false)
+                        {
+                            var exeFullPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "External_tools", "SetDefaultAudioDevice", "SetDefaultAudioDeviceByName.exe");
+                            utility.SetDefaultAudioDevice(bluetoothDeviceList[i].ToString(), exeFullPath);
                         }
                     }
                     catch (Exception ex)

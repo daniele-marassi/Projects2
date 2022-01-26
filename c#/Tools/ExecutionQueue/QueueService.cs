@@ -40,7 +40,7 @@ namespace Tools.ExecutionQueue
         private static Logger classLogger = LogManager.GetCurrentClassLogger();
         private NLogUtility nLogUtility = new NLogUtility();
         private int limitLogFileInMB = 0;
-        Utility utilty;
+        Utility utility;
         Common.Utility commonUtility;
         System.Collections.Specialized.NameValueCollection appSettings;
         int windowWidth;
@@ -55,7 +55,7 @@ namespace Tools.ExecutionQueue
         public QueueService()
         {
             InitializeComponent();
-            utilty = new Utility();
+            utility = new Utility();
             commonUtility = new Common.Utility();
             appSettings = ConfigurationManager.AppSettings;
             windowWidth = int.Parse(appSettings["WindowWidth"]);
@@ -95,7 +95,7 @@ namespace Tools.ExecutionQueue
 
             try
             {
-                utilty.MoveExtWindow(windowCaption, windowX, windowY, windowWidth, windowHeight);
+                utility.MoveExtWindow(windowCaption, windowX, windowY, windowWidth, windowHeight);
             }
             catch (Exception)
             {
@@ -124,7 +124,7 @@ namespace Tools.ExecutionQueue
                                 item.StateQueue = ExecutionQueueStateQueue.Executed.ToString();
                                 var updateExecutionQueueResult = await _repo.UpdateExecutionQueue(item);
 
-                                var activeWindowTitle = utilty.GetActiveWindowTitle();
+                                var activeWindowTitle = utility.GetActiveWindowTitle();
                                 if ((activeWindowTitle != windowCaption || item.Type == ExecutionQueueType.ForceHideApplication.ToString()) && alwaysShow == false) Hide();
                             }
                             catch (Exception)
@@ -317,7 +317,7 @@ namespace Tools.ExecutionQueue
             result.Output = null;
             result.Error = null;
 
-            result = Common.Utility.RunExe(item.FullPath, item.Arguments, async).GetAwaiter().GetResult();
+            result = utility.RunExe(item.FullPath, item.Arguments, async).GetAwaiter().GetResult();
 
             if (result.Error != null && result.Error != String.Empty)
             {
