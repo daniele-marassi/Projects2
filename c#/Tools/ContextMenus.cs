@@ -92,6 +92,18 @@ namespace Tools
 			sep = new ToolStripSeparator();
 			Common.ContextMenus.Menu.Items.Add(sep);
 
+			// ReconnectBluetoothDeviceService.
+			item = new ToolStripMenuItem();
+			item.Text = "Reconnect Bluetooth Device Service";
+			item.Name = "ReconnectBluetoothDeviceServiceMenuItem";
+			item.Click += new EventHandler(ReconnectBluetoothDeviceService_Click);
+			item.Image = Resources.ServiceActive;
+			Common.ContextMenus.Menu.Items.Add(item);
+
+			// Separator.
+			sep = new ToolStripSeparator();
+			Common.ContextMenus.Menu.Items.Add(sep);
+
 			//RenewNotesService
 			item = new ToolStripMenuItem();
 			item.Text = "Renew Notes Service";
@@ -207,7 +219,12 @@ namespace Tools
 		{
 			SetMenuItem("SyncIpServiceMenuItem");
 		}
-		
+
+		void ReconnectBluetoothDeviceService_Click(object sender, EventArgs e)
+		{
+			SetMenuItem("ReconnectBluetoothDeviceServiceMenuItem");
+		}
+
 		void RenewNotesService_Click(object sender, EventArgs e)
 		{
 			SetMenuItem("RenewNotesServiceMenuItem");
@@ -309,6 +326,33 @@ namespace Tools
 					item.Image = Resources.ServiceActive;
 					ProcessIcon._SyncIpService = new SyncIp.SyncIpService();
 					Task.Run(() => ProcessIcon._SyncIpService.Start());
+				}
+			}
+
+			if (itemName == "ReconnectBluetoothDeviceServiceMenuItem")
+			{
+				var item = Common.ContextMenus.Menu.Items[itemName];
+
+				if (ProcessIcon.ReconnectBluetoothDeviceServiceActive)
+				{
+					ProcessIcon.ReconnectBluetoothDeviceServiceActive = false;
+
+					AddOrUpdateAppSettings("ReconnectBluetoothDeviceService", ProcessIcon.ReconnectBluetoothDeviceServiceActive.ToString());
+
+					item.Image = Resources.ServiceDisable;
+					if (ProcessIcon._ReconnectBluetoothDeviceService != null)
+					{
+						ProcessIcon._ReconnectBluetoothDeviceService.Stop();
+						ProcessIcon._ReconnectBluetoothDeviceService = null;
+					}
+				}
+				else
+				{
+					ProcessIcon.ReconnectBluetoothDeviceServiceActive = true;
+					AddOrUpdateAppSettings("ReconnectBluetoothDeviceService", ProcessIcon.ReconnectBluetoothDeviceServiceActive.ToString());
+					item.Image = Resources.ServiceActive;
+					ProcessIcon._ReconnectBluetoothDeviceService = new ReconnectBluetoothDevice.ReconnectBluetoothDeviceService();
+					Task.Run(() => ProcessIcon._ReconnectBluetoothDeviceService.Start());
 				}
 			}
 

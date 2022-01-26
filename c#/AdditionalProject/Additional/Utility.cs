@@ -19,6 +19,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using InTheHand.Net;
+using InTheHand.Net.Bluetooth;
+using InTheHand.Net.Sockets;
 
 namespace Additional
 {
@@ -1607,6 +1610,146 @@ namespace Additional
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Remove Bluetooth Device
+        /// </summary>
+        /// <param name="bluetoothAddress"></param>
+        /// <returns></returns>
+        public void RemoveBluetoothDevice(BluetoothAddress bluetoothAddress)
+        {
+            BluetoothSecurity.RemoveDevice(bluetoothAddress);
+        }
+
+        /// <summary>
+        /// Reconnect Bluetooth Device
+        /// </summary>
+        /// <param name="deviceName"></param>
+        /// <param name="password"></param>
+        /// <param name="serviceGuid">Guid or BluetoothService.Xxx </param>
+        /// <returns></returns>
+        public (string Message, bool Successful) ReconnectBluetoothDevice(string deviceName, string password, Guid serviceGuid)
+        {
+            (string Message, bool Successful) result;
+            result.Message = "";
+            result.Successful = false;
+            var bluetoothDeviceInfo = GetBluetoothDeviceByName(GetBluetoothDevices(), deviceName);
+
+            if (bluetoothDeviceInfo != null)
+                result = ConnectBluetoothDevice(bluetoothDeviceInfo.DeviceAddress, password, serviceGuid);
+            else
+            {
+                result.Message = "The device is already paired.";
+                result.Successful = true;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Get Bluetooth Devices
+        /// </summary>
+        /// <returns></returns>
+        public List<BluetoothDeviceInfo> GetBluetoothDevices()
+        {
+            var result = new List<BluetoothDeviceInfo>() { };
+
+            BluetoothClient bluetoothClient = null;
+
+            try
+            {
+                bluetoothClient = new BluetoothClient();
+                var buleRadio = BluetoothRadio.Default;//PrimaryRadio;
+                buleRadio.Mode = RadioMode.Connectable;
+                var devices = bluetoothClient.DiscoverDevices();
+
+                result.AddRange(devices);
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    bluetoothClient.Close();
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Get Bluetooth Device By Name
+        /// </summary>
+        /// <param name="bluetoothDevices"></param>
+        /// <param name="deviceName"></param>
+        /// <returns></returns>
+        public BluetoothDeviceInfo GetBluetoothDeviceByName(List<BluetoothDeviceInfo> bluetoothDevices, string deviceName)
+        {
+            BluetoothDeviceInfo result;
+
+            result = bluetoothDevices.Where(_ => _.DeviceName.Trim().ToLower() == deviceName.Trim().ToLower()).FirstOrDefault();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Connect Bluetooth Device
+        /// </summary>
+        /// <param name="bluetoothAddress"></param>
+        /// <param name="password"></param>
+        /// <param name="serviceGuid">Guid or BluetoothService.Xxx </param>
+        /// <returns></returns>
+        public (string Message, bool Successful) ConnectBluetoothDevice(BluetoothAddress bluetoothAddress, string password, Guid serviceGuid)
+        {
+            (string Message, bool Successful) result;
+            result.Message = "";
+            result.Successful = false;
+
+            BluetoothClient bluetoothClient = null;
+
+            try
+            {
+                RemoveBluetoothDevice(bluetoothAddress);
+                var device = new BluetoothDeviceInfo(bluetoothAddress);
+                BluetoothSecurity.PairRequest(bluetoothAddress, password);
+                bluetoothClient = new BluetoothClient();
+                bluetoothClient.Connect(device.DeviceAddress, serviceGuid);
+
+                if (bluetoothClient.Connected)
+                {
+                    result.Message = "The pairing is successful.";
+                    result.Successful = true;
+                }
+                else
+                {
+                    result.Message = "The pairing is failed.";
+                    result.Successful = false;
+                }
+
+                var stream = bluetoothClient.GetStream();
+                stream.Close();
+
+                bluetoothClient.Close();
+                device.SetServiceState(serviceGuid, true);
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
+                result.Successful = false;
+
+                try
+                {
+                    bluetoothClient.Close();
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            return result;
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Tools.Properties;
 using Tools.Songs;
 using Tools.WakeUpScreenAfterPowerBreak;
+using Tools.ReconnectBluetoothDevice;
 
 namespace Tools
 {
@@ -22,6 +23,7 @@ namespace Tools
         NotifyIcon ni;
 		public static QueueService _QueueService;
 		public static SyncIpService _SyncIpService;
+		public static ReconnectBluetoothDeviceService _ReconnectBluetoothDeviceService;
 		public static RenewNotesService _RenewNotesService;
 		public static WakeUpScreenAfterPowerBreakService _WakeUpScreenAfterPowerBreakService;
 		public static Speech _Speech;
@@ -31,6 +33,7 @@ namespace Tools
 		public static bool HookKeyActive = true;
 		public static bool QueueServiceActive = true;
 		public static bool SyncIpServiceActive = true;
+		public static bool ReconnectBluetoothDeviceServiceActive = true;	
 		public static bool RenewNotesServiceActive = true;
 		public static bool WakeUpScreenAfterPowerBreakServiceActive = true;
 		public static bool SpeechServiceActive = true;
@@ -110,7 +113,21 @@ namespace Tools
 			{
 				ContextMenus.SetMenuItem("SyncIpServiceMenuItem");
 			}
-			
+
+			if (bool.Parse(ConfigurationManager.AppSettings["ReconnectBluetoothDeviceService"]))
+			{
+				ReconnectBluetoothDeviceServiceActive = true;
+
+				_ReconnectBluetoothDeviceService = new ReconnectBluetoothDeviceService();
+
+				System.Threading.Thread.Sleep(50);
+				Task.Run(() => _ReconnectBluetoothDeviceService.Start());
+			}
+			else
+			{
+				ContextMenus.SetMenuItem("ReconnectBluetoothDeviceServiceMenuItem");
+			}
+
 			if (bool.Parse(ConfigurationManager.AppSettings["RenewNotesService"]))
 			{
 				RenewNotesServiceActive = true;
