@@ -3066,6 +3066,12 @@
         <member name="P:Google.Apis.Drive.v3.Data.Drive.Name">
             <summary>The name of this shared drive.</summary>
         </member>
+        <member name="P:Google.Apis.Drive.v3.Data.Drive.OrgUnitId">
+            <summary>
+            The organizational unit of this shared drive. This field is only populated on drives.list responses when the
+            useDomainAdminAccess parameter is set to true.
+            </summary>
+        </member>
         <member name="P:Google.Apis.Drive.v3.Data.Drive.Restrictions">
             <summary>A set of restrictions that apply to this shared drive or items inside this shared drive.</summary>
         </member>
@@ -4257,6 +4263,12 @@
         </member>
         <member name="P:Google.Apis.Drive.v3.Data.TeamDrive.Name">
             <summary>The name of this Team Drive.</summary>
+        </member>
+        <member name="P:Google.Apis.Drive.v3.Data.TeamDrive.OrgUnitId">
+            <summary>
+            The organizational unit of this shared drive. This field is only populated on drives.list responses when the
+            useDomainAdminAccess parameter is set to true.
+            </summary>
         </member>
         <member name="P:Google.Apis.Drive.v3.Data.TeamDrive.Restrictions">
             <summary>A set of restrictions that apply to this Team Drive or items inside this Team Drive.</summary>

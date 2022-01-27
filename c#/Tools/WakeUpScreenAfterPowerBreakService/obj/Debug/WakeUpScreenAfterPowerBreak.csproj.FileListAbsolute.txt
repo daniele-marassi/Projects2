@@ -71,10 +71,8 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakServic
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Common.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.Auth.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.Auth.PlatformServices.dll
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.Calendar.v3.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.Core.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.dll
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.Drive.v3.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.Keep.v1.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.PlatformServices.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\MessagesPopUp.exe
@@ -91,12 +89,8 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakServic
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.Auth.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.Auth.xml
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.Calendar.v3.pdb
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.Calendar.v3.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.Core.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.Core.xml
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.Drive.v3.pdb
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.Drive.v3.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.Keep.v1.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Google.Apis.Keep.v1.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Debug\Newtonsoft.Json.xml

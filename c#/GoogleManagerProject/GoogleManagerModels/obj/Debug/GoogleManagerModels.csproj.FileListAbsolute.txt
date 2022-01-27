@@ -16,7 +16,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleManagerModel
 C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleManagerModels\bin\Debug\Google.Apis.Core.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleManagerModels\bin\Debug\Google.Apis.Core.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleManagerModels\bin\Debug\Newtonsoft.Json.xml
-C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleManagerModels\obj\Debug\GoogleManagerModels.csproj.AssemblyReference.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleManagerModels\obj\Debug\GoogleManagerModels.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleManagerModels\obj\Debug\GoogleManagerModels.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\GoogleManagerProject\GoogleManagerModels\obj\Debug\GoogleManagerModels.dll

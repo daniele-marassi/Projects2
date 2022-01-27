@@ -66,11 +66,11 @@
           "dependencies": {
             "AutoMapper": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[11.0.0, )"
             },
             "EntityFramework": {
               "target": "Package",
-              "version": "[6.4.0, )"
+              "version": "[6.4.4, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
@@ -90,7 +90,7 @@
             },
             "Microsoft.EntityFrameworkCore.Analyzers": {
               "target": "Package",
-              "version": "[3.1.2, )"
+              "version": "[6.0.1, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
@@ -114,7 +114,7 @@
             },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
-              "version": "[3.1.2, )"
+              "version": "[6.0.0, )"
             },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
@@ -122,23 +122,23 @@
             },
             "NLog": {
               "target": "Package",
-              "version": "[4.7.0, )"
+              "version": "[4.7.13, )"
             },
             "NLog.Schema": {
               "target": "Package",
-              "version": "[4.7.0, )"
+              "version": "[4.7.13, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
-              "version": "[12.0.3, )"
+              "version": "[13.0.1, )"
             },
             "System.ServiceProcess.ServiceController": {
               "target": "Package",
-              "version": "[4.7.0, )"
+              "version": "[6.0.0, )"
             },
             "System.Text.Encodings.Web": {
               "target": "Package",
-              "version": "[4.7.0, )"
+              "version": "[6.0.0, )"
             }
           },
           "imports": [
