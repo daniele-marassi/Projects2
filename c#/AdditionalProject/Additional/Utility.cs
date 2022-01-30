@@ -1627,9 +1627,8 @@ namespace Additional
         /// </summary>
         /// <param name="deviceName"></param>
         /// <param name="password"></param>
-        /// <param name="serviceGuid">Guid or BluetoothService.Xxx </param>
         /// <returns></returns>
-        public (string Message, bool Successful, bool PairAlreadyExists) ReconnectBluetoothDevice(string deviceName, string password, Guid serviceGuid)
+        public (string Message, bool Successful, bool PairAlreadyExists) ReconnectBluetoothDevice(string deviceName, string password)
         {
             (string Message, bool Successful, bool PairAlreadyExists) result;
             result.Message = "";
@@ -1640,7 +1639,7 @@ namespace Additional
 
             if (bluetoothDeviceInfo != null)
             {
-                var connectResult = ConnectBluetoothDevice(bluetoothDeviceInfo.DeviceAddress, password, serviceGuid);
+                var connectResult = ConnectBluetoothSpeakers(bluetoothDeviceInfo.DeviceAddress, password);
 
                 result.Message = connectResult.Message;
                 result.Successful = connectResult.Successful;
@@ -1705,13 +1704,12 @@ namespace Additional
         }
 
         /// <summary>
-        /// Connect Bluetooth Device
+        /// Connect Bluetooth Speakers
         /// </summary>
         /// <param name="bluetoothAddress"></param>
         /// <param name="password"></param>
-        /// <param name="serviceGuid">Guid or BluetoothService.Xxx </param>
         /// <returns></returns>
-        public (string Message, bool Successful) ConnectBluetoothDevice(BluetoothAddress bluetoothAddress, string password, Guid serviceGuid)
+        public (string Message, bool Successful) ConnectBluetoothSpeakers(BluetoothAddress bluetoothAddress, string password)
         {
             (string Message, bool Successful) result;
             result.Message = "";
@@ -1725,7 +1723,7 @@ namespace Additional
                 var device = new BluetoothDeviceInfo(bluetoothAddress);
                 BluetoothSecurity.PairRequest(bluetoothAddress, password);
                 bluetoothClient = new BluetoothClient();
-                bluetoothClient.Connect(device.DeviceAddress, serviceGuid);
+                bluetoothClient.Connect(device.DeviceAddress, BluetoothService.Handsfree);
 
                 if (bluetoothClient.Connected)
                 {
@@ -1742,7 +1740,11 @@ namespace Additional
                 stream.Close();
 
                 bluetoothClient.Close();
-                device.SetServiceState(serviceGuid, true);
+                device.SetServiceState(BluetoothService.Handsfree, true);
+                device.SetServiceState(BluetoothService.AudioSink, true);
+                device.SetServiceState(BluetoothService.AVRemoteControl, true);
+                device.SetServiceState(BluetoothService.GenericAudio, true);
+                device.SetServiceState(BluetoothService.AudioVideo, true);
             }
             catch (Exception ex)
             {
