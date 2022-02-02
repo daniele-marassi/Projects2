@@ -137,7 +137,7 @@ namespace Supp.Site.Recognition
                         Id = id,
                         Name = _subType + "_" + id.ToString(),
                         Phrase = @"EMPTY",
-                        Answer = null,
+                        Answer = @"[""Vuoi aggiungere altro?""]",
                         Host = "All",
                         FinalStep = false,
                         UserId = 0,
@@ -147,6 +147,74 @@ namespace Supp.Site.Recognition
                         Step = step,
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.Choice.ToString(),
+                        ElementIndex = 0
+                    }
+                );
+
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"[[""no"", ""non ora"", ""no grazie""]]",
+                        Answer = @"[""ok"",""va bene"",""certo"",""bene""]",
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 1).ToString() + "]",
+                        StepType = StepTypes.Default.ToString(),
+                        ElementIndex = 0
+                    }
+                );
+
+                id++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"[[""sì"",""ok"",""sì va bene"",""si"",""ok"",""si va bene"", ""ok va bene""]]",
+                        Answer = null,
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 2).ToString() + "]",
+                        StepType = StepTypes.GoToFirstStep.ToString(),
+                        ElementIndex = 0
+                    }
+                );
+
+                id++;
+                step++;
+                result.Add(
+                    new WebSpeechDto()
+                    {
+                        Id = id,
+                        Name = _subType + "_" + id.ToString(),
+                        Phrase = @"EMPTY",
+                        Answer = null,
+                        Host = "All",
+                        FinalStep = false,
+                        UserId = 0,
+                        Order = 0,
+                        Type = WebSpeechTypes.SystemRequest.ToString(),
+                        SubType = _subType,
+                        Step = step,
+                        OperationEnable = true,
+                        ParentIds = "[" + (id - 2).ToString() + "]",
                         StepType = StepTypes.ApplyNow.ToString(),
                         ElementIndex = 0
                     }

@@ -16,7 +16,8 @@ namespace Supp.Models
         Ask = 7,
         GetElementDateTime = 8,
         GetElementDate = 9,
-        GetElementTime = 10
+        GetElementTime = 10,
+        GoToFirstStep = 11
     }
 
     public class StepTypesUtility

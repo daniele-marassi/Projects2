@@ -360,6 +360,13 @@ namespace Supp.Site.Recognition
                             else _phrase = value.ToString();
                         }
 
+                        if (data != null && data.StepType == StepTypes.GoToFirstStep.ToString())
+                        {
+                            data = result.Data.Where(_ => _.Step == 1 && _.SubType == data.SubType).FirstOrDefault();
+                            data = GetAnswer(data);
+                            stepType = data.StepType;
+                        }
+
                         if (data != null && _subType != "" && _subType != null && _subType != "null") data = dialogue.Manage(data, _subType, _step, stepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);
 
                         if (data == null && _subType != "" && _subType != null && _subType != "null")
@@ -370,10 +377,10 @@ namespace Supp.Site.Recognition
                                 data = GetAnswer(data);
 
                                 if (_claims.Configuration.General.Culture.ToLower() == "it-it")
-                                    data.Answer = "non ho capito!" + " " + data.Answer;
+                                    data.Answer = "Non ho capito!" + " " + data.Answer;
 
                                 if (_claims.Configuration.General.Culture.ToLower() == "en-us")
-                                    data.Answer = "" + " " + data.Answer;
+                                    data.Answer = "I did not understand!" + " " + data.Answer;
                             }
                         }
                     }
@@ -1125,6 +1132,8 @@ namespace Supp.Site.Recognition
             {
                 answers.Add(data.Answer);
             }
+
+            if (answers == null) answers = new List<string>() {""};
 
             var x = rnd.Next(0, answers.Count());
 

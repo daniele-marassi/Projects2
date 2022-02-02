@@ -329,7 +329,12 @@ namespace Supp.Site.Recognition
                     newWebSpeech.Elements[index].Value = data.Parameters.Trim();
                 }
 
-                newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = _phrase.Trim();
+                if (newWebSpeech.Elements[newWebSpeech.ElementIndex].Value != null && newWebSpeech.Elements[newWebSpeech.ElementIndex].Value != "")
+                    newWebSpeech.Elements[newWebSpeech.ElementIndex].Value += "\n";
+                else
+                    newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = "";
+
+                newWebSpeech.Elements[newWebSpeech.ElementIndex].Value += _phrase.Trim();
                 setCookie = true;
             }
 

@@ -30,6 +30,8 @@ namespace Additional
 
                 if (culture.ToLower() == "en-us")
                     result = DateTime.Parse(value, new CultureInfo("en-US"));
+
+                return result;
             }
             catch (Exception)
             {
@@ -64,8 +66,12 @@ namespace Additional
             var isWeek = false;
 
             var isHalf = false;
+            var isQuarter = false;
             var isMonthInWords = false;
             var isTimeAsNow = false;
+
+            var isPM = false;
+            var isAM = false;
 
             double quantity = 0;
             double quantityPeriod = 0;
@@ -89,6 +95,18 @@ namespace Additional
                 {
                     isHalf = true;
                     value = value.ToLower().Replace(" e " + QuantityInWordsIta.Mezza.ToString().ToLower(), "");
+                }
+
+                if (value.ToLower().Contains(" e " + QuantityInWordsIta.Quarto.ToString().ToLower()))
+                {
+                    isQuarter = true;
+                    value = value.ToLower().Replace(" e " + QuantityInWordsIta.Quarto.ToString().ToLower(), "");
+                }
+
+                if (value.ToLower().Contains(" e " + QuantityInWordsIta.Quarti.ToString().ToLower()))
+                {
+                    isQuarter = true;
+                    value = value.ToLower().Replace(" e " + QuantityInWordsIta.Quarti.ToString().ToLower(), "");
                 }
 
                 if (value.ToLower().Contains(" " + utility.SplitCamelCase(QuantityInWordsIta.QuestaOra.ToString()).ToLower()))
@@ -128,9 +146,9 @@ namespace Additional
 
                     if (_word.Trim().ToLower() == QuantityInWordsIta.Un.ToString().ToLower() || _word.Trim().ToLower() == QuantityInWordsIta.Una.ToString().ToLower()) _word = "1";
 
-                    DateTimeInNumbers(ref isNumericDay, ref fixedDay, ref isNumericMonth, ref fixedMonth, ref isNumericYear, ref fixedYear, ref isNumericHour, ref fixedHour, ref isNumericMinute, ref fixedMinute, ref date, _word, culture, isHalf);
-                    DayOfWeekInWords(ref isDayOfWeek, ref fixedDay, ref isQuantity, ref fixedQuantity, ref quantity, ref date, _word, dayOfWeek, culture, isHalf);
-                    PeriodInWords(ref isDay, ref fixedDay, ref isQuantityPeriod, ref fixedQuantityPeriod, ref isMonth, ref fixedMonth, ref isYear, ref fixedYear, ref isSecond, ref fixedSecond, ref isMinute, ref fixedMinute, ref isHour, ref fixedHour, ref isWeek, ref fixedWeek, ref quantityPeriod, ref date, _word, culture, isHalf);
+                    DateTimeInNumbers(ref isNumericDay, ref fixedDay, ref isNumericMonth, ref fixedMonth, ref isNumericYear, ref fixedYear, ref isNumericHour, ref fixedHour, ref isNumericMinute, ref fixedMinute, ref date, _word, culture, isHalf, isQuarter, isAM, isPM);
+                    DayOfWeekInWords(ref isDayOfWeek, ref fixedDay, ref isQuantity, ref fixedQuantity, ref quantity, ref date, _word, dayOfWeek, culture, isHalf, isQuarter, isAM, isPM);
+                    PeriodInWords(ref isDay, ref fixedDay, ref isQuantityPeriod, ref fixedQuantityPeriod, ref isMonth, ref fixedMonth, ref isYear, ref fixedYear, ref isSecond, ref fixedSecond, ref isMinute, ref fixedMinute, ref isHour, ref fixedHour, ref isWeek, ref fixedWeek, ref quantityPeriod, ref date, _word, culture, isHalf, isQuarter, isAM, isPM);
                     MonthInWords(ref isMonthInWords, ref fixedMonth, ref fixedDay, ref date, word, culture);
                 }
             }
@@ -142,10 +160,30 @@ namespace Additional
 
                 value = value.ToLower().Replace(utility.SplitCamelCase(DaysEng.DayAfterTomorrow.ToString()).ToLower(), DaysEng.DayAfterTomorrow.ToString().ToLower());
 
+                if (value.ToLower().Contains(" a.m.") || value.ToLower().Contains(" am"))
+                {
+                    isAM = true;
+                    value = value.ToLower().Replace(" a.m.", "");
+                    value = value.ToLower().Replace(" am", "");
+                }
+
+                if (value.ToLower().Contains(" p.m.") || value.ToLower().Contains(" pm"))
+                {
+                    isPM = true;
+                    value = value.ToLower().Replace(" p.m.", "");
+                    value = value.ToLower().Replace(" pm", "");
+                }
+
                 if (value.ToLower().Contains(" and a " + QuantityInWordsEng.Half.ToString().ToLower()))
                 {
                     isHalf = true;
                     value = value.ToLower().Replace(" and a " + QuantityInWordsEng.Half.ToString().ToLower(), "");
+                }
+
+                if (value.ToLower().Contains(" and a " + QuantityInWordsEng.Quarter.ToString().ToLower()))
+                {
+                    isQuarter = true;
+                    value = value.ToLower().Replace(" and a " + QuantityInWordsEng.Quarter.ToString().ToLower(), "");
                 }
 
                 if (value.ToLower().Contains(" " + utility.SplitCamelCase(QuantityInWordsEng.ThisHour.ToString()).ToLower()))
@@ -167,9 +205,9 @@ namespace Additional
                 }
 
                 if (isTimeAsNow)
-                    date = DateTime.Parse(DateTime.Now.Day.ToString() + "/" + DateTime.Now.Month.ToString() + "/" + DateTime.Now.Year.ToString() + " " + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second, new CultureInfo("en-US"));
+                    date = DateTime.Parse(DateTime.Now.Day.ToString() + "/" + DateTime.Now.Month.ToString() + "/" + DateTime.Now.Year.ToString() + " " + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second, new CultureInfo("it-IT"));
                 else
-                    date = DateTime.Parse(DateTime.Now.Day.ToString() + "/" + DateTime.Now.Month.ToString() + "/" + DateTime.Now.Year.ToString() + " 00:00:11", new CultureInfo("en-US"));
+                    date = DateTime.Parse(DateTime.Now.Day.ToString() + "/" + DateTime.Now.Month.ToString() + "/" + DateTime.Now.Year.ToString() + " 00:00:11", new CultureInfo("it-IT"));
 
                 words = value.Split(' ');
 
@@ -184,9 +222,9 @@ namespace Additional
 
                     if (_word.Trim().ToLower() == QuantityInWordsEng.One.ToString().ToLower()) _word = "1";
 
-                    DateTimeInNumbers(ref isNumericDay, ref fixedDay, ref isNumericMonth, ref fixedMonth, ref isNumericYear, ref fixedYear, ref isNumericHour, ref fixedHour, ref isNumericMinute, ref fixedMinute, ref date, _word, culture, isHalf);
-                    DayOfWeekInWords(ref isDayOfWeek, ref fixedDay, ref isQuantity, ref fixedQuantity, ref quantity, ref date, _word, dayOfWeek, culture, isHalf);
-                    PeriodInWords(ref isDay, ref fixedDay, ref isQuantityPeriod, ref fixedQuantityPeriod, ref isMonth, ref fixedMonth, ref isYear, ref fixedYear, ref isSecond, ref fixedSecond, ref isMinute, ref fixedMinute, ref isHour, ref fixedHour, ref isWeek, ref fixedWeek, ref quantityPeriod, ref date, _word, culture, isHalf);
+                    DateTimeInNumbers(ref isNumericDay, ref fixedDay, ref isNumericMonth, ref fixedMonth, ref isNumericYear, ref fixedYear, ref isNumericHour, ref fixedHour, ref isNumericMinute, ref fixedMinute, ref date, _word, culture, isHalf, isQuarter, isAM, isPM);
+                    DayOfWeekInWords(ref isDayOfWeek, ref fixedDay, ref isQuantity, ref fixedQuantity, ref quantity, ref date, _word, dayOfWeek, culture, isHalf, isQuarter, isAM, isPM);
+                    PeriodInWords(ref isDay, ref fixedDay, ref isQuantityPeriod, ref fixedQuantityPeriod, ref isMonth, ref fixedMonth, ref isYear, ref fixedYear, ref isSecond, ref fixedSecond, ref isMinute, ref fixedMinute, ref isHour, ref fixedHour, ref isWeek, ref fixedWeek, ref quantityPeriod, ref date, _word, culture, isHalf, isQuarter, isAM, isPM);
                     MonthInWords(ref isMonthInWords, ref fixedMonth, ref fixedDay, ref date, word, culture);
                 }
             }
@@ -216,7 +254,7 @@ namespace Additional
                     if (culture.ToLower() == "en-us")
                         newMonth = (int)(MothsEng)Enum.Parse(typeof(MothsEng), utility.FirstLetterToUpper(word.Trim()));
 
-                    date = DateTime.Parse(date.Day + "/" + newMonth + "/" + date.Year + " " + date.Hour + ":" + date.Minute + ":" + date.Second, cultureInfo);
+                    date = DateTime.Parse(date.Day + "/" + newMonth + "/" + date.Year + " " + date.Hour + ":" + date.Minute + ":" + date.Second, new CultureInfo("it-IT"));
 
                     fixedMonth = true;
                 }
@@ -225,7 +263,7 @@ namespace Additional
             }
         }
 
-        private void PeriodInWords(ref bool isDay, ref bool fixedDay, ref bool isQuantityPeriod, ref bool fixedQuantityPeriod, ref bool isMonth, ref bool fixedMonth, ref bool isYear, ref bool fixedYear, ref bool isSecond, ref bool fixedSecond, ref bool isMinute, ref bool fixedMinute, ref bool isHour, ref bool fixedHour, ref bool isWeek, ref bool fixedWeek, ref double quantityPeriod, ref DateTime date, string word, string culture, bool isHalf)
+        private void PeriodInWords(ref bool isDay, ref bool fixedDay, ref bool isQuantityPeriod, ref bool fixedQuantityPeriod, ref bool isMonth, ref bool fixedMonth, ref bool isYear, ref bool fixedYear, ref bool isSecond, ref bool fixedSecond, ref bool isMinute, ref bool fixedMinute, ref bool isHour, ref bool fixedHour, ref bool isWeek, ref bool fixedWeek, ref double quantityPeriod, ref DateTime date, string word, string culture, bool isHalf, bool isQuarter, bool isAM, bool isPM)
         {
             if (isQuantityPeriod && fixedQuantityPeriod == false)
             {
@@ -267,6 +305,7 @@ namespace Additional
             {
                 date = DateTime.Now;
                 if (isHalf) quantityPeriod += 0.5;
+                if (isQuarter) quantityPeriod += 0.25;
                 date = date.AddDays(quantityPeriod);
 
                 fixedDay = true;
@@ -292,6 +331,7 @@ namespace Additional
             {
                 date = DateTime.Now;
                 if (isHalf) quantityPeriod += 0.5;
+                if (isQuarter) quantityPeriod += 0.25;
                 date = date.AddSeconds(quantityPeriod);
 
                 fixedSecond = true;
@@ -301,6 +341,7 @@ namespace Additional
             {
                 date = DateTime.Now;
                 if (isHalf) quantityPeriod += 0.5;
+                if (isQuarter) quantityPeriod += 0.25;
                 date = date.AddMinutes(quantityPeriod);
 
                 fixedMinute = true;
@@ -314,6 +355,13 @@ namespace Additional
                     quantityPeriod += 0.5;
                     fixedMinute = true;
                 }
+
+                if (isQuarter)
+                {
+                    quantityPeriod += 0.25;
+                    fixedMinute = true;
+                }
+
                 date = date.AddHours(quantityPeriod);
 
                 fixedHour = true;
@@ -323,13 +371,14 @@ namespace Additional
             {
                 date = DateTime.Now;
                 if (isHalf) quantityPeriod += 0.5;
+                if (isQuarter) quantityPeriod += 0.25;
                 date = date.AddDays(7d * quantityPeriod);
 
                 fixedWeek = true;
             }
         }
 
-        private void DayOfWeekInWords(ref bool isDayOfWeek, ref bool fixedDay, ref bool isQuantity, ref bool fixedQuantity, ref double quantity, ref DateTime date, string word, int dayOfWeek, string culture, bool isHalf)
+        private void DayOfWeekInWords(ref bool isDayOfWeek, ref bool fixedDay, ref bool isQuantity, ref bool fixedQuantity, ref double quantity, ref DateTime date, string word, int dayOfWeek, string culture, bool isHalf, bool isQuarter, bool isAM, bool isPM)
         {
             if (utility.GetEnumItems(typeof(DaysOfTheWeekIta)).Contains(word) && fixedDay == false) isDayOfWeek = true;
 
@@ -361,7 +410,7 @@ namespace Additional
 
                     countDays += 7 * quantity;
 
-                    date = DateTime.Parse(date.Day + "/" + date.Month + "/" + date.Year + " " + date.Hour + ":" + date.Minute + ":" + date.Second, cultureInfo);
+                    date = DateTime.Parse(date.Day + "/" + date.Month + "/" + date.Year + " " + date.Hour + ":" + date.Minute + ":" + date.Second, new CultureInfo("it-IT"));
 
                     date = date.AddDays(countDays);
 
@@ -387,7 +436,7 @@ namespace Additional
             if (culture.ToLower() == "en-us" && utility.GetEnumItems(typeof(TemporalComplementEng)).Contains(word.Trim().ToLower()) && fixedDay == false && fixedQuantity == false) isQuantity = true;
         }
 
-        private void DateTimeInNumbers(ref bool isNumericDay, ref bool fixedDay, ref bool isNumericMonth, ref bool fixedMonth, ref bool isNumericYear, ref bool fixedYear, ref bool isNumericHour, ref bool fixedHour, ref bool isNumericMinute, ref bool fixedMinute, ref DateTime date, string word, string culture, bool isHalf)
+        private void DateTimeInNumbers(ref bool isNumericDay, ref bool fixedDay, ref bool isNumericMonth, ref bool fixedMonth, ref bool isNumericYear, ref bool fixedYear, ref bool isNumericHour, ref bool fixedHour, ref bool isNumericMinute, ref bool fixedMinute, ref DateTime date, string word, string culture, bool isHalf, bool isQuarter, bool isAM, bool isPM)
         {
             var cultureInfo = default(CultureInfo);
             if (culture.ToLower() == "it-it")
@@ -417,6 +466,20 @@ namespace Additional
                     date = date.AddDays(_quantity);
                     fixedDay = true;
                 }
+
+                if (word.Trim().ToLower() == TimesIta.Mezzogiorno.ToString().ToLower() && fixedHour == false && fixedMinute == false)
+                {
+                    date = DateTime.Parse(date.Day + "/" + date.Month + "/" + date.Year + " " + "12" + ":" + "00" + ":" + "00", new CultureInfo("it-IT"));
+                    fixedHour = true;
+                    fixedMinute = true;
+                }
+
+                if (word.Trim().ToLower() == TimesIta.Mezzanotte.ToString().ToLower() && fixedHour == false && fixedMinute == false)
+                {
+                    date = DateTime.Parse(date.Day + "/" + date.Month + "/" + date.Year + " " + "00" + ":" + "00" + ":" + "00", new CultureInfo("it-IT"));
+                    fixedHour = true;
+                    fixedMinute = true;
+                }
             }
 
             if (culture.ToLower() == "en-us")
@@ -439,6 +502,20 @@ namespace Additional
                     date = date.AddDays(_quantity);
                     fixedDay = true;
                 }
+
+                if ((word.Trim().ToLower() == TimesEng.Midday.ToString().ToLower() || word.Trim().ToLower() == TimesEng.Noon.ToString().ToLower()) && fixedHour == false && fixedMinute == false)
+                {
+                    date = DateTime.Parse(date.Month + "/" + date.Day + "/" + date.Year + " " + "12" + ":" + "00" + ":" + "00 pm", new CultureInfo("en-US"));
+                    fixedHour = true;
+                    fixedMinute = true;
+                }
+
+                if (word.Trim().ToLower() == TimesEng.Midnight.ToString().ToLower() && fixedHour == false && fixedMinute == false)
+                {
+                    date = DateTime.Parse(date.Month + "/" + date.Day + "/" + date.Year + " " + "12" + ":" + "00" + ":" + "00 am", new CultureInfo("en-US"));
+                    fixedHour = true;
+                    fixedMinute = true;
+                }
             }
 
             if (isNumericDay && fixedDay == false)
@@ -446,7 +523,7 @@ namespace Additional
                 try
                 {
                     var day = int.Parse(word);
-                    date = DateTime.Parse(day + "/" + date.Month + "/" + date.Year + " " + date.Hour + ":" + date.Minute + ":" + date.Second, cultureInfo);
+                    date = DateTime.Parse(day + "/" + date.Month + "/" + date.Year + " " + date.Hour + ":" + date.Minute + ":" + date.Second, new CultureInfo("it-IT"));
                     fixedDay = true;
                 }
                 catch (Exception)
@@ -458,7 +535,7 @@ namespace Additional
                 try
                 {
                     var month = int.Parse(word);
-                    date = DateTime.Parse(date.Day + "/" + month + "/" + date.Year + " " + date.Hour + ":" + date.Minute + ":" + date.Second, cultureInfo);
+                    date = DateTime.Parse(date.Day + "/" + month + "/" + date.Year + " " + date.Hour + ":" + date.Minute + ":" + date.Second, new CultureInfo("it-IT"));
                     fixedMonth = true;
                 }
                 catch (Exception)
@@ -470,7 +547,7 @@ namespace Additional
                 try
                 {
                     var year = int.Parse(word);
-                    date = DateTime.Parse(date.Day + "/" + date.Month + "/" + year + " " + date.Hour + ":" + date.Minute + ":" + date.Second, cultureInfo);
+                    date = DateTime.Parse(date.Day + "/" + date.Month + "/" + year + " " + date.Hour + ":" + date.Minute + ":" + date.Second, new CultureInfo("it-IT"));
                     fixedYear = true;
                 }
                 catch (Exception)
@@ -484,7 +561,17 @@ namespace Additional
                     var hour = int.Parse(word);
                     var minute = date.Minute;
                     if (isHalf) minute = 30;
-                    date = DateTime.Parse(date.Day + "/" + date.Month + "/" + date.Year + " " + hour + ":" + minute + ":" + "00", cultureInfo);
+                    if (isQuarter) minute = 15;
+
+                    if (culture.ToLower() == "it-it")
+                        date = DateTime.Parse(date.Day + "/" + date.Month + "/" + date.Year + " " + hour + ":" + minute + ":" + "00", new CultureInfo("it-IT"));
+
+                    if (isAM || (isAM == false && isPM == false) && culture.ToLower() == "en-us")
+                        date = DateTime.Parse(date.Month + "/" + date.Day + "/" + date.Year + " " + hour + ":" + minute + ":" + "00 am", new CultureInfo("en-US"));
+
+                    if (isPM && culture.ToLower() == "en-us")
+                        date = DateTime.Parse(date.Month + "/" + date.Day + "/" + date.Year + " " + hour + ":" + minute + ":" + "00 pm", new CultureInfo("en-US"));
+
                     fixedHour = true;
                 }
                 catch (Exception)
@@ -498,10 +585,12 @@ namespace Additional
                     var minute = 0;
                     if (isHalf)
                         minute = 30;
+                    else if (isQuarter)
+                        minute = 15;
                     else
                         minute = int.Parse(word);
 
-                    date = DateTime.Parse(date.Day + "/" + date.Month + "/" + date.Year + " " + date.Hour + ":" + minute + ":" + date.Second, cultureInfo);
+                    date = DateTime.Parse(date.Day + "/" + date.Month + "/" + date.Year + " " + date.Hour + ":" + minute + ":" + date.Second, new CultureInfo("it-IT"));
                     fixedMinute = true;
                 }
                 catch (Exception)
@@ -561,6 +650,19 @@ namespace Additional
             Today = 0,
             Tomorrow = 1,
             DayAfterTomorrow = 3
+        }
+
+        public enum TimesIta
+        {
+            Mezzogiorno = 0,
+            Mezzanotte = 1,
+        }
+
+        public enum TimesEng
+        {
+            Midday = 0,
+            Noon = 1,
+            Midnight = 2
         }
 
         public enum MothsIta
@@ -639,7 +741,7 @@ namespace Additional
 
         public enum TemporalComplementEng
         {
-            Between = 0
+            In = 0
         }
 
         public enum QuantityInWordsIta
@@ -651,7 +753,9 @@ namespace Additional
             StessOra = 5,
             StessaOra = 6,
             QuestOra = 7,
-            QuestaOra = 8
+            QuestaOra = 8,
+            Quarto = 9,
+            Quarti = 10
         }
 
         public enum QuantityInWordsEng
@@ -660,7 +764,8 @@ namespace Additional
             Half = 2,
             SameTime = 3,
             SameHour = 4,
-            ThisHour = 5
+            ThisHour = 5,
+            Quarter = 6
         }
 
         public enum KeywordsIta
