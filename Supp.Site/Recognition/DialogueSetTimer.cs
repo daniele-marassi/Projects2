@@ -240,16 +240,27 @@ namespace Supp.Site.Recognition
             if(dto.Elements != null && dto.Elements[0] != null) timerDate = (DateTime)phraseInDateTimeManager.Convert(dto.Elements[0].Value, _claims.Configuration.General.Culture);
 
             TimeSpan ts = timerDate - DateTime.Now;
+
+            var withEvent = false;
+
             if (ts.TotalMinutes > 9)
             {
-                var eventDateStart = timerDate; //.AddMinutes(-1);
+                withEvent = true;
+                var eventDateStart = timerDate;
                 var eventDateEnd = timerDate.AddMinutes(10);
 
                 var notificationMinutes = new List<int?>() { 0 };
                 var color = GoogleCalendarColors.Flamingo;
                 var location = "";
+                var summary = "";
 
-                var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = "#Timer", Description = "", Color = color, EventDateStart = eventDateStart, EventDateEnd = eventDateEnd, Location = location, NotificationMinutes = notificationMinutes };
+                if(dto.SubType == WebSpeechTypes.SystemDialogueSetTimer.ToString())
+                    summary = "#Timer";
+
+                if (dto.SubType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString())
+                    summary = "#AlarmClock";
+
+                var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = summary, Description = "", Color = color, EventDateStart = eventDateStart, EventDateEnd = eventDateEnd, Location = location, NotificationMinutes = notificationMinutes };
 
                 getRemindersResult = await webSpeecheRepo.CreateReminder(token, userName, userId, WebSpeechTypes.CreateNote, createCalendarEventRequest, _claims.Configuration.Speech.GoogleCalendarAccount);
             }
@@ -268,7 +279,7 @@ namespace Supp.Site.Recognition
 
             var x = rnd.Next(0, parameters.Count());
 
-            var timerParam = new TimerParam() { Phrase = parameters[x], Date = timerDate.ToString("yyyy-MM-dd HH:mm:ss.fff") };
+            var timerParam = new TimerParam() {Phrase = parameters[x], Date = timerDate.ToString("yyyy-MM-dd HH:mm:ss.fff"), Type = dto.Type, WithEvent = withEvent };
 
             suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteTimerParamInJsonCookieName, JsonConvert.SerializeObject(timerParam), expiresInSeconds);
 
@@ -280,5 +291,7 @@ namespace Supp.Site.Recognition
     {
         public string Phrase { get; set; }
         public string Date { get; set; }
+        public string Type { get; set; }
+        public bool WithEvent { get; set; }
     }
 }

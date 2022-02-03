@@ -242,7 +242,7 @@ namespace Supp.Site.Recognition
                             }
                         }
 
-                        if (_subType == WebSpeechTypes.SystemDialogueSetTimer.ToString())
+                        if (_subType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || _subType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString())
                         {
                             var requests = dialogue.GetDialogueSetTimer(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
                             if (requests != null && requests.Count > 0)
@@ -528,6 +528,8 @@ namespace Supp.Site.Recognition
                             && (
                                 data.Type == WebSpeechTypes.SystemSetTimer.ToString()
                                 || data.Type == WebSpeechTypes.SetTimer.ToString()
+                                || data.Type == WebSpeechTypes.SystemSetAlarmClock.ToString()
+                                || data.Type == WebSpeechTypes.SetAlarmClock.ToString()
                                 )
                             && data.OperationEnable == true && data.Step == 0
                         )
@@ -539,11 +541,11 @@ namespace Supp.Site.Recognition
 
                         data.Parameters = data.Parameters.Replace("NAME", _claims.Name);
 
-                        if (data.SubType == WebSpeechTypes.SystemDialogueSetTimer.ToString() && (date == null))
+                        if ((data.SubType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || data.SubType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString()) && (date == null))
                         {
                             List<WebSpeechDto> dialogue = null;
 
-                            if (data.SubType == WebSpeechTypes.SystemDialogueSetTimer.ToString())
+                            if ((data.SubType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || data.SubType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString()))
                                 dialogue = this.dialogue.GetDialogueSetTimer(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
 
                             if (dialogue != null && dialogue.Count > 0)
@@ -647,13 +649,19 @@ namespace Supp.Site.Recognition
 
                             || data.Type == WebSpeechTypes.DeleteNote.ToString() 
                             || data.Type == WebSpeechTypes.SystemDeleteNote.ToString()
+
+                            || data.Type == WebSpeechTypes.DeleteTimer.ToString()
+                            || data.Type == WebSpeechTypes.SystemDeleteTimer.ToString()
+
+                            || data.Type == WebSpeechTypes.DeleteAlarmClock.ToString()
+                            || data.Type == WebSpeechTypes.SystemDeleteAlarmClock.ToString()
                         )
                          && _step == 0
                     )
                     {
                         List<WebSpeechDto> dialogue = null;
 
-                        if(data.SubType == WebSpeechTypes.SystemDialogueAddToNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()) 
+                        if (data.SubType == WebSpeechTypes.SystemDialogueAddToNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString())
                             dialogue = this.dialogue.GetDialogueAddToNote(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
 
                         if (data.SubType == WebSpeechTypes.SystemDialogueClearNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString())
@@ -662,7 +670,13 @@ namespace Supp.Site.Recognition
                         if (data.SubType == WebSpeechTypes.SystemDialogueCreateNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString())
                             dialogue = this.dialogue.GetDialogueCreateNote(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
 
-                        if (data.SubType == WebSpeechTypes.SystemDialogueDeleteNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString())
+                        if (
+                                data.SubType == WebSpeechTypes.SystemDialogueDeleteNote.ToString() 
+                                || data.SubType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()
+
+                                || data.SubType == WebSpeechTypes.SystemDialogueDeleteTimer.ToString()
+                                || data.SubType == WebSpeechTypes.SystemDialogueDeleteAlarmClock.ToString()
+                            )
                             dialogue = this.dialogue.GetDialogueDeleteNote(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
 
                         if (dialogue != null && dialogue.Count > 0)
@@ -674,6 +688,7 @@ namespace Supp.Site.Recognition
                             _data = GetAnswer(_data);
 
                             _data.Parameters = data.Parameters;
+                            _data.Answer = data.Answer;
                             //_data.Type = data.Type;
 
                             data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);

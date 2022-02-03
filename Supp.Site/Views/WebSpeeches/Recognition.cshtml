@@ -59,6 +59,9 @@
         var timerParam = null;
         var timerParamPhrase = null;
         var timerParamDate = null;
+        var timerParamType = null;
+        var timerParamWithEvent = false;
+        var timerIndex = 0;
         var initialDifference = null;
 
         //@*Model Variables*@
@@ -880,6 +883,7 @@
         }
 
         function Service() {
+            
             if(timerActive == false){
                 timerParamInJson = GetCookie("SuppSiteTimerParamInJson_0");
                 timerParamInJson = DecodeUnicode(timerParamInJson);
@@ -890,6 +894,10 @@
                     timerParam = JSON.parse(timerParamInJson);
                     timerParamPhrase = DecodeUnicodeExtended(timerParam['Phrase']);
                     timerParamDate = Date.parse(DecodeUnicodeExtended(timerParam['Date']));
+                    timerParamType = DecodeUnicodeExtended(timerParam['Type']);
+                    timerParamWithEvent = GetBoolean(DecodeUnicodeExtended(timerParam['WithEvent']));
+
+                    InitProgress(shortcuts, timerParamType.replace("Set","Delete"), timerIndex);
                 }
             }
 
@@ -898,25 +906,16 @@
                 var difference = (-(now - timerParamDate)) / 1000;
                 if(initialDifference == null){
                     initialDifference = difference;
-                    document.getElementById('progress').style.display = "block";
-                    CirlceProgressBar(0, GetTimeRemain(difference));
+                    CirlceProgressBar(0, GetTimeRemain(difference), timerIndex);
                 }
 
                 var percent = /*100 -*/ (difference / initialDifference * 100);
 
-                CirlceProgressBar(percent, GetTimeRemain(difference));
+                CirlceProgressBar(percent, GetTimeRemain(difference), timerIndex);
 
                 if(timerParamDate != null && now >= timerParamDate && difference < 60){
-                    timerActive = false;
-                    timerParamInJson = null;
-                    timerParam = null;
-                    timerParamDate = null;
-                    initialDifference = null;
-                    DeleteCookie("SuppSiteTimerParamInJson_0");
-                    document.getElementById('progress').style.display = "none";
-                    ehiRecognitedAudio.play();
                     ReadOutLoud(timerParamPhrase, false, true);
-                    timerParamPhrase = null;
+                    DeleteProgressBar(timerIndex);
                 }
             }
 
@@ -1167,6 +1166,12 @@
             LogFunctionEnd();
         }
 
+        function ActionProgress(id){
+            LogFunctionStart();
+            if(timerParamWithEvent == true) ActionShortcut(id);
+            LogFunctionEnd();
+        }
+
         function ActionShortcut(id){
             LogFunctionStart();
             clearTimeout(actionShortcutTimeout);       
@@ -1298,6 +1303,47 @@
             LogFunctionEnd();
         }
 
+        function InitProgress(_shortcuts, _type, _index){
+            LogFunctionStart();
+            var shortcut = GetShortcut(_shortcuts, _type);
+            var element = document.getElementById("progress_container");
+            //element.innerHTML = '';
+            var dt = '';
+
+            dt += '<div class="progress" data-percentage="0" id="progress_'+_index+'" style="position: absolute; margin-top:10px; width: 90px; height: 90px;">';
+            dt += ' <span class="progress-left">';
+	        dt += '     <span class="progress-bar"></span>';
+            dt += ' </span>';
+            dt += ' <span class="progress-right">';
+	        dt += '     <span class="progress-bar"></span>';
+            dt += ' </span>';
+            dt += ' <div class="progress-value">';
+	        dt += '     <div id="progress_value" style="font-size:20px;">';
+		    dt += '         0';
+	        dt += '     </div>';
+            dt += ' </div>';
+            dt += '</div>';
+            dt += '<div id="progress_delete_'+_index+'" style="margin-top:80px; margin-left:65px;">';
+            dt += ' <img class="btn shortcut-dark" id="shortcut_'+shortcut['Id']+'" src="'+'/Images/Shortcuts/close.png'+'" alt="'+shortcut['Title']+'" style="width:50px;" onclick="ActionProgress(' + "" + shortcut['Id'] + "" +'); DeleteProgressBar('+ "" + _index + "" +'); ">';
+            dt += '</div>';
+
+            element.innerHTML += dt;
+            LogFunctionEnd();
+        }
+
+
+        function GetShortcut(_shortcuts, _type){
+            LogFunctionStart();
+            var shortcut = null;
+            for (var i = 0; i < _shortcuts.length; ++i) { 
+                
+                if(_shortcuts[i]["Type"] == _type)
+                    shortcut = _shortcuts[i];
+            }
+            LogFunctionEnd();
+            return shortcut;
+        }
+
 	    function EllipseClick() {
            LogFunctionStart();
            ehiRecognitedAudio.play();
@@ -1325,26 +1371,38 @@
             LogFunctionEnd();
         }
 
-        function CirlceProgressBar(percent, value){
-            $("#progress").attr("data-percentage", parseInt(percent).toString());
+        function CirlceProgressBar(percent, value, _timerIndex){
+            $("#progress_"+_timerIndex).attr("data-percentage", parseInt(percent).toString());
             document.getElementById('progress_value').innerHTML = value; 
+        }
+
+        function DeleteProgressBar(_timerIndex){
+            timerActive = false;
+            timerParamInJson = null;
+            timerParam = null;
+            initialDifference = null;
+
+            timerParamPhrase = null;
+            timerParamDate = null;
+            timerParamType  = null;
+            timerParamWithEvent = false;
+
+            ehiRecognitedAudio.play();
+
+            DeleteCookie("SuppSiteTimerParamInJson_0");
+
+            var element = document.getElementById("progress_"+timerIndex);
+            element.parentNode.removeChild(element);
+
+            element = document.getElementById("progress_delete_"+timerIndex);
+            element.parentNode.removeChild(element);
         }
     </script>
 }
     
 <div id="main" style="overflow:hidden;">
-	<div class="progress" data-percentage="0" id="progress" style="position: absolute; margin-top:50px; width: 90px; height: 90px; display:none;">
-		<span class="progress-left">
-			<span class="progress-bar"></span>
-		</span>
-		<span class="progress-right">
-			<span class="progress-bar"></span>
-		</span>
-		<div class="progress-value">
-			<div id="progress_value" style="font-size:20px;">
-				0
-			</div>
-		</div>
+    <div id="progress_container" style="position: absolute; margin-top:50px;">
+
 	</div>
     <div style="text-align:center;">
         <div id="div_shortcuts" style="display: none; z-index: 999; width: 70%; position: absolute; background-color: rgba(0, 0, 0, 0.80); left: 0; right: 0; margin:auto; box-shadow: 0 0rem 1rem rgba(150, 150, 150, 0.95) !important; border-radius: 25px;">
@@ -1390,7 +1448,7 @@
 	        </button>
         </div>
     </div>
-</div>
+</>
 
 <script>
 	window.onload = function(e) {

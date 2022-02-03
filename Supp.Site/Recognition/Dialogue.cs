@@ -283,6 +283,10 @@ namespace Supp.Site.Recognition
                         || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()
 
                         || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteTimer.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteAlarmClock.ToString()
                    )
                )
             {
@@ -352,6 +356,9 @@ namespace Supp.Site.Recognition
 
                         || _subType == WebSpeechTypes.SystemDialogueDeleteNote.ToString()
                         || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()
+
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteTimer.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteAlarmClock.ToString()
                     )
                 )
             {
@@ -370,7 +377,10 @@ namespace Supp.Site.Recognition
                     eventResult = dialogueCreateNote.CreateNote(newWebSpeech, access_token_cookie, userName, userId, _claims).GetAwaiter().GetResult();
 
                 if (_subType == WebSpeechTypes.SystemDialogueDeleteNote.ToString()
-                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString())
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteTimer.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteAlarmClock.ToString()
+                        )
                     eventResult = dialogueDeleteNote.DeleteNote(newWebSpeech, access_token_cookie, userName, userId).GetAwaiter().GetResult();
 
                 if (!eventResult.Successful)
@@ -617,6 +627,7 @@ namespace Supp.Site.Recognition
                 && newWebSpeech.ElementIndex == 1
                 && (
                         _subType == WebSpeechTypes.SystemDialogueSetTimer.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString()
                    )
                )
             {
@@ -631,12 +642,13 @@ namespace Supp.Site.Recognition
                 _stepType == StepTypes.ApplyNow.ToString()
                 && (
                         _subType == WebSpeechTypes.SystemDialogueSetTimer.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString()
                     )
                 )
             {
                 var eventResult = new EventResult();
 
-                if (_subType == WebSpeechTypes.SystemDialogueSetTimer.ToString())
+                if (_subType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || _subType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString())
                 {
                     var cultureInfo = default(CultureInfo);
                     if (_claims.Configuration.General.Culture.ToLower() == "it-it")
@@ -726,6 +738,20 @@ namespace Supp.Site.Recognition
         {
             var dialogue = new DialogueDeleteNote();
             return dialogue.Get(culture, lastWebSpeechId, _subType);
+        }
+
+        /// <summary>
+        /// Delete Note
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="token"></param>
+        /// <param name="userName"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<EventResult> DeleteNote(WebSpeechDto dto, string token, string userName, long userId)
+        {
+            var dialogue = new DialogueDeleteNote();
+            return await dialogue.DeleteNote(dto, token, userName, userId);
         }
 
         /// <summary>
