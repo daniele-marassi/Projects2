@@ -207,6 +207,7 @@ namespace GoogleCalendar
             }
             catch (Exception ex)
             {
+                //https://console.cloud.google.com/apis/credentials/consent for change status from test to public
                 result.Successful = false;
                 result.ResultState = ResultType.Error;
                 result.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;

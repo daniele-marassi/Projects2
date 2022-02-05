@@ -31,9 +31,10 @@ namespace WindowsFormsApp1
         private async void Form1_Load(object sender, EventArgs e)
         {                                                               
             var authInJson = @"{""installed"":{""client_id"":""982569746577-4lnrb3udcu2dqqk2u2mts0j2rqmiripd.apps.googleusercontent.com"",""project_id"":""ace-case-311111"",""auth_uri"":""https://accounts.google.com/o/oauth2/auth"",""token_uri"":""https://oauth2.googleapis.com/token"",""auth_provider_x509_cert_url"":""https://www.googleapis.com/oauth2/v1/certs"",""client_secret"":""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"",""redirect_uris"":[""urn:ietf:wg:oauth:2.0:oob"",""http://localhost""]}}";
+                                
             var auth = JsonConvert.DeserializeObject<Auth>(authInJson);
 
-            var tokenFileInJson = @"{""FileName"":""Google.Apis.Auth.OAuth2.Responses.TokenResponse-daniele.marassi"",""Content"":""{\""access_token\"":\""ya29.A0ARrdaM_2ZE1ShYj7YhC4owlKR7h_qUg8VMsSzY5oD0bP-02Yqd5lgpO-GyiP4SLkAPeAFktahrPHoGB42-1vUem4szqJCCdwitpCRHnuQCfQTYjkZT8bLrN7YTaGmfx9mCIXs2XnoEqpcqNixCL5OqTfpccG\"",\""token_type\"":\""Bearer\"",\""expires_in\"":3599,\""refresh_token\"":\""1//09OJGSFLIxH7tCgYIARAAGAkSNwF-L9Irzxdd_yFmJLX9yU16YGH5UWYKttocnreDZlqvn__uV5aDF0Wz-_cc2xxi7Kawm8-H45Q\"",\""scope\"":\""https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.readonly\"",\""Issued\"":\""2022-01-26T23:45:02.592+01:00\"",\""IssuedUtc\"":\""2022-01-26T22:45:02.592Z\""}""}";
+            var tokenFileInJson = @"{""FileName"":""Google.Apis.Auth.OAuth2.Responses.TokenResponse-daniele.marassi"",""Content"":""{\""access_token\"":\""ya29.A0ARrdaM9pFT8DyQs-j3guYJ_Ww0KUVGwrk2HUOnqV223cWFc8oSrsATmwBBOeeZDt50qvz9CUJXN-6gPwsoK9kAa1tdb3rEoZNX3PNzsvNktcdDQ86xPhwrw_Hz0NYz_lWkqoznD2VSuTtd6kCp1aVBoeDK9W\"",\""token_type\"":\""Bearer\"",\""expires_in\"":3599,\""refresh_token\"":\""1//09645mZP99rnUCgYIARAAGAkSNwF-L9Irytcc-wHJUxTx1B-oHDrNsgGgLIjN0M51y5A7XgwxJsP6IaVOqLOXX_BD77ol8c2cAdI\"",\""scope\"":\""https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar\"",\""Issued\"":\""2022-02-05T23:26:45.443+01:00\"",\""IssuedUtc\"":\""2022-02-05T22:26:45.443Z\""}""}";
             var tokenFile = JsonConvert.DeserializeObject<TokenFile>(tokenFileInJson);
 
             var googlePublicKey = "AIzaSyCdWVUdy3QmmYLjDwQWqP03gV49hfvWMhc";
