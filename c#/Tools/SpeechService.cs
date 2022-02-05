@@ -30,6 +30,7 @@ namespace Tools
         {
             while (serviceActive)
             {
+                if (serviceActive == false) return;
                 System.Threading.Thread.Sleep(showTimeout);
 
                 var activeWindowTitle = utilty.GetActiveWindowTitle();

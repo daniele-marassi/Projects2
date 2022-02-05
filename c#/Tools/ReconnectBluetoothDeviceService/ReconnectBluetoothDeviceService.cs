@@ -73,8 +73,10 @@ namespace Tools.ReconnectBluetoothDevice
         {
             while (serviceActive)
             {
+                if (serviceActive == false) return;
                 for (int i = 0; i < bluetoothDeviceList.Length; i++)
                 {
+                    if (serviceActive == false) return;
                     try
                     {
                         (string Message, bool Successful, bool PairAlreadyExists) reconnectBluetoothDeviceResult;
@@ -90,7 +92,7 @@ namespace Tools.ReconnectBluetoothDevice
                             nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                             {
-                                Common.ContextMenus.SetMenuItemWithError("ReconnectBluetoothDeviceServiceMenuItem");
+                                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("ReconnectBluetoothDeviceServiceMenuItem");
                                 Common.Utility.ShowMessage("ReconnectBluetoothDeviceService Message:" + reconnectBluetoothDeviceResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                                 showError = reconnectBluetoothDeviceResult.Message;
                                 logger.Error(reconnectBluetoothDeviceResult.Message);
@@ -101,7 +103,7 @@ namespace Tools.ReconnectBluetoothDevice
                             nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                             {
-                                Common.ContextMenus.SetMenuItemRecover("ReconnectBluetoothDeviceServiceMenuItem");
+                                if (serviceActive) Common.ContextMenus.SetMenuItemRecover("ReconnectBluetoothDeviceServiceMenuItem");
                                 Common.Utility.ShowMessage("ReconnectBluetoothDeviceService Message:" + "Service recovered!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                                 showError = null;
                                 logger.Info(reconnectBluetoothDeviceResult.Message);
@@ -121,7 +123,7 @@ namespace Tools.ReconnectBluetoothDevice
                             nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                             {
-                                Common.ContextMenus.SetMenuItemWithError("ReconnectBluetoothDeviceServiceMenuItem");
+                                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("ReconnectBluetoothDeviceServiceMenuItem");
                                 Common.Utility.ShowMessage("ReconnectBluetoothDeviceService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                                 showError = ex.Message;
                                 logger.Error(ex.Message);

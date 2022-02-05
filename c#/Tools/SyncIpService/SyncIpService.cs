@@ -52,6 +52,7 @@ namespace Tools.SyncIp
         {
             while (serviceActive)
             {
+                if (serviceActive == false) return;
                 try
                 {
                     address = utility.GetPublicIPAddress();
@@ -75,7 +76,7 @@ namespace Tools.SyncIp
                             nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                             {
-                                Common.ContextMenus.SetMenuItemWithError("SyncIpServiceMenuItem");
+                                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SyncIpServiceMenuItem");
                                 Common.Utility.ShowMessage("SyncIpService Message:" + message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                                 showError = message;
                                 logger.Error(message);
@@ -86,7 +87,7 @@ namespace Tools.SyncIp
                             nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                             {
-                                Common.ContextMenus.SetMenuItemRecover("SyncIpServiceMenuItem");
+                                if (serviceActive) Common.ContextMenus.SetMenuItemRecover("SyncIpServiceMenuItem");
                                 Common.Utility.ShowMessage("SyncIpService Message:" + "Service recovered!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                                 showError = null;
                                 logger.Info(message);
@@ -102,7 +103,7 @@ namespace Tools.SyncIp
                         nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
-                            Common.ContextMenus.SetMenuItemWithError("SyncIpServiceMenuItem");
+                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SyncIpServiceMenuItem");
                             Common.Utility.ShowMessage("SyncIpService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                             showError = ex.Message;
                             logger.Error(ex.Message);

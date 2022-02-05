@@ -77,7 +77,7 @@ namespace Tools.Songs
                     {
                         nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
 
-                        Common.ContextMenus.SetMenuItemWithError("SongsManagerMenuItem");
+                        if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SongsManagerMenuItem");
                         Common.Utility.ShowMessage("SongsManager Message:" + "FindSongs failed!", MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                         oldServiceError = "FindSongs failed!";
                         logger.Error(oldServiceError);
@@ -89,7 +89,7 @@ namespace Tools.Songs
                     {
                         nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
 
-                        Common.ContextMenus.SetMenuItemWithError("SongsManagerMenuItem");
+                        if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SongsManagerMenuItem");
                         Common.Utility.ShowMessage("SongsManager Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                         oldServiceError = ex.Message;
                         logger.Error(oldServiceError);
@@ -177,7 +177,7 @@ namespace Tools.Songs
                     {
                         nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
 
-                        Common.ContextMenus.SetMenuItemWithError("SongsManagerMenuItem");
+                        if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SongsManagerMenuItem");
                         Common.Utility.ShowMessage("SongsManager Message:" + addSongResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                         oldAddError = addSongResult.Message;
                         logger.Error(oldAddError);
@@ -189,7 +189,7 @@ namespace Tools.Songs
                     {
                         nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         oldAddError = null;
-                        Common.ContextMenus.SetMenuItemRecover("SongsManagerMenuItem");
+                        if (serviceActive) Common.ContextMenus.SetMenuItemRecover("SongsManagerMenuItem");
                         Common.Utility.ShowMessage("SongsManager Message:" + " Update db now work!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                         logger.Info("Update db now work!");
                     }

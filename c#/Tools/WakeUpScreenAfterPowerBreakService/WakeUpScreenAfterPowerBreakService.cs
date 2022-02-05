@@ -55,6 +55,7 @@ namespace Tools.WakeUpScreenAfterPowerBreak
             var sleepInMilliseconds = 0;
             while (serviceActive)
             {
+                if (serviceActive == false) return;
                 sleepInMilliseconds = sleepOfTheWakeUpScreenAfterPowerBreakServiceInMilliseconds;
 
                 try
@@ -74,7 +75,7 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                         nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
-                            Common.ContextMenus.SetMenuItemWithError("WakeUpScreenAfterPowerBreakServiceMenuItem");
+                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("WakeUpScreenAfterPowerBreakServiceMenuItem");
                             Common.Utility.ShowMessage("WakeUpScreenAfterPowerBreakService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                             showError = ex.Message;
                             logger.Error(ex.Message);

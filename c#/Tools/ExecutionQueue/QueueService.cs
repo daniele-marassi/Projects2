@@ -106,6 +106,7 @@ namespace Tools.ExecutionQueue
         {
             while (serviceActive)
             {
+                if (serviceActive == false) return;
                 try
                 {
                     var now = DateTime.Now;
@@ -164,7 +165,7 @@ namespace Tools.ExecutionQueue
                                     nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                                     using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                                     {
-                                        Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem");
+                                        if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem");
                                         Common.Utility.ShowMessage("QueueService Message:" + updateExecutionQueueResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                                         oldUpdateError = updateExecutionQueueResult.Message;
                                         logger.Error(oldUpdateError);
@@ -244,7 +245,7 @@ namespace Tools.ExecutionQueue
                                     using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                                     {
                                         oldUpdateError = null;
-                                        Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem");
+                                        if (serviceActive) Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem");
                                         Common.Utility.ShowMessage("QueueService Message:" + " Update db now work!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                                         logger.Info("Update db now work!");
                                     }
@@ -257,7 +258,7 @@ namespace Tools.ExecutionQueue
                             nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                             {
-                                Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem");
+                                if (serviceActive) Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem");
                                 Common.Utility.ShowMessage("QueueService Message:" + "Queue Service Recovered!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                                 logger.Info("Queue Service Recovered!");
                             }
@@ -270,7 +271,7 @@ namespace Tools.ExecutionQueue
                         nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
-                            Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem");
+                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem");
                             Common.Utility.ShowMessage("QueueService Message:" + getAllExecutionQueuesResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                             oldServiceError = getAllExecutionQueuesResult.Message;
                             logger.Error(oldServiceError);
@@ -284,7 +285,7 @@ namespace Tools.ExecutionQueue
                         nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
-                            Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem");
+                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem");
                             Common.Utility.ShowMessage("QueueService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                             oldServiceError = ex.Message;
                             logger.Error(oldServiceError);
@@ -321,7 +322,7 @@ namespace Tools.ExecutionQueue
 
             if (result.Error != null && result.Error != String.Empty)
             {
-                Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem");
+                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem");
                 var error = result.Error + " [" + item.FullPath + "]";
                 if (oldRunExeError == null || oldRunExeError != error)
                 {
@@ -339,7 +340,7 @@ namespace Tools.ExecutionQueue
                 if (oldRunExeError != null)
                 {
                     oldRunExeError = null;
-                    Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem");
+                    if (serviceActive) Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem");
                 }
             }
 
@@ -364,7 +365,7 @@ namespace Tools.ExecutionQueue
                     nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                     using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                     {
-                        Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem");
+                        if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem");
                         Common.Utility.ShowMessage("QueueService Message:" + updateExecutionQueueResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                         oldUpdateError = updateExecutionQueueResult.Message;
                         logger.Error(oldUpdateError);
@@ -379,7 +380,7 @@ namespace Tools.ExecutionQueue
                     using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                     {
                         oldUpdateError = null;
-                        Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem");
+                        if (serviceActive) Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem");
                         Common.Utility.ShowMessage("QueueService Message:" + " Update db now work!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                         logger.Info("Update db now work!");
                     }
