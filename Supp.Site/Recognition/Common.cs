@@ -84,7 +84,7 @@ namespace Supp.Site.Recognition
                     }
                 }
 
-                if (!item.Type.ToLower().Contains("system"))
+                //if (!item.Type.ToLower().Contains("system"))
                     result.Shortcuts.Add(new ShortcutDto() { Id = item.Id, Type = item.Type, Order = item.Order, Title = item.Name.Replace("_", " "), Action = item.Operation.ToStringExtended().Replace("\\", "/") + " " + item.Parameters.ToStringExtended().Replace("\\", "/"), Ico = item.Ico });
 
                 result.Data.Add(item);
@@ -135,7 +135,7 @@ namespace Supp.Site.Recognition
         /// <param name="response"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<WebSpeechDto> GetWebSpeechDto(string _phrase, string _hostSelected, bool _reset, bool _application, long _executionQueueId, bool _alwaysShow, long _id, ClaimsDto _claims, bool _onlyRefresh, string _subType, int _step, int expiresInSeconds, HttpResponse response, HttpRequest request)
+        public async Task<WebSpeechDto> GetWebSpeechDto(string _phrase, string _hostSelected, bool _reset, bool _application, long _executionQueueId, bool _alwaysShow, long _id, ClaimsDto _claims, bool _onlyRefresh, string _subType, int _step, int expiresInSeconds, HttpResponse response, HttpRequest request, string _param)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -534,8 +534,6 @@ namespace Supp.Site.Recognition
                             && data.OperationEnable == true && data.Step == 0
                         )
                     {
-                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteTimerParamInJsonCookieName);
-
                         if (_phrase == null) _phrase = "";
                         var date = phraseInDateTimeManager.Convert(_phrase, _claims.Configuration.General.Culture);
 
@@ -565,7 +563,7 @@ namespace Supp.Site.Recognition
                         }
                         else
                         {
-                            data = await dialogue.SetTimer(data, access_token_cookie, userName, userId, _claims, response, expiresInSeconds, (DateTime)date);
+                            data = await dialogue.SetTimer(data, access_token_cookie, userName, userId, _claims, request, response, expiresInSeconds, (DateTime)date);
                         }
                     }
 
@@ -688,6 +686,7 @@ namespace Supp.Site.Recognition
                             _data = GetAnswer(_data);
 
                             _data.Parameters = data.Parameters;
+                            if (_param != null && _param != "null" && _param != "") _data.Parameters = _param;
                             _data.Answer = data.Answer;
                             //_data.Type = data.Type;
 

@@ -54,15 +54,9 @@
         var phraseSended=false;
         var shortcutsOpen = false;
         var ehiRecognitedAudio = null;
-        var timerActive = false;
-        var timerParamInJson = null;
-        var timerParam = null;
-        var timerParamPhrase = null;
-        var timerParamDate = null;
-        var timerParamType = null;
-        var timerParamWithEvent = false;
-        var timerIndex = 0;
-        var initialDifference = null;
+        var timers = null;
+        var lastIndex = 0;
+        var newParameters = "";
 
         //@*Model Variables*@
         var name = "";
@@ -96,27 +90,27 @@
 
         function VariablesAssignmentFromJson(jsonString) {
             LogFunctionStart();
-            //console.warn('###' + jsonString + '###');
+            //console.warn("###" + jsonString + "###");
             var model = JSON.parse(jsonString);
 
-            name = DecodeUnicodeExtended(model['Name']);
-            answer = DecodeUnicodeExtended(model['Answer']);
-            startAnswer = DecodeUnicodeExtended(model['StartAnswer']);
-            finalStep = GetBoolean(DecodeUnicodeExtended(model['FinalStep']));
-            hostsArrayString = DecodeUnicodeExtended(model['HostsArray']);
-            _error = DecodeUnicodeExtended(model['Error']);
-            application = GetBoolean(DecodeUnicodeExtended(model['Application']));
-            alwaysShow = GetBoolean(DecodeUnicodeExtended(model['AlwaysShow']));
-            resetAfterLoad = GetBoolean(DecodeUnicodeExtended(model['ResetAfterLoad']));
-            recognitionDisable = GetBoolean(DecodeUnicodeExtended(model['RecognitionDisable']));
-            onlyRefresh = GetBoolean(DecodeUnicodeExtended(model['OnlyRefresh']));
-            culture = DecodeUnicodeExtended(model['Culture']);
-            id = DecodeUnicodeExtended( model['Id']);
-            hostSelected =DecodeUnicodeExtended( model['HostSelected']);
-            phrase = DecodeUnicodeExtended(model['Phrase']);
+            name = DecodeUnicodeExtended(model["Name"]);
+            answer = DecodeUnicodeExtended(model["Answer"]);
+            startAnswer = DecodeUnicodeExtended(model["StartAnswer"]);
+            finalStep = GetBoolean(DecodeUnicodeExtended(model["FinalStep"]));
+            hostsArrayString = DecodeUnicodeExtended(model["HostsArray"]);
+            _error = DecodeUnicodeExtended(model["Error"]);
+            application = GetBoolean(DecodeUnicodeExtended(model["Application"]));
+            alwaysShow = GetBoolean(DecodeUnicodeExtended(model["AlwaysShow"]));
+            resetAfterLoad = GetBoolean(DecodeUnicodeExtended(model["ResetAfterLoad"]));
+            recognitionDisable = GetBoolean(DecodeUnicodeExtended(model["RecognitionDisable"]));
+            onlyRefresh = GetBoolean(DecodeUnicodeExtended(model["OnlyRefresh"]));
+            culture = DecodeUnicodeExtended(model["Culture"]);
+            id = DecodeUnicodeExtended( model["Id"]);
+            hostSelected =DecodeUnicodeExtended( model["HostSelected"]);
+            phrase = DecodeUnicodeExtended(model["Phrase"]);
 
             if(finalStep == false) {
-                if(phrase != null && phrase != ''){           
+                if(phrase != null && phrase != ""){           
 
                 }
             }
@@ -127,38 +121,38 @@
                 id = 0;
             }
 
-            listeningWord1 = DecodeUnicodeExtended(model['ListeningWord1']);
-            listeningWord2 = DecodeUnicodeExtended(model['ListeningWord2']);
+            listeningWord1 = DecodeUnicodeExtended(model["ListeningWord1"]);
+            listeningWord2 = DecodeUnicodeExtended(model["ListeningWord2"]);
 
             listeningPhrase = listeningWord1.trim().toLowerCase();
-            if(listeningPhrase != '') listeningPhrase += ' ';
+            if(listeningPhrase != "") listeningPhrase += " ";
             listeningPhrase += listeningWord2.trim().toLowerCase();
 
-            executionQueueId = DecodeUnicodeExtended(model['ExecutionQueueId']);
-            shortcutsInJson = DecodeUnicodeExtended(model['ShortcutsInJson']);
-            newWebSpeechRequestName = DecodeUnicode(model['NewWebSpeechRequestName']);
+            executionQueueId = DecodeUnicodeExtended(model["ExecutionQueueId"]);
+            shortcutsInJson = DecodeUnicodeExtended(model["ShortcutsInJson"]);
+            newWebSpeechRequestName = DecodeUnicode(model["NewWebSpeechRequestName"]);
             
-            type = DecodeUnicodeExtended(model['Type']);
-            parameters = DecodeUnicodeExtended(model['Parameters']); 
+            type = DecodeUnicodeExtended(model["Type"]);
+            parameters = DecodeUnicodeExtended(model["Parameters"]); 
             ehi = 0;
             try {
-                ehi=parseInt(DecodeUnicodeExtended(model['Ehi']));
+                ehi=parseInt(DecodeUnicodeExtended(model["Ehi"]));
             }
             catch (error) {}
             timeToResetInSeconds = 0;
             try {
-                timeToResetInSeconds=parseInt(DecodeUnicodeExtended(model['TimeToResetInSeconds']));
+                timeToResetInSeconds=parseInt(DecodeUnicodeExtended(model["TimeToResetInSeconds"]));
             }
             catch (error) {}
             timeToEhiTimeoutInSeconds = 0;
             try {
-                timeToEhiTimeoutInSeconds=parseInt(DecodeUnicodeExtended(model['TimeToEhiTimeoutInSeconds']));
+                timeToEhiTimeoutInSeconds=parseInt(DecodeUnicodeExtended(model["TimeToEhiTimeoutInSeconds"]));
             }
             catch (error) {}
-            subType = DecodeUnicodeExtended(model['SubType']);
+            subType = DecodeUnicodeExtended(model["SubType"]);
             step = -1;
             try {
-                step=parseInt(DecodeUnicodeExtended(model['Step']));
+                step=parseInt(DecodeUnicodeExtended(model["Step"]));
             }
             catch (error) {}
 
@@ -169,24 +163,24 @@
 
         function VariablesAssignmentFromModel() {
             LogFunctionStart();
-            name = '@Model?.Name';
-            answer = '@Model?.Answer';
-            startAnswer = '@Model?.StartAnswer';
-            finalStep = GetBoolean('@Model?.FinalStep');
-            hostsArrayString = '@Model?.HostsArray';
-            _error = '@Model?.Error';
-            application = GetBoolean('@Model?.Application');
-            alwaysShow = GetBoolean('@Model?.AlwaysShow');
-            resetAfterLoad = GetBoolean('@Model?.ResetAfterLoad');
-            recognitionDisable = GetBoolean('@Model?.RecognitionDisable');
-            onlyRefresh = GetBoolean('@Model?.OnlyRefresh');
-            culture = '@Model?.Culture';
-            id = '@Model?.Id';
-            hostSelected = '@Model?.HostSelected';
-            phrase = '@Model?.Phrase';
+            name = "@Model?.Name";
+            answer = "@Model?.Answer";
+            startAnswer = "@Model?.StartAnswer";
+            finalStep = GetBoolean("@Model?.FinalStep");
+            hostsArrayString = "@Model?.HostsArray";
+            _error = "@Model?.Error";
+            application = GetBoolean("@Model?.Application");
+            alwaysShow = GetBoolean("@Model?.AlwaysShow");
+            resetAfterLoad = GetBoolean("@Model?.ResetAfterLoad");
+            recognitionDisable = GetBoolean("@Model?.RecognitionDisable");
+            onlyRefresh = GetBoolean("@Model?.OnlyRefresh");
+            culture = "@Model?.Culture";
+            id = "@Model?.Id";
+            hostSelected = "@Model?.HostSelected";
+            phrase = "@Model?.Phrase";
 
             if(finalStep == false) {
-                if(phrase != null && phrase != ''){           
+                if(phrase != null && phrase != ""){           
 
                 }
             }
@@ -197,42 +191,42 @@
                 id = 0;
             }
 
-            listeningWord1 = '@Model?.ListeningWord1';
-            listeningWord2 = '@Model?.ListeningWord2';
+            listeningWord1 = "@Model?.ListeningWord1";
+            listeningWord2 = "@Model?.ListeningWord2";
 
             listeningPhrase = listeningWord1.trim().toLowerCase();
-            if(listeningPhrase != '') listeningPhrase += ' ';
+            if(listeningPhrase != "") listeningPhrase += " ";
             listeningPhrase += listeningWord2.trim().toLowerCase();
 
-            executionQueueId = '@Model?.ExecutionQueueId';
-            shortcutsInJson = '@Model?.ShortcutsInJson';
-            newWebSpeechRequestName = '@Model?.NewWebSpeechRequestName';
-            type = '@Model?.Type';
-            parameters = '@Model?.Parameters'; 
+            executionQueueId = "@Model?.ExecutionQueueId";
+            shortcutsInJson = "@Model?.ShortcutsInJson";
+            newWebSpeechRequestName = "@Model?.NewWebSpeechRequestName";
+            type = "@Model?.Type";
+            parameters = "@Model?.Parameters"; 
             ehi = 0;
 
             try {
-                ehi=parseInt('@Model?.Ehi');
+                ehi=parseInt("@Model?.Ehi");
             }
             catch (error) {}
             
             timeToResetInSeconds = 0;           
             try {
-                timeToResetInSeconds=parseInt('@Model?.TimeToResetInSeconds');
+                timeToResetInSeconds=parseInt("@Model?.TimeToResetInSeconds");
             }
             catch (error) {}
 
             timeToEhiTimeoutInSeconds = 0;           
             try {
-                timeToEhiTimeoutInSeconds=parseInt('@Model?.TimeToEhiTimeoutInSeconds');
+                timeToEhiTimeoutInSeconds=parseInt("@Model?.TimeToEhiTimeoutInSeconds");
             }
             catch (error) {}
             
-            subType = '@Model?.SubType';
+            subType = "@Model?.SubType";
             step = -1;
             
             try {
-                step=parseInt('@Model?.Step');
+                step=parseInt("@Model?.Step");
             }
             catch (error) {}
 
@@ -247,54 +241,54 @@
         }
 
         function StopAnimateIntervalsListening(milliseconds) {
-            //if (animateIntervals['StopAnimateIntervalsListening'] != null) 
-            clearInterval(animateIntervals['StopAnimateIntervalsListening']);
-            animateIntervals['StopAnimateIntervalsListening'] = setInterval( function() { StopAnimateIntervalsListeningDelay(); }, milliseconds );
+            //if (animateIntervals["StopAnimateIntervalsListening"] != null) 
+            clearInterval(animateIntervals["StopAnimateIntervalsListening"]);
+            animateIntervals["StopAnimateIntervalsListening"] = setInterval( function() { StopAnimateIntervalsListeningDelay(); }, milliseconds );
         }
 
         function StopAnimateIntervalsListeningDelay(){
             StopAnimateIntervals(); 
             StartAnimateIntervals(70); 
-            clearInterval(animateIntervals['StopAnimateIntervalsListening']);
+            clearInterval(animateIntervals["StopAnimateIntervalsListening"]);
         }
 
         function StopAnimateIntervals(){
-            clearInterval(animateIntervals['ellipse1']);
-            clearInterval(animateIntervals['ellipse2']);
-            clearInterval(animateIntervals['ellipse3']);
-            clearInterval(animateIntervals['ellipse4']);
-            clearInterval(animateIntervals['ellipse5']);
+            clearInterval(animateIntervals["ellipse1"]);
+            clearInterval(animateIntervals["ellipse2"]);
+            clearInterval(animateIntervals["ellipse3"]);
+            clearInterval(animateIntervals["ellipse4"]);
+            clearInterval(animateIntervals["ellipse5"]);
 
-            animateIntervals['ellipse1'] = null;
-            animateIntervals['ellipse2'] = null;
-            animateIntervals['ellipse3'] = null;
-            animateIntervals['ellipse4'] = null;
-            animateIntervals['ellipse5'] = null;
+            animateIntervals["ellipse1"] = null;
+            animateIntervals["ellipse2"] = null;
+            animateIntervals["ellipse3"] = null;
+            animateIntervals["ellipse4"] = null;
+            animateIntervals["ellipse5"] = null;
             DefaultEllipses(1);
         }
 
         function DefaultEllipses(amount){
-            SetEllipse('ellipse1', 50, 4, 1, amount, 1);
-            SetEllipse('ellipse2', 50, 4, 1, amount, 1);
-            SetEllipse('ellipse3', 50, 4, 1, amount, 1);
-            SetEllipse('ellipse4', 50, 4, 1, amount, 1);
-            SetEllipse('ellipse5', 50, 4, 1, amount, 1);   
+            SetEllipse("ellipse1", 50, 4, 1, amount, 1);
+            SetEllipse("ellipse2", 50, 4, 1, amount, 1);
+            SetEllipse("ellipse3", 50, 4, 1, amount, 1);
+            SetEllipse("ellipse4", 50, 4, 1, amount, 1);
+            SetEllipse("ellipse5", 50, 4, 1, amount, 1);   
         }
 
         function StartAnimateIntervalsListening(amount){
-            AddAnimateInterval('ellipse1', 50, 8, 1, amount + 0);
-            AddAnimateInterval('ellipse2', 50, 6, 1, amount + 5);
-            AddAnimateInterval('ellipse3', 50, 7, 1, amount + 10);
-            AddAnimateInterval('ellipse4', 50, 9, 1, amount + 15);
-            AddAnimateInterval('ellipse5', 50, 10, 1, amount + 20);           
+            AddAnimateInterval("ellipse1", 50, 8, 1, amount + 0);
+            AddAnimateInterval("ellipse2", 50, 6, 1, amount + 5);
+            AddAnimateInterval("ellipse3", 50, 7, 1, amount + 10);
+            AddAnimateInterval("ellipse4", 50, 9, 1, amount + 15);
+            AddAnimateInterval("ellipse5", 50, 10, 1, amount + 20);           
         }        
 
         function StartAnimateIntervals(amount){
-            AddAnimateInterval('ellipse1', 50, 4, 1, amount + 10);
-            AddAnimateInterval('ellipse2', 50, 4, 1, amount + 14);
-            AddAnimateInterval('ellipse3', 50, 4, 1, amount + 16);
-            AddAnimateInterval('ellipse4', 50, 4, 1, amount + 18);
-            AddAnimateInterval('ellipse5', 50, 4, 1, amount + 20);   
+            AddAnimateInterval("ellipse1", 50, 4, 1, amount + 10);
+            AddAnimateInterval("ellipse2", 50, 4, 1, amount + 14);
+            AddAnimateInterval("ellipse3", 50, 4, 1, amount + 16);
+            AddAnimateInterval("ellipse4", 50, 4, 1, amount + 18);
+            AddAnimateInterval("ellipse5", 50, 4, 1, amount + 20);   
         }
 
         function SetEllipse(id, size, range, amount, reset) {
@@ -302,15 +296,15 @@
 
             if (r[id] == null){
                 r[id] = new Array();
-                r[id]['x']=0;
-                r[id]['y']=0;
+                r[id]["x"]=0;
+                r[id]["y"]=0;
             }
 
             if(reset == 1) {
                 ellipse.setAttribute("ry", size);
                 ellipse.setAttribute("rx", size);
-                r[id]['x']=0;
-                r[id]['y']=0;
+                r[id]["x"]=0;
+                r[id]["y"]=0;
                 return;
             }
 
@@ -341,16 +335,16 @@
                 }
 
                 if(xy == "y") {
-                    ellipse.setAttribute("ry", size + r[id]['y']);
+                    ellipse.setAttribute("ry", size + r[id]["y"]);
                 } 
 
                 if(xy == "x"){ 
-                     ellipse.setAttribute("rx", size + r[id]['x']);
+                     ellipse.setAttribute("rx", size + r[id]["x"]);
                 }
             }
         }
 
-        function ReadOutLoud(_message, _finalStep, resetTimer) {
+        function ReadOutLoud(_message, _finalStep) {
             LogFunctionStart();
             readOutLoudActive = true;
             recognitionActive = false;
@@ -361,21 +355,21 @@
 
             var messageBCK = _message;
 
-            //console.warn('[' + _message + ']');
+            //console.warn("[" + _message + "]");
 
-            _message = _message.replace(/\./g, '. ');
-            _message = _message.replace(/:/g, ': ');
-            _message = _message.replace(/;/g, '; ');
-            _message = _message.replace(/,/g, ', ');
+            _message = _message.replace(/\./g, ". ");
+            _message = _message.replace(/:/g, ": ");
+            _message = _message.replace(/;/g, "; ");
+            _message = _message.replace(/,/g, ", ");
             
-            _message = _message.replace(/   /g, ' ');
-            _message = _message.replace(/  /g, ' ');
+            _message = _message.replace(/   /g, " ");
+            _message = _message.replace(/  /g, " ");
 
-            _message = _message.replace(/\/n/g, ', ');
-            _message = _message.replace(/\/r/g, ', ');
+            _message = _message.replace(/\/n/g, ", ");
+            _message = _message.replace(/\/r/g, ", ");
 
-            var message = '';
-            var words = _message.split(' ');
+            var message = "";
+            var words = _message.split(" ");
             var countWords = words.length;
             var maxWords = 30;
             var actualWords = 0;
@@ -390,29 +384,29 @@
                 {
                     if(isActualWord == true)
                     {
-                        if(message != '') message += ' ';
+                        if(message != "") message += " ";
                         message += words[i];
                     } 
 
-                    if((i == actualWords) || (i <= actualWords && (words[i].indexOf('.') > -1 || words[i].indexOf(',') > -1 || words[i].indexOf(';') > -1 || words[i].indexOf(':') > -1))) isActualWord = false;
+                    if((i == actualWords) || (i <= actualWords && (words[i].indexOf(".") > -1 || words[i].indexOf(",") > -1 || words[i].indexOf(";") > -1 || words[i].indexOf(":") > -1))) isActualWord = false;
                 }  
 
-                _message = _message.replace(message, '').trim();   
+                _message = _message.replace(message, "").trim();   
 
                 var firstCharIndex = -1;
                 var firstNumberIndex = -1;
                 if(_message != null){
-                    var firstCharMatch = _message.match('[a-zA-Z]');
+                    var firstCharMatch = _message.match("[a-zA-Z]");
                     if(firstCharMatch != null)firstCharIndex = firstCharMatch.index;
-                    var firstNumberMatch = _message.match('[0-9]');                   
+                    var firstNumberMatch = _message.match("[0-9]");                   
                     if(firstNumberMatch != null)firstNumberIndex = firstNumberMatch.index;
                 }
-                if(_message == '' || (firstCharIndex == -1 && firstNumberIndex == -1))_finalStep = true;
+                if(_message == "" || (firstCharIndex == -1 && firstNumberIndex == -1))_finalStep = true;
             }
             
-            //console.warn('[' + message + ']');
+            //console.warn("[" + message + "]");
 
-            document.getElementById('final_span').innerHTML = message.trim();
+            document.getElementById("final_span").innerHTML = message.trim();
 
             StartAnimateIntervalsListening(10);
 
@@ -432,7 +426,7 @@
 
             synth = window.speechSynthesis;
             var speakHasError = false;
-            var _error = '';
+            var _error = "";
 
             try {
                synth.speak(speech);
@@ -445,37 +439,36 @@
             var speakIsSuccesuful = synth.speaking;
 
             if(speakIsSuccesuful == false || speakHasError == true) {
-                console.warn('speakIsSuccesuful:' + speakIsSuccesuful + ' - speakHasError:' + speakHasError + ' _error:'+_error);
-                EndReadOutLoud(resetTimer);
+                console.warn("speakIsSuccesuful:" + speakIsSuccesuful + " - speakHasError:" + speakHasError + " _error:"+_error);
+                EndReadOutLoud();
 
                 setTimeout(function () {
-                    ReadOutLoud(messageBCK, _finalStep, resetTimer);
+                    ReadOutLoud(messageBCK, _finalStep);
                 }, 50);        
 
                 return 0;
             }
             
             speech.onend = function(event) {
-                LogFunctionStart('speech.onend');
-                if (_finalStep == true || readOutLoudActive == false || _message == null || _message == ''){
-                    EndReadOutLoud(resetTimer);
+                LogFunctionStart("speech.onend");
+                if (_finalStep == true || readOutLoudActive == false || _message == null || _message == ""){
+                    EndReadOutLoud();
                 } else {
                     if(synth != null) synth.cancel();
                     synth= null;
                     speech = null;
-                    ReadOutLoud(_message, _finalStep, resetTimer); 
+                    ReadOutLoud(_message, _finalStep); 
                 }
-                LogFunctionEnd('speech.onend');
+                LogFunctionEnd("speech.onend");
             }
             LogFunctionEnd();
         }
 
-        function EndReadOutLoud(resetTimer){
+        function EndReadOutLoud(){
             LogFunctionStart();
             if(synth != null) synth.cancel();
             synth= null;
             speech = null;
-            if(resetTimer == true) timerActive = false;
 
             if(recognition != null && IsMobile() == false){                  
                 try {
@@ -488,14 +481,14 @@
                 StopAnimateIntervalsListening(100);
             } else {
                 StopAnimateIntervals();
-                clearInterval(animateIntervals['StopAnimateIntervalsListening']);
-                animateIntervals['StopAnimateIntervalsListening'] = null;                    
+                clearInterval(animateIntervals["StopAnimateIntervalsListening"]);
+                animateIntervals["StopAnimateIntervalsListening"] = null;                    
             }
 
             recognitionActive = true;
             readOutLoudActive = false;
                     
-            document.getElementById('final_span').innerHTML = '';
+            document.getElementById("final_span").innerHTML = "";
 
             countTheTimesToPartialReset = 0;
             partialResetActive = false;
@@ -514,7 +507,7 @@
             if(url != null && application == true)
             {
                 var json = "{_id:"+id+",_hostSelected:"+hostSelected+"}";
-                var _url = url.replace("Recognition","ExecutionFinished")+'?_id='+executionQueueId+'&_hostSelected='+hostSelected;
+                var _url = url.replace("Recognition","ExecutionFinished")+"?_id="+executionQueueId+"&_hostSelected="+hostSelected;
                 SendHttpRequest("POST", _url, json, null);
             }
             LogFunctionEnd();
@@ -558,11 +551,11 @@
             });
 
             if(IsMobile() == true){
-                document.getElementById('div_start').style.display = 'block';
+                document.getElementById("div_start").style.display = "block";
             }
                     
             hostsArrayString = hostsArrayString.replace(/&quot;/g,'"');
-            if(_error != null && _error != '') console.warn(_error);
+            if(_error != null && _error != "") console.warn(_error);
             try {
                 hosts = JSON.parse(hostsArrayString);
             }
@@ -579,7 +572,7 @@
                 hosts_cmb_string+='</select>';
                 $("#hosts_cmb_container").html(hosts_cmb_string);
 
-                document.getElementById('hosts_cmb').value = hostSelected;
+                document.getElementById("hosts_cmb").value = hostSelected;
             }
             LogFunctionEnd();
         }
@@ -588,13 +581,13 @@
             LogFunctionStart();
             if(_reset == false){
                 _phrase = $("#sendPhrase_text").val();
-                if(_phrase != null && _phrase != ''){
+                if(_phrase != null && _phrase != ""){
                     var phraseTmp = _phrase;
 
                     LogWithTime("Sended phrase: " + _phrase);
 
                     ehiRecognitedAudio.play();
-                    CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultSendPhrase");
+                    CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)), "ResultSendPhrase");
                 }
             }
             LogFunctionEnd();
@@ -602,7 +595,7 @@
 
         function CallWebSpeechDtoInJson(paramString, funcName){     
             LogFunctionStart();
-            var _url = url.replace("Recognition","GetWebSpeechDtoInJson")+'?' + paramString;
+            var _url = url.replace("Recognition","GetWebSpeechDtoInJson")+"?" + paramString;
 
             PartialReset();
                     
@@ -621,7 +614,7 @@
             Action(type, parameters);
             Speak();
 
-            if(newWebSpeechRequestName != null && newWebSpeechRequestName != '' && newWebSpeechRequestName != 'null')  CallCreateWithParam(newWebSpeechRequestName);
+            if(newWebSpeechRequestName != null && newWebSpeechRequestName != "" && newWebSpeechRequestName != "null")  CallCreateWithParam(newWebSpeechRequestName);
             if(recognitionDisable == true) RecognitionDisable();  
 
             LogFunctionEnd();
@@ -629,13 +622,13 @@
 
         function CallCreateWithParam(_newWebSpeechRequestName){
             LogFunctionStart();
-            var _url = url.replace("Recognition","Create")+'?_newWebSpeechRequestName='+ _newWebSpeechRequestName;
+            var _url = url.replace("Recognition","Create")+"?_newWebSpeechRequestName="+ _newWebSpeechRequestName;
 
             if(application == false){
                 window.open(_url);
             }
             else if(application == true){
-                window.open(_url, "Create WebSpeech", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
+                window.open(_url, "Create WebSpeech", "width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1");
             } 
             LogFunctionEnd();
         }
@@ -649,7 +642,7 @@
         function StartButton(event) {
             LogFunctionStart();
             if(IsMobile() == true){
-                document.getElementById('start_img').src = "/Images/microphone.png";
+                document.getElementById("start_img").src = "/Images/microphone.png";
             }
 
             try {
@@ -658,8 +651,8 @@
             }
             catch (error) { } 
 
-            if (animateIntervals['ellipse1'] == null && recognitionActive == true) StartAnimateIntervals(70);
-            final_transcript = '';
+            if (animateIntervals["ellipse1"] == null && recognitionActive == true) StartAnimateIntervals(70);
+            final_transcript = "";
             recognition.lang = culture;
 
             try {
@@ -674,10 +667,10 @@
 
         function InitSpeech(){
             LogFunctionStart();
-            if (!('webkitSpeechRecognition' in window)) {
+            if (!("webkitSpeechRecognition" in window)) {
                 Upgrade();
             } else {
-                recognition = new webkitSpeechRecognition('No warning should arise');
+                recognition = new webkitSpeechRecognition("No warning should arise");
 
                 if (IsMobile() == false){
                     recognition.continuous = true;
@@ -686,53 +679,53 @@
 
                 recognition.onstart = function () {
                     recognizing = true;
-                    console.warn('info_speak_now');
+                    console.warn("info_speak_now");
                 };
 
                 recognition.onerror = function (event) {
-                    console.warn('recognition.onerror: ' + event.error);
+                    console.warn("recognition.onerror: " + event.error);
 
                     firstLoad = true;
 
                     if (IsMobile() == true) {
-                        document.getElementById('start_img').src = "/Images/microphone.gif";
+                        document.getElementById("start_img").src = "/Images/microphone.gif";
                         StopAnimateIntervals();
-                        clearInterval(animateIntervals['StopAnimateIntervalsListening']);
-                        animateIntervals['StopAnimateIntervalsListening'] = null;
+                        clearInterval(animateIntervals["StopAnimateIntervalsListening"]);
+                        animateIntervals["StopAnimateIntervalsListening"] = null;
                     }
 
                     if(recognitionActive == true){
                         if(partialResetActive == false) PartialReset(true,false);
                         if (IsMobile() == false) StartButton(event);
                     }
-                    if (event.error == 'no-speech') {
-                        console.warn('info_no_speech');
+                    if (event.error == "no-speech") {
+                        console.warn("info_no_speech");
                         ignore_onend = true;
                     }
-                    if (event.error == 'audio-capture') {
-                        console.warn('info_no_microphone');
+                    if (event.error == "audio-capture") {
+                        console.warn("info_no_microphone");
                         ignore_onend = true;
                     }
-                    if (event.error == 'not-allowed') {
-                        console.warn('not-allowed');
+                    if (event.error == "not-allowed") {
+                        console.warn("not-allowed");
                         ignore_onend = true;
                     }
                 };
 
                 recognition.onend = function () {
-                    LogFunctionStart('recognition.onend');
+                    LogFunctionStart("recognition.onend");
                     if(recognitionActive == true){
                         if(partialResetActive == false) PartialReset(true,false);
                         if (IsMobile() == false) StartButton(event);
                     }
 
                     if(IsMobile() == true){
-                        document.getElementById('start_img').src = "/Images/microphone.gif";
+                        document.getElementById("start_img").src = "/Images/microphone.gif";
                         StopAnimateIntervals();
-                        clearInterval(animateIntervals['StopAnimateIntervalsListening']);
-                        animateIntervals['StopAnimateIntervalsListening'] = null;
+                        clearInterval(animateIntervals["StopAnimateIntervalsListening"]);
+                        animateIntervals["StopAnimateIntervalsListening"] = null;
                     }
-                    LogFunctionEnd('recognition.onend');
+                    LogFunctionEnd("recognition.onend");
                 };
 
                 recognition.onresult = function (event) {
@@ -740,7 +733,7 @@
                         if(_phrase == null){
                             _phrase = event.results[i][0].transcript.toLowerCase().trim();
 
-                            if (_phrase != '' && _phrase != null) {
+                            if (_phrase != "" && _phrase != null) {
                                 countTheTimesToPartialReset = 0;
                                 countTheTimeToResetInSeconds = 0;
 
@@ -756,14 +749,14 @@
                                             
                                             var phraseTmp = _phrase;
 
-                                            CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionEhi");
-                                        } else if (ehi == 1 && _phrase != listeningPhrase && _phrase != null && _phrase != '' && _reset == false) {
+                                            CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)), "ResultRecognitionEhi");
+                                        } else if (ehi == 1 && _phrase != listeningPhrase && _phrase != null && _phrase != "" && _reset == false) {
                                             ehiRecognitedAudio.play();
 
                                             var phraseTmp = _phrase;
 
-                                            CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionPhrase");
-                                        } else if (ehi == 0 && _phrase != listeningPhrase && _phrase.includes(listeningPhrase) && _phrase != null && _phrase != '' && _reset == false) {
+                                            CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)), "ResultRecognitionPhrase");
+                                        } else if (ehi == 0 && _phrase != listeningPhrase && _phrase.includes(listeningPhrase) && _phrase != null && _phrase != "" && _reset == false) {
                                             ehiRecognitedAudio.play();
 
                                             var phraseTmp = _phrase;
@@ -772,7 +765,7 @@
                                             phraseTmp = phraseTmp.substring(start, phraseTmp.length);
                                             phraseTmp = phraseTmp.trim();
 
-                                            CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionPhrase");
+                                            CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)), "ResultRecognitionPhrase");
                                         }
                                     }
                                 }
@@ -781,8 +774,8 @@
                         }
                     }
 
-                    var interim_transcript = '';
-                    if (typeof (event.results) == 'undefined') {
+                    var interim_transcript = "";
+                    if (typeof (event.results) == "undefined") {
                         if(recognitionActive == true) StopAnimateIntervals();
                     }
                     for (var i = event.resultIndex; i < event.results.length; ++i) {
@@ -793,11 +786,11 @@
                         }
                     }
                     final_transcript = Capitalize(final_transcript);
-                    document.getElementById('final_span').innerHTML = Linebreak(final_transcript);
-                    document.getElementById('interim_span').innerHTML = Linebreak(interim_transcript);
+                    document.getElementById("final_span").innerHTML = Linebreak(final_transcript);
+                    document.getElementById("interim_span").innerHTML = Linebreak(interim_transcript);
 
                     if (final_transcript || interim_transcript) {
-                        document.getElementById('final_span').innerHTML = '';
+                        document.getElementById("final_span").innerHTML = "";
                     }
                 };
             }
@@ -810,7 +803,7 @@
             
             Action(type, parameters);
             Speak();
-            if(newWebSpeechRequestName != null && newWebSpeechRequestName != '' && newWebSpeechRequestName != 'null')  CallCreateWithParam(newWebSpeechRequestName);
+            if(newWebSpeechRequestName != null && newWebSpeechRequestName != "" && newWebSpeechRequestName != "null")  CallCreateWithParam(newWebSpeechRequestName);
             if(recognitionDisable == true) RecognitionDisable();
             LogFunctionEnd();
         }
@@ -830,28 +823,29 @@
             if (document.all) {
                 control.click();
             } else {
-                var evObj = document.createEvent('MouseEvents');
-                evObj.initMouseEvent('click', true, true, window, 1, 12, 345, 7, 220, false, false, true, false, 0, null);
+                var evObj = document.createEvent("MouseEvents");
+                evObj.initMouseEvent("click", true, true, window, 1, 12, 345, 7, 220, false, false, true, false, 0, null);
                 control.dispatchEvent(evObj);
             }
             LogFunctionEnd();
         }
 
-        function LogWithTime(value){
+        function LogWithTime(value, isAWarning){
             var date = new Date();
-            var dateString = date.toISOString().replace('T',' ').replace('Z','');
-            value = dateString + ' - ' + value;
-            console.log(value);  
+            var dateString = date.toISOString().replace("T"," ").replace("Z","");
+            value = dateString + " - " + value;
+            if(isAWarning == true) console.warn(value);
+            else console.log(value);  
 
             return value;
         }
 
         function LogFunctionStart(functionName){
             var date = new Date();
-            var dateString = date.toISOString().replace('T',' ').replace('Z','');
+            var dateString = date.toISOString().replace("T"," ").replace("Z","");
             var value = LogFunctionStart.caller.name;
             if(functionName != null && functionName != undefined) value =functionName;
-            value = dateString + ' - Function: ' + value +' - START';
+            value = dateString + " - Function: " + value +" - START";
             console.warn(value);  
 
             return value;
@@ -859,10 +853,10 @@
 
         function LogFunctionEnd(functionName){
             var date = new Date();
-            var dateString = date.toISOString().replace('T',' ').replace('Z','');
+            var dateString = date.toISOString().replace("T"," ").replace("Z","");
             var value = LogFunctionEnd.caller.name;
             if(functionName != null && functionName != undefined) value =functionName;
-            value = dateString + ' - Function: ' + value +' - END';
+            value = dateString + " - Function: " + value +" - END";
             console.warn(value);  
 
             return value;
@@ -877,57 +871,74 @@
             if(_minutes >= 1) _time += _minutes;
             if(_minutes < 1) _time += 0;
             if(_time != "" && _seconds != 0)_time += ":";
-            if(_seconds != 0) _time += _seconds.toFixed(0);
+            if(_seconds != 0) _time += parseInt(_seconds);
             
             return _time;
         }
 
-        function Service() {
-            
-            if(timerActive == false){
-                timerParamInJson = GetCookie("SuppSiteTimerParamInJson_0");
-                timerParamInJson = DecodeUnicode(timerParamInJson);
+        function TimerManager(){
+            lastIndex = -1;
+            var lastIndexInString = GetCookie("SuppSiteTimerLastIndex"); 
 
-                if(timerParamInJson != null && timerParamInJson != "" && timerParamInJson != "null"){
-                    timerActive = true;
+            if(lastIndexInString != null && lastIndexInString != "")
+                lastIndex = parseInt(lastIndexInString);
+            else
+                return 0;
+
+            if(timers == null) timers = new Array();
+
+            for(var i = 0; i <= lastIndex; i++) 
+            {
+                if(timers[i] == undefined || timers[i] == null){
+                    var timerParamInJson = GetCookie("SuppSiteTimerParamInJson_" + i);
+                    timerParamInJson = DecodeUnicode(timerParamInJson);
+
+                    if(timerParamInJson != null && timerParamInJson != "" && timerParamInJson != "null") {
+                        timers[i] = new Array();
+                        timers[i]["Active"] = true;
                     
-                    timerParam = JSON.parse(timerParamInJson);
-                    timerParamPhrase = DecodeUnicodeExtended(timerParam['Phrase']);
-                    timerParamDate = Date.parse(DecodeUnicodeExtended(timerParam['Date']));
-                    timerParamType = DecodeUnicodeExtended(timerParam['Type']);
-                    timerParamWithEvent = GetBoolean(DecodeUnicodeExtended(timerParam['WithEvent']));
+                        var timerParam = JSON.parse(timerParamInJson);
+                        timers[i]["Index"] = parseInt(DecodeUnicodeExtended(timerParam["Index"]));
+                        timers[i]["Phrase"] = DecodeUnicodeExtended(timerParam["Phrase"]);
+                        timers[i]["Date"] = Date.parse(DecodeUnicodeExtended(timerParam["Date"]));
+                        timers[i]["Type"] = DecodeUnicodeExtended(timerParam["Type"]);
+                        timers[i]["WithEvent"] = GetBoolean(DecodeUnicodeExtended(timerParam["WithEvent"]));
+                        timers[i]["Summary"] = DecodeUnicodeExtended(timerParam["Summary"]);
 
-                    InitProgress(shortcuts, timerParamType.replace("Set","Delete"), timerIndex);
+                        InitProgress(shortcuts, "System" + timers[i]["Type"].replace("Set","Delete"), timers[i]["Index"]);
+                    }
+                } else {
+                    var now = new Date();
+                    var difference = (-(now - timers[i]["Date"])) / 1000;
+                    if(timers[i]["InitialDifference"] == undefined || timers[i]["InitialDifference"] == null){
+                        timers[i]["InitialDifference"] = difference;
+                        CirlceProgressBar(0, GetTimeRemain(difference), timers[i]["Index"]);
+                    }
+
+                    var percent = /*100 -*/ (difference / timers[i]["InitialDifference"] * 100);
+
+                    CirlceProgressBar(percent, GetTimeRemain(difference), timers[i]["Index"]);
+
+                    if(timers[i]["Date"] != null && now >= timers[i]["Date"] && difference < 60){
+                        ReadOutLoud(timers[i]["Phrase"], false, true);
+                        DeleteProgressBar(timers[i]["Index"]);
+                    }
                 }
             }
+        }
 
-            if(timerActive == true){
-                var now = new Date();
-                var difference = (-(now - timerParamDate)) / 1000;
-                if(initialDifference == null){
-                    initialDifference = difference;
-                    CirlceProgressBar(0, GetTimeRemain(difference), timerIndex);
-                }
-
-                var percent = /*100 -*/ (difference / initialDifference * 100);
-
-                CirlceProgressBar(percent, GetTimeRemain(difference), timerIndex);
-
-                if(timerParamDate != null && now >= timerParamDate && difference < 60){
-                    ReadOutLoud(timerParamPhrase, false, true);
-                    DeleteProgressBar(timerIndex);
-                }
-            }
+        function Service() {
+            TimerManager();
 
             if(voices == undefined || voices == null || voices.length == 0) voices = window.speechSynthesis.getVoices();
 
             //timeToEhiTimeoutInSeconds = 10; // to debug
 
-            //console.log('ehi:'+ehi +' recognitionActive:'+recognitionActive + ' partialResetActive:'+partialResetActive+ ' countTheTimesToPartialReset:'+countTheTimesToPartialReset);
+            //console.log("ehi:"+ehi +" recognitionActive:"+recognitionActive + " partialResetActive:"+partialResetActive+ " countTheTimesToPartialReset:"+countTheTimesToPartialReset);
 
             // partial reset after ehi with wait countTheTimesToPartialReset
             if(partialResetActive && countTheTimesToPartialReset == timeToEhiTimeoutInSeconds){
-                console.warn('TheTimesToPartialReset');
+                console.warn("TheTimesToPartialReset");
                 countTheTimesToPartialReset = 0;
                 PartialReset(false,true);
             }
@@ -938,11 +949,11 @@
             //timeToResetInSeconds = 12; //to debug
             //resetActive = true; //to debug
 
-            //console.log('recognitionActive:'+recognitionActive + ' resetActive:'+resetActive+ ' countTheTimeToResetInSeconds:'+countTheTimeToResetInSeconds);
+            //console.log("recognitionActive:"+recognitionActive + " resetActive:"+resetActive+ " countTheTimeToResetInSeconds:"+countTheTimeToResetInSeconds);
 
             // reset after idle time countTheTimeToResetInSeconds
             if(resetActive && countTheTimeToResetInSeconds == timeToResetInSeconds && recognitionActive == true && shortcutsOpen == false){
-                console.warn('TheTimeToResetInSeconds');
+                console.warn("TheTimeToResetInSeconds");
                 countTheTimeToResetInSeconds = 0;
                 resetActive = false;  
                 Reset(false, true);
@@ -959,15 +970,15 @@
                     navigator.mediaDevices.getUserMedia({ audio: true })
                     .then(function (stream) {
                         window.localStream = stream;
-                        console.warn('You let me use your mic!')
+                        console.warn("You let me use your mic!")
                     })
                     .catch(function (err) {
-                        console.warn('No mic for you!')
+                        console.warn("No mic for you!")
                     });
                 } else {
                     window.localStream.getTracks().forEach( (track) => {
                         track.stop();
-                         console.warn('mic off')
+                         console.warn("mic off")
                     });
                     window.localStream.getAudioTracks()[0].stop();
                 }
@@ -978,18 +989,18 @@
 
         function Speak(){
             LogFunctionStart();
-            if (answer != null && answer != '') {
-                document.getElementById('final_span').innerHTML = '';
-                document.getElementById('interim_span').innerHTML = '';
+            if (answer != null && answer != "") {
+                document.getElementById("final_span").innerHTML = "";
+                document.getElementById("interim_span").innerHTML = "";
                 var _answer = HexDecode(answer);
                 answer = null;
                 
                 LogWithTime("Answer: " + _answer);
 
                 ReadOutLoud(_answer, false, false); 
-            } else if(finalStep == false && subType != null && subType != '' ){
+            } else if(finalStep == false && subType != null && subType != "" ){
                 var phraseTmp = "";
-                CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + id + '&_phrase=' + phraseTmp + '&_hostSelected='+$("#hosts_cmb option:selected").text() + '&_application='+application), "ResultRecognitionPhrase");
+                CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)), "ResultRecognitionPhrase");
             } else {
                 PartialReset();
             }
@@ -1002,7 +1013,7 @@
             if(_reset == false){ 
                  _reset = true;
                 clearInterval(serviceInterval);
-                location.href = '@Url.Action("Recognition", "WebSpeeches")?_reset='+ reset + '&_application='+application + '&_executionQueueId='+ executionQueueId + '&_hostSelected=' + $("#hosts_cmb option:selected").text() + '&_onlyRefresh='+_onlyRefresh;
+                location.href = "@Url.Action("Recognition", "WebSpeeches")?_reset="+ reset + "&_application="+application + "&_executionQueueId="+ executionQueueId + "&_hostSelected=" + $("#hosts_cmb option:selected").text() + "&_onlyRefresh="+_onlyRefresh;
             }
             LogFunctionEnd();
         }
@@ -1010,7 +1021,7 @@
         function PartialReset(excludeSpan, forceFinalStep){
             LogFunctionStart();
             if(finalStep == false && forceFinalStep != true) {
-                if(phrase != null && phrase != ''){           
+                if(phrase != null && phrase != ""){           
 
                 }
             }
@@ -1027,14 +1038,15 @@
             audioActive = true;
             phraseSended = false;
             partialResetActive = false;
+            newParameters = "";
             //countTheTimesToPartialReset = 0;
             //countTheTimeToResetInSeconds = 0;
             
             if(excludeSpan != true)
             {
-                $("#sendPhrase_text").val('');
-                document.getElementById('final_span').innerHTML = '';
-                document.getElementById('interim_span').innerHTML = '';
+                $("#sendPhrase_text").val("");
+                document.getElementById("final_span").innerHTML = "";
+                document.getElementById("interim_span").innerHTML = "";
             }
             LogFunctionEnd();
         }
@@ -1047,8 +1059,8 @@
                 fakeClickMilliseconds = 5000;
             }
 
-            document.getElementById('final_span').innerHTML = '';
-            document.getElementById('interim_span').innerHTML = '';
+            document.getElementById("final_span").innerHTML = "";
+            document.getElementById("interim_span").innerHTML = "";
 
             clearTimeout(initFinalTimeoutStep2);
             initFinalTimeoutStep2 = null;
@@ -1058,11 +1070,11 @@
             sessionGuid = GenerateGuid();
             
             initFinalTimeoutStep1 = setTimeout(function(){
-                LogFunctionStart('initFinalTimeoutStep1');
-                SimulateClick(document.getElementById('fakeClick_button'));
+                LogFunctionStart("initFinalTimeoutStep1");
+                SimulateClick(document.getElementById("fakeClick_button"));
 
                 initFinalTimeoutStep2 = setTimeout(function(){
-                    LogFunctionStart('initFinalTimeoutStep2');
+                    LogFunctionStart("initFinalTimeoutStep2");
                     Action(type, parameters);
 
                     SetAudio();
@@ -1071,9 +1083,9 @@
 
                     Speak();
 
-                    LogFunctionEnd('initFinalTimeoutStep2');
+                    LogFunctionEnd("initFinalTimeoutStep2");
                 }, 50);  
-                LogFunctionEnd('initFinalTimeoutStep1');
+                LogFunctionEnd("initFinalTimeoutStep1");
             }, fakeClickMilliseconds);
             LogFunctionEnd();
         }
@@ -1097,8 +1109,7 @@
         }
 
         function FakeClick(){
-            LogFunctionStart();
-            LogFunctionEnd();      
+            LogWithTime("FakeClick", true);     
         }
 
         function RecognitionEnable(excludeSpan, forceFinalStep){  
@@ -1108,7 +1119,7 @@
             recognitionDisable = false;
             audioActive = true;
             PartialInitFinal();
-            document.getElementById("recognitionEnableDisable_image").src = '/Images/micOn.png';
+            document.getElementById("recognitionEnableDisable_image").src = "/Images/micOn.png";
             LogFunctionEnd();
         }
 
@@ -1133,9 +1144,9 @@
             recognition.abort();
             recognition.stop();
             StopAnimateIntervals();
-            clearInterval(animateIntervals['StopAnimateIntervalsListening']);
-            animateIntervals['StopAnimateIntervalsListening'] = null;
-            document.getElementById("recognitionEnableDisable_image").src = '/Images/micOff.png';
+            clearInterval(animateIntervals["StopAnimateIntervalsListening"]);
+            animateIntervals["StopAnimateIntervalsListening"] = null;
+            document.getElementById("recognitionEnableDisable_image").src = "/Images/micOff.png";
             LogFunctionEnd();
         }
 
@@ -1143,8 +1154,8 @@
             LogFunctionStart();
             if(application == true){
                 var element = document.getElementById("menu_items");
-                if(element.style.display != 'inline') element.style.display = 'inline';
-                else element.style.display = 'none';
+                if(element.style.display != "inline") element.style.display = "inline";
+                else element.style.display = "none";
             }
             LogFunctionEnd();
         }
@@ -1166,9 +1177,10 @@
             LogFunctionEnd();
         }
 
-        function ActionProgress(id){
+        function ActionProgress(id, _index){
             LogFunctionStart();
-            if(timerParamWithEvent == true) ActionShortcut(id);
+            newParameters = timers[_index]["Summary"];
+            if(timers[_index]["WithEvent"] == true) ActionShortcut(id);
             LogFunctionEnd();
         }
 
@@ -1182,24 +1194,24 @@
             for (var i = 0; i < shortcuts.length; ++i) {
                 var shortcut = shortcuts[i];
 
-                if (shortcut['Id'] == parseInt(id)) {
+                if (shortcut["Id"] == parseInt(id)) {
 
-                    LogWithTime("Selected shortcut: " + shortcut['Title']);
+                    LogWithTime("Selected shortcut: " + shortcut["Title"]);
 
-                    if (application == false && shortcut['Type'] == 'Link') {
-                        var _url = shortcut['Action'].replace(/&amp;/g,'&');
+                    if (application == false && shortcut["Type"] == "Link") {
+                        var _url = shortcut["Action"].replace(/&amp;/g,"&");
                         _url = DecodeUnicodeExtended(_url);
 
                         window.open(_url);
                     }
-                    else if (application == true && shortcut['Type'] == 'Link') {
-                        var _url = shortcut['Action'].replace(/&amp;/g,'&');
+                    else if (application == true && shortcut["Type"] == "Link") {
+                        var _url = shortcut["Action"].replace(/&amp;/g,"&");
                         _url = DecodeUnicodeExtended(_url);
 
-                        window.open(_url, "open link", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
+                        window.open(_url, "open link", "width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1");
                     }
                     else {
-                        CallWebSpeechDtoInJson(('_subType=' + subType + '&_step=' + step + '&_recognitionDisable=' + recognitionDisable + '&_id=' + shortcut['Id'] + '&_hostSelected=' + $("#hosts_cmb option:selected").text() + '&_application=' + application), "ResultActionShortcut");
+                        CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + shortcut["Id"] + "&_hostSelected=" + $("#hosts_cmb option:selected").text() + "&_application=" + application + "&_param="+encodeURIComponent(newParameters)), "ResultActionShortcut");
                     }
                 }
             }     
@@ -1227,39 +1239,39 @@
         function Action(type, param){
             LogFunctionStart();
 
-            if(application == false && type == 'Link' && param != null && param != '' ){
+            if(application == false && type == "Link" && param != null && param != "" ){
                 param = DecodeUnicode(param);
-                var _url = param.replace(/&amp;/g,'&');
+                var _url = param.replace(/&amp;/g,"&");
                 _url = DecodeUnicodeExtended(_url);
 
                 window.open(_url);
             }
 
-            else if(application == true && type == 'Link' && param != null && param != ''){
+            else if(application == true && type == "Link" && param != null && param != ""){
                 param = DecodeUnicode(param);
-                var _url = param.replace(/&amp;/g,'&');
+                var _url = param.replace(/&amp;/g,"&");
                 _url = DecodeUnicodeExtended(_url);
 
-                window.open(_url, "open param", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
+                window.open(_url, "open param", "width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1");
             } 
 
-            else if(application == false && (type == 'SystemWebSearch' || type == 'WebSearch') && param != null && param != ''){
+            else if(application == false && (type == "SystemWebSearch" || type == "WebSearch") && param != null && param != ""){
                 param = DecodeUnicode(param);
-                var _url = param.replace(/&amp;/g,'&');
+                var _url = param.replace(/&amp;/g,"&");
                 _url = DecodeUnicodeExtended(_url);
 
                 window.open(_url);
             }
 
-            else if(application == true && (type == 'SystemWebSearch' || type == 'WebSearch') && param != null && param != ''){
+            else if(application == true && (type == "SystemWebSearch" || type == "WebSearch") && param != null && param != ""){
                 param = DecodeUnicode(param);
-                var _url = param.replace(/&amp;/g,'&');
+                var _url = param.replace(/&amp;/g,"&");
                 _url = DecodeUnicodeExtended(_url);
 
-                window.open(_url, "search", 'width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1');
+                window.open(_url, "search", "width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1");
             }
 
-            else if((type == 'SystemSetTimer' || type == 'Timer')){
+            else if((type == "SystemSetTimer" || type == "Timer")){
 
             }
 
@@ -1269,16 +1281,16 @@
         function AddShortcuts(shortcut){
             LogFunctionStart();
             var element = document.getElementById("shortcutsContainer");
-            var dt = '';
+            var dt = "";
 
-            if(shortcut['Ico'] == null || shortcut['Ico'] == '') shortcut['Ico'] = '/Images/Shortcuts/generic.png';
+            if(shortcut["Ico"] == null || shortcut["Ico"] == "") shortcut["Ico"] = "/Images/Shortcuts/generic.png";
 
             dt += '<dt class="col-sm-3" style="">';
             dt += '<div>';
-            dt += '<img class="btn shortcut-dark" id="shortcut_'+shortcut['Id']+'" src="'+shortcut['Ico']+'" alt="'+shortcut['Title']+'" style="width:90%; margin:5%; box-shadow: rgba(250, 250, 250, 0.95) 0px 0rem 1rem !important;" onclick="ActionShortcut(' + "" + shortcut['Id'] + "" +');">';
+            dt += '<img class="btn shortcut-dark" id="shortcut_'+shortcut["Id"]+'" src="'+shortcut["Ico"]+'" alt="'+shortcut["Title"]+'" style="width:90%; margin:5%; box-shadow: rgba(250, 250, 250, 0.95) 0px 0rem 1rem !important;" onclick="ActionShortcut(' + "" + shortcut["Id"] + "" +');">';
 
             dt += '</div>';
-            dt += '<div style="font-size:18px;">'+shortcut['Title']+'</div>';
+            dt += '<div style="font-size:18px;">'+shortcut["Title"]+'</div>';
             dt += '</dt>';
 
             element.innerHTML += dt;
@@ -1288,17 +1300,19 @@
         function CreateShortcuts(_shortcuts){
             LogFunctionStart();
             var element = document.getElementById("shortcutsContainer");
-            element.innerHTML = '';
+            element.innerHTML = "";
 
             for (var i = 0; i < _shortcuts.length; ++i) {
                 var shortcut = _shortcuts[i];
-                
+
                 if(i == 0){
                     //var _shortcut = JSON.parse('{"Id":"' + i + '", "Ico":"/Images/Shortcuts/close.png", "Title":"Close", "Action":"Close"}');
                     //AddShortcuts(_shortcut);
                 }
-
-                AddShortcuts(shortcut);
+                
+                if(shortcut["Type"].includes("System") == false){
+                    AddShortcuts(shortcut);
+                }
             }
             LogFunctionEnd();
         }
@@ -1307,8 +1321,7 @@
             LogFunctionStart();
             var shortcut = GetShortcut(_shortcuts, _type);
             var element = document.getElementById("progress_container");
-            //element.innerHTML = '';
-            var dt = '';
+            var dt = "";
 
             dt += '<div class="progress" data-percentage="0" id="progress_'+_index+'" style="position: absolute; margin-top:10px; width: 90px; height: 90px;">';
             dt += ' <span class="progress-left">';
@@ -1318,13 +1331,13 @@
 	        dt += '     <span class="progress-bar"></span>';
             dt += ' </span>';
             dt += ' <div class="progress-value">';
-	        dt += '     <div id="progress_value" style="font-size:20px;">';
+	        dt += '     <div id="progress_value_'+_index+'" style="font-size:20px;">';
 		    dt += '         0';
 	        dt += '     </div>';
             dt += ' </div>';
             dt += '</div>';
             dt += '<div id="progress_delete_'+_index+'" style="margin-top:80px; margin-left:65px;">';
-            dt += ' <img class="btn shortcut-dark" id="shortcut_'+shortcut['Id']+'" src="'+'/Images/Shortcuts/close.png'+'" alt="'+shortcut['Title']+'" style="width:50px;" onclick="ActionProgress(' + "" + shortcut['Id'] + "" +'); DeleteProgressBar('+ "" + _index + "" +'); ">';
+            dt += ' <img class="btn shortcut-dark" id="shortcut_'+shortcut["Id"]+'" src="'+"/Images/Shortcuts/close.png"+'" alt="'+shortcut["Title"]+'" style="width:50px;" onclick="ActionProgress(' + "" + shortcut["Id"] + "," + _index + "" +'); DeleteProgressBar('+ "" + _index + "" +'); ">';
             dt += '</div>';
 
             element.innerHTML += dt;
@@ -1358,44 +1371,52 @@
         function SendPhraseTextKeyDown() {
             LogFunctionStart();
             countTheTimeToResetInSeconds = 0;
-            countTheTimesToPartialReset=0;
+            countTheTimesToPartialReset = 0;
             LogFunctionEnd();
         }
 
         function CheckPopUpBlock() {
             LogFunctionStart();
             var popupblock = false;
-            var test = window.open('','','width=1,height=1');
+            var test = window.open("","","width=1,height=1");
             if (!test) popupblock = true; else test.close();
-            if (popupblock) alert('The pop-up blocker is ON!');
+            if (popupblock) alert("The pop-up blocker is ON!");
             LogFunctionEnd();
         }
 
-        function CirlceProgressBar(percent, value, _timerIndex){
-            $("#progress_"+_timerIndex).attr("data-percentage", parseInt(percent).toString());
-            document.getElementById('progress_value').innerHTML = value; 
+        function CirlceProgressBar(percent, value, index){
+            $("#progress_"+index).attr("data-percentage", parseInt(percent).toString());
+            document.getElementById("progress_value_"+index).innerHTML = value; 
         }
 
-        function DeleteProgressBar(_timerIndex){
-            timerActive = false;
-            timerParamInJson = null;
-            timerParam = null;
-            initialDifference = null;
-
-            timerParamPhrase = null;
-            timerParamDate = null;
-            timerParamType  = null;
-            timerParamWithEvent = false;
+        function DeleteProgressBar(index){
+            LogFunctionStart();
+            timers[index] = null;
 
             ehiRecognitedAudio.play();
 
-            DeleteCookie("SuppSiteTimerParamInJson_0");
+            DeleteCookie("SuppSiteTimerParamInJson_"+index);
 
-            var element = document.getElementById("progress_"+timerIndex);
+            var allTimersFinished = true;
+
+            for(var i = 0; i <= lastIndex; i++) 
+            {
+                var timerParamInJson = GetCookie("SuppSiteTimerParamInJson_" + i);
+                if(timerParamInJson != null && timerParamInJson != "")
+                    allTimersFinished = false;
+            }
+
+            if(allTimersFinished == true){
+                DeleteCookie("SuppSiteTimerLastIndex");
+                LogWithTime("DeleteCookie: SuppSiteTimerLastIndex");
+            }
+
+            var element = document.getElementById("progress_"+index);
             element.parentNode.removeChild(element);
 
-            element = document.getElementById("progress_delete_"+timerIndex);
+            element = document.getElementById("progress_delete_"+index);
             element.parentNode.removeChild(element);
+            LogFunctionEnd();
         }
     </script>
 }
@@ -1452,9 +1473,9 @@
 
 <script>
 	window.onload = function(e) {
-        LogFunctionStart('window.onload');
+        LogFunctionStart("window.onload");
         VariablesAssignmentFromModel();
-        console.warn('resetAfterLoad:' + resetAfterLoad);
+        console.warn("resetAfterLoad:" + resetAfterLoad);
         if(resetAfterLoad == true) {
             clearTimeout(initFinalTimeoutStep2);
             initFinalTimeoutStep2 = null;
@@ -1474,6 +1495,6 @@
         }
 
         if(recognitionDisable == true) RecognitionDisable();
-        LogFunctionEnd('window.onload');
+        LogFunctionEnd("window.onload");
 	}	
 </script>

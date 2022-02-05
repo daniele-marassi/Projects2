@@ -657,7 +657,7 @@ namespace Supp.Site.Recognition
                         cultureInfo = new CultureInfo("en-US");
 
                     var date = DateTime.Parse(newWebSpeech.Elements[1].Value, cultureInfo);
-                    eventResult = dialogueSetTimer.SetTimer(newWebSpeech, access_token_cookie, userName, userId, _claims, response, expiresInSeconds, date).GetAwaiter().GetResult();
+                    eventResult = dialogueSetTimer.SetTimer(newWebSpeech, access_token_cookie, userName, userId, _claims, request, response, expiresInSeconds, date).GetAwaiter().GetResult();
                 }
 
                 if (!eventResult.Successful)
@@ -795,11 +795,11 @@ namespace Supp.Site.Recognition
             return await dialogue.RunExe(data, _phrase, _hostSelected, access_token_cookie, executionQueueRepo, _claims);
         }
 
-        public async Task<WebSpeechDto> SetTimer(WebSpeechDto dto, string token, string userName, long userId, ClaimsDto _claims, HttpResponse response, int expiresInSeconds, DateTime timerDate)
+        public async Task<WebSpeechDto> SetTimer(WebSpeechDto dto, string token, string userName, long userId, ClaimsDto _claims, HttpRequest request, HttpResponse response, int expiresInSeconds, DateTime timerDate)
         {
             var dialogue = new DialogueSetTimer();
 
-            var setTimerResult = await dialogue.SetTimer(dto, token, userName, userId, _claims, response, expiresInSeconds, timerDate);
+            var setTimerResult = await dialogue.SetTimer(dto, token, userName, userId, _claims, request, response, expiresInSeconds, timerDate);
 
             return dto;
         }

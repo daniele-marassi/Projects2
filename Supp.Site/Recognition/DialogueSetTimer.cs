@@ -233,15 +233,23 @@ namespace Supp.Site.Recognition
             return result;
         }
 
-        public async Task<EventResult> SetTimer(WebSpeechDto dto, string token, string userName, long userId, ClaimsDto _claims, HttpResponse response, int expiresInSeconds, DateTime timerDate)
+        public async Task<EventResult> SetTimer(WebSpeechDto dto, string token, string userName, long userId, ClaimsDto _claims, HttpRequest request, HttpResponse response, int expiresInSeconds, DateTime timerDate)
         {
             var getRemindersResult = new EventResult() { ResultState = GoogleManagerModels.ResultType.None, Successful = true };
 
             if(dto.Elements != null && dto.Elements[0] != null) timerDate = (DateTime)phraseInDateTimeManager.Convert(dto.Elements[0].Value, _claims.Configuration.General.Culture);
 
-            TimeSpan ts = timerDate - DateTime.Now;
-
             var withEvent = false;
+            var summary = "";
+
+            var lastIndexInString = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteTimerLastIndexCookieName, onlySpecificKey: true);
+
+            long newIndex = 0;
+
+            if (lastIndexInString != null && lastIndexInString != "")
+                newIndex = long.Parse(lastIndexInString) + 1;
+
+            TimeSpan ts = timerDate - DateTime.Now;
 
             if (ts.TotalMinutes > 9)
             {
@@ -252,13 +260,12 @@ namespace Supp.Site.Recognition
                 var notificationMinutes = new List<int?>() { 0 };
                 var color = GoogleCalendarColors.Flamingo;
                 var location = "";
-                var summary = "";
-
+                
                 if(dto.SubType == WebSpeechTypes.SystemDialogueSetTimer.ToString())
-                    summary = "#Timer";
+                    summary = "#Timer_" + newIndex.ToString();
 
                 if (dto.SubType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString())
-                    summary = "#AlarmClock";
+                    summary = "#AlarmClock_" + newIndex.ToString();
 
                 var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = summary, Description = "", Color = color, EventDateStart = eventDateStart, EventDateEnd = eventDateEnd, Location = location, NotificationMinutes = notificationMinutes };
 
@@ -279,9 +286,11 @@ namespace Supp.Site.Recognition
 
             var x = rnd.Next(0, parameters.Count());
 
-            var timerParam = new TimerParam() {Phrase = parameters[x], Date = timerDate.ToString("yyyy-MM-dd HH:mm:ss.fff"), Type = dto.Type, WithEvent = withEvent };
+            var timerParam = new TimerParam() { Index = newIndex, Phrase = parameters[x], Date = timerDate.ToString("yyyy-MM-dd HH:mm:ss.fff"), Type = dto.Type, WithEvent = withEvent, Summary = summary };
 
-            suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteTimerParamInJsonCookieName, JsonConvert.SerializeObject(timerParam), expiresInSeconds);
+            suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteTimerParamInJsonCookieName + "_" + newIndex.ToString(), JsonConvert.SerializeObject(timerParam), expiresInSeconds, onlySpecificKey: true);
+
+            suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteTimerLastIndexCookieName, (newIndex).ToString(), expiresInSeconds, onlySpecificKey: true);
 
             return getRemindersResult;
         }
@@ -289,9 +298,11 @@ namespace Supp.Site.Recognition
 
     public class TimerParam
     {
+        public long Index { get; set; }
         public string Phrase { get; set; }
         public string Date { get; set; }
         public string Type { get; set; }
         public bool WithEvent { get; set; }
+        public string Summary { get; set; }
     }
 }

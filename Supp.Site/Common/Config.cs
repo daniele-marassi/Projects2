@@ -111,6 +111,7 @@ namespace Supp.Site.Common
                 public const string SuppSitePlayListSelectedCookieName = "SuppSitePlayListSelected";
                 public const string SuppSiteNewWebSpeechDtoInJsonCookieName = "SuppSiteNewWebSpeechDtoInJson";
                 public const string SuppSiteTimerParamInJsonCookieName = "SuppSiteTimerParamInJson";
+                public const string SuppSiteTimerLastIndexCookieName = "SuppSiteTimerLastIndex";
             }
 
             public static void SetGeneralSettings(IConfiguration configuration)

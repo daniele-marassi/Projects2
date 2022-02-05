@@ -625,7 +625,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/Recognition
-        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step, bool? _login)
+        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step, bool? _login, string _param)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -659,6 +659,8 @@ namespace Supp.Site.Controllers
                     if (_phrase == "null") _phrase = null;
                     if (_hostSelected == "null") _hostSelected = null;
                     if (_subType == "null") _subType = null;
+                    if (_param == "null") _param = null;
+                    else _param = HttpUtility.UrlDecode(_param);
 
                     var expiresInSeconds = 0;
                     var claims = new ClaimsDto() { IsAuthenticated = false };
@@ -752,7 +754,7 @@ namespace Supp.Site.Controllers
 
                     claims = SuppUtility.GetClaims(User);
 
-                    if (resetAfterLoad == false) data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request).GetAwaiter().GetResult();
+                    if (resetAfterLoad == false) data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request, _param).GetAwaiter().GetResult();
 
                     if (resetAfterLoad == true || data == null)
                     {
@@ -782,7 +784,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/GetWebSpeechDtoInJson
-        public async Task<string> GetWebSpeechDtoInJson(string _phrase, string _hostSelected, bool? _reset, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step, bool? _recognitionDisable)
+        public async Task<string> GetWebSpeechDtoInJson(string _phrase, string _hostSelected, bool? _reset, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step, bool? _recognitionDisable, string _param)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -810,6 +812,8 @@ namespace Supp.Site.Controllers
                     if (_phrase == "null") _phrase = null;
                     if (_hostSelected == "null") _hostSelected = null;
                     if (_subType == "null") _subType = null;
+                    if (_param == "null") _param = null;
+                    else _param = HttpUtility.UrlDecode(_param);
 
                     var expiresInSeconds = 0;
                     int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName), out expiresInSeconds);
@@ -835,7 +839,7 @@ namespace Supp.Site.Controllers
                         claims = SuppUtility.GetClaims(User);
                     }
 
-                    var data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request).GetAwaiter().GetResult();
+                    var data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request, _param).GetAwaiter().GetResult();
 
                     if (data != null)
                     {

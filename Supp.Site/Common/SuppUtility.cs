@@ -74,21 +74,30 @@ namespace Supp.Site.Common
         /// </summary>
         /// <param name="request"></param>
         /// <param name="key"></param>
+        /// <param name="onlySpecificKey"></param>
         /// <returns></returns>
-        public string ReadCookie(HttpRequest request, string key)
+        public string ReadCookie(HttpRequest request, string key, bool onlySpecificKey = false)
         {
-            var i = 0;
-            var _key = key + "_" + i.ToString();
             var value = "";
 
-            while (request != null && request.Cookies[_key] != null)
+            if (onlySpecificKey == false)
             {
-                value += request.Cookies[_key];
-                i++;
-                _key = key + "_" + i.ToString();
+                var i = 0;
+                var _key = key + "_" + i.ToString();
+
+                while (request != null && request.Cookies[_key] != null)
+                {
+                    value += request.Cookies[_key];
+                    i++;
+                    _key = key + "_" + i.ToString();
+                }
+            }
+            else
+            {
+                value = request.Cookies[key];
             }
 
-            value = HttpUtility.UrlDecode(value);
+            if(value != null) value = HttpUtility.UrlDecode(value);
 
             return value;
         }
@@ -99,27 +108,37 @@ namespace Supp.Site.Common
         /// <param name="response"></param>
         /// <param name="request"></param>
         /// <param name="key"></param>
-        public void RemoveCookie(HttpResponse response, HttpRequest request, string key)
+        /// <param name="onlySpecificKey"></param>
+        public void RemoveCookie(HttpResponse response, HttpRequest request, string key, bool onlySpecificKey = false)
         {
-            var i = 0;
-            var _key = key + "_" + i.ToString();
-
-            while (request != null && request.Cookies[_key] != null)
+            if (onlySpecificKey == false)
             {
-                response.Cookies.Delete(_key);
-                i++;
+                var i = 0;
+                var _key = key + "_" + i.ToString();
+
+                while (request != null && request.Cookies[_key] != null)
+                {
+                    response.Cookies.Delete(_key);
+                    i++;
+                    _key = key + "_" + i.ToString();
+                }
+
+                i = 0;
                 _key = key + "_" + i.ToString();
+
+                while (request != null && request.Cookies[_key] != null)
+                {
+                    SetCookie(response, _key, String.Empty, 0, true);
+                    i++;
+                    _key = key + "_" + i.ToString();
+                }
             }
-
-            i = 0;
-            _key = key + "_" + i.ToString();
-
-            while (request != null && request.Cookies[_key] != null)
+            else
             {
-                SetCookie(response, _key, String.Empty, 0, true);
-                i++;
-                _key = key + "_" + i.ToString();
-            }        
+                response.Cookies.Delete(key);
+                if(request != null && request.Cookies[key] != null)
+                    SetCookie(response, key, String.Empty, 0, true);
+            }
         }
 
         /// <summary>
