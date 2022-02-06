@@ -196,7 +196,7 @@ namespace Supp.Site.Recognition
                     else if (_id != 0 && (_subType == "" || _subType == null || _subType == "null") && _step == 0)
                     {
                         data = result.Data.Where(_ => _.Id == _id).FirstOrDefault();
-                        if (data != null) data = GetAnswer(data);
+                        if (data != null) data = GetAnswer(data, _claims);
                     }
                     else if (_id != 0 && _subType != "" && _subType != null && _subType != "null" && _step > 0)
                     {
@@ -333,7 +333,7 @@ namespace Supp.Site.Recognition
 
                                 if (data != null)
                                 {
-                                    data = GetAnswer(data);
+                                    data = GetAnswer(data, _claims);
                                     stepType = data.StepType;
                                 }
                             }
@@ -342,7 +342,7 @@ namespace Supp.Site.Recognition
                         if (data == null && items != null && items.Count == 1 && stepType != StepTypes.Choice.ToString())
                         {
                             data = items.FirstOrDefault();
-                            data = GetAnswer(data);
+                            data = GetAnswer(data, _claims);
                             stepType = data.StepType;
                         }
 
@@ -363,7 +363,7 @@ namespace Supp.Site.Recognition
                         if (data != null && data.StepType == StepTypes.GoToFirstStep.ToString())
                         {
                             data = result.Data.Where(_ => _.Step == 1 && _.SubType == data.SubType).FirstOrDefault();
-                            data = GetAnswer(data);
+                            data = GetAnswer(data, _claims);
                             stepType = data.StepType;
                         }
 
@@ -374,7 +374,7 @@ namespace Supp.Site.Recognition
                             data = previousWebSpeech;
                             if (data != null)
                             {
-                                data = GetAnswer(data);
+                                data = GetAnswer(data, _claims);
 
                                 if (_claims.Configuration.General.Culture.ToLower() == "it-it")
                                     data.Answer = "Non ho capito!" + " " + data.Answer;
@@ -503,7 +503,7 @@ namespace Supp.Site.Recognition
 
                                 var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
 
-                                _data = GetAnswer(_data);
+                                _data = GetAnswer(_data, _claims);
 
                                 _data.Parameters = data.Parameters;
                                 _data.Operation = data.Operation;
@@ -552,7 +552,7 @@ namespace Supp.Site.Recognition
 
                                 var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
 
-                                _data = GetAnswer(_data);
+                                _data = GetAnswer(_data, _claims);
 
                                 _data.Parameters = data.Parameters;
                                 _data.Operation = data.Operation;
@@ -621,7 +621,7 @@ namespace Supp.Site.Recognition
 
                                 var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
 
-                                _data = GetAnswer(_data);
+                                _data = GetAnswer(_data, _claims);
 
                                 _data.Parameters = data.Parameters;
                                 _data.Type = data.Type;
@@ -683,7 +683,7 @@ namespace Supp.Site.Recognition
 
                             var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
 
-                            _data = GetAnswer(_data);
+                            _data = GetAnswer(_data, _claims);
 
                             _data.Parameters = data.Parameters;
                             if (_param != null && _param != "null" && _param != "") _data.Parameters = _param;
@@ -725,7 +725,7 @@ namespace Supp.Site.Recognition
 
                             var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
 
-                            _data = GetAnswer(_data);
+                            _data = GetAnswer(_data, _claims);
 
                             _data.Parameters = data.Parameters;
                             //_data.Type = data.Type;
@@ -796,7 +796,7 @@ namespace Supp.Site.Recognition
                             data = dataResult.Data.Where(_=>_.Step == 1).FirstOrDefault();
                         }
 
-                        data = GetAnswer(data);
+                        data = GetAnswer(data, _claims);
 
                         data = dialogue.Manage(data, WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString(), _step, StepTypes.Default.ToString(), expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);
                     }
@@ -1076,7 +1076,7 @@ namespace Supp.Site.Recognition
 
             if (_data != null)
             {
-                result.Data = GetAnswer(_data);            
+                result.Data = GetAnswer(_data, _claims);            
             }
 
             return result;
@@ -1133,27 +1133,9 @@ namespace Supp.Site.Recognition
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public WebSpeechDto GetAnswer(WebSpeechDto data)
+        public WebSpeechDto GetAnswer(WebSpeechDto data, ClaimsDto _claims)
         {
-            var rnd = new Random();
-            var answers = new List<string>() { };
-
-            try
-            {
-                answers = JsonConvert.DeserializeObject<List<string>>(data.Answer);
-            }
-            catch (Exception)
-            {
-                answers.Add(data.Answer);
-            }
-
-            if (answers == null) answers = new List<string>() {""};
-
-            var x = rnd.Next(0, answers.Count());
-
-            data.Answer = answers[x];
-
-            if (data.Answer == null) data.Answer = "";
+            data.Answer = suppUtility.GetValue(data.Answer, _claims);
 
             return data;
         }

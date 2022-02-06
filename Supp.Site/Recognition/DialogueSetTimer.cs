@@ -271,22 +271,9 @@ namespace Supp.Site.Recognition
 
                 getRemindersResult = await webSpeecheRepo.CreateReminder(token, userName, userId, WebSpeechTypes.CreateNote, createCalendarEventRequest, _claims.Configuration.Speech.GoogleCalendarAccount);
             }
-            var param = dto.Parameters.Replace("'", @"""");
-            var rnd = new Random();
-            var parameters = new List<string>() { };
+            var param = suppUtility.GetValue(dto.Parameters, _claims).Replace("'", @"""");
 
-            try
-            {
-                parameters = JsonConvert.DeserializeObject<List<string>>(param);
-            }
-            catch (Exception)
-            {
-                parameters.Add(dto.Parameters);
-            }
-
-            var x = rnd.Next(0, parameters.Count());
-
-            var timerParam = new TimerParam() { Index = newIndex, Phrase = parameters[x], Date = timerDate.ToString("yyyy-MM-dd HH:mm:ss.fff"), Type = dto.Type, WithEvent = withEvent, Summary = summary };
+            var timerParam = new TimerParam() { Index = newIndex, Phrase = param, Date = timerDate.ToString("yyyy-MM-dd HH:mm:ss.fff"), Type = dto.Type, WithEvent = withEvent, Summary = summary };
 
             suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteTimerParamInJsonCookieName + "_" + newIndex.ToString(), JsonConvert.SerializeObject(timerParam), expiresInSeconds, onlySpecificKey: true);
 

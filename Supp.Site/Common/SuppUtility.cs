@@ -386,5 +386,39 @@ namespace Supp.Site.Common
 
             return result;
         }
+
+        /// <summary>
+        /// Get Parameters
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="_claims"></param>
+        /// <returns></returns>
+        public string GetValue(string value, ClaimsDto _claims)
+        {
+            var rnd = new Random();
+            var list = new List<string>() { };
+
+            try
+            {
+                list = JsonConvert.DeserializeObject<List<string>>(value);
+            }
+            catch (Exception)
+            {
+                list.Add(value);
+            }
+
+            if (list == null) list = new List<string>() { "" };
+
+            var x = rnd.Next(0, list.Count());
+
+            value = list[x];
+
+            if (value == null) value = "";
+
+            value = value.Replace("SURNAME", _claims.Surname);
+            value = value.Replace("NAME", _claims.Name);
+
+            return value;
+        }
     }
 }

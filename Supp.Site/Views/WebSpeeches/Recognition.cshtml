@@ -918,9 +918,9 @@
                     var percent = /*100 -*/ (difference / timers[i]["InitialDifference"] * 100);
 
                     CirlceProgressBar(percent, GetTimeRemain(difference), timers[i]["Index"]);
-
+                    
                     if(timers[i]["Date"] != null && now >= timers[i]["Date"] && difference < 60){
-                        ReadOutLoud(timers[i]["Phrase"], false, true);
+                        ReadOutLoud(GetValue(timers[i]["Phrase"], culture), false, true);
                         DeleteProgressBar(timers[i]["Index"]);
                     }
                 }
@@ -987,12 +987,43 @@
             LogFunctionEnd();
         }
 
+        function GetValue(value, _culture){
+            var now = new Date();
+            var dd = now.toLocaleDateString(_culture, {day: 'numeric'});
+            var dddd = now.toLocaleDateString(_culture, {weekday: 'long'});
+            var MMMM = now.toLocaleDateString(_culture, {month: 'long'});
+            var MM = now.toLocaleDateString(_culture, {month: 'numeric'});
+            var yyyy = now.toLocaleDateString(_culture, {year: 'numeric'});
+            var HH = now.toLocaleDateString(_culture, {hour: 'numeric'}).split(" ")[1];
+            var mm = now.toLocaleDateString(_culture, {minute: 'numeric'}).split(" ")[1];
+            var ss = now.toLocaleDateString(_culture, {second: 'numeric'}).split(" ")[1];
+
+            value = value.replace("SHORTDATE", dddd + ", " + dd + " " + MMMM);
+
+            if (_culture.toLowerCase() == "it-it")
+                value = value.replace("DATETIME", HH + " e " + mm + "minuti, " + dddd + ", " + dd + " " + MMMM + " " + yyyy);
+
+            if (_culture.toLowerCase() == "en-us")
+                value = value.replace("DATETIME", HH + " e " + mm + "minutes, " + dddd + ", " + dd + " " + MMMM + " " + yyyy);
+
+            value = value.replace("DATE", dddd + ", " + dd + " " + MMMM);
+
+            if (_culture.toLowerCase() == "it-it")
+                value = value.replace("TIME", HH + " e " + mm + "minuti");
+
+            if (_culture.toLowerCase() == "en-us")
+                value = value.replace("TIME", HH + " and " + mm + "minutes");
+                
+            return value;
+        }
+
         function Speak(){
             LogFunctionStart();
             if (answer != null && answer != "") {
                 document.getElementById("final_span").innerHTML = "";
                 document.getElementById("interim_span").innerHTML = "";
                 var _answer = HexDecode(answer);
+                _answer = GetValue(_answer, culture);
                 answer = null;
                 
                 LogWithTime("Answer: " + _answer);
