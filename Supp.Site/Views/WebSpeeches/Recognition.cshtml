@@ -641,9 +641,6 @@
 
         function StartButton(event) {
             LogFunctionStart();
-            if(IsMobile() == true){
-                document.getElementById("start_img").src = "/Images/microphone.png";
-            }
 
             try {
                 recognition.abort();
@@ -659,6 +656,11 @@
                 recognition.start();
             }
             catch (error) { } 
+
+            if(IsMobile() == true){
+                ehi = 1;
+                document.getElementById("start_img").src = "/Images/microphone.png";
+            }
 
             recognitionActive = true;
             ignore_onend = false;
