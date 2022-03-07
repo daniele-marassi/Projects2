@@ -743,6 +743,8 @@ namespace Supp.Site.Recognition
 
                     startAnswer = salutation + " " + SuppUtility.GetSalutation(new CultureInfo(_claims.Configuration.General.Culture, false));
 
+                    if (DateTime.Now.Hour == 3) startAnswer = "";
+
                     if ((_phrase == null || _phrase == "") && data == null && _reset == false && _onlyRefresh == false && (_subType == null || _subType == ""))
                     {
                         data = new WebSpeechDto() { Answer = startAnswer, Ehi = 0, FinalStep = true };
