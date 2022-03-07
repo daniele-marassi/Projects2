@@ -2,6 +2,7 @@
 using Tools.ExecutionQueue;
 using System;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace Tools
 {
@@ -10,15 +11,20 @@ namespace Tools
         [STAThread]
 		static void Main()
 		{
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
+			Process[] process = Process.GetProcessesByName("Tools");
 
-            // Show the system tray icon.					
-            using (ProcessIcon pi = new ProcessIcon())
+			if (process.Length == 1)
 			{
-				pi.Display();
-                Application.Run(); 
-            }
+				Application.EnableVisualStyles();
+				Application.SetCompatibleTextRenderingDefault(false);
+
+				// Show the system tray icon.					
+				using (ProcessIcon pi = new ProcessIcon())
+				{
+					pi.Display();
+					Application.Run();
+				}
+			}
         }
     }
 }

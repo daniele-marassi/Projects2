@@ -107,6 +107,7 @@ namespace Tools.ExecutionQueue
             while (serviceActive)
             {
                 if (serviceActive == false) return;
+
                 try
                 {
                     var now = DateTime.Now;

@@ -29,6 +29,7 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\bin\Debug\Newtonsof
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\bin\Debug\Additional.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\bin\Debug\Additional.dll.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\bin\Debug\Newtonsoft.Json.xml
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.csproj.AssemblyReference.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.csproj.SuggestedBindingRedirects.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\Tools.MessagesPopUp.PopUp.resources
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.Properties.Resources.resources
