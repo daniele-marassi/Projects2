@@ -533,13 +533,26 @@
                 document.getElementById("footerContainer").style.color = "#333";  
 
                 var ellipse = document.getElementById("svg_ellipse");
-                ellipse.setAttribute("viewBox", "23.8 -13 153 140");
+
+                if(window.screen.height * window.devicePixelRatio == 1080)
+                    ellipse.setAttribute("viewBox", "23.8 -13 153 140");
+
+                if(window.screen.height * window.devicePixelRatio == 2160)
+                    ellipse.setAttribute("viewBox", "34.3 -13 132 140");
  
                 document.getElementById("hosts_cmb_container").style.marginTop="-19.8%";
                  
                 var ellipse6 = document.getElementById("ellipse6");
-                ellipse6.setAttribute("rx", "55");
-                ellipse6.setAttribute("ry", "55");
+
+                if(window.screen.height * window.devicePixelRatio == 1080){
+                    ellipse6.setAttribute("rx", "57");
+                    ellipse6.setAttribute("ry", "57");
+                }
+
+                if(window.screen.height * window.devicePixelRatio == 2160){
+                    ellipse6.setAttribute("rx", "60");
+                    ellipse6.setAttribute("ry", "60");
+                }
             }
 
             document.getElementById("sendPhrase_text")
@@ -1479,7 +1492,7 @@
                 <ellipse id="ellipse3" cx="100" cy="50" rx="50" ry="50" style="fill: #026aad;" filter="url(#blurMe)"/>
                 <ellipse id="ellipse4" cx="100" cy="50" rx="50" ry="50" style="fill: #7a1cc9;" filter="url(#blurMe)"/>
                 <ellipse id="ellipse5" cx="100" cy="50" rx="50" ry="50" style="fill: #c22b10;" filter="url(#blurMe)"/>
-                <ellipse id="ellipse6" cx="100" cy="50" rx="55" ry="55" style=" cursor:pointer;" onclick="EllipseClick();"  class="btn ellipse-dark" />
+                <ellipse id="ellipse6" cx="100" cy="50" rx="57" ry="57" style=" cursor:pointer;" onclick="EllipseClick();"  class="btn ellipse-dark" />
             </svg>
         </div>
         <div id="hosts_cmb_container" style="text-align:center; margin-top:-17%;">
