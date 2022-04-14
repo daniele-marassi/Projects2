@@ -537,6 +537,9 @@
                 if(window.screen.height * window.devicePixelRatio == 1080)
                     ellipse.setAttribute("viewBox", "23.8 -13 153 140");
 
+                if(window.screen.height * window.devicePixelRatio == 1440)
+                    ellipse.setAttribute("viewBox", "34.3 -13 132 140");
+
                 if(window.screen.height * window.devicePixelRatio == 2160)
                     ellipse.setAttribute("viewBox", "34.3 -13 132 140");
  
@@ -544,9 +547,9 @@
                  
                 var ellipse6 = document.getElementById("ellipse6");
 
-                if(window.screen.height * window.devicePixelRatio == 1080){
-                    ellipse6.setAttribute("rx", "57");
-                    ellipse6.setAttribute("ry", "57");
+                if(window.screen.height * window.devicePixelRatio == 1080 || window.screen.height * window.devicePixelRatio == 1440){
+                    ellipse6.setAttribute("rx", "58");
+                    ellipse6.setAttribute("ry", "58");
                 }
 
                 if(window.screen.height * window.devicePixelRatio == 2160){
