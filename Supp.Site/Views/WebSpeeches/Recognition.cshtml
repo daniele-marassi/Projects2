@@ -532,27 +532,29 @@
 
                 document.getElementById("footerContainer").style.color = "#333";  
 
+                var heightScreen = window.screen.height * window.devicePixelRatio;
+
                 var ellipse = document.getElementById("svg_ellipse");
 
-                if(window.screen.height * window.devicePixelRatio == 1080)
+                if(heightScreen == 1080)
                     ellipse.setAttribute("viewBox", "23.8 -13 153 140");
 
-                if(window.screen.height * window.devicePixelRatio == 1440)
+                if(heightScreen == 1440)
                     ellipse.setAttribute("viewBox", "34.3 -13 132 140");
 
-                if(window.screen.height * window.devicePixelRatio == 2160)
+                if(heightScreen == 2160)
                     ellipse.setAttribute("viewBox", "34.3 -13 132 140");
  
                 document.getElementById("hosts_cmb_container").style.marginTop="-19.8%";
                  
                 var ellipse6 = document.getElementById("ellipse6");
 
-                if(window.screen.height * window.devicePixelRatio == 1080 || window.screen.height * window.devicePixelRatio == 1440){
+                if(heightScreen == 1080 || heightScreeno == 1440){
                     ellipse6.setAttribute("rx", "58");
                     ellipse6.setAttribute("ry", "58");
                 }
 
-                if(window.screen.height * window.devicePixelRatio == 2160){
+                if(heightScreen == 2160){
                     ellipse6.setAttribute("rx", "60");
                     ellipse6.setAttribute("ry", "60");
                 }
@@ -1363,6 +1365,10 @@
                     AddShortcuts(shortcut);
                 }
             }
+
+                var heightScreen = window.screen.height * window.devicePixelRatio;
+                element.style.maxHeight = (65 * heightScreen / 100) + "px";
+
             LogFunctionEnd();
         }
 
