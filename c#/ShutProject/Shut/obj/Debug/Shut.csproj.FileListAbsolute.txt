@@ -2,6 +2,7 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Debug\Resources\Ab
 C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Debug\Resources\About.png
 C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Debug\Resources\Fonts\Cafed_v2.ttf
 C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Debug\Resources\Fonts\PAPYRUS.TTF
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Debug\External_library\Additional.dll.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Debug\Resources\Fonts\We Spray.ttf
 C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Debug\Resources\Fonts\Byom-Icons-Trial.ttf
 C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Debug\Resources\Fonts\WEBDINGS.TTF
@@ -22,7 +23,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Debug\Resources\Fo
 C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Debug\Resources\Fonts\Dog-Rough.ttf
 C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Debug\Resources\Fonts\breezi_font-webfont.ttf
 C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Debug\Resources\Fonts\Icons South St.ttf
-C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Debug\External_library\Additional.dll.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Debug\Shut.exe.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Debug\Shut.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Debug\Shut.pdb

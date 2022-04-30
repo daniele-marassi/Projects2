@@ -208,6 +208,7 @@ namespace Supp.Site.Recognition
                    )
                )
             {
+                if (_phrase == null) _phrase = "";
                 newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = _phrase.Trim();
                 setCookie = true;
             }
@@ -270,6 +271,7 @@ namespace Supp.Site.Recognition
                    )
                )
             {
+                if (_phrase == null) _phrase = "";
                 newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = _phrase.Trim();
                 setCookie = true;
             }
@@ -337,6 +339,8 @@ namespace Supp.Site.Recognition
                     newWebSpeech.Elements[newWebSpeech.ElementIndex].Value += "\n";
                 else
                     newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = "";
+
+                if (_phrase == null) _phrase = "";
 
                 newWebSpeech.Elements[newWebSpeech.ElementIndex].Value += _phrase.Trim();
                 setCookie = true;
@@ -474,6 +478,7 @@ namespace Supp.Site.Recognition
                    )
                )
             {
+                if (_phrase == null) _phrase = "";
                 newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = GetPhrase(_phrase.Trim());
                 setCookie = true;
             }
@@ -486,6 +491,7 @@ namespace Supp.Site.Recognition
                    )
                )
             {
+                if (_phrase == null) _phrase = "";
                 newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = _phrase.Trim();
                 setCookie = true;
             }
@@ -547,6 +553,7 @@ namespace Supp.Site.Recognition
                    )
                )
             {
+                if (_phrase == null) _phrase = "";
                 newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = _phrase.Trim();
                 setCookie = true;
             }
@@ -589,6 +596,7 @@ namespace Supp.Site.Recognition
                    )
                )
             {
+                if (_phrase == null) _phrase = "";
                 newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = _phrase.Trim();
                 setCookie = true;
             }
@@ -634,6 +642,7 @@ namespace Supp.Site.Recognition
                 var index = newWebSpeech.ElementIndex;
                 if (newWebSpeech.Elements[index] == null)
                     newWebSpeech.Elements[index] = new Element() { Value = String.Empty };
+                if (_phrase == null) _phrase = "";
                 newWebSpeech.Elements[index].Value = _phrase.Trim();
                 setCookie = true;
             }

@@ -71,16 +71,6 @@ namespace Tools.Properties {
         }
         
         /// <summary>
-        ///   Cerca una risorsa localizzata di tipo System.Drawing.Icon simile a (Icona).
-        /// </summary>
-        internal static System.Drawing.Icon About1 {
-            get {
-                object obj = ResourceManager.GetObject("About1", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Byte[].
         /// </summary>
         internal static byte[] Error {
@@ -96,6 +86,26 @@ namespace Tools.Properties {
         internal static System.Drawing.Bitmap Exit {
             get {
                 object obj = ResourceManager.GetObject("Exit", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NotifyActive {
+            get {
+                object obj = ResourceManager.GetObject("NotifyActive", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NotifyDisable {
+            get {
+                object obj = ResourceManager.GetObject("NotifyDisable", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -141,26 +151,6 @@ namespace Tools.Properties {
         }
         
         /// <summary>
-        ///   Cerca una risorsa localizzata di tipo System.Drawing.Icon simile a (Icona).
-        /// </summary>
-        internal static System.Drawing.Icon Shut {
-            get {
-                object obj = ResourceManager.GetObject("Shut", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una risorsa localizzata di tipo System.Drawing.Icon simile a (Icona).
-        /// </summary>
-        internal static System.Drawing.Icon ShutTask {
-            get {
-                object obj = ResourceManager.GetObject("ShutTask", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap SongsManagerActive {
@@ -176,6 +166,26 @@ namespace Tools.Properties {
         internal static System.Drawing.Bitmap SongsManagerDisable {
             get {
                 object obj = ResourceManager.GetObject("SongsManagerDisable", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SoundNotifyActive {
+            get {
+                object obj = ResourceManager.GetObject("SoundNotifyActive", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SoundNotifyDisable {
+            get {
+                object obj = ResourceManager.GetObject("SoundNotifyDisable", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

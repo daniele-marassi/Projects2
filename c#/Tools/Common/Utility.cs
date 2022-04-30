@@ -53,6 +53,10 @@ namespace Tools.Common
 
             Cursor.Position = new Point(workingAreaWidth - 520, workingAreaHeight + 20);
 
+            Cursor.Position = new Point(workingAreaWidth - 520, workingAreaHeight + 20);
+
+            VirtualMouse.LeftClick();
+
             System.Threading.Thread.Sleep(1000);
 
             VirtualMouse.LeftClick();

@@ -353,6 +353,7 @@ namespace Supp.Site.Recognition
                                 data.Elements = new Element[2];
                                 data.Elements[0] = new Element() { Value = String.Empty };
                             }
+                            if (_phrase == null) _phrase = "";
                             data.Elements[0].Value = _phrase.Trim();
                             var value = phraseInDateTimeManager.Convert(_phrase, _claims.Configuration.General.Culture);
 
@@ -687,7 +688,7 @@ namespace Supp.Site.Recognition
 
                             _data.Parameters = data.Parameters;
                             if (_param != null && _param != "null" && _param != "") _data.Parameters = _param;
-                            _data.Answer = data.Answer;
+                            if(_data.Answer == null || _data.Answer == "") _data.Answer = data.Answer;
                             //_data.Type = data.Type;
 
                             data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);
@@ -1027,7 +1028,7 @@ namespace Supp.Site.Recognition
                                     foreach (var key in keysArray)
                                     {
                                         var keys = key.ToString().Trim().ToLower().Split(' ');
-
+                                        if (_phrase == null) _phrase = "";
                                         if (keys.Count() == 1)
                                         {
                                             var words = _phrase.Trim().ToLower().Split(' ');
@@ -1102,6 +1103,7 @@ namespace Supp.Site.Recognition
             {
                 var keysArray = itemPhrase.Split(' ').ToList();
                 _minMatch = keysArray.Count;
+                if (_phrase == null) _phrase = "";
 
                 foreach (var key in keysArray)
                 {

@@ -51,6 +51,9 @@ namespace Tools.ExecutionQueue
         int workingAreaHeight;
         bool alwaysShow;
         string songsPlayer;
+        int volumeOfNotify;
+        bool notifyMute;
+        bool notifyPopupShow;
 
         public QueueService()
         {
@@ -68,14 +71,19 @@ namespace Tools.ExecutionQueue
             windowY = 0;
 
             host = appSettings["Host"];
-            sleepOfTheQueueServiceInMilliseconds = int.Parse(ConfigurationManager.AppSettings["SleepOfTheQueueServiceInMilliseconds"]);
-            timeToClosePopUpInMilliseconds = int.Parse(ConfigurationManager.AppSettings["TimeToClosePopUpInMilliseconds"]);
-            suppDatabaseConnection = ConfigurationManager.AppSettings["SuppDatabaseConnection"];
-            limitLogFileInMB = int.Parse(ConfigurationManager.AppSettings["LimitLogFileInMB"]);
+            sleepOfTheQueueServiceInMilliseconds = int.Parse(appSettings["SleepOfTheQueueServiceInMilliseconds"]);
+            timeToClosePopUpInMilliseconds = int.Parse(appSettings["TimeToClosePopUpInMilliseconds"]);
+            suppDatabaseConnection = appSettings["SuppDatabaseConnection"];
+            limitLogFileInMB = int.Parse(appSettings["LimitLogFileInMB"]);
             _repo = new ExecutionQueuesRepository(suppDatabaseConnection);
             _songsRepo = new SongsRepository(suppDatabaseConnection);
             Database.SetInitializer<SuppDatabaseContext>(null);
             rootPath = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+
+            volumeOfNotify = int.Parse(appSettings["VolumeOfNotify"]);
+
+            notifyMute = bool.Parse(appSettings["NotifyMute"]);        
+            notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
         }
 
         protected override void OnStart(string[] args)
@@ -166,8 +174,11 @@ namespace Tools.ExecutionQueue
                                     nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                                     using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                                     {
-                                        if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem");
-                                        Common.Utility.ShowMessage("QueueService Message:" + updateExecutionQueueResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+                                        appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                                        notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                                        if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem", volumeOfNotify, notifyMute);
+                                        if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + updateExecutionQueueResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                                         oldUpdateError = updateExecutionQueueResult.Message;
                                         logger.Error(oldUpdateError);
                                     }
@@ -245,9 +256,12 @@ namespace Tools.ExecutionQueue
                                     nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                                     using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                                     {
+                                        appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                                        notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
                                         oldUpdateError = null;
-                                        if (serviceActive) Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem");
-                                        Common.Utility.ShowMessage("QueueService Message:" + " Update db now work!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
+                                        if (serviceActive) Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem", volumeOfNotify, notifyMute);
+                                        if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + " Update db now work!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                                         logger.Info("Update db now work!");
                                     }
                                 }
@@ -259,8 +273,11 @@ namespace Tools.ExecutionQueue
                             nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                             {
-                                if (serviceActive) Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem");
-                                Common.Utility.ShowMessage("QueueService Message:" + "Queue Service Recovered!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
+                                appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                                notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                                if (serviceActive) Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem", volumeOfNotify, notifyMute);
+                                if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + "Queue Service Recovered!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                                 logger.Info("Queue Service Recovered!");
                             }
                          }
@@ -272,8 +289,11 @@ namespace Tools.ExecutionQueue
                         nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
-                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem");
-                            Common.Utility.ShowMessage("QueueService Message:" + getAllExecutionQueuesResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+                            appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                            notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem", volumeOfNotify, notifyMute);
+                            if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + getAllExecutionQueuesResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                             oldServiceError = getAllExecutionQueuesResult.Message;
                             logger.Error(oldServiceError);
                         }
@@ -286,8 +306,11 @@ namespace Tools.ExecutionQueue
                         nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
-                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem");
-                            Common.Utility.ShowMessage("QueueService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+                            appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                            notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem", volumeOfNotify, notifyMute);
+                            if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                             oldServiceError = ex.Message;
                             logger.Error(oldServiceError);
                         }
@@ -323,14 +346,17 @@ namespace Tools.ExecutionQueue
 
             if (result.Error != null && result.Error != String.Empty)
             {
-                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem");
+                appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem", volumeOfNotify, notifyMute);
                 var error = result.Error + " [" + item.FullPath + "]";
                 if (oldRunExeError == null || oldRunExeError != error)
                 {
                     nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                     using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                     {
-                        Common.Utility.ShowMessage("QueueService Message:" + error, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+                        if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + error, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                         oldRunExeError = error;
                         logger.Error(oldRunExeError);
                     }
@@ -341,7 +367,10 @@ namespace Tools.ExecutionQueue
                 if (oldRunExeError != null)
                 {
                     oldRunExeError = null;
-                    if (serviceActive) Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem");
+                    appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                    notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                    if (serviceActive) Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem", volumeOfNotify, notifyMute);
                 }
             }
 
@@ -366,8 +395,11 @@ namespace Tools.ExecutionQueue
                     nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                     using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                     {
-                        if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem");
-                        Common.Utility.ShowMessage("QueueService Message:" + updateExecutionQueueResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+                        appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                        notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                        if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem", volumeOfNotify, notifyMute);
+                        if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + updateExecutionQueueResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                         oldUpdateError = updateExecutionQueueResult.Message;
                         logger.Error(oldUpdateError);
                     }
@@ -380,9 +412,12 @@ namespace Tools.ExecutionQueue
                     nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                     using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                     {
+                        appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                        notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
                         oldUpdateError = null;
-                        if (serviceActive) Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem");
-                        Common.Utility.ShowMessage("QueueService Message:" + " Update db now work!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
+                        if (serviceActive) Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem", volumeOfNotify, notifyMute);
+                        if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + " Update db now work!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                         logger.Info("Update db now work!");
                     }
                 }

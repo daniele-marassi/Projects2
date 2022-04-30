@@ -32,6 +32,10 @@ namespace Tools.ReconnectBluetoothDevice
         private string[] bluetoothDevicePasswordList;
         private string[] bluetoothDeviceTypeList;
         private double volumePercent;
+        int volumeOfNotify;
+        bool notifyMute;
+        bool notifyPopupShow;
+        System.Collections.Specialized.NameValueCollection appSettings;
 
         public ReconnectBluetoothDeviceService()
         {
@@ -62,6 +66,11 @@ namespace Tools.ReconnectBluetoothDevice
             rootPath = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
 
             volumePercent = double.Parse(ConfigurationManager.AppSettings["VolumePercent"]);
+
+            volumeOfNotify = int.Parse(ConfigurationManager.AppSettings["VolumeOfNotify"]);
+
+            notifyMute = bool.Parse(ConfigurationManager.AppSettings["NotifyMute"]);
+            notifyPopupShow = bool.Parse(ConfigurationManager.AppSettings["NotifyPopupShow"]);
         }
 
         public void Stop()
@@ -92,8 +101,11 @@ namespace Tools.ReconnectBluetoothDevice
                             nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                             {
-                                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("ReconnectBluetoothDeviceServiceMenuItem");
-                                Common.Utility.ShowMessage("ReconnectBluetoothDeviceService Message:" + reconnectBluetoothDeviceResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+                                appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                                notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("ReconnectBluetoothDeviceServiceMenuItem", volumeOfNotify, notifyMute);
+                                if (notifyPopupShow) Common.Utility.ShowMessage("ReconnectBluetoothDeviceService Message:" + reconnectBluetoothDeviceResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                                 showError = reconnectBluetoothDeviceResult.Message;
                                 logger.Error(reconnectBluetoothDeviceResult.Message);
                             }
@@ -103,8 +115,11 @@ namespace Tools.ReconnectBluetoothDevice
                             nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                             {
-                                if (serviceActive) Common.ContextMenus.SetMenuItemRecover("ReconnectBluetoothDeviceServiceMenuItem");
-                                Common.Utility.ShowMessage("ReconnectBluetoothDeviceService Message:" + "Service recovered!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
+                                appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                                notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                                if (serviceActive) Common.ContextMenus.SetMenuItemRecover("ReconnectBluetoothDeviceServiceMenuItem", volumeOfNotify, notifyMute);
+                                if (notifyPopupShow) Common.Utility.ShowMessage("ReconnectBluetoothDeviceService Message:" + "Service recovered!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                                 showError = null;
                                 logger.Info(reconnectBluetoothDeviceResult.Message);
                             }
@@ -123,8 +138,11 @@ namespace Tools.ReconnectBluetoothDevice
                             nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                             {
-                                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("ReconnectBluetoothDeviceServiceMenuItem");
-                                Common.Utility.ShowMessage("ReconnectBluetoothDeviceService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+                                appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                                notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("ReconnectBluetoothDeviceServiceMenuItem", volumeOfNotify, notifyMute);
+                                if (notifyPopupShow) Common.Utility.ShowMessage("ReconnectBluetoothDeviceService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                                 showError = ex.Message;
                                 logger.Error(ex.Message);
                             }

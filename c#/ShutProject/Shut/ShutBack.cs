@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -61,19 +62,24 @@ namespace Shut
             //Back.Font = new Font(Back.Font.FontFamily, 50, FontStyle.Regular);
         }
 
-        public void SetToolTip(string text)
+        public void SetToolTip(string text, Color color)
         {
+            ToolTipLbl.ForeColor = color;
             ToolTipLbl.Text = text;
         }
 
         public void SetColor(Color color)
         {
-            
+
             //Back.ForeColor = Color.FromArgb(color.ToArgb() ^ 0xffffff);
 
             //Back.ForeColor = Color.FromArgb(color.ToArgb());
-            Back.ForeColor = Color.FromArgb(Color.Black.ToArgb());
-           
+            //Back.ForeColor = Color.FromArgb(Color.Black.ToArgb());
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            string backColor = config.AppSettings.Settings["backColor"].Value;
+
+            Back.ForeColor = utility.GenerateRgba(backColor);
+
             //Back.Font = new Font(Back.Font, FontStyle.Bold);
         }
 

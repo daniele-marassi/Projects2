@@ -549,7 +549,7 @@
                  
                 var ellipse6 = document.getElementById("ellipse6");
 
-                if(heightScreen == 1080 || heightScreeno == 1440){
+                if(heightScreen == 1080 || heightScreen == 1440){
                     ellipse6.setAttribute("rx", "58");
                     ellipse6.setAttribute("ry", "58");
                 }
@@ -1366,8 +1366,7 @@
                 }
             }
 
-                var heightScreen = window.screen.height * window.devicePixelRatio;
-                element.style.maxHeight = (65 * heightScreen / 100) + "px";
+            element.style.maxHeight = (65 * window.innerHeight / 100) + "px";
 
             LogFunctionEnd();
         }

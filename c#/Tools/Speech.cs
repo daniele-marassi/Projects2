@@ -45,6 +45,7 @@ namespace Tools
         int showTimeout;
         bool alwaysShow;
         double volumePercent;
+        int volumeOfNotify;
 
         public Speech()
         {
@@ -81,6 +82,8 @@ namespace Tools
             showTimeout = int.Parse(appSettings["ShowTimeout"]);
             volumePercent = double.Parse(appSettings["VolumePercent"]);
 
+            volumeOfNotify = int.Parse(appSettings["VolumeOfNotify"]);
+
             SetVolume(volumePercent);
         }
 
@@ -114,7 +117,6 @@ namespace Tools
 
             result.Position = taskBarLocation;
             
-
             return result;
         }
 
@@ -169,7 +171,7 @@ namespace Tools
             else if (windowNormalFormat && hide == false) 
                 result = utilty.RunAS(browserPath, browserExeName, $"--new-window --enable-speech-dispatcher --window-size={workingAreaWidth},{workingAreaHeight} --window-position={0},{0} {suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
 
-            var _processId = (int)result.ProcessId;
+            //var _processId = (int)result.ProcessId;
 
             if (removeFocus) commonUtility.ClickOnTaskbar();
         }

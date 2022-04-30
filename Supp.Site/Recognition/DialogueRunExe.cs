@@ -240,7 +240,7 @@ namespace Supp.Site.Recognition
             {
                 var value = 0;
                 if (_phrase == null || _phrase == "") _phrase = data.Phrase;
-
+                if (_phrase == null) _phrase = "";
                 var words = _phrase.Trim().ToLower().Split(' ');
                 foreach (var word in words)
                 {

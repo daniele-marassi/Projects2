@@ -39,7 +39,14 @@ namespace Tools
 		public static bool SpeechServiceActive = true;
 		public static int SpeechShowHideActive = -1;
 		public static bool SongsManagerActive = true;
-		
+		bool notifyMute;
+		bool notifyPopupShow;
+
+		public static bool NotifyMuteActive = true;
+		public static bool NotifyPopupShowActive = true;
+		System.Collections.Specialized.NameValueCollection appSettings;
+
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ProcessIcon"/> class.
 		/// </summary>
@@ -47,16 +54,19 @@ namespace Tools
 		{
 			// Instantiate the NotifyIcon object.
 			ni = new NotifyIcon();
-
-			Hook.controlKey = ConfigurationManager.AppSettings["controlKey"];
-			Hook.keyUp = ConfigurationManager.AppSettings["keyUp"];
-			Hook.keyDown = ConfigurationManager.AppSettings["keyDown"];
+			appSettings = ConfigurationManager.AppSettings;
+			Hook.controlKey = appSettings["controlKey"];
+			Hook.keyUp = appSettings["keyUp"];
+			Hook.keyDown = appSettings["keyDown"];
 
 			Hook.methodOfUse = Environment.NewLine + "HookKey - method of use: ";
 
             if (Hook.controlKey != String.Empty) Hook.methodOfUse += Environment.NewLine + "ControlKey " + "[" + Hook.controlKey + "]";
 			Hook.methodOfUse += Environment.NewLine + "keyUp " + "[" + Hook.keyUp + "]";
 			Hook.methodOfUse += Environment.NewLine + "keyDown " + "[" + Hook.keyDown + "]";
+
+			notifyMute = bool.Parse(appSettings["NotifyMute"]);
+			notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
 		}
 
         /// <summary>
@@ -73,7 +83,7 @@ namespace Tools
 			// Attach a context menu.
 			ni.ContextMenuStrip = new ContextMenus().Create();
 
-			if (bool.Parse(ConfigurationManager.AppSettings["HookKey"]))
+			if (bool.Parse(appSettings["HookKey"]))
 			{
 				HookKeyActive = true;
 
@@ -86,7 +96,29 @@ namespace Tools
 				ContextMenus.SetMenuItem("HookKeyMenuItem");
 			}
 
-			if (bool.Parse(ConfigurationManager.AppSettings["QueueService"]))
+			if (bool.Parse(appSettings["NotifyMute"]))
+			{
+				NotifyMuteActive = true;
+
+				System.Threading.Thread.Sleep(50);
+			}
+			else
+			{
+				ContextMenus.SetMenuItem("NotifyMuteMenuItem");
+			}
+
+			if (bool.Parse(appSettings["NotifyPopupShow"]))
+			{
+				NotifyPopupShowActive = true;
+
+				System.Threading.Thread.Sleep(50);
+			}
+			else
+			{
+				ContextMenus.SetMenuItem("NotifyPopupShowMenuItem");
+			}
+
+			if (bool.Parse(appSettings["QueueService"]))
 			{
 				QueueServiceActive = true;
 
@@ -100,7 +132,7 @@ namespace Tools
 				ContextMenus.SetMenuItem("QueueServiceMenuItem");
 			}
 
-			if (bool.Parse(ConfigurationManager.AppSettings["SyncIpService"]))
+			if (bool.Parse(appSettings["SyncIpService"]))
 			{
 				SyncIpServiceActive = true;
 
@@ -114,7 +146,7 @@ namespace Tools
 				ContextMenus.SetMenuItem("SyncIpServiceMenuItem");
 			}
 
-			if (bool.Parse(ConfigurationManager.AppSettings["ReconnectBluetoothDeviceService"]))
+			if (bool.Parse(appSettings["ReconnectBluetoothDeviceService"]))
 			{
 				ReconnectBluetoothDeviceServiceActive = true;
 
@@ -128,7 +160,7 @@ namespace Tools
 				ContextMenus.SetMenuItem("ReconnectBluetoothDeviceServiceMenuItem");
 			}
 
-			if (bool.Parse(ConfigurationManager.AppSettings["RenewNotesService"]))
+			if (bool.Parse(appSettings["RenewNotesService"]))
 			{
 				RenewNotesServiceActive = true;
 
@@ -142,7 +174,7 @@ namespace Tools
 				ContextMenus.SetMenuItem("RenewNotesServiceMenuItem");
 			}
 
-			if (bool.Parse(ConfigurationManager.AppSettings["WakeUpScreenAfterPowerBreakService"]))
+			if (bool.Parse(appSettings["WakeUpScreenAfterPowerBreakService"]))
 			{
 				WakeUpScreenAfterPowerBreakServiceActive = true;
 
@@ -156,7 +188,7 @@ namespace Tools
 				ContextMenus.SetMenuItem("WakeUpScreenAfterPowerBreakServiceMenuItem");
 			}
 
-			if (bool.Parse(ConfigurationManager.AppSettings["Speech"]))
+			if (bool.Parse(appSettings["Speech"]))
 			{
 				SpeechServiceActive = true;
 
@@ -172,7 +204,7 @@ namespace Tools
 				ContextMenus.SetMenuItem("SpeechServiceMenuItem");
 			}
 
-			if (bool.Parse(ConfigurationManager.AppSettings["SongsManager"]))
+			if (bool.Parse(appSettings["SongsManager"]))
 			{
 				SongsManagerActive = true;
 

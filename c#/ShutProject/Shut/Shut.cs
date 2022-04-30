@@ -391,6 +391,8 @@ namespace Shut
                 Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 string colorizationValueConf = config.AppSettings.Settings["colorizationValueConf"].Value;
 
+                string forceColorizationInHexString = config.AppSettings.Settings["forceColorizationInHexString"].Value;
+
                 config.AppSettings.Settings["colorizationValueConf"].Value = colorizationValueReg;
                 config.Save(ConfigurationSaveMode.Modified);
 
@@ -401,11 +403,14 @@ namespace Shut
 
                 if (autoColorization == 1) color = ControlPaint.Light(color, 0.7f);
 
+
+                if (forceColorizationInHexString != "") color = utility.GenerateRgba(forceColorizationInHexString);
             }
             catch (Exception ex)
             {}
 
-            //color = Color.FromArgb(255, 225, 0, 0);/////////////////////////////////////
+            //color = utility.GenerateRgba("fd1c1c");
+            //color = Color.FromArgb(255, 255, 0, 0);/////////////////////////////////////
 
             if ((color.R + color.G + color.B) <= (255 * 3) - 100)
             {
@@ -419,7 +424,7 @@ namespace Shut
             }
 
             if (shutBack != null)
-                shutBack.SetColor(color);;
+                shutBack.SetColor(color);
 
             this.ShutDown.ForeColor = color;
             this.Exit.ForeColor = color;
@@ -499,7 +504,7 @@ namespace Shut
             shutBack = new ShutBack();
             
             shutBack.Show();
-            shutBack.SetToolTip(String.Empty);
+            shutBack.SetToolTip(String.Empty, color);
             shutBack.Left = 0;
             shutBack.Top = Screen.PrimaryScreen.WorkingArea.Height - (shutBack.Height + 0);
 
@@ -1186,7 +1191,7 @@ namespace Shut
                 && (Cursor.Position.X >= this.Left && Cursor.Position.X <= this.Top + this.Width)
                 )
             {
-                shutBack.SetToolTip(control.Name);
+                shutBack.SetToolTip(control.Name, color);
                 if (elementsInMouseHover[control.Name] == false)
                 {
                     elementsInMouseHover[control.Name] = true;
@@ -1200,7 +1205,7 @@ namespace Shut
                 {
                     MouseLeave(control, fontsSizes[control.Name]);
                     elementsInMouseHover[control.Name] = false;
-                    shutBack.SetToolTip(String.Empty);
+                    shutBack.SetToolTip(String.Empty, color);
                 }
             }
 

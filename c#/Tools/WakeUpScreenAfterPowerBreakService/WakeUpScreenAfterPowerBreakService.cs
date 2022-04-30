@@ -24,6 +24,10 @@ namespace Tools.WakeUpScreenAfterPowerBreak
         private static Logger classLogger = LogManager.GetCurrentClassLogger();
         private NLogUtility nLogUtility = new NLogUtility();
         private int limitLogFileInMB = 0;
+        int volumeOfNotify;
+        bool notifyMute;
+        bool notifyPopupShow;
+        System.Collections.Specialized.NameValueCollection appSettings;
 
         public WakeUpScreenAfterPowerBreakService()
         {
@@ -31,7 +35,7 @@ namespace Tools.WakeUpScreenAfterPowerBreak
 
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
-            var appSettings = ConfigurationManager.AppSettings;
+            appSettings = ConfigurationManager.AppSettings;
 
             sleepOfTheWakeUpScreenAfterPowerBreakServiceInMilliseconds = int.Parse(ConfigurationManager.AppSettings["SleepOfTheWakeUpScreenAfterPowerBreakServiceInMilliseconds"]);
             limitLogFileInMB = int.Parse(ConfigurationManager.AppSettings["LimitLogFileInMB"]);
@@ -43,6 +47,11 @@ namespace Tools.WakeUpScreenAfterPowerBreak
             rootPath = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
 
             commonUtility = new Common.Utility();
+
+            volumeOfNotify = int.Parse(appSettings["VolumeOfNotify"]);
+
+            notifyMute = bool.Parse(appSettings["NotifyMute"]);
+            notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
         }
 
         public void Stop()
@@ -75,8 +84,11 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                         nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
-                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("WakeUpScreenAfterPowerBreakServiceMenuItem");
-                            Common.Utility.ShowMessage("WakeUpScreenAfterPowerBreakService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+                            appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                            notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("WakeUpScreenAfterPowerBreakServiceMenuItem", volumeOfNotify, notifyMute);
+                            if (notifyPopupShow) Common.Utility.ShowMessage("WakeUpScreenAfterPowerBreakService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                             showError = ex.Message;
                             logger.Error(ex.Message);
                         }

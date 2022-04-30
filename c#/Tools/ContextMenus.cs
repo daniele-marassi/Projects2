@@ -56,6 +56,30 @@ namespace Tools
 			sep = new ToolStripSeparator();
 			Common.ContextMenus.Menu.Items.Add(sep);
 
+			// NotifyMute.
+			item = new ToolStripMenuItem();
+			item.Text = "Notify Mute";
+			item.Name = "NotifyMuteMenuItem";
+			item.Click += new EventHandler(NotifyMute_Click);
+			item.Image = Resources.SoundNotifyActive;
+			Common.ContextMenus.Menu.Items.Add(item);
+
+			// Separator.
+			sep = new ToolStripSeparator();
+			Common.ContextMenus.Menu.Items.Add(sep);
+
+			// NotifyPopupShow.
+			item = new ToolStripMenuItem();
+			item.Text = "Notify Popup Show";
+			item.Name = "NotifyPopupShowMenuItem";
+			item.Click += new EventHandler(NotifyPopupShow_Click);
+			item.Image = Resources.NotifyActive;
+			Common.ContextMenus.Menu.Items.Add(item);
+
+			// Separator.
+			sep = new ToolStripSeparator();
+			Common.ContextMenus.Menu.Items.Add(sep);
+
 			// QueueService.
 			item = new ToolStripMenuItem();
 			item.Text = "Queue Service";
@@ -205,6 +229,16 @@ namespace Tools
 			SetMenuItem("HookKeyMenuItem");
 		}
 
+		void NotifyMute_Click(object sender, EventArgs e)
+		{
+			SetMenuItem("NotifyMuteMenuItem");
+		}
+
+		void NotifyPopupShow_Click(object sender, EventArgs e)
+		{
+			SetMenuItem("NotifyPopupShowMenuItem");
+		}
+
 		void QueueService_Click(object sender, EventArgs e)
 		{
 			SetMenuItem("QueueServiceMenuItem");
@@ -272,6 +306,44 @@ namespace Tools
 					AddOrUpdateAppSettings("HookKey", ProcessIcon.HookKeyActive.ToString());
 					item.Image = Resources.ServiceActive;
 					Hook.Start();
+				}
+			}
+
+			if (itemName == "NotifyMuteMenuItem")
+			{
+				var item = Common.ContextMenus.Menu.Items[itemName];
+
+				if (ProcessIcon.NotifyMuteActive)
+				{
+					ProcessIcon.NotifyMuteActive = false;
+					AddOrUpdateAppSettings("NotifyMute", ProcessIcon.NotifyMuteActive.ToString());
+					item.Image = Resources.SoundNotifyDisable;
+				}
+				else
+				{
+					ProcessIcon.NotifyMuteActive = true;
+
+					AddOrUpdateAppSettings("NotifyMute", ProcessIcon.NotifyMuteActive.ToString());
+					item.Image = Resources.SoundNotifyActive;
+				}
+			}
+
+			if (itemName == "NotifyPopupShowMenuItem")
+			{
+				var item = Common.ContextMenus.Menu.Items[itemName];
+
+				if (ProcessIcon.NotifyPopupShowActive)
+				{
+					ProcessIcon.NotifyPopupShowActive = false;
+					AddOrUpdateAppSettings("NotifyPopupShow", ProcessIcon.NotifyPopupShowActive.ToString());
+					item.Image = Resources.NotifyDisable;
+				}
+				else
+				{
+					ProcessIcon.NotifyPopupShowActive = true;
+
+					AddOrUpdateAppSettings("NotifyPopupShow", ProcessIcon.NotifyPopupShowActive.ToString());
+					item.Image = Resources.NotifyActive;
 				}
 			}
 

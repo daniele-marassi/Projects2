@@ -36,6 +36,10 @@ namespace Tools.RenewNotes
         string suppUsername;
         string suppPassword;
         string suppServiceHostBaseUrl;
+        int volumeOfNotify;
+        bool notifyMute;
+        bool notifyPopupShow;
+        System.Collections.Specialized.NameValueCollection appSettings;
 
         public RenewNotesService()
         {
@@ -43,7 +47,7 @@ namespace Tools.RenewNotes
 
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
-            var appSettings = ConfigurationManager.AppSettings;
+            appSettings = ConfigurationManager.AppSettings;
 
             sleepOfTheRenewNotesServiceInMilliseconds = int.Parse(ConfigurationManager.AppSettings["SleepOfTheRenewNotesServiceInMilliseconds"]);
             limitLogFileInMB = int.Parse(ConfigurationManager.AppSettings["LimitLogFileInMB"]);
@@ -57,6 +61,11 @@ namespace Tools.RenewNotes
             suppUsername = appSettings["SuppUsername"];
             suppPassword = appSettings["SuppPassword"];
             suppServiceHostBaseUrl = appSettings["SuppServiceHostBaseUrl"];
+
+            volumeOfNotify = int.Parse(appSettings["VolumeOfNotify"]);
+
+            notifyMute = bool.Parse(appSettings["NotifyMute"]);
+            notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
         }
 
         public void Stop()
@@ -78,8 +87,11 @@ namespace Tools.RenewNotes
                         nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
-                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("RenewNotesServiceMenuItem");
-                            Common.Utility.ShowMessage("RenewNotesService Login Message:" + loginResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+                            appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                            notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("RenewNotesServiceMenuItem", volumeOfNotify, notifyMute);
+                            if (notifyPopupShow) Common.Utility.ShowMessage("RenewNotesService Login Message:" + loginResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                             showError = loginResult.Message;
                             logger.Error(loginResult.Message);
                         }
@@ -89,8 +101,11 @@ namespace Tools.RenewNotes
                         nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
-                            if (serviceActive) Common.ContextMenus.SetMenuItemRecover("RenewNotesServiceMenuItem");
-                            Common.Utility.ShowMessage("RenewNotesService Login Message:" + "Service recovered!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
+                            appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                            notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                            if (serviceActive) Common.ContextMenus.SetMenuItemRecover("RenewNotesServiceMenuItem", volumeOfNotify, notifyMute);
+                            if (notifyPopupShow) Common.Utility.ShowMessage("RenewNotesService Login Message:" + "Service recovered!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                             showError = null;
                             logger.Info(loginResult.Message);
                         }
@@ -112,8 +127,11 @@ namespace Tools.RenewNotes
                             nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                             {
-                                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("RenewNotesServiceMenuItem");
-                                Common.Utility.ShowMessage("RenewNotesService RenewNotes Message:" + renewNotesResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+                                appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                                notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("RenewNotesServiceMenuItem", volumeOfNotify, notifyMute);
+                                if (notifyPopupShow) Common.Utility.ShowMessage("RenewNotesService RenewNotes Message:" + renewNotesResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                                 showError = renewNotesResult.Message;
                                 logger.Error(renewNotesResult.Message);
                             }
@@ -123,8 +141,11 @@ namespace Tools.RenewNotes
                             nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                             {
-                                if (serviceActive) Common.ContextMenus.SetMenuItemRecover("RenewNotesServiceMenuItem");
-                                Common.Utility.ShowMessage("RenewNotesService RenewNotes Message:" + "Service recovered!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
+                                appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                                notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                                if (serviceActive) Common.ContextMenus.SetMenuItemRecover("RenewNotesServiceMenuItem", volumeOfNotify, notifyMute);
+                                if (notifyPopupShow) Common.Utility.ShowMessage("RenewNotesService RenewNotes Message:" + "Service recovered!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                                 showError = null;
                                 logger.Info(renewNotesResult.Message);
                             }
@@ -138,8 +159,11 @@ namespace Tools.RenewNotes
                         nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
-                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("RenewNotesServiceMenuItem");
-                            Common.Utility.ShowMessage("RenewNotesService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+                            appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                            notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("RenewNotesServiceMenuItem", volumeOfNotify, notifyMute);
+                            if (notifyPopupShow) Common.Utility.ShowMessage("RenewNotesService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                             showError = ex.Message;
                             logger.Error(ex.Message);
                         }

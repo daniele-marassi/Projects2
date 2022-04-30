@@ -28,19 +28,30 @@ namespace Tools.SyncIp
         private static Logger classLogger = LogManager.GetCurrentClassLogger();
         private NLogUtility nLogUtility = new NLogUtility();
         private int limitLogFileInMB = 0;
+        int volumeOfNotify;
+        bool notifyMute;
+        bool notifyPopupShow;
+        System.Collections.Specialized.NameValueCollection appSettings;
 
         public SyncIpService()
         {
             InitializeComponent();
 
-            sleepOfTheSyncIpServiceInMilliseconds = int.Parse(ConfigurationManager.AppSettings["SleepOfTheSyncIpServiceInMilliseconds"]);
-            limitLogFileInMB = int.Parse(ConfigurationManager.AppSettings["LimitLogFileInMB"]);
+            appSettings = ConfigurationManager.AppSettings;
+
+            sleepOfTheSyncIpServiceInMilliseconds = int.Parse(appSettings["SleepOfTheSyncIpServiceInMilliseconds"]);
+            limitLogFileInMB = int.Parse(appSettings["LimitLogFileInMB"]);
 
             this.ServiceName = "SyncIpService";
             utility = new Utility();
 
-            timeToClosePopUpInMilliseconds = int.Parse(ConfigurationManager.AppSettings["TimeToClosePopUpInMilliseconds"]);
+            timeToClosePopUpInMilliseconds = int.Parse(appSettings["TimeToClosePopUpInMilliseconds"]);
             rootPath = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+
+            volumeOfNotify = int.Parse(appSettings["VolumeOfNotify"]);
+
+            notifyMute = bool.Parse(appSettings["NotifyMute"]);
+            notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
         }
 
         public void Stop()
@@ -76,8 +87,11 @@ namespace Tools.SyncIp
                             nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                             {
-                                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SyncIpServiceMenuItem");
-                                Common.Utility.ShowMessage("SyncIpService Message:" + message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+                                appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                                notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SyncIpServiceMenuItem", volumeOfNotify, notifyMute);
+                                if (notifyPopupShow) Common.Utility.ShowMessage("SyncIpService Message:" + message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                                 showError = message;
                                 logger.Error(message);
                             }
@@ -87,8 +101,11 @@ namespace Tools.SyncIp
                             nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                             {
-                                if (serviceActive) Common.ContextMenus.SetMenuItemRecover("SyncIpServiceMenuItem");
-                                Common.Utility.ShowMessage("SyncIpService Message:" + "Service recovered!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
+                                appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                                notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                                if (serviceActive) Common.ContextMenus.SetMenuItemRecover("SyncIpServiceMenuItem", volumeOfNotify, notifyMute);
+                                if (notifyPopupShow) Common.Utility.ShowMessage("SyncIpService Message:" + "Service recovered!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                                 showError = null;
                                 logger.Info(message);
                             }
@@ -103,8 +120,11 @@ namespace Tools.SyncIp
                         nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
-                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SyncIpServiceMenuItem");
-                            Common.Utility.ShowMessage("SyncIpService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+                            appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                            notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SyncIpServiceMenuItem", volumeOfNotify, notifyMute);
+                            if (notifyPopupShow) Common.Utility.ShowMessage("SyncIpService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                             showError = ex.Message;
                             logger.Error(ex.Message);
                         }

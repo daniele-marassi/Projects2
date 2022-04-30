@@ -1,7 +1,6 @@
 ﻿using Common.Properties;
 using System.Windows.Forms;
 
-
 namespace Tools.Common
 {
 	/// <summary>
@@ -11,7 +10,7 @@ namespace Tools.Common
 	{
 		public static ContextMenuStrip Menu;
 
-		public static void SetMenuItemWithError(string itemName)
+		public static void SetMenuItemWithError(string itemName, int volumeOfNotify, bool notifyMute)
 		{
 			var item = Menu.Items[itemName];
 			item.Image = Resources.ServicesError;
@@ -20,10 +19,10 @@ namespace Tools.Common
 				System.IO.Path.GetDirectoryName(
 				   System.Reflection.Assembly.GetEntryAssembly().Location);
 
-			PlayFile(System.IO.Path.Combine(applicationPath, "Resources","Error.mp3").ToString());
+			if (!notifyMute) PlayFile(System.IO.Path.Combine(applicationPath, "Resources","Error.mp3").ToString(), volumeOfNotify);
 		}
 
-		public static void SetMenuItemRecover(string itemName)
+		public static void SetMenuItemRecover(string itemName, int volumeOfNotify, bool notifyMute)
 		{
 			var item = Menu.Items[itemName];
 			item.Image = Resources.ServiceActive;
@@ -32,14 +31,16 @@ namespace Tools.Common
 				System.IO.Path.GetDirectoryName(
 				   System.Reflection.Assembly.GetEntryAssembly().Location);
 
-			PlayFile(System.IO.Path.Combine(applicationPath, "Resources", "Recover.mp3").ToString());
+			if(!notifyMute) PlayFile(System.IO.Path.Combine(applicationPath, "Resources", "Recover.mp3").ToString(), volumeOfNotify);
 		}
 
-		private static void PlayFile(string url)
+		private static void PlayFile(string url, int volumeOfNotify)
 		{
 			var player = new WMPLib.WindowsMediaPlayer();
+			player.settings.volume = volumeOfNotify;
 			player.PlayStateChange += Player_PlayStateChange;
 			player.URL = url;
+			
 			player.controls.play();
 		}
 
