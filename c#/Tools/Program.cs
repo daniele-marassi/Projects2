@@ -35,10 +35,19 @@ namespace Tools
 		{
 			while(true)
 			{
-				System.Threading.Thread.Sleep(60000);
+				System.Threading.Thread.Sleep(10);
 
-				var usedMemory = currentProcess.PrivateMemorySize64;
-				                 
+				long usedMemory = 0; // memsize in Byte
+				PerformanceCounter PC = new PerformanceCounter();
+				PC.CategoryName = "Process";
+				PC.CounterName = "Working Set - Private";
+				PC.InstanceName = "Tools";
+				usedMemory = Convert.ToInt64(PC.NextValue());
+				PC.Close();
+				PC.Dispose();
+
+				//Console.WriteLine(usedMemory);
+								 
 				if (usedMemory > 300000000) // > 300MB
 				{
 					string applicationFullPath = System.Reflection.Assembly.GetEntryAssembly().Location;
