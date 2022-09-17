@@ -35,7 +35,7 @@ namespace Tools
 		{
 			while(true)
 			{
-				System.Threading.Thread.Sleep(10);
+				System.Threading.Thread.Sleep(10000);
 
 				long usedMemory = 0; // memsize in Byte
 				PerformanceCounter PC = new PerformanceCounter();
