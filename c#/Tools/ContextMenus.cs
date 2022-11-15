@@ -306,7 +306,7 @@ namespace Tools
 					AddOrUpdateAppSettings("HookKey", ProcessIcon.HookKeyActive.ToString());
 					item.Image = Resources.ServiceActive;
 					//HookManager.EnableKeyDownHook();
-					Task.Run(() => Hook.Start());
+					Hook.Start();
 				}
 			}
 
