@@ -141,6 +141,12 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Resources\Fonts\B
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Resources\Fonts\WEBDINGS.TTF
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\External_library\Additional.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\External_library\Additional.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Resources\ServiceActive.png
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Resources\ServiceDisable.png
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Resources\ServicesError.png
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Resources\SongsManagerError.png
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Resources\SongsManagerDisable.png
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Resources\SongsManagerActive.png
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Songs.exe.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Songs.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\Songs.pdb
@@ -168,9 +174,9 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\NLog.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\System.ValueTuple.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\it\EntityFramework.resources.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Debug\it\EntityFramework.SqlServer.resources.dll
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Debug\Songs.csproj.AssemblyReference.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Debug\Songs.csproj.SuggestedBindingRedirects.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Debug\Songs.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Debug\Songs.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Debug\Songs.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Debug\Songs.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Debug\Songs.csproj.AssemblyReference.cache

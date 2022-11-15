@@ -4,6 +4,8 @@ using System;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Additional.NLog;
+using System.Configuration;
 
 namespace Tools
 {
@@ -16,6 +18,8 @@ namespace Tools
 			var currentProcess = Process.GetCurrentProcess();
 			
 			Task.Run(() => RestartTheApplicationIfUsedMemoryIsHigh(currentProcess));
+
+			Task.Run(() => MainService());
 
 			if (process.Length == 1)
 			{
@@ -31,9 +35,22 @@ namespace Tools
 			}
         }
 
-		public static async Task RestartTheApplicationIfUsedMemoryIsHigh(Process currentProcess) 
+		private static async Task MainService()
 		{
-			while(true)
+			var nLogUtility = new NLogUtility();
+			var limitLogFileInMB = int.Parse(ConfigurationManager.AppSettings["LimitLogFileInMB"]);
+
+			while (true)
+			{
+				System.Threading.Thread.Sleep(3600000);
+
+				nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
+			}
+		}
+
+		private static async Task RestartTheApplicationIfUsedMemoryIsHigh(Process currentProcess) 
+		{
+			while (true)
 			{
 				System.Threading.Thread.Sleep(30000);
 

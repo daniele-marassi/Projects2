@@ -30,20 +30,22 @@ namespace Tools
 		public static SpeechService _SpeechService;
 		public static SongsManager _SongsManager;
 		
-		public static bool HookKeyActive = true;
-		public static bool QueueServiceActive = true;
-		public static bool SyncIpServiceActive = true;
-		public static bool ReconnectBluetoothDeviceServiceActive = true;	
-		public static bool RenewNotesServiceActive = true;
-		public static bool WakeUpScreenAfterPowerBreakServiceActive = true;
-		public static bool SpeechServiceActive = true;
+		public static bool? HookKeyActive = null;
+		public static bool? QueueServiceActive = null;
+		public static bool? SyncIpServiceActive = null;
+		public static bool? ReconnectBluetoothDeviceServiceActive = null;	
+		public static bool? RenewNotesServiceActive = null;
+		public static bool? WakeUpScreenAfterPowerBreakServiceActive = null;
+		public static bool? SpeechServiceActive = null;		
+		public static bool? SongsManagerActive = null;
+		public static bool? NotifyMuteActive = null;
+		public static bool? NotifyPopupShowActive = null;
+
 		public static int SpeechShowHideActive = -1;
-		public static bool SongsManagerActive = true;
 		bool notifyMute;
 		bool notifyPopupShow;
 
-		public static bool NotifyMuteActive = true;
-		public static bool NotifyPopupShowActive = true;
+
 		System.Collections.Specialized.NameValueCollection appSettings;
 
 
@@ -85,11 +87,10 @@ namespace Tools
 
 			if (bool.Parse(appSettings["HookKey"]))
 			{
-				HookKeyActive = true;
+				HookKeyActive = false;
+				ContextMenus.SetMenuItem("HookKeyMenuItem");
 
-				//HookManager.EnableKeyDownHook();
 				System.Threading.Thread.Sleep(50);
-				Hook.Start();
 			}
 			else
 			{
@@ -98,7 +99,8 @@ namespace Tools
 
 			if (bool.Parse(appSettings["NotifyMute"]))
 			{
-				NotifyMuteActive = true;
+				NotifyMuteActive = false;
+				ContextMenus.SetMenuItem("NotifyMuteMenuItem");
 
 				System.Threading.Thread.Sleep(50);
 			}
@@ -109,7 +111,8 @@ namespace Tools
 
 			if (bool.Parse(appSettings["NotifyPopupShow"]))
 			{
-				NotifyPopupShowActive = true;
+				NotifyPopupShowActive = false;
+				ContextMenus.SetMenuItem("NotifyPopupShowMenuItem");
 
 				System.Threading.Thread.Sleep(50);
 			}
@@ -120,12 +123,10 @@ namespace Tools
 
 			if (bool.Parse(appSettings["QueueService"]))
 			{
-				QueueServiceActive = true;
-
-				_QueueService = new QueueService();
+				QueueServiceActive = false;
+				ContextMenus.SetMenuItem("QueueServiceMenuItem");
 
 				System.Threading.Thread.Sleep(50);
-				Task.Run(() => _QueueService.Start());
 			}
 			else
 			{
@@ -134,12 +135,10 @@ namespace Tools
 
 			if (bool.Parse(appSettings["SyncIpService"]))
 			{
-				SyncIpServiceActive = true;
-
-				_SyncIpService = new SyncIpService();
+				SyncIpServiceActive = false;
+				ContextMenus.SetMenuItem("SyncIpServiceMenuItem");
 
 				System.Threading.Thread.Sleep(50);
-				Task.Run(() => _SyncIpService.Start());
 			}
 			else
 			{
@@ -148,12 +147,10 @@ namespace Tools
 
 			if (bool.Parse(appSettings["ReconnectBluetoothDeviceService"]))
 			{
-				ReconnectBluetoothDeviceServiceActive = true;
-
-				_ReconnectBluetoothDeviceService = new ReconnectBluetoothDeviceService();
+				ReconnectBluetoothDeviceServiceActive = false;
+				ContextMenus.SetMenuItem("ReconnectBluetoothDeviceServiceMenuItem");
 
 				System.Threading.Thread.Sleep(50);
-				Task.Run(() => _ReconnectBluetoothDeviceService.Start());
 			}
 			else
 			{
@@ -162,12 +159,10 @@ namespace Tools
 
 			if (bool.Parse(appSettings["RenewNotesService"]))
 			{
-				RenewNotesServiceActive = true;
-
-				_RenewNotesService = new RenewNotesService();
+				RenewNotesServiceActive = false;
+				ContextMenus.SetMenuItem("RenewNotesServiceMenuItem");
 
 				System.Threading.Thread.Sleep(50);
-				Task.Run(() => _RenewNotesService.Start());
 			}
 			else
 			{
@@ -176,12 +171,10 @@ namespace Tools
 
 			if (bool.Parse(appSettings["WakeUpScreenAfterPowerBreakService"]))
 			{
-				WakeUpScreenAfterPowerBreakServiceActive = true;
-
-				_WakeUpScreenAfterPowerBreakService = new WakeUpScreenAfterPowerBreakService();
+				WakeUpScreenAfterPowerBreakServiceActive = false;
+				ContextMenus.SetMenuItem("WakeUpScreenAfterPowerBreakServiceMenuItem");
 
 				System.Threading.Thread.Sleep(50);
-				Task.Run(() => _WakeUpScreenAfterPowerBreakService.Start());
 			}
 			else
 			{
@@ -190,14 +183,10 @@ namespace Tools
 
 			if (bool.Parse(appSettings["Speech"]))
 			{
-				SpeechServiceActive = true;
-
-				_Speech = new Speech();
-				//_SpeechService = new SpeechService();
+				SpeechServiceActive = false;
+				ContextMenus.SetMenuItem("SpeechServiceMenuItem");
 
 				System.Threading.Thread.Sleep(50);
-				Task.Run(() => _Speech.Start());
-				//Task.Run(() => _SpeechService.Start());
 			}
 			else
 			{
@@ -206,9 +195,8 @@ namespace Tools
 
 			if (bool.Parse(appSettings["SongsManager"]))
 			{
-				SongsManagerActive = true;
-
-				//_SongsManager = new SongsManager();
+				//SongsManager strat only with click
+				ContextMenus.SetMenuItem("SongsManagerMenuItem");
 
 				System.Threading.Thread.Sleep(50);
 			}

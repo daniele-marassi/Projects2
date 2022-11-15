@@ -9,6 +9,7 @@ using System.Reflection;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Tools.Common.ContextMenus;
 
 namespace Tools.WakeUpScreenAfterPowerBreak
 {
@@ -81,13 +82,12 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                 {
                     if (showError == null || ex.Message != showError)
                     {
-                        nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
                             appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
                             notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
 
-                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("WakeUpScreenAfterPowerBreakServiceMenuItem", volumeOfNotify, notifyMute);
+                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("WakeUpScreenAfterPowerBreakServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServicesError);
                             if (notifyPopupShow) Common.Utility.ShowMessage("WakeUpScreenAfterPowerBreakService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                             showError = ex.Message;
                             logger.Error(ex.Message);

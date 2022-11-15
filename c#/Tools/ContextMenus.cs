@@ -49,7 +49,7 @@ namespace Tools
 			item.Text = "Hook Key";
 			item.Name = "HookKeyMenuItem";
 			item.Click += new EventHandler(HookKey_Click);
-			item.Image = Resources.ServiceActive;
+			item.Image = Resources.ServiceDisable;
 			Common.ContextMenus.Menu.Items.Add(item);
 
 			// Separator.
@@ -61,7 +61,7 @@ namespace Tools
 			item.Text = "Notify Mute";
 			item.Name = "NotifyMuteMenuItem";
 			item.Click += new EventHandler(NotifyMute_Click);
-			item.Image = Resources.SoundNotifyActive;
+			item.Image = Resources.SoundNotifyDisable;
 			Common.ContextMenus.Menu.Items.Add(item);
 
 			// Separator.
@@ -73,7 +73,7 @@ namespace Tools
 			item.Text = "Notify Popup Show";
 			item.Name = "NotifyPopupShowMenuItem";
 			item.Click += new EventHandler(NotifyPopupShow_Click);
-			item.Image = Resources.NotifyActive;
+			item.Image = Resources.NotifyDisable;
 			Common.ContextMenus.Menu.Items.Add(item);
 
 			// Separator.
@@ -85,7 +85,7 @@ namespace Tools
 			item.Text = "Queue Service";
 			item.Name = "QueueServiceMenuItem";
 			item.Click += new EventHandler(QueueService_Click);
-			item.Image = Resources.ServiceActive;
+			item.Image = Resources.ServiceDisable;
 			Common.ContextMenus.Menu.Items.Add(item);
 
 			// Separator.
@@ -97,7 +97,7 @@ namespace Tools
 			item.Text = "Songs Manager";
 			item.Name = "SongsManagerMenuItem";
 			item.Click += new EventHandler(SongsManager_Click);
-			item.Image = Resources.SongsManagerActive;
+			item.Image = Resources.SongsManagerDisable;
 			Common.ContextMenus.Menu.Items.Add(item);
 
 			// Separator.
@@ -109,7 +109,7 @@ namespace Tools
 			item.Text = "Sync Ip Service";
 			item.Name = "SyncIpServiceMenuItem";
 			item.Click += new EventHandler(SyncIpService_Click);
-			item.Image = Resources.ServiceActive;
+			item.Image = Resources.ServiceDisable;
 			Common.ContextMenus.Menu.Items.Add(item);
 
 			// Separator.
@@ -121,7 +121,7 @@ namespace Tools
 			item.Text = "Reconnect Bluetooth Device Service";
 			item.Name = "ReconnectBluetoothDeviceServiceMenuItem";
 			item.Click += new EventHandler(ReconnectBluetoothDeviceService_Click);
-			item.Image = Resources.ServiceActive;
+			item.Image = Resources.ServiceDisable;
 			Common.ContextMenus.Menu.Items.Add(item);
 
 			// Separator.
@@ -133,7 +133,7 @@ namespace Tools
 			item.Text = "Renew Notes Service";
 			item.Name = "RenewNotesServiceMenuItem";
 			item.Click += new EventHandler(RenewNotesService_Click);
-			item.Image = Resources.ServiceActive;
+			item.Image = Resources.ServiceDisable;
 			Common.ContextMenus.Menu.Items.Add(item);
 
 			// Separator.
@@ -145,7 +145,7 @@ namespace Tools
 			item.Text = "Wake Up Screen After Power Break Service";
 			item.Name = "WakeUpScreenAfterPowerBreakServiceMenuItem";
 			item.Click += new EventHandler(WakeUpScreenAfterPowerBreakService_Click);
-			item.Image = Resources.ServiceActive;
+			item.Image = Resources.ServiceDisable;
 			Common.ContextMenus.Menu.Items.Add(item);
 
 			// Separator.
@@ -157,7 +157,7 @@ namespace Tools
 			item.Text = "Speech Service";
 			item.Name = "SpeechServiceMenuItem";
 			item.Click += new EventHandler(SpeechService_Click);
-			item.Image = Resources.ServiceActive;
+			item.Image = Resources.ServiceDisable;
 			Common.ContextMenus.Menu.Items.Add(item);
 
 			// Separator.
@@ -292,7 +292,7 @@ namespace Tools
 			{
 				var item = Common.ContextMenus.Menu.Items[itemName];
 
-				if (ProcessIcon.HookKeyActive)
+				if (ProcessIcon.HookKeyActive == null || (bool)ProcessIcon.HookKeyActive)
 				{
 					ProcessIcon.HookKeyActive = false;
 					AddOrUpdateAppSettings("HookKey", ProcessIcon.HookKeyActive.ToString());
@@ -305,7 +305,8 @@ namespace Tools
 
 					AddOrUpdateAppSettings("HookKey", ProcessIcon.HookKeyActive.ToString());
 					item.Image = Resources.ServiceActive;
-					Hook.Start();
+					//HookManager.EnableKeyDownHook();
+					Task.Run(() => Hook.Start());
 				}
 			}
 
@@ -313,7 +314,7 @@ namespace Tools
 			{
 				var item = Common.ContextMenus.Menu.Items[itemName];
 
-				if (ProcessIcon.NotifyMuteActive)
+				if (ProcessIcon.NotifyMuteActive == null || (bool)ProcessIcon.NotifyMuteActive)
 				{
 					ProcessIcon.NotifyMuteActive = false;
 					AddOrUpdateAppSettings("NotifyMute", ProcessIcon.NotifyMuteActive.ToString());
@@ -332,7 +333,7 @@ namespace Tools
 			{
 				var item = Common.ContextMenus.Menu.Items[itemName];
 
-				if (ProcessIcon.NotifyPopupShowActive)
+				if (ProcessIcon.NotifyPopupShowActive == null || (bool)ProcessIcon.NotifyPopupShowActive)
 				{
 					ProcessIcon.NotifyPopupShowActive = false;
 					AddOrUpdateAppSettings("NotifyPopupShow", ProcessIcon.NotifyPopupShowActive.ToString());
@@ -351,7 +352,7 @@ namespace Tools
 			{
 				var item = Common.ContextMenus.Menu.Items[itemName];
 
-				if (ProcessIcon.QueueServiceActive)
+				if (ProcessIcon.QueueServiceActive == null || (bool)ProcessIcon.QueueServiceActive)
 				{
 					ProcessIcon.QueueServiceActive = false;
 
@@ -378,7 +379,7 @@ namespace Tools
 			{
 				var item = Common.ContextMenus.Menu.Items[itemName];
 
-				if (ProcessIcon.SyncIpServiceActive)
+				if (ProcessIcon.SyncIpServiceActive == null || (bool)ProcessIcon.SyncIpServiceActive)
 				{
 					ProcessIcon.SyncIpServiceActive = false;
 
@@ -405,7 +406,7 @@ namespace Tools
 			{
 				var item = Common.ContextMenus.Menu.Items[itemName];
 
-				if (ProcessIcon.ReconnectBluetoothDeviceServiceActive)
+				if (ProcessIcon.ReconnectBluetoothDeviceServiceActive == null || (bool)ProcessIcon.ReconnectBluetoothDeviceServiceActive)
 				{
 					ProcessIcon.ReconnectBluetoothDeviceServiceActive = false;
 
@@ -432,7 +433,7 @@ namespace Tools
 			{
 				var item = Common.ContextMenus.Menu.Items[itemName];
 
-				if (ProcessIcon.RenewNotesServiceActive)
+				if (ProcessIcon.RenewNotesServiceActive == null || (bool)ProcessIcon.RenewNotesServiceActive)
 				{
 					ProcessIcon.RenewNotesServiceActive = false;
 
@@ -459,7 +460,7 @@ namespace Tools
 			{
 				var item = Common.ContextMenus.Menu.Items[itemName];
 
-				if (ProcessIcon.WakeUpScreenAfterPowerBreakServiceActive)
+				if (ProcessIcon.WakeUpScreenAfterPowerBreakServiceActive == null || (bool)ProcessIcon.WakeUpScreenAfterPowerBreakServiceActive)
 				{
 					ProcessIcon.WakeUpScreenAfterPowerBreakServiceActive = false;
 
@@ -487,7 +488,7 @@ namespace Tools
 				var item = Common.ContextMenus.Menu.Items[itemName];
 				var _item = Common.ContextMenus.Menu.Items["SpeechShowHideMenuItem"];
 
-				if (ProcessIcon.SpeechServiceActive)
+				if (ProcessIcon.SpeechServiceActive == null || (bool)ProcessIcon.SpeechServiceActive)
 				{
 					ProcessIcon.SpeechServiceActive = false;
 					ProcessIcon.SpeechShowHideActive = 0;
@@ -518,7 +519,7 @@ namespace Tools
 				}
 			}
 
-			if (itemName == "SpeechShowHideMenuItem" && ProcessIcon.SpeechServiceActive)
+			if (itemName == "SpeechShowHideMenuItem" && (bool)ProcessIcon.SpeechServiceActive)
 			{
 				var item = Common.ContextMenus.Menu.Items[itemName];
 
@@ -552,10 +553,19 @@ namespace Tools
 				}
 			}
 
-			if (itemName == "SongsManagerMenuItem" && ProcessIcon.SongsManagerActive)
+			if (itemName == "SongsManagerMenuItem")
 			{
-				ProcessIcon._SongsManager = new SongsManager();
-				Task.Run(() => ProcessIcon._SongsManager.Start());
+				if (ProcessIcon.SongsManagerActive != null && Common.ContextMenus.SongsManagerActive == false)
+				{
+					ProcessIcon.SongsManagerActive = true;
+					Common.ContextMenus.SongsManagerActive = true;
+					var item = Common.ContextMenus.Menu.Items[itemName];
+					item.Image = Resources.SongsManagerActive;
+					ProcessIcon._SongsManager = new SongsManager();
+					Task.Run(() => ProcessIcon._SongsManager.Start());
+				}
+				else
+					ProcessIcon.SongsManagerActive = false;
 			}
 		}
 

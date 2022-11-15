@@ -17,6 +17,7 @@ using Additional;
 using System.Collections.Generic;
 using System.IO;
 using MediaToolkit;
+using static Tools.Common.ContextMenus;
 
 namespace Tools.Songs
 {
@@ -80,14 +81,15 @@ namespace Tools.Songs
                     if (songsFounded)
                     {
                         logger.Info("Songs Founded!");
+                        if (notifyPopupShow) Common.Utility.ShowMessage("SongsManager Message:" + "Songs Founded!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
+                        Common.ContextMenus.SetMenuItemRecover("SongsManagerMenuItem", volumeOfNotify, notifyMute, ResourcesType.SongsManagerDisable);
                     }
                     else
                     {
-                        nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
                         notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
 
-                        if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SongsManagerMenuItem", volumeOfNotify, notifyMute);
+                        if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SongsManagerMenuItem", volumeOfNotify, notifyMute, ResourcesType.SongsManagerError);
                         if (notifyPopupShow) Common.Utility.ShowMessage("SongsManager Message:" + "FindSongs failed!", MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                         oldServiceError = "FindSongs failed!";
                         logger.Error(oldServiceError);
@@ -97,16 +99,18 @@ namespace Tools.Songs
                 {
                     if (oldServiceError == null || oldServiceError != ex.Message)
                     {
-                        nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
                         notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
 
-
-                        if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SongsManagerMenuItem", volumeOfNotify, notifyMute);
+                        if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SongsManagerMenuItem", volumeOfNotify, notifyMute, ResourcesType.SongsManagerError);
                         if (notifyPopupShow) Common.Utility.ShowMessage("SongsManager Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                         oldServiceError = ex.Message;
                         logger.Error(oldServiceError);
                     }
+                }
+                finally
+                {
+                    Common.ContextMenus.SongsManagerActive = false;
                 }
             }
         }
@@ -188,11 +192,10 @@ namespace Tools.Songs
                 {
                     if (oldAddError == null || oldAddError != addSongResult.Message)
                     {
-                        nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
                         notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
 
-                        if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SongsManagerMenuItem", volumeOfNotify, notifyMute);
+                        if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SongsManagerMenuItem", volumeOfNotify, notifyMute, ResourcesType.SongsManagerError);
                         if (notifyPopupShow) Common.Utility.ShowMessage("SongsManager Message:" + addSongResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                         oldAddError = addSongResult.Message;
                         logger.Error(oldAddError);
@@ -205,9 +208,8 @@ namespace Tools.Songs
                         appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
                         notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
 
-                        nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         oldAddError = null;
-                        if (serviceActive) Common.ContextMenus.SetMenuItemRecover("SongsManagerMenuItem", volumeOfNotify, notifyMute);
+                        if (serviceActive) Common.ContextMenus.SetMenuItemRecover("SongsManagerMenuItem", volumeOfNotify, notifyMute, ResourcesType.SongsManagerDisable);
                         if (notifyPopupShow) Common.Utility.ShowMessage("SongsManager Message:" + " Update db now work!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                         logger.Info("Update db now work!");
                     }

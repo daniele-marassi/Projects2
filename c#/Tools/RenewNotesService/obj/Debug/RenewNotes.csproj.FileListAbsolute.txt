@@ -213,6 +213,12 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Resou
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Resources\Fonts\WEBDINGS.TTF
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\External_library\Additional.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\External_library\Additional.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Resources\ServiceActive.png
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Resources\ServiceDisable.png
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Resources\ServicesError.png
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Resources\SongsManagerError.png
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Resources\SongsManagerDisable.png
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\Resources\SongsManagerActive.png
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\External_library\GoogleCalendar\GoogleService.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\External_library\GoogleCalendar\GoogleService.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Debug\External_library\GoogleCalendar\GoogleService.dll.config

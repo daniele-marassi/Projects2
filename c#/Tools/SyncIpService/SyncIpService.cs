@@ -12,6 +12,7 @@ using System.Reflection;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Tools.Common.ContextMenus;
 
 namespace Tools.SyncIp
 {
@@ -84,13 +85,12 @@ namespace Tools.SyncIp
 
                         if (state != "Successful" && (showError == null || message != showError))
                         {
-                            nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                             {
                                 appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
                                 notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
 
-                                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SyncIpServiceMenuItem", volumeOfNotify, notifyMute);
+                                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SyncIpServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServicesError);
                                 if (notifyPopupShow) Common.Utility.ShowMessage("SyncIpService Message:" + message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                                 showError = message;
                                 logger.Error(message);
@@ -98,13 +98,12 @@ namespace Tools.SyncIp
                         }
                         else if (state == "Successful" && showError != null)
                         {
-                            nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                             {
                                 appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
                                 notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
 
-                                if (serviceActive) Common.ContextMenus.SetMenuItemRecover("SyncIpServiceMenuItem", volumeOfNotify, notifyMute);
+                                if (serviceActive) Common.ContextMenus.SetMenuItemRecover("SyncIpServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServiceActive);
                                 if (notifyPopupShow) Common.Utility.ShowMessage("SyncIpService Message:" + "Service recovered!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                                 showError = null;
                                 logger.Info(message);
@@ -117,13 +116,12 @@ namespace Tools.SyncIp
                 {
                     if (showError == null || ex.Message != showError)
                     {
-                        nLogUtility.ClearNLogFile("mainLog", limitLogFileInMB);
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
                             appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
                             notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
 
-                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SyncIpServiceMenuItem", volumeOfNotify, notifyMute);
+                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("SyncIpServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServicesError);
                             if (notifyPopupShow) Common.Utility.ShowMessage("SyncIpService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
                             showError = ex.Message;
                             logger.Error(ex.Message);
