@@ -255,40 +255,40 @@
         function StopAnimateIntervals(){
             clearInterval(animateIntervals["ellipse1"]);
             clearInterval(animateIntervals["ellipse2"]);
-            clearInterval(animateIntervals["ellipse3"]);
+@*            clearInterval(animateIntervals["ellipse3"]);
             clearInterval(animateIntervals["ellipse4"]);
-            clearInterval(animateIntervals["ellipse5"]);
+            clearInterval(animateIntervals["ellipse5"]);*@
 
             animateIntervals["ellipse1"] = null;
             animateIntervals["ellipse2"] = null;
-            animateIntervals["ellipse3"] = null;
+@*            animateIntervals["ellipse3"] = null;
             animateIntervals["ellipse4"] = null;
-            animateIntervals["ellipse5"] = null;
+            animateIntervals["ellipse5"] = null;*@
             DefaultEllipses(1);
         }
 
         function DefaultEllipses(amount){
-            SetEllipse("ellipse1", 50, 4, 1, amount, 1);
+            SetEllipse("ellipse1", 50, 4, 1, amount, 10);
             SetEllipse("ellipse2", 50, 4, 1, amount, 1);
-            SetEllipse("ellipse3", 50, 4, 1, amount, 1);
+@*            SetEllipse("ellipse3", 50, 4, 1, amount, 1);
             SetEllipse("ellipse4", 50, 4, 1, amount, 1);
-            SetEllipse("ellipse5", 50, 4, 1, amount, 1);   
+            SetEllipse("ellipse5", 50, 4, 1, amount, 1); *@  
         }
 
         function StartAnimateIntervalsListening(amount){
             AddAnimateInterval("ellipse1", 50, 8, 1, amount + 0);
-            AddAnimateInterval("ellipse2", 50, 6, 1, amount + 5);
-            AddAnimateInterval("ellipse3", 50, 7, 1, amount + 10);
+           AddAnimateInterval("ellipse2", 50, 6, 1, amount + 5);
+@*             AddAnimateInterval("ellipse3", 50, 7, 1, amount + 10);
             AddAnimateInterval("ellipse4", 50, 9, 1, amount + 15);
-            AddAnimateInterval("ellipse5", 50, 10, 1, amount + 20);           
+            AddAnimateInterval("ellipse5", 50, 10, 1, amount + 20); *@          
         }        
 
         function StartAnimateIntervals(amount){
             AddAnimateInterval("ellipse1", 50, 4, 1, amount + 10);
             AddAnimateInterval("ellipse2", 50, 4, 1, amount + 14);
-            AddAnimateInterval("ellipse3", 50, 4, 1, amount + 16);
+@*            AddAnimateInterval("ellipse3", 50, 4, 1, amount + 16);
             AddAnimateInterval("ellipse4", 50, 4, 1, amount + 18);
-            AddAnimateInterval("ellipse5", 50, 4, 1, amount + 20);   
+            AddAnimateInterval("ellipse5", 50, 4, 1, amount + 20);*@   
         }
 
         function SetEllipse(id, size, range, amount, reset) {
@@ -549,9 +549,14 @@
                  
                 var ellipse6 = document.getElementById("ellipse6");
 
-                if(heightScreen == 1080 || heightScreen == 1440){
+                if(heightScreen == 1080){
                     ellipse6.setAttribute("rx", "58");
                     ellipse6.setAttribute("ry", "58");
+                }
+
+                if(heightScreen == 1440){
+                    ellipse6.setAttribute("rx", "56");
+                    ellipse6.setAttribute("ry", "56");
                 }
 
                 if(heightScreen == 2160){
@@ -1338,7 +1343,7 @@
 
             dt += '<dt class="col-sm-3" style="">';
             dt += '<div>';
-            dt += '<img class="btn shortcut-dark" id="shortcut_'+shortcut["Id"]+'" src="'+shortcut["Ico"]+'" alt="'+shortcut["Title"]+'" style="width:90%; margin:5%; box-shadow: rgba(250, 250, 250, 0.95) 0px 0rem 1rem !important;" onclick="ActionShortcut(' + "" + shortcut["Id"] + "" +');">';
+            dt += '<img class="btn shortcut-dark" id="shortcut_'+shortcut["Id"]+'" src="'+shortcut["Ico"]+'" alt="'+shortcut["Title"]+'" style="width:50%; margin:5%; box-shadow: rgba(250, 250, 250, 0.95) 0px 0rem 1rem !important;" onclick="ActionShortcut(' + "" + shortcut["Id"] + "" +');">';
 
             dt += '</div>';
             dt += '<div style="font-size:18px;">'+shortcut["Title"]+'</div>';
@@ -1495,11 +1500,13 @@
                         <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
                     </filter>
                 </defs>
-                <ellipse id="ellipse1" cx="100" cy="50" rx="50" ry="50" style="fill: #c9c30d;" filter="url(#blurMe)"/>
+                <ellipse id="ellipse1" cx="100" cy="50" rx="50" ry="50" style="fill: #ffffff;" filter="url(#blurMe)"/>
+                <ellipse id="ellipse2" cx="100" cy="50" rx="50" ry="50" style="fill: #ffffff;" filter="url(#blurMe)"/>
+@*                <ellipse id="ellipse1" cx="100" cy="50" rx="50" ry="50" style="fill: #c9c30d;" filter="url(#blurMe)"/>
                 <ellipse id="ellipse2" cx="100" cy="50" rx="50" ry="50" style="fill: #02ad02;" filter="url(#blurMe)"/>
                 <ellipse id="ellipse3" cx="100" cy="50" rx="50" ry="50" style="fill: #026aad;" filter="url(#blurMe)"/>
                 <ellipse id="ellipse4" cx="100" cy="50" rx="50" ry="50" style="fill: #7a1cc9;" filter="url(#blurMe)"/>
-                <ellipse id="ellipse5" cx="100" cy="50" rx="50" ry="50" style="fill: #c22b10;" filter="url(#blurMe)"/>
+                <ellipse id="ellipse5" cx="100" cy="50" rx="50" ry="50" style="fill: #c22b10;" filter="url(#blurMe)"/>*@
                 <ellipse id="ellipse6" cx="100" cy="50" rx="57" ry="57" style=" cursor:pointer;" onclick="EllipseClick();"  class="btn ellipse-dark" />
             </svg>
         </div>
