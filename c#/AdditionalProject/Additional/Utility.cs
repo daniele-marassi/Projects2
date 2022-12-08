@@ -23,6 +23,8 @@ using InTheHand.Net;
 using InTheHand.Net.Bluetooth;
 using InTheHand.Net.Sockets;
 
+using NAudio.CoreAudioApi;
+
 namespace Additional
 {
     public class Utility
@@ -1627,8 +1629,9 @@ namespace Additional
         /// </summary>
         /// <param name="deviceName"></param>
         /// <param name="password"></param>
+        /// <param name="removeDevice"></param>
         /// <returns></returns>
-        public (string Message, bool Successful, bool PairAlreadyExists) ReconnectBluetoothDevice(string deviceName, string password)
+        public (string Message, bool Successful, bool PairAlreadyExists) ReconnectBluetoothDevice(string deviceName, string password, bool removeDevice)
         {
             (string Message, bool Successful, bool PairAlreadyExists) result;
             result.Message = "";
@@ -1639,7 +1642,7 @@ namespace Additional
 
             if (bluetoothDeviceInfo != null)
             {
-                var connectResult = ConnectBluetoothSpeakers(bluetoothDeviceInfo.DeviceAddress, password);
+                var connectResult = ConnectBluetoothSpeakers(bluetoothDeviceInfo.DeviceAddress, password, removeDevice);
 
                 result.Message = connectResult.Message;
                 result.Successful = connectResult.Successful;
@@ -1709,7 +1712,7 @@ namespace Additional
         /// <param name="bluetoothAddress"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public (string Message, bool Successful) ConnectBluetoothSpeakers(BluetoothAddress bluetoothAddress, string password)
+        public (string Message, bool Successful) ConnectBluetoothSpeakers(BluetoothAddress bluetoothAddress, string password, bool removeDevice)
         {
             (string Message, bool Successful) result;
             result.Message = "";
@@ -1719,7 +1722,7 @@ namespace Additional
 
             try
             {
-                RemoveBluetoothDevice(bluetoothAddress);
+                if(removeDevice) RemoveBluetoothDevice(bluetoothAddress);
                 var device = new BluetoothDeviceInfo(bluetoothAddress);
                 BluetoothSecurity.PairRequest(bluetoothAddress, password);
                 bluetoothClient = new BluetoothClient();
@@ -1774,6 +1777,19 @@ namespace Additional
             (string Output, string Error) result = RunExe(exeFullPath, @"""" + deviceName + @"""", true).GetAwaiter().GetResult();
 
             return result;
+        }
+
+        /// <summary>
+        /// GetDefaultAudioDevice
+        /// </summary>
+        /// <returns></returns>
+        public string GetDefaultAudioDevice()
+        {
+            var enumerator = new NAudio.CoreAudioApi.MMDeviceEnumerator();
+
+            var defaultDevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+
+            return defaultDevice.DeviceFriendlyName;
         }
 
         /// <summary>

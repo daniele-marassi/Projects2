@@ -69,8 +69,8 @@
 
                             @if (claims.IsAuthenticated)
                             {
-                                var nLogUtility = new NLogUtility();
-                                nLogUtility.ClearNLogFile("mainLog", Config.GeneralSettings.Static.LimitLogFileInMB);
+                                //var nLogUtility = new NLogUtility();
+                                //nLogUtility.ClearNLogFile("mainLog", Config.GeneralSettings.Static.LimitLogFileInMB);
 
                                 @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
                                 {

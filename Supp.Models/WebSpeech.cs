@@ -29,5 +29,8 @@ namespace Supp.Models
         public string StepType { get; set; }
         public int ElementIndex { get; set; }
         public DateTime InsDateTime { get; set; }
+        public bool Groupable { get; set; }
+        public string GroupName { get; set; }
+        public int GroupOrder { get; set; }
     }
 }

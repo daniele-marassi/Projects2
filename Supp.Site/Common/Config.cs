@@ -43,7 +43,7 @@ namespace Supp.Site.Common
                 public static int TimeToEhiTimeoutInSeconds { get; set; }
                 public static bool WakeUpScreenAfterEhiActive { get; set; }
                 public static string GoogleCalendarAccount { get; set; }
-                
+                public static bool LogJSActive { get; set; }
 
                 public static string ConfigDefaultInJson
                 {
@@ -122,6 +122,8 @@ namespace Supp.Site.Common
                     GeneralSettings.Static.BaseUrl = configuration.GetSection("AppSettings:BaseUrl").Value;
                     GeneralSettings.Static.LimitLogFileInMB = Int32.Parse(configuration.GetSection("AppSettings:LimitLogFileInMB").Value);
                     //system configs - END
+
+                    GeneralSettings.Static.LogJSActive = bool.Parse(configuration.GetSection("AppSettings:LogJSActive").Value);
 
                     GeneralSettings.Static.PageSize = Int32.Parse(configuration.GetSection("AppSettings:PageSize").Value);
                     GeneralSettings.Static.HostsArray = configuration.GetSection("AppSettings:HostsArray").Value;

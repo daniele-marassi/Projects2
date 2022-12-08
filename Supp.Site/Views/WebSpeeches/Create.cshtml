@@ -97,6 +97,21 @@
                     <input class="form-check-input" asp-for="PrivateInstruction" /> @Html.DisplayNameFor(model => model.PrivateInstruction)
                 </label>
             </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Groupable" /> @Html.DisplayNameFor(model => model.Groupable)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="GroupName" class="control-label"></label>
+                <input asp-for="GroupName" class="form-control textBoxCustom" />
+                <span asp-validation-for="GroupName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GroupOrder" class="control-label"></label>
+                <input asp-for="GroupOrder" class="form-control textBoxCustom" />
+                <span asp-validation-for="GroupOrder" class="text-danger"></span>
+            </div>
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

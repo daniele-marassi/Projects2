@@ -4,9 +4,14 @@ Y:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Debug\Supp.Models.csproj.A
 Y:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Debug\Supp.Models.csproj.CoreCompileInputs.cache
 Y:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Debug\Supp.Models.dll
 Y:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Debug\Supp.Models.pdb
+\\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\Supp.Models\bin\Debug\Supp.Models.dll
+\\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\Supp.Models\bin\Debug\Supp.Models.pdb
+\\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Debug\Supp.Models.csproj.AssemblyReference.cache
+\\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Debug\Supp.Models.csproj.CoreCompileInputs.cache
+\\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Debug\Supp.Models.dll
+\\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Debug\Supp.Models.pdb
 C:\Users\ev\GoogleDriveShare\Projects\Supp.Models\bin\Debug\Supp.Models.dll
 C:\Users\ev\GoogleDriveShare\Projects\Supp.Models\bin\Debug\Supp.Models.pdb
-C:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Debug\Supp.Models.csproj.AssemblyReference.cache
 C:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Debug\Supp.Models.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Debug\Supp.Models.dll
 C:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Debug\Supp.Models.pdb

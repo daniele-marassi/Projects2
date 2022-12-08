@@ -95,7 +95,7 @@ namespace Tools.ReconnectBluetoothDevice
                         reconnectBluetoothDeviceResult.PairAlreadyExists = false;
 
                         if (bluetoothDeviceTypeList[i].ToString().ToLower() == "audio")
-                            reconnectBluetoothDeviceResult = utility.ReconnectBluetoothDevice(bluetoothDeviceList[i].ToString(), bluetoothDevicePasswordList[i].ToString());
+                            reconnectBluetoothDeviceResult = utility.ReconnectBluetoothDevice(bluetoothDeviceList[i].ToString(), bluetoothDevicePasswordList[i].ToString(), false);
 
                         if (!reconnectBluetoothDeviceResult.Successful && (showError == null || reconnectBluetoothDeviceResult.Message != showError))
                         {

@@ -37,7 +37,7 @@ namespace Supp.ServiceHost
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var nLogUtility = new NLogUtility();
+            //var nLogUtility = new NLogUtility();
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;
@@ -107,7 +107,7 @@ namespace Supp.ServiceHost
                             //{
                                 var accessToken = context.Request.Query["access_token"];
 
-                                nLogUtility.ClearNLogFile("mainLog", GeneralSettings.Static.LimitLogFileInMB);
+                                //nLogUtility.ClearNLogFile("mainLog", GeneralSettings.Static.LimitLogFileInMB);
 
                                 if (accessToken.Count == 0 || accessToken == String.Empty) accessToken = context.Request.Headers.Where(_ => _.Key == "access_token").FirstOrDefault().Value;
                                 CheckCredentials checkCredentials = new CheckCredentials();

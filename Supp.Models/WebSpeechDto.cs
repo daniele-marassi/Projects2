@@ -27,6 +27,9 @@ namespace Supp.Models
         public string StepType { get; set; }
         public int ElementIndex { get; set; }
         public DateTime InsDateTime { get; set; }
+        public bool Groupable { get; set; }
+        public string GroupName { get; set; }
+        public int GroupOrder { get; set; }
 
         public string HostsArray { get; set; }
         public string HostSelected { get; set; }
@@ -56,6 +59,7 @@ namespace Supp.Models
         public IEnumerable<Host> Hosts { get; set; }
         public IEnumerable<StepType> StepTypes { get { return Supp.Models.StepTypesUtility.Get(); } }
         public Element[] Elements { get; set; }
+        public bool LogJSActive { get; set; }
     }
 
     public class Element

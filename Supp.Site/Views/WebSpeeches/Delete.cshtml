@@ -121,6 +121,24 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.PrivateInstruction)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Groupable)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Groupable)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GroupName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GroupName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GroupOrder)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GroupOrder)
+        </dd>
     </dl>
 
     <form asp-action="Delete">

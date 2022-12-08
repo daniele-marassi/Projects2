@@ -85,7 +85,7 @@ namespace Supp.Site.Recognition
                 }
 
                 //if (!item.Type.ToLower().Contains("system"))
-                    result.Shortcuts.Add(new ShortcutDto() { Id = item.Id, Type = item.Type, Order = item.Order, Title = item.Name.Replace("_", " "), Action = item.Operation.ToStringExtended().Replace("\\", "/") + " " + item.Parameters.ToStringExtended().Replace("\\", "/"), Ico = item.Ico });
+                    result.Shortcuts.Add(new ShortcutDto() { Id = item.Id, Type = item.Type, Order = item.Order, Title = item.Name.Replace("_", " "), Action = item.Operation.ToStringExtended().Replace("\\", "/") + " " + item.Parameters.ToStringExtended().Replace("\\", "/"), Ico = item.Ico, Groupable = item.Groupable, GroupName = item.GroupName, GroupOrder = item.GroupOrder });
 
                 result.Data.Add(item);
             }
@@ -773,7 +773,10 @@ namespace Supp.Site.Recognition
                                 if (getRemindersResult.Successful)
                                 {
                                     if (data.Answer != "") data.Answer += " ";
-                                    data.Answer += await GetHolidays(_claims, access_token_cookie, userName, userId, data.Type);
+                                    data.Answer += await GetHolidays(_claims, access_token_cookie, userName, userId, WebSpeechTypes.ReadRemindersToday.ToString());
+
+                                    if (data.Answer != "") data.Answer += " ";
+                                    data.Answer += await GetHolidays(_claims, access_token_cookie, userName, userId, WebSpeechTypes.ReadRemindersTomorrow.ToString());
                                 }
 
                                 if (!getRemindersResult.Successful)
@@ -819,6 +822,7 @@ namespace Supp.Site.Recognition
                     data.TimeToResetInSeconds = _claims.Configuration.Speech.TimeToResetInSeconds;
                     data.TimeToEhiTimeoutInSeconds = _claims.Configuration.Speech.TimeToEhiTimeoutInSeconds;
                     data.OnlyRefresh = _onlyRefresh;
+                    data.LogJSActive = data.LogJSActive = GeneralSettings.Static.LogJSActive;
 
                     if ((_phrase != null && _phrase != "") && (data.FinalStep == false || _phrase == (data.ListeningWord1 + " " + data.ListeningWord2).Trim().ToLower())) data.Ehi = 1;
 
@@ -869,7 +873,7 @@ namespace Supp.Site.Recognition
                 }
             }
 
-            if (type == WebSpeechTypes.ReadRemindersToday.ToString() || type == WebSpeechTypes.ReadRemindersTomorrow.ToString())
+            if (type == WebSpeechTypes.ReadRemindersTomorrow.ToString())
             {
                 timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00").AddDays(1);
                 timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59").AddDays(1);

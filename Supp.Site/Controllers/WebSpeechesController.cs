@@ -119,6 +119,7 @@ namespace Supp.Site.Controllers
                             || _.SubType.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                             || _.Phrase.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                             || _.StepType.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
+                            || _.GroupName.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                         );
                     }
 
@@ -165,6 +166,15 @@ namespace Supp.Site.Controllers
                             break;
                         case "ElementIndex":
                             data = data.OrderBy(_ => _.ElementIndex);
+                            break;
+                        case "Groupable":
+                            data = data.OrderBy(_ => _.Groupable);
+                            break;
+                        case "GroupName":
+                            data = data.OrderBy(_ => _.GroupName);
+                            break;
+                        case "GroupOrder":
+                            data = data.OrderBy(_ => _.GroupOrder);
                             break;
                         default:
                             data = data.OrderBy(_ => _.Name);
@@ -366,7 +376,7 @@ namespace Supp.Site.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Phrase,Operation,OperationEnable,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,SubType,Step,StepType,ElementIndex,InsDateTime")] WebSpeechDto dto)
+        public async Task<IActionResult> Create([Bind("Id,Name,Phrase,Operation,OperationEnable,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,SubType,Step,StepType,ElementIndex,InsDateTime,Groupable,GroupName,GroupOrder")] WebSpeechDto dto)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -473,7 +483,7 @@ namespace Supp.Site.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Phrase,Operation,OperationEnable,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,SubType,Step,StepType,ElementIndex,InsDateTime")] WebSpeechDto dto)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Phrase,Operation,OperationEnable,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,SubType,Step,StepType,ElementIndex,InsDateTime,Groupable,GroupName,GroupOrder")] WebSpeechDto dto)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -766,10 +776,11 @@ namespace Supp.Site.Controllers
                         data.AlwaysShow = alwaysShow;
                         data.ExecutionQueueId = executionQueueId;
                         data.OnlyRefresh = onlyRefresh;
+                        data.LogJSActive = GeneralSettings.Static.LogJSActive;
                     }
 
                     data.ResetAfterLoad = resetAfterLoad;
-                    
+
                     return View(data);
                 }
                 catch (Exception ex)
@@ -851,6 +862,7 @@ namespace Supp.Site.Controllers
                 catch (Exception ex)
                 {
                     var data = new WebSpeechDto() { };
+                    data.LogJSActive = data.LogJSActive = GeneralSettings.Static.LogJSActive;
                     data.Error = nameof(WebSpeechesController.Recognition) + " - " + ex.Message.ToString();
                     logger.Error(ex.ToString());
                     result = JsonConvert.SerializeObject(data);

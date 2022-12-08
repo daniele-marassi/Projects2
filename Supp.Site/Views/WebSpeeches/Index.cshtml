@@ -83,6 +83,15 @@
                     <th id="selectable">
                         @Html.ActionLink("PrivateInstruction", "Index", new { sortOrder = "PrivateInstruction", currentFilter = ViewBag.CurrentFilter })
                     </th>
+                    <th id="selectable">
+                        @Html.ActionLink("Groupable", "Index", new { sortOrder = "Groupable", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("GroupName", "Index", new { sortOrder = "GroupName", currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th id="selectable">
+                        @Html.ActionLink("GroupOrder", "Index", new { sortOrder = "GroupOrder", currentFilter = ViewBag.CurrentFilter })
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -146,6 +155,15 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.PrivateInstruction)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Groupable)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GroupName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GroupOrder)
                     </td>
                 </tr>
                     }

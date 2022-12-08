@@ -86,6 +86,7 @@
         var subType = ""; 
         var step = 0;
         var newWebSpeechRequestName= "";
+        var logJSActive = true;
         //@*Model Variables*@
 
         function VariablesAssignmentFromJson(jsonString) {
@@ -108,6 +109,7 @@
             id = DecodeUnicodeExtended( model["Id"]);
             hostSelected =DecodeUnicodeExtended( model["HostSelected"]);
             phrase = DecodeUnicodeExtended(model["Phrase"]);
+            logJSActive = GetBoolean(DecodeUnicodeExtended(model["LogJSActive"]));
 
             if(finalStep == false) {
                 if(phrase != null && phrase != ""){           
@@ -178,6 +180,7 @@
             id = "@Model?.Id";
             hostSelected = "@Model?.HostSelected";
             phrase = "@Model?.Phrase";
+            logJSActive = GetBoolean("@Model?.LogJSActive");
 
             if(finalStep == false) {
                 if(phrase != null && phrase != ""){           
@@ -301,7 +304,7 @@
             }
 
             if(reset == 1) {
-                ellipse.setAttribute("ry", size);
+                ellipse.setAttribute("ry", 1);
                 ellipse.setAttribute("rx", size);
                 r[id]["x"]=0;
                 r[id]["y"]=0;
@@ -334,8 +337,15 @@
                     ellipseStep[id] = 0;
                 }
 
+            var syze_y = 1 + (Math.floor(Math.random() * 9) /10);
+
+            //syze_y = (amount );
+
+            if(syze_y <= 0)
+                syze_y =1;
+
                 if(xy == "y") {
-                    ellipse.setAttribute("ry", size + r[id]["y"]);
+                    ellipse.setAttribute("ry", syze_y);
                 } 
 
                 if(xy == "x"){ 
@@ -428,6 +438,8 @@
             var speakHasError = false;
             var _error = "";
 
+            document.getElementById('ellipse2').style.fill = "red";
+
             try {
                synth.speak(speech);
             }
@@ -453,6 +465,7 @@
                 LogFunctionStart("speech.onend");
                 if (_finalStep == true || readOutLoudActive == false || _message == null || _message == ""){
                     EndReadOutLoud();
+                    document.getElementById('ellipse2').style.fill = "white";
                 } else {
                     if(synth != null) synth.cancel();
                     synth= null;
@@ -549,7 +562,7 @@
                  
                 var ellipse6 = document.getElementById("ellipse6");
 
-                if(heightScreen == 1080){
+@*                if(heightScreen == 1080){
                     ellipse6.setAttribute("rx", "58");
                     ellipse6.setAttribute("ry", "58");
                 }
@@ -562,7 +575,7 @@
                 if(heightScreen == 2160){
                     ellipse6.setAttribute("rx", "60");
                     ellipse6.setAttribute("ry", "60");
-                }
+                }*@
             }
 
             document.getElementById("sendPhrase_text")
@@ -704,7 +717,7 @@
 
                 recognition.onstart = function () {
                     recognizing = true;
-                    console.warn("info_speak_now");
+                    if(logJSActive) console.warn("info_speak_now");
                 };
 
                 recognition.onerror = function (event) {
@@ -856,6 +869,7 @@
         }
 
         function LogWithTime(value, isAWarning){
+            if(!logJSActive && isAWarning) return "";
             var date = new Date();
             var dateString = date.toISOString().replace("T"," ").replace("Z","");
             value = dateString + " - " + value;
@@ -866,6 +880,7 @@
         }
 
         function LogFunctionStart(functionName){
+            if(!logJSActive) return "";
             var date = new Date();
             var dateString = date.toISOString().replace("T"," ").replace("Z","");
             var value = LogFunctionStart.caller.name;
@@ -877,6 +892,7 @@
         }
 
         function LogFunctionEnd(functionName){
+            if(!logJSActive) return "";
             var date = new Date();
             var dateString = date.toISOString().replace("T"," ").replace("Z","");
             var value = LogFunctionEnd.caller.name;
@@ -963,7 +979,7 @@
 
             // partial reset after ehi with wait countTheTimesToPartialReset
             if(partialResetActive && countTheTimesToPartialReset == timeToEhiTimeoutInSeconds){
-                console.warn("TheTimesToPartialReset");
+                if(logJSActive) console.warn("TheTimesToPartialReset");
                 countTheTimesToPartialReset = 0;
                 PartialReset(false,true);
             }
@@ -978,7 +994,7 @@
 
             // reset after idle time countTheTimeToResetInSeconds
             if(resetActive && countTheTimeToResetInSeconds == timeToResetInSeconds && recognitionActive == true && shortcutsOpen == false){
-                console.warn("TheTimeToResetInSeconds");
+                if(logJSActive) console.warn("TheTimeToResetInSeconds");
                 countTheTimeToResetInSeconds = 0;
                 resetActive = false;  
                 Reset(false, true);
@@ -995,7 +1011,7 @@
                     navigator.mediaDevices.getUserMedia({ audio: true })
                     .then(function (stream) {
                         window.localStream = stream;
-                        console.warn("You let me use your mic!")
+                        if(logJSActive) console.warn("You let me use your mic!")
                     })
                     .catch(function (err) {
                         console.warn("No mic for you!")
@@ -1003,7 +1019,7 @@
                 } else {
                     window.localStream.getTracks().forEach( (track) => {
                         track.stop();
-                         console.warn("mic off")
+                        if(logJSActive) console.warn("mic off")
                     });
                     window.localStream.getAudioTracks()[0].stop();
                 }
@@ -1500,14 +1516,14 @@
                         <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
                     </filter>
                 </defs>
-                <ellipse id="ellipse1" cx="100" cy="50" rx="50" ry="50" style="fill: #ffffff;" filter="url(#blurMe)"/>
-                <ellipse id="ellipse2" cx="100" cy="50" rx="50" ry="50" style="fill: #ffffff;" filter="url(#blurMe)"/>
-@*                <ellipse id="ellipse1" cx="100" cy="50" rx="50" ry="50" style="fill: #c9c30d;" filter="url(#blurMe)"/>
-                <ellipse id="ellipse2" cx="100" cy="50" rx="50" ry="50" style="fill: #02ad02;" filter="url(#blurMe)"/>
-                <ellipse id="ellipse3" cx="100" cy="50" rx="50" ry="50" style="fill: #026aad;" filter="url(#blurMe)"/>
-                <ellipse id="ellipse4" cx="100" cy="50" rx="50" ry="50" style="fill: #7a1cc9;" filter="url(#blurMe)"/>
-                <ellipse id="ellipse5" cx="100" cy="50" rx="50" ry="50" style="fill: #c22b10;" filter="url(#blurMe)"/>*@
-                <ellipse id="ellipse6" cx="100" cy="50" rx="57" ry="57" style=" cursor:pointer;" onclick="EllipseClick();"  class="btn ellipse-dark" />
+                <ellipse id="ellipse1" cx="100" cy="50" rx="50" ry="1" style="fill: #ffffff;" filter="url(#blurMe)"/>
+                <ellipse id="ellipse2" cx="100" cy="50" rx="50" ry="1" style="fill: #ffffff;" filter="url(#blurMe)"/>
+@*                <ellipse id="ellipse1" cx="100" cy="50" rx="50" ry="1" style="fill: #c9c30d;" filter="url(#blurMe)"/>
+                <ellipse id="ellipse2" cx="100" cy="50" rx="50" ry="1" style="fill: #02ad02;" filter="url(#blurMe)"/>
+                <ellipse id="ellipse3" cx="100" cy="50" rx="50" ry="1" style="fill: #026aad;" filter="url(#blurMe)"/>
+                <ellipse id="ellipse4" cx="100" cy="50" rx="50" ry="1" style="fill: #7a1cc9;" filter="url(#blurMe)"/>
+                <ellipse id="ellipse5" cx="100" cy="50" rx="50" ry="1" style="fill: #c22b10;" filter="url(#blurMe)"/>*@
+                <ellipse id="ellipse6" cx="100" cy="50" rx="70" ry="1" style=" cursor:pointer;" onclick="EllipseClick();"  class="btn ellipse-dark" />
             </svg>
         </div>
         <div id="hosts_cmb_container" style="text-align:center; margin-top:-17%;">
@@ -1536,7 +1552,7 @@
 	window.onload = function(e) {
         LogFunctionStart("window.onload");
         VariablesAssignmentFromModel();
-        console.warn("resetAfterLoad:" + resetAfterLoad);
+        if(logJSActive) console.warn("resetAfterLoad:" + resetAfterLoad);
         if(resetAfterLoad == true) {
             clearTimeout(initFinalTimeoutStep2);
             initFinalTimeoutStep2 = null;

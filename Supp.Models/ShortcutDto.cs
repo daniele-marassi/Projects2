@@ -14,5 +14,8 @@ namespace Supp.Models
         public string Title { get; set; }
         public string Type { get; set; }
         public int Order { get; set; }
+        public bool Groupable { get; set; }
+        public string GroupName { get; set; }
+        public int GroupOrder { get; set; }
     }
 }
