@@ -990,7 +990,7 @@
             //timeToResetInSeconds = 12; //to debug
             //resetActive = true; //to debug
 
-            //console.log("recognitionActive:"+recognitionActive + " resetActive:"+resetActive+ " countTheTimeToResetInSeconds:"+countTheTimeToResetInSeconds);
+            console.log("recognitionActive:"+recognitionActive + " resetActive:"+resetActive+ " shortcutsOpen:" +shortcutsOpen+ " countTheTimeToResetInSeconds:"+countTheTimeToResetInSeconds);
 
             // reset after idle time countTheTimeToResetInSeconds
             if(resetActive && countTheTimeToResetInSeconds == timeToResetInSeconds && recognitionActive == true && shortcutsOpen == false){
@@ -1510,7 +1510,7 @@
             </dl>
         </div>
         <div id="div_ellipse" style="margin-top:50px;">
-            <svg id="svg_ellipse" viewBox="14.3 -13 172 140" xmlns="http://www.w3.org/2000/svg">
+            <svg id="svg_ellipse" viewBox="14.3 -13 172 140" xmlns="http://www.w3.org/2000/svg" onclick="EllipseClick();" >
                 <defs>
                     <filter id="blurMe">
                         <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
@@ -1523,7 +1523,7 @@
                 <ellipse id="ellipse3" cx="100" cy="50" rx="50" ry="1" style="fill: #026aad;" filter="url(#blurMe)"/>
                 <ellipse id="ellipse4" cx="100" cy="50" rx="50" ry="1" style="fill: #7a1cc9;" filter="url(#blurMe)"/>
                 <ellipse id="ellipse5" cx="100" cy="50" rx="50" ry="1" style="fill: #c22b10;" filter="url(#blurMe)"/>*@
-                <ellipse id="ellipse6" cx="100" cy="50" rx="70" ry="1" style=" cursor:pointer;" onclick="EllipseClick();"  class="btn ellipse-dark" />
+                <ellipse id="ellipse6" cx="100" cy="50" rx="70" ry="1" style=" cursor:pointer;" class="btn ellipse-dark" />
             </svg>
         </div>
         <div id="hosts_cmb_container" style="text-align:center; margin-top:-17%;">
