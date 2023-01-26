@@ -15,6 +15,7 @@ using System.Linq;
 using System.IO;
 using AudioSwitcher.AudioApi.CoreAudio;
 using static Tools.Common.ContextMenus;
+using Microsoft.Win32;
 
 namespace Tools.ReconnectBluetoothDevice
 {

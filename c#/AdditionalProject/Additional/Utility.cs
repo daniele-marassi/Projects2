@@ -24,6 +24,7 @@ using InTheHand.Net.Bluetooth;
 using InTheHand.Net.Sockets;
 
 using NAudio.CoreAudioApi;
+using Microsoft.Win32;
 
 namespace Additional
 {
@@ -78,6 +79,249 @@ namespace Additional
             IgnoreResize = 0x0001,
             IgnoreZOrder = 0x0004,
             ShowWindow = 0x0040,
+        }
+
+        /// <summary>
+        /// Set Registry Key
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="KeyPath"></param>
+        /// <param name="valueName"></param>
+        /// <param name="valueData"></param>
+        /// <param name="registryValueKind"></param>
+        /// <param name="registryType"></param>
+        public void SetRegistryKey(RegistryHive root, string KeyPath, string valueName, object valueData, RegistryValueKind registryValueKind, RegistryView registryType)
+        {
+            var regKeySpecific = RegistryKey.OpenBaseKey(root, registryType);
+            var registryKey = regKeySpecific.OpenSubKey(KeyPath, true);
+            registryKey.SetValue(valueName, valueData, registryValueKind);
+            registryKey.Close();
+        }
+
+        /// <summary>
+        /// Get Registry Key
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="KeyPath"></param>
+        /// <param name="valueName"></param>
+        /// <param name="registryType"></param>
+        /// <returns></returns>
+        public object GetRegistryKey(RegistryHive root, string KeyPath, string valueName, RegistryView registryType)
+        {
+            object result;
+
+            var regKeySpecific = RegistryKey.OpenBaseKey(root, registryType);
+            var registryKey = regKeySpecific.OpenSubKey(KeyPath, true);
+            result = registryKey.GetValue(valueName);
+            registryKey.Close();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Reconnect Bluetooth Device
+        /// </summary>
+        /// <param name="deviceName"></param>
+        /// <param name="password"></param>
+        /// <param name="removeDevice"></param>
+        /// <returns></returns>
+        public (string Message, bool Successful, bool PairAlreadyExists) ReconnectBluetoothDevice(string deviceName, string password, bool removeDevice)
+        {
+            (string Message, bool Successful, bool PairAlreadyExists) result;
+            result.Message = "";
+            result.Successful = false;
+            result.PairAlreadyExists = false;
+
+            var bluetoothDeviceInfo = GetBluetoothDeviceByName(GetBluetoothPairedDevices(), deviceName);
+
+            if (bluetoothDeviceInfo == null)
+            {
+                SetRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Microsoft\\PolicyManager\\default\\Connectivity\\AllowBluetooth", "value", 0, RegistryValueKind.DWord, RegistryView.Registry64);
+
+                System.Threading.Thread.Sleep(1000);
+
+                SetRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Microsoft\\PolicyManager\\default\\Connectivity\\AllowBluetooth", "value", 2, RegistryValueKind.DWord, RegistryView.Registry64);
+
+                System.Threading.Thread.Sleep(1000);
+
+                bluetoothDeviceInfo = GetBluetoothDeviceByName(GetBluetoothDiscoverDevices(), deviceName);
+
+                if (bluetoothDeviceInfo != null)
+                {
+                    var connectResult = ConnectBluetoothSpeakers(bluetoothDeviceInfo?.DeviceAddress, password, removeDevice);
+
+                    result.Message = connectResult.Message;
+                    result.Successful = connectResult.Successful;
+                    result.PairAlreadyExists = false;
+                }
+                else
+                {
+                    result.Message = $"Device {deviceName} not found!";
+                    result.Successful = false;
+                    result.PairAlreadyExists = false;
+                }
+            }
+            else
+            {
+                result.Message = "The device is already paired.";
+                result.Successful = true;
+                result.PairAlreadyExists = true;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Get Bluetooth Discover Devices
+        /// </summary>
+        /// <returns></returns>
+        public List<BluetoothDeviceInfo> GetBluetoothDiscoverDevices()
+        {
+            var result = new List<BluetoothDeviceInfo>() { };
+
+            BluetoothClient bluetoothClient = null;
+
+            try
+            {
+                bluetoothClient = new BluetoothClient();
+                var buleRadio = BluetoothRadio.Default;//PrimaryRadio;
+                buleRadio.Mode = RadioMode.Connectable; //.Connectable;
+                var devices = bluetoothClient.DiscoverDevices();
+
+                var _devices = bluetoothClient.PairedDevices.ToList();
+
+                result.AddRange(devices);
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    bluetoothClient.Close();
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Get Bluetooth Paired Devices
+        /// </summary>
+        /// <returns></returns>
+        public List<BluetoothDeviceInfo> GetBluetoothPairedDevices()
+        {
+            var result = new List<BluetoothDeviceInfo>() { };
+
+            BluetoothClient bluetoothClient = null;
+
+            try
+            {
+                bluetoothClient = new BluetoothClient();
+                var buleRadio = BluetoothRadio.Default;//PrimaryRadio;
+                buleRadio.Mode = RadioMode.Connectable; //.Connectable;
+                var devices = bluetoothClient.PairedDevices.ToList();
+
+                result.AddRange(devices);
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    bluetoothClient.Close();
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Get Bluetooth Device By Name
+        /// </summary>
+        /// <param name="bluetoothDevices"></param>
+        /// <param name="deviceName"></param>
+        /// <returns></returns>
+        public BluetoothDeviceInfo GetBluetoothDeviceByName(List<BluetoothDeviceInfo> bluetoothDevices, string deviceName)
+        {
+            BluetoothDeviceInfo result;
+
+            result = bluetoothDevices.Where(_ => _.DeviceName.Trim().ToLower() == deviceName.Trim().ToLower()).FirstOrDefault();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Connect Bluetooth Speakers
+        /// </summary>
+        /// <param name="bluetoothAddress"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public (string Message, bool Successful) ConnectBluetoothSpeakers(BluetoothAddress bluetoothAddress, string password, bool removeDevice)
+        {
+            (string Message, bool Successful) result;
+            result.Message = "";
+            result.Successful = false;
+
+            BluetoothClient bluetoothClient = null;
+
+            try
+            {
+                if (removeDevice) RemoveBluetoothDevice(bluetoothAddress);
+                var device = new BluetoothDeviceInfo(bluetoothAddress);
+                BluetoothSecurity.PairRequest(bluetoothAddress, password);
+                bluetoothClient = new BluetoothClient();
+                bluetoothClient.Connect(device.DeviceAddress, BluetoothService.Handsfree);
+
+                if (bluetoothClient.Connected)
+                {
+                    result.Message = "The pairing is successful.";
+                    result.Successful = true;
+                }
+                else
+                {
+                    result.Message = "The pairing is failed.";
+                    result.Successful = false;
+                }
+
+                var stream = bluetoothClient.GetStream();
+                stream.Close();
+
+                bluetoothClient.Close();
+                device.SetServiceState(BluetoothService.Handsfree, true);
+                device.SetServiceState(BluetoothService.AudioSink, true);
+                device.SetServiceState(BluetoothService.AVRemoteControl, true);
+                device.SetServiceState(BluetoothService.GenericAudio, true);
+                device.SetServiceState(BluetoothService.AudioVideo, true);
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
+                result.Successful = false;
+
+                try
+                {
+                    bluetoothClient.Close();
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Remove Bluetooth Device
+        /// </summary>
+        /// <param name="bluetoothAddress"></param>
+        /// <returns></returns>
+        public void RemoveBluetoothDevice(BluetoothAddress bluetoothAddress)
+        {
+            BluetoothSecurity.RemoveDevice(bluetoothAddress);
         }
 
         /// <summary>
@@ -1614,157 +1858,7 @@ namespace Additional
             }
         }
 
-        /// <summary>
-        /// Remove Bluetooth Device
-        /// </summary>
-        /// <param name="bluetoothAddress"></param>
-        /// <returns></returns>
-        public void RemoveBluetoothDevice(BluetoothAddress bluetoothAddress)
-        {
-            BluetoothSecurity.RemoveDevice(bluetoothAddress);
-        }
-
-        /// <summary>
-        /// Reconnect Bluetooth Device
-        /// </summary>
-        /// <param name="deviceName"></param>
-        /// <param name="password"></param>
-        /// <param name="removeDevice"></param>
-        /// <returns></returns>
-        public (string Message, bool Successful, bool PairAlreadyExists) ReconnectBluetoothDevice(string deviceName, string password, bool removeDevice)
-        {
-            (string Message, bool Successful, bool PairAlreadyExists) result;
-            result.Message = "";
-            result.Successful = false;
-            result.PairAlreadyExists = false;
-
-            var bluetoothDeviceInfo = GetBluetoothDeviceByName(GetBluetoothDevices(), deviceName);
-
-            if (bluetoothDeviceInfo != null)
-            {
-                var connectResult = ConnectBluetoothSpeakers(bluetoothDeviceInfo.DeviceAddress, password, removeDevice);
-
-                result.Message = connectResult.Message;
-                result.Successful = connectResult.Successful;
-                result.PairAlreadyExists = false;
-            }
-            else
-            {
-                result.Message = "The device is already paired.";
-                result.Successful = true;
-                result.PairAlreadyExists = true;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Get Bluetooth Devices
-        /// </summary>
-        /// <returns></returns>
-        public List<BluetoothDeviceInfo> GetBluetoothDevices()
-        {
-            var result = new List<BluetoothDeviceInfo>() { };
-
-            BluetoothClient bluetoothClient = null;
-
-            try
-            {
-                bluetoothClient = new BluetoothClient();
-                var buleRadio = BluetoothRadio.Default;//PrimaryRadio;
-                buleRadio.Mode = RadioMode.Connectable;
-                var devices = bluetoothClient.DiscoverDevices();
-
-                result.AddRange(devices);
-            }
-            catch (Exception)
-            {
-                try
-                {
-                    bluetoothClient.Close();
-                }
-                catch (Exception)
-                {
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Get Bluetooth Device By Name
-        /// </summary>
-        /// <param name="bluetoothDevices"></param>
-        /// <param name="deviceName"></param>
-        /// <returns></returns>
-        public BluetoothDeviceInfo GetBluetoothDeviceByName(List<BluetoothDeviceInfo> bluetoothDevices, string deviceName)
-        {
-            BluetoothDeviceInfo result;
-
-            result = bluetoothDevices.Where(_ => _.DeviceName.Trim().ToLower() == deviceName.Trim().ToLower()).FirstOrDefault();
-
-            return result;
-        }
-
-        /// <summary>
-        /// Connect Bluetooth Speakers
-        /// </summary>
-        /// <param name="bluetoothAddress"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
-        public (string Message, bool Successful) ConnectBluetoothSpeakers(BluetoothAddress bluetoothAddress, string password, bool removeDevice)
-        {
-            (string Message, bool Successful) result;
-            result.Message = "";
-            result.Successful = false;
-
-            BluetoothClient bluetoothClient = null;
-
-            try
-            {
-                if(removeDevice) RemoveBluetoothDevice(bluetoothAddress);
-                var device = new BluetoothDeviceInfo(bluetoothAddress);
-                BluetoothSecurity.PairRequest(bluetoothAddress, password);
-                bluetoothClient = new BluetoothClient();
-                bluetoothClient.Connect(device.DeviceAddress, BluetoothService.Handsfree);
-
-                if (bluetoothClient.Connected)
-                {
-                    result.Message = "The pairing is successful.";
-                    result.Successful = true;
-                }
-                else
-                {
-                    result.Message = "The pairing is failed.";
-                    result.Successful = false;
-                }
-
-                var stream = bluetoothClient.GetStream();
-                stream.Close();
-
-                bluetoothClient.Close();
-                device.SetServiceState(BluetoothService.Handsfree, true);
-                device.SetServiceState(BluetoothService.AudioSink, true);
-                device.SetServiceState(BluetoothService.AVRemoteControl, true);
-                device.SetServiceState(BluetoothService.GenericAudio, true);
-                device.SetServiceState(BluetoothService.AudioVideo, true);
-            }
-            catch (Exception ex)
-            {
-                result.Message = ex.Message;
-                result.Successful = false;
-
-                try
-                {
-                    bluetoothClient.Close();
-                }
-                catch (Exception)
-                {
-                }
-            }
-
-            return result;
-        }
+        
 
         /// <summary>
         /// Set Default Audio Device

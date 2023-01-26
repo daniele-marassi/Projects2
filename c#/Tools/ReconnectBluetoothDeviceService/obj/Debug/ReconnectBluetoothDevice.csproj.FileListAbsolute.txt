@@ -158,3 +158,5 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\o
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\obj\Debug\ReconnectBluetoothDevice.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\obj\Debug\ReconnectBluetoothDevice.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\obj\Debug\ReconnectBluetoothDevice.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\bin\Debug\NAudio.Wasapi.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\bin\Debug\NAudio.Core.dll

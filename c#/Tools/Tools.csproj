@@ -228,12 +228,6 @@
     <Content Include="External_tools\SetDefaultAudioDevice\AudioDeviceCmdlets.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External_tools\SetDefaultAudioDevice\Microsoft.Win32.Registry.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External_tools\SetDefaultAudioDevice\Microsoft.Win32.Registry.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="External_tools\SetDefaultAudioDevice\NAudio.Asio.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
