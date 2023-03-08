@@ -22,6 +22,8 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using System.IO;
 using static Tools.Common.ContextMenus;
+using System.Text.RegularExpressions;
+using ExecutionQueue;
 
 namespace Tools.ExecutionQueue
 {
@@ -41,7 +43,7 @@ namespace Tools.ExecutionQueue
         private static Logger classLogger = LogManager.GetCurrentClassLogger();
         private NLogUtility nLogUtility = new NLogUtility();
         private int limitLogFileInMB = 0;
-        Utility utility;
+        Additional.Utility utility;
         Common.Utility commonUtility;
         System.Collections.Specialized.NameValueCollection appSettings;
         int windowWidth;
@@ -59,7 +61,7 @@ namespace Tools.ExecutionQueue
         public QueueService()
         {
             InitializeComponent();
-            utility = new Utility();
+            utility = new Additional.Utility();
             commonUtility = new Common.Utility();
             appSettings = ConfigurationManager.AppSettings;
             windowWidth = int.Parse(appSettings["WindowWidth"]);
@@ -171,7 +173,7 @@ namespace Tools.ExecutionQueue
 
                             if (!updateExecutionQueueResult.Successful)
                             {
-                                if (oldUpdateError == null || (oldUpdateError != null && oldUpdateError?.Contains(updateExecutionQueueResult.Message) == false))
+                                if (oldUpdateError == null || (oldUpdateError != null && oldUpdateError?.RemoveIntegers()?.Contains(updateExecutionQueueResult.Message.RemoveIntegers()) == false))
                                 {
                                     using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                                     {
@@ -280,15 +282,15 @@ namespace Tools.ExecutionQueue
                                 appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
                                 notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
 
+                                oldServiceError = null;
+
                                 if (serviceActive) Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServiceActive);
                                 if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + "Queue Service Recovered!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                                 logger.Info("Queue Service Recovered!");
                             }
                          }
-
-                        oldServiceError = null;
                     }
-                    else if (oldServiceError == null || oldServiceError != newQueueResult.Message)
+                    else if (oldServiceError == null || (oldServiceError != null && oldServiceError?.RemoveIntegers()?.Contains(newQueueResult.Message.RemoveIntegers()) == false))
                     {
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
@@ -297,14 +299,18 @@ namespace Tools.ExecutionQueue
 
                             if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServicesError);
                             if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + newQueueResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
-                            oldServiceError = newQueueResult.Message;
-                            logger.Error(oldServiceError);
+
+                            if (oldServiceError != null) oldServiceError += " - ";
+                            else oldServiceError = String.Empty;
+
+                            oldServiceError += newQueueResult.Message;
+                            logger.Error(newQueueResult.Message);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    if (oldServiceError == null || oldServiceError != ex.Message)
+                    if (oldServiceError == null || (oldServiceError != null && oldServiceError?.RemoveIntegers()?.Contains(ex.Message.RemoveIntegers()) == false))
                     {
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
@@ -313,8 +319,12 @@ namespace Tools.ExecutionQueue
 
                             if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServicesError);
                             if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + ex.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
-                            oldServiceError = ex.Message;
-                            logger.Error(oldServiceError);
+
+                            if (oldServiceError != null) oldServiceError += " - ";
+                            else oldServiceError = String.Empty;
+
+                            oldServiceError += ex.Message;
+                            logger.Error(ex.Message);
                         }
                     }
                 }
@@ -353,13 +363,17 @@ namespace Tools.ExecutionQueue
 
                 if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServicesError);
                 var error = result.Error + " [" + item.FullPath + "]";
-                if (oldRunExeError == null || oldRunExeError != error)
+                if (oldRunExeError == null || (oldRunExeError != null && oldRunExeError?.RemoveIntegers()?.Contains(error.RemoveIntegers()) == false))
                 {
                     using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                     {
                         if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + error, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
-                        oldRunExeError = error;
-                        logger.Error(oldRunExeError);
+
+                        if (oldRunExeError != null) oldRunExeError += " - ";
+                        else oldRunExeError = String.Empty;
+
+                        oldRunExeError += error;
+                        logger.Error(error);
                     }
                 }
             }
@@ -391,7 +405,7 @@ namespace Tools.ExecutionQueue
 
             if (!updateExecutionQueueResult.Successful)
             {
-                if (oldUpdateError == null || (oldUpdateError != null && oldUpdateError?.Contains(updateExecutionQueueResult.Message) == false))
+                if (oldUpdateError == null || (oldUpdateError != null && oldUpdateError?.RemoveIntegers()?.Contains(updateExecutionQueueResult.Message.RemoveIntegers()) == false))
                 {
                     using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                     {
