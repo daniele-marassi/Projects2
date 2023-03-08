@@ -981,7 +981,7 @@ namespace Supp.Site.Recognition
 
             if (_application == true && _claims.Configuration.Speech.WakeUpScreenAfterEhiActive == true)
             {
-                var executionQueue = new ExecutionQueueDto() { Host = _claims.Configuration.Speech.HostDefault, Type = ExecutionQueueType.WakeUpScreenAfterEhi.ToString(), WebSpeechId = 0, ScheduledDateTime = DateTime.Now };
+                var executionQueue = new ExecutionQueueDto() { Host = _claims.Configuration.Speech.HostDefault, Type = ExecutionQueueType.WakeUpScreenAfterEhi.ToString(), WebSpeechId = 0, ScheduledDateTime = DateTime.Now, StateQueue = ExecutionQueueStateQueue.NONE.ToString() };
                 response = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
             }
 

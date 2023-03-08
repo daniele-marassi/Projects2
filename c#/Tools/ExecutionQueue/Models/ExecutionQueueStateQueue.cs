@@ -8,5 +8,6 @@ namespace Tools.ExecutionQueue.Models
         AttemptToStart = 2,
         RunningStep1 = 3,
         RunningStep2 = 4,
+        NONE = 5
     }
 }

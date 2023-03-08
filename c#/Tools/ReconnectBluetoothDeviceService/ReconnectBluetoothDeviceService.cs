@@ -38,6 +38,7 @@ namespace Tools.ReconnectBluetoothDevice
         bool notifyMute;
         bool notifyPopupShow;
         System.Collections.Specialized.NameValueCollection appSettings;
+        bool forceReset = true;
 
         public ReconnectBluetoothDeviceService()
         {
@@ -82,6 +83,8 @@ namespace Tools.ReconnectBluetoothDevice
 
         public async Task Start()
         {
+            forceReset = true;
+
             while (serviceActive)
             {
                 if (serviceActive == false) return;
@@ -96,8 +99,10 @@ namespace Tools.ReconnectBluetoothDevice
                         reconnectBluetoothDeviceResult.PairAlreadyExists = false;
 
                         if (bluetoothDeviceTypeList[i].ToString().ToLower() == "audio")
-                            reconnectBluetoothDeviceResult = utility.ReconnectBluetoothDevice(bluetoothDeviceList[i].ToString(), bluetoothDevicePasswordList[i].ToString(), false);
-
+                        {
+                            reconnectBluetoothDeviceResult = utility.ReconnectBluetoothDevice(bluetoothDeviceList[i].ToString(), bluetoothDevicePasswordList[i].ToString(), true, forceReset);
+                            forceReset = false;
+                        }
                         if (!reconnectBluetoothDeviceResult.Successful && (showError == null || reconnectBluetoothDeviceResult.Message != showError))
                         {
                             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
@@ -128,7 +133,7 @@ namespace Tools.ReconnectBluetoothDevice
                         if (reconnectBluetoothDeviceResult.Successful && bluetoothDeviceTypeList[i].ToString().ToLower() == "audio" && reconnectBluetoothDeviceResult.PairAlreadyExists == false)
                         {
                             //System.Threading.Thread.Sleep(500);
-                            SetVolume(volumePercent);
+                            utility.SetVolume(volumePercent);
                         }
                     }
                     catch (Exception ex)
@@ -161,12 +166,6 @@ namespace Tools.ReconnectBluetoothDevice
         protected override void OnStop()
         {
 
-        }
-
-        public void SetVolume(double percent)
-        {
-            CoreAudioDevice defaultPlaybackDevice = new CoreAudioController().DefaultPlaybackDevice;
-            defaultPlaybackDevice.Volume = percent;
         }
     }
 }

@@ -25,6 +25,7 @@ using InTheHand.Net.Sockets;
 
 using NAudio.CoreAudioApi;
 using Microsoft.Win32;
+using AudioSwitcher.AudioApi.CoreAudio;
 
 namespace Additional
 {
@@ -124,17 +125,21 @@ namespace Additional
         /// <param name="deviceName"></param>
         /// <param name="password"></param>
         /// <param name="removeDevice"></param>
+        /// <param name="forceReset"></param>
         /// <returns></returns>
-        public (string Message, bool Successful, bool PairAlreadyExists) ReconnectBluetoothDevice(string deviceName, string password, bool removeDevice)
+        public (string Message, bool Successful, bool PairAlreadyExists) ReconnectBluetoothDevice(string deviceName, string password, bool removeDevice, bool forceReset = false)
         {
             (string Message, bool Successful, bool PairAlreadyExists) result;
             result.Message = "";
             result.Successful = false;
             result.PairAlreadyExists = false;
 
-            var bluetoothDeviceInfo = GetBluetoothDeviceByName(GetBluetoothPairedDevices(), deviceName);
+            var bluetoothPairedDeviceInfo = GetBluetoothDeviceByName(GetBluetoothPairedDevices(), deviceName);
+            var bluetoothDiscoverDeviceInfo = GetBluetoothDeviceByName(GetBluetoothDiscoverDevices(), deviceName);
 
-            if (bluetoothDeviceInfo == null)
+            var defaultAudioDeviceName = GetDefaultAudioDeviceName();
+
+            if (bluetoothPairedDeviceInfo == null | bluetoothDiscoverDeviceInfo != null || defaultAudioDeviceName.ToLower().Contains(deviceName.ToLower()) == false || forceReset)
             {
                 SetRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Microsoft\\PolicyManager\\default\\Connectivity\\AllowBluetooth", "value", 0, RegistryValueKind.DWord, RegistryView.Registry64);
 
@@ -144,11 +149,11 @@ namespace Additional
 
                 System.Threading.Thread.Sleep(1000);
 
-                bluetoothDeviceInfo = GetBluetoothDeviceByName(GetBluetoothDiscoverDevices(), deviceName);
+                bluetoothDiscoverDeviceInfo = GetBluetoothDeviceByName(GetBluetoothDiscoverDevices(), deviceName);
 
-                if (bluetoothDeviceInfo != null)
+                if (bluetoothDiscoverDeviceInfo != null)
                 {
-                    var connectResult = ConnectBluetoothSpeakers(bluetoothDeviceInfo?.DeviceAddress, password, removeDevice);
+                    var connectResult = ConnectBluetoothSpeakers(bluetoothDiscoverDeviceInfo?.DeviceAddress, password, removeDevice);
 
                     result.Message = connectResult.Message;
                     result.Successful = connectResult.Successful;
@@ -322,6 +327,26 @@ namespace Additional
         public void RemoveBluetoothDevice(BluetoothAddress bluetoothAddress)
         {
             BluetoothSecurity.RemoveDevice(bluetoothAddress);
+        }
+
+        /// <summary>
+        /// SetVolume
+        /// </summary>
+        /// <param name="percent"></param>
+        public void SetVolume(double percent)
+        {
+            var defaultPlaybackDevice = new CoreAudioController().DefaultPlaybackDevice;
+            defaultPlaybackDevice.Volume = percent;
+        }
+
+        /// <summary>
+        /// GetDefaultAudioDeviceName
+        /// </summary>
+        /// <returns></returns>
+        public string GetDefaultAudioDeviceName()
+        {
+            var defaultPlaybackDevice = new CoreAudioController().DefaultPlaybackDevice;
+            return defaultPlaybackDevice.FullName;
         }
 
         /// <summary>

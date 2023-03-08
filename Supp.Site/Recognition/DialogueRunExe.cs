@@ -281,7 +281,7 @@ namespace Supp.Site.Recognition
 
             if (data.Host.Trim().ToLower() != "all") hostSelected = data.Host;
 
-            var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = hostSelected, Type = WebSpeechTypes.RunExe.ToString(), WebSpeechId = data.Id, ScheduledDateTime = scheduledDateTime };
+            var executionQueue = new ExecutionQueueDto() { FullPath = data.Operation, Arguments = data.Parameters, Host = hostSelected, Type = WebSpeechTypes.RunExe.ToString(), WebSpeechId = data.Id, ScheduledDateTime = scheduledDateTime, StateQueue = ExecutionQueueStateQueue.NONE.ToString() };
             var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
 
             if (addExecutionQueueResult.Successful)

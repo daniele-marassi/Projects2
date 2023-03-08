@@ -120,13 +120,15 @@ namespace Tools.ExecutionQueue
                 try
                 {
                     var now = DateTime.Now;
-                    var getAllExecutionQueuesResult = await _repo.GetAllExecutionQueues();
+                    var newQueueResult = await _repo.GetQueues(host.Trim(), ExecutionQueueStateQueue.NONE.ToString(), now);
 
-                    if (getAllExecutionQueuesResult.Successful)
+                    var runningQueueResult = await _repo.GetQueues(host.Trim(), ExecutionQueueStateQueue.RunningStep2.ToString(), now);
+
+                    if (newQueueResult.Successful)
                     {
-                        var newQueue = getAllExecutionQueuesResult.Data.Where(_ => _.Host?.Trim().ToLower() == host.Trim().ToLower() && _.StateQueue == null && _.ScheduledDateTime <= now).OrderBy(_ => _.Id).ToList();
+                        var newQueue = newQueueResult.Data.OrderBy(_ => _.Id).ToList();
 
-                        var runningQueue = getAllExecutionQueuesResult.Data.Where(_ => _.Host?.Trim().ToLower() == host.Trim().ToLower() && _.StateQueue == ExecutionQueueStateQueue.RunningStep2.ToString() && _.ScheduledDateTime <= now).OrderBy(_ => _.Id).ToList();
+                        var runningQueue = runningQueueResult.Data.OrderBy(_ => _.Id).ToList();
 
                         foreach (var item in runningQueue)
                         {
@@ -141,7 +143,6 @@ namespace Tools.ExecutionQueue
                             catch (Exception)
                             {
                             }
-
                         }
 
                         foreach (var item in newQueue)
@@ -170,7 +171,7 @@ namespace Tools.ExecutionQueue
 
                             if (!updateExecutionQueueResult.Successful)
                             {
-                                if (oldUpdateError == null || oldUpdateError != updateExecutionQueueResult.Message)
+                                if (oldUpdateError == null || (oldUpdateError != null && oldUpdateError?.Contains(updateExecutionQueueResult.Message) == false))
                                 {
                                     using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                                     {
@@ -179,8 +180,13 @@ namespace Tools.ExecutionQueue
 
                                         if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServicesError);
                                         if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + updateExecutionQueueResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
-                                        oldUpdateError = updateExecutionQueueResult.Message;
-                                        logger.Error(oldUpdateError);
+                                        
+                                        if (oldUpdateError != null) oldUpdateError += " - ";
+                                        else oldUpdateError = String.Empty;
+
+                                        oldUpdateError += updateExecutionQueueResult.Message;
+
+                                        logger.Error(updateExecutionQueueResult.Message);
                                     }
                                 }
                             }
@@ -282,7 +288,7 @@ namespace Tools.ExecutionQueue
 
                         oldServiceError = null;
                     }
-                    else if (oldServiceError == null || oldServiceError != getAllExecutionQueuesResult.Message)
+                    else if (oldServiceError == null || oldServiceError != newQueueResult.Message)
                     {
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
@@ -290,8 +296,8 @@ namespace Tools.ExecutionQueue
                             notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
 
                             if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServicesError);
-                            if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + getAllExecutionQueuesResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
-                            oldServiceError = getAllExecutionQueuesResult.Message;
+                            if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + newQueueResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+                            oldServiceError = newQueueResult.Message;
                             logger.Error(oldServiceError);
                         }
                     }
@@ -385,7 +391,7 @@ namespace Tools.ExecutionQueue
 
             if (!updateExecutionQueueResult.Successful)
             {
-                if (oldUpdateError == null || oldUpdateError != updateExecutionQueueResult.Message)
+                if (oldUpdateError == null || (oldUpdateError != null && oldUpdateError?.Contains(updateExecutionQueueResult.Message) == false))
                 {
                     using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                     {
@@ -394,8 +400,13 @@ namespace Tools.ExecutionQueue
 
                         if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServicesError);
                         if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + updateExecutionQueueResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
-                        oldUpdateError = updateExecutionQueueResult.Message;
-                        logger.Error(oldUpdateError);
+
+                        if (oldUpdateError != null) oldUpdateError += " - ";
+                        else oldUpdateError = String.Empty;
+
+                        oldUpdateError += updateExecutionQueueResult.Message;
+
+                        logger.Error(updateExecutionQueueResult.Message);
                     }
                 }
             }

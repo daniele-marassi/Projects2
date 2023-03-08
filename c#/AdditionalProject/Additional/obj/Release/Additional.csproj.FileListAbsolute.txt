@@ -139,3 +139,5 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\Additional\bin\Releas
 C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\Additional\bin\Release\NAudio.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\Additional\bin\Release\System.Security.AccessControl.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\Additional\bin\Release\System.Security.Principal.Windows.xml
+C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\Additional\bin\Release\AudioSwitcher.AudioApi.CoreAudio.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\Additional\bin\Release\AudioSwitcher.AudioApi.dll

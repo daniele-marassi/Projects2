@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [Supp.DataBase]    Script Date: 15/11/2022 23:01:47 ******/
+/****** Object:  Database [Supp.DataBase]    Script Date: 08/03/2023 00:37:18 ******/
 CREATE DATABASE [Supp.DataBase]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -78,15 +78,15 @@ ALTER DATABASE [Supp.DataBase] SET QUERY_STORE = OFF
 GO
 USE [Supp.DataBase]
 GO
-/****** Object:  User [Admin]    Script Date: 15/11/2022 23:01:47 ******/
+/****** Object:  User [Admin]    Script Date: 08/03/2023 00:37:18 ******/
 CREATE USER [Admin] FOR LOGIN [Admin] WITH DEFAULT_SCHEMA=[dbo]
 GO
 ALTER ROLE [db_owner] ADD MEMBER [Admin]
 GO
-/****** Object:  Schema [auth]    Script Date: 15/11/2022 23:01:48 ******/
+/****** Object:  Schema [auth]    Script Date: 08/03/2023 00:37:18 ******/
 CREATE SCHEMA [auth]
 GO
-/****** Object:  Table [auth].[Authentications]    Script Date: 15/11/2022 23:01:48 ******/
+/****** Object:  Table [auth].[Authentications]    Script Date: 08/03/2023 00:37:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -107,7 +107,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[UserRoles]    Script Date: 15/11/2022 23:01:48 ******/
+/****** Object:  Table [auth].[UserRoles]    Script Date: 08/03/2023 00:37:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -123,7 +123,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[UserRoleTypes]    Script Date: 15/11/2022 23:01:48 ******/
+/****** Object:  Table [auth].[UserRoleTypes]    Script Date: 08/03/2023 00:37:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -138,7 +138,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[Users]    Script Date: 15/11/2022 23:01:48 ******/
+/****** Object:  Table [auth].[Users]    Script Date: 08/03/2023 00:37:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -156,7 +156,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ExecutionQueues]    Script Date: 15/11/2022 23:01:48 ******/
+/****** Object:  Table [dbo].[ExecutionQueues]    Script Date: 08/03/2023 00:37:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -168,17 +168,20 @@ CREATE TABLE [dbo].[ExecutionQueues](
 	[Arguments] [nvarchar](4000) NULL,
 	[Output] [nvarchar](max) NULL,
 	[WebSpeechId] [bigint] NULL,
-	[ScheduledDateTime] [datetime] NULL,
-	[Host] [nvarchar](256) NULL,
-	[StateQueue] [nvarchar](256) NULL,
+	[ScheduledDateTime] [datetime] NOT NULL,
+	[Host] [nvarchar](256) NOT NULL,
+	[StateQueue] [nvarchar](256) NOT NULL,
 	[InsDateTime] [datetime] NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[Id] ASC,
+	[Host] ASC,
+	[StateQueue] ASC,
+	[ScheduledDateTime] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[GoogleAccounts]    Script Date: 15/11/2022 23:01:48 ******/
+/****** Object:  Table [dbo].[GoogleAccounts]    Script Date: 08/03/2023 00:37:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -197,7 +200,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[GoogleAuths]    Script Date: 15/11/2022 23:01:48 ******/
+/****** Object:  Table [dbo].[GoogleAuths]    Script Date: 08/03/2023 00:37:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -216,7 +219,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Media]    Script Date: 15/11/2022 23:01:48 ******/
+/****** Object:  Table [dbo].[Media]    Script Date: 08/03/2023 00:37:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -254,7 +257,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[MediaConfigurations]    Script Date: 15/11/2022 23:01:48 ******/
+/****** Object:  Table [dbo].[MediaConfigurations]    Script Date: 08/03/2023 00:37:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -271,7 +274,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Songs]    Script Date: 15/11/2022 23:01:48 ******/
+/****** Object:  Table [dbo].[Songs]    Script Date: 08/03/2023 00:37:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -290,7 +293,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[WebSpeeches]    Script Date: 15/11/2022 23:01:48 ******/
+/****** Object:  Table [dbo].[WebSpeeches]    Script Date: 08/03/2023 00:37:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -356,8 +359,8 @@ SET IDENTITY_INSERT [auth].[Users] ON
 INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [CustomizeParams], [InsDateTime]) VALUES (1, N'Admin', N'Admin', N'Admin', NULL, CAST(N'2020-01-10T13:42:42.153' AS DateTime))
 INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [CustomizeParams], [InsDateTime]) VALUES (2, N'SuperUser', N'SuperUser', N'SuperUser', NULL, CAST(N'2020-01-27T14:20:42.970' AS DateTime))
 INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [CustomizeParams], [InsDateTime]) VALUES (3, N'Guest', N'Guest', N'Guest', NULL, CAST(N'2020-01-27T14:20:55.193' AS DateTime))
-INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [CustomizeParams], [InsDateTime]) VALUES (4, N'daniele.marassi@gmail.com', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"EV-PC\",\"EV-TB\"]","HostDefault":"EV-PC","ListeningWord1":"","ListeningWord2":"cortana","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"trieste-oggi-32006","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "True", "TimeToResetInSeconds": 900, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "False", "GoogleCalendarAccount": "daniele.marassi"}}', CAST(N'2021-04-28T22:15:21.000' AS DateTime))
-INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [CustomizeParams], [InsDateTime]) VALUES (5, N'daniele.marassi.ev.tb@gmail.com', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"EV-PC\",\"EV-TB\"]","HostDefault":"EV-TB","ListeningWord1":"","ListeningWord2":"cortana","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"trieste-oggi-32006","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "True", "TimeToResetInSeconds": 900, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "True", "GoogleCalendarAccount": "daniele.marassi"}}', CAST(N'2022-01-02T12:12:06.000' AS DateTime))
+INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [CustomizeParams], [InsDateTime]) VALUES (4, N'daniele.marassi@gmail.com', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"EV-PC\",\"EV-TB\"]","HostDefault":"EV-PC","ListeningWord1":"","ListeningWord2":"cortana","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"trieste-oggi-32006","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "True", "TimeToResetInSeconds": 1200, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "False", "GoogleCalendarAccount": "daniele.marassi"}}', CAST(N'2021-04-28T22:15:21.000' AS DateTime))
+INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [CustomizeParams], [InsDateTime]) VALUES (5, N'daniele.marassi.ev.tb@gmail.com', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"EV-PC\",\"EV-TB\"]","HostDefault":"EV-TB","ListeningWord1":"","ListeningWord2":"cortana","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"trieste-oggi-32006","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "True", "TimeToResetInSeconds": 1200, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "True", "GoogleCalendarAccount": "daniele.marassi"}}', CAST(N'2022-01-02T12:12:06.000' AS DateTime))
 SET IDENTITY_INSERT [auth].[Users] OFF
 SET IDENTITY_INSERT [dbo].[GoogleAccounts] ON 
 
@@ -435,18 +438,22 @@ INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (58, N'Credenziali_Google', N'[["Credenziali"],["Google"]]', N'C:\Program Files (x86)\GoogleCreateCredentialsTool\GoogleCreateCredentials.exe', NULL, N'All', N'["ok","va bene","certo","bene"]', 1, 5, NULL, N'/Images/Shortcuts/generic.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2022-01-09T11:36:09.053' AS DateTime), 1, N'App', 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (61, N'Promemoria_Esteso:_Crea', N'[["crea","inserisci","nuovo"],["appuntamento","promemoria","evento","memo"],["esteso","completo","full","extended","estesa","completa"]]', NULL, NULL, N'All', NULL, 0, 0, NULL, N'/Images/Shortcuts/reminder-create.png', 0, N'CreateExtendedReminder', 1, N'SystemDialogueCreateExtendedReminder', 0, NULL, 0, CAST(N'2022-01-13T17:18:36.450' AS DateTime), 1, N'Promemoria', 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (62, N'Promemoria:_Elimina', N'[["elimina","rimuovi","cancella"],["appuntamento","promemoria","evento","memo"]]', NULL, NULL, N'All', NULL, 0, 0, NULL, N'/Images/Shortcuts/reminder-delete.png', 0, N'DeleteReminder', 1, N'SystemDialogueDeleteReminder', 0, NULL, 0, CAST(N'2022-01-13T17:18:53.587' AS DateTime), 1, N'Promemoria', 0)
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (63, N'Timer:_Set', N'[["timer"], ["imposta", "aggiungi","avvia","set","crea","start"]]', NULL, N'[''Ehi NAME, il tempo è scaduto!'',''Ehi NAME, è finito il tempo'']', N'All', N'["Avviato"]', 1, 0, NULL, N'/Images/Shortcuts/timer.gif', 0, N'SetTimer', 1, N'SystemDialogueSetTimer', 0, NULL, 0, CAST(N'2022-01-22T14:26:54.283' AS DateTime), 1, N'Timer', 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (63, N'Timer:_Set', N'[["timer","avvisami","avvisa"]]', NULL, N'[''Ehi NAME, il tempo è scaduto!'',''Ehi NAME, è finito il tempo'']', N'All', N'["Avviato"]', 1, 0, NULL, N'/Images/Shortcuts/timer.gif', 0, N'SetTimer', 1, N'SystemDialogueSetTimer', 0, NULL, 0, CAST(N'2022-01-22T14:26:54.283' AS DateTime), 1, N'Timer', 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (64, N'Shutdown_PC', N'[["pc", "computer"], ["spegni", "chiudi", "shutdown"]]', N'C:\Program Files (x86)\Shut\Shut.exe', N'shutdown', N'EV-PC', N'["ok","va bene","certo","bene"]', 1, 5, NULL, N'/Images/Shortcuts/shutdown.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2022-01-23T10:02:11.610' AS DateTime), 1, N'PC', 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (65, N'Restart', N'[["pc", "computer"], ["restart", "riavvia"]]', N'C:\Program Files (x86)\Shut\Shut.exe', N'restart', N'All', N'["ok","va bene","certo","bene"]', 1, 5, NULL, N'/Images/Shortcuts/restart.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2022-01-23T10:02:54.310' AS DateTime), 1, N'PC', 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (66, N'Promemoria:_Crea', N'[["crea","inserisci","nuovo"],["appuntamento","promemoria","evento","memo"]]', NULL, NULL, N'All', NULL, 0, 0, NULL, N'/Images/Shortcuts/reminder-create.png', 0, N'CreateReminder', 1, N'SystemDialogueCreateReminder', 0, NULL, 0, CAST(N'2022-01-24T12:15:15.397' AS DateTime), 1, N'Promemoria', 0)
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (67, N'Sveglia:_Set', N'[["sveglia"], ["imposta", "aggiungi","avvia","set","crea","start"]]', NULL, N'[''NAME su!, sveglia, sono le TIME'']', N'All', N'["ok","va bene","certo","bene"]', 1, 0, NULL, N'/Images/Shortcuts/alarmClock.gif', 0, N'SetAlarmClock', 1, N'SystemDialogueSetAlarmClock', 0, NULL, 0, CAST(N'2022-02-01T15:04:50.000' AS DateTime), 1, N'Timer', 0)
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (68, N'Svegliami', N'[["svegliami"]]', NULL, N'[''NAME su!, sveglia, sono le TIME'']', N'All', N'["ok","va bene","certo","bene"]', 1, 0, NULL, N'/Images/Shortcuts/alarmClock.gif', 0, N'SetAlarmClock', 1, N'SystemDialogueSetAlarmClock', 0, NULL, 0, CAST(N'2022-02-01T15:09:00.000' AS DateTime), 1, N'Timer', 0)
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (69, N'Timer:_Elimina', N'[["elimina","rimuovi","cancella"],["timer"]]', NULL, NULL, N'All', N'["Eliminato","Rimosso"]', 1, 0, NULL, N'/Images/Shortcuts/timer-delete.png', 0, N'SystemDeleteTimer', 1, N'SystemDialogueDeleteTimer', 0, NULL, 0, CAST(N'2022-02-02T14:44:32.597' AS DateTime), 1, N'Timer', 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (67, N'Sveglia:_Set', N'[["sveglia","svegliami"]]', NULL, N'[''NAME su!, sveglia, sono le TIME'']', N'All', N'["ok","va bene","certo","bene"]', 1, 0, NULL, N'/Images/Shortcuts/alarmClock.gif', 0, N'SetAlarmClock', 1, N'SystemDialogueSetAlarmClock', 0, NULL, 0, CAST(N'2022-02-01T15:04:50.000' AS DateTime), 1, N'Timer', 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (69, N'Timer:_Elimina', N'[["elimina","rimuovi","cancella"],["timer", "avviso"]]', NULL, NULL, N'All', N'["Eliminato","Rimosso"]', 1, 0, NULL, N'/Images/Shortcuts/timer-delete.png', 0, N'SystemDeleteTimer', 1, N'SystemDialogueDeleteTimer', 0, NULL, 0, CAST(N'2022-02-02T14:44:32.597' AS DateTime), 1, N'Timer', 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (71, N'Sveglia:_Elimina', N'[["elimina","rimuovi","cancella"],["sveglia"]]', NULL, NULL, N'All', N'["Eliminato","Rimosso"]', 1, 0, NULL, N'/Images/Shortcuts/alarmClock-delete.png', 0, N'SystemDeleteAlarmClock', 1, N'SystemDialogueDeleteAlarmClock', 0, NULL, 0, CAST(N'2022-02-02T21:23:19.927' AS DateTime), 1, N'Timer', 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (73, N'TV:_Canale_8', N'[["canale"],["8"]]', N'https://www.tv8.it/streaming', NULL, N'All', N'["ok","va bene","certo","bene"]', 1, 0, NULL, N'/Images/Shortcuts/tv.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-06-23T23:15:18.000' AS DateTime), 1, N'TV', 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (74, N'TV:_Canale_9', N'[["canale"],["9"]]', N'https://nove.tv/live-streaming-nove', NULL, N'All', N'["ok","va bene","certo","bene"]', 1, 0, NULL, N'/Images/Shortcuts/tv.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-06-23T23:15:18.000' AS DateTime), 1, N'TV', 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (75, N'TV:_Canale_1', N'[["canale"],["1"]]', N'https://www.raiplay.it/dirette/rai1', NULL, N'All', N'["ok","va bene","certo","bene"]', 1, 0, NULL, N'/Images/Shortcuts/tv.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-06-23T23:15:18.000' AS DateTime), 1, N'TV', 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (76, N'Firefox:_Open', N'[["firefox"],["open","apri", "esegui", "start", "execute", "avvia","show", "mostrami"]]', N'C:\Program Files\Mozilla Firefox\firefox.exe', NULL, N'All', N'["ok","va bene","certo","bene"]', 1, 0, N'null', N'/Images/Shortcuts/firefox.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2022-01-08T10:10:37.000' AS DateTime), 1, N'App', 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder]) VALUES (77, N'Chrome:_Open', N'[["chrome"],["open","apri", "esegui", "start", "execute", "avvia","show", "mostrami"]]', N'C:\Program Files\Google\Chrome\Application\chrome.exe', NULL, N'All', N'["ok","va bene","certo","bene"]', 1, 0, N'null', N'/Images/Shortcuts/chrome.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2022-01-08T10:10:37.000' AS DateTime), 1, N'App', 0)
 SET IDENTITY_INSERT [dbo].[WebSpeeches] OFF
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__UserRole__F9B8A48B1C9ABB32]    Script Date: 15/11/2022 23:01:49 ******/
+/****** Object:  Index [UQ__UserRole__F9B8A48B81935291]    Script Date: 08/03/2023 00:37:19 ******/
 ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED 
 (
 	[Type] ASC
@@ -454,7 +461,7 @@ ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__UserRole__F9B8A48BFF704118]    Script Date: 15/11/2022 23:01:49 ******/
+/****** Object:  Index [UQ__UserRole__F9B8A48BF51195BA]    Script Date: 08/03/2023 00:37:19 ******/
 ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED 
 (
 	[Type] ASC
@@ -462,7 +469,7 @@ ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__Users__C9F28456912940F4]    Script Date: 15/11/2022 23:01:49 ******/
+/****** Object:  Index [UQ__Users__C9F284560C65A158]    Script Date: 08/03/2023 00:37:19 ******/
 ALTER TABLE [auth].[Users] ADD UNIQUE NONCLUSTERED 
 (
 	[UserName] ASC
@@ -470,7 +477,7 @@ ALTER TABLE [auth].[Users] ADD UNIQUE NONCLUSTERED
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__Users__C9F28456A789176C]    Script Date: 15/11/2022 23:01:49 ******/
+/****** Object:  Index [UQ__Users__C9F2845682761CF4]    Script Date: 08/03/2023 00:37:19 ******/
 ALTER TABLE [auth].[Users] ADD UNIQUE NONCLUSTERED 
 (
 	[UserName] ASC
@@ -478,7 +485,7 @@ ALTER TABLE [auth].[Users] ADD UNIQUE NONCLUSTERED
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__WebSpeec__A20D0832C5693F06]    Script Date: 15/11/2022 23:01:49 ******/
+/****** Object:  Index [UQ__WebSpeec__A20D08320682BEAD]    Script Date: 08/03/2023 00:37:19 ******/
 ALTER TABLE [dbo].[WebSpeeches] ADD UNIQUE NONCLUSTERED 
 (
 	[Name] ASC,

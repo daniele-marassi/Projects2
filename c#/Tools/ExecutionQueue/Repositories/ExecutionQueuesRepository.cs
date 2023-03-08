@@ -88,6 +88,54 @@ namespace Tools.ExecutionQueue.Repositories
         }
 
         /// <summary>
+        /// GetQueues
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="stateQueue"></param>
+        /// <param name="scheduledDateTime"></param>
+        /// <returns></returns>
+        public async Task<ExecutionQueueResult> GetQueues(string host, string stateQueue, DateTime scheduledDateTime)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                var response = new ExecutionQueueResult() { Data = new List<ExecutionQueueDto>(), ResultState = new ResultType() };
+
+                try
+                {
+                    var executionQueues = from eqs in await db.ExecutionQueues.AsNoTracking().ToListAsync()
+                        where
+                            eqs.Host?.Trim().ToLower() == host?.Trim().ToLower()
+                            && eqs.StateQueue?.Trim().ToLower() == stateQueue?.Trim().ToLower()
+                            && eqs.ScheduledDateTime <= scheduledDateTime
+                        select eqs;
+
+                    var config = new MapperConfiguration(cfg => cfg.CreateMap<Models.ExecutionQueue, ExecutionQueueDto>());
+                    var mapper = config.CreateMapper();
+                    var dto = mapper.Map<List<ExecutionQueueDto>>(executionQueues);
+
+                    if (dto != null)
+                    {
+                        response.Data.AddRange(dto);
+                        response.Successful = true;
+                        response.ResultState = ResultType.Found;
+                        response.Message = "";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    response.Successful = false;
+                    response.ResultState = ResultType.Error;
+                    response.Message = ex.InnerException != null && ex.InnerException.Message != null ? ex.InnerException.Message : ex.Message;
+                    response.OriginalException = null;
+                    logger.Error(ex.ToString());
+                    //throw ex;
+                }
+
+                return response;
+            }
+        }
+
+        /// <summary>
         /// Get ExecutionQueues By Id
         /// </summary>
         /// <param name="id"></param>
