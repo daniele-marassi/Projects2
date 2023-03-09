@@ -330,12 +330,11 @@
     <Content Include="Resources\Tools.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="TaskFiles\ToolsWindowsTask_EV_PC.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TaskFiles\ToolsWindowsTask_EV_TB.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="TaskFiles\CheckAndRestartApplications_EV-PC.xml" />
+    <Content Include="TaskFiles\CheckAndRestartApplications_EV-TB.xml" />
+    <Content Include="TaskFiles\Reboot_EV-TB.xml" />
+    <Content Include="TaskFiles\Tools_EV_PC.xml" />
+    <Content Include="TaskFiles\Tools_EV_TB.xml" />
     <Content Include="Tools.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
