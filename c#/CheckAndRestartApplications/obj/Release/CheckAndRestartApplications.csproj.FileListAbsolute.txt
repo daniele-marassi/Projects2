@@ -1,0 +1,11 @@
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAndRestartApplications\bin\Release\CheckAndRestartApplications.exe.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAndRestartApplications\bin\Release\CheckAndRestartApplications.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAndRestartApplications\bin\Release\CheckAndRestartApplications.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAndRestartApplications\bin\Release\Newtonsoft.Json.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAndRestartApplications\bin\Release\Newtonsoft.Json.xml
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAndRestartApplications\obj\Release\CheckAndRestartApplications.csproj.AssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAndRestartApplications\obj\Release\CheckAndRestartApplications.csproj.SuggestedBindingRedirects.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAndRestartApplications\obj\Release\CheckAndRestartApplications.csproj.CoreCompileInputs.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAndRestartApplications\obj\Release\CheckAndRestartApplications.csproj.CopyComplete
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAndRestartApplications\obj\Release\CheckAndRestartApplications.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAndRestartApplications\obj\Release\CheckAndRestartApplications.pdb

@@ -764,7 +764,24 @@ namespace Supp.Site.Controllers
 
                     claims = SuppUtility.GetClaims(User);
 
-                    if (resetAfterLoad == false) data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request, _param).GetAwaiter().GetResult();
+                    if (resetAfterLoad == false)
+                    {
+                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+
+                        var webSpeechResult = await webSpeecheRepo.GetAllWebSpeeches(access_token_cookie);
+
+                        if (webSpeechResult.Successful == false)
+                        {
+                            var error = $"Error - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetAllWebSpeeches)}] - Message: [{webSpeechResult.Message}]";
+
+                            data = new WebSpeechDto() { Answer = "", Ehi = 0, Error = error };
+                        }
+                        else
+                        {
+                            Startup._webSpeechResultList[claims.UserId] = webSpeechResult;
+                            data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request, _param, webSpeechResult).GetAwaiter().GetResult();
+                        }
+                    }
 
                     if (resetAfterLoad == true || data == null)
                     {
@@ -850,7 +867,9 @@ namespace Supp.Site.Controllers
                         claims = SuppUtility.GetClaims(User);
                     }
 
-                    var data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request, _param).GetAwaiter().GetResult();
+                    var webSpeechResult = Startup._webSpeechResultList[claims.UserId];
+
+                    var data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request, _param, webSpeechResult).GetAwaiter().GetResult();
 
                     if (data != null)
                     {

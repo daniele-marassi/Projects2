@@ -9,17 +9,23 @@ using Microsoft.Extensions.Hosting;
 using static Supp.Site.Common.Config;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+using Supp.Models;
 
 namespace Supp.Site
 {
     public class Startup
     {
+        private IConfiguration _configuration { get; }
+
+        public static ConcurrentDictionary<long, WebSpeechResult> _webSpeechResultList;
+
         public Startup(IConfiguration configuration)
         {
             _configuration = configuration;
+            _webSpeechResultList = new ConcurrentDictionary<long, WebSpeechResult>();
         }
-
-        private IConfiguration _configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
