@@ -35,33 +35,68 @@ namespace CheckAndRestartApplications
 						firstStep = false;
 					}
 
-					Process[] process = Process.GetProcessesByName(application.Name);
-					var currentProcess = Process.GetCurrentProcess();
+					Process[] processArray = Process.GetProcessesByName(application.Name);
 					long usedMemoryInByte = 0;
 
-					if (process.Count() > 0)
+					if (processArray.Count() > 1)
 					{
-						var pc = new PerformanceCounter();
-						pc.CategoryName = "Process";
-						pc.CounterName = "Working Set - Private";
-						pc.InstanceName = application.Name;
-						usedMemoryInByte = Convert.ToInt64(pc.NextValue());
-						pc.Close();
-						pc.Dispose();
+						var _processArray = processArray.OrderBy(_ => _.Id).ToArray();
+
+						for (int i = 0; i < _processArray.Count() - 1; i++)
+                        {
+                            try
+                            {
+								_processArray[i].Kill();
+							}
+                            catch (Exception)
+                            {
+                            }
+						}
+					}
+
+					if (processArray.Count() > 0)
+					{
+                        try
+                        {
+							var pc = new PerformanceCounter();
+							pc.CategoryName = "Process";
+							pc.CounterName = "Working Set - Private";
+							pc.InstanceName = application.Name;
+							usedMemoryInByte = Convert.ToInt64(pc.NextValue());
+							pc.Close();
+							pc.Dispose();
+						}
+                        catch (Exception)
+                        {
+                        }
 
 						//Console.WriteLine(usedMemoryInByte);
 					}
 
-					if (usedMemoryInByte > application.MaxMemoryInByte || process.Count() == 0)
+					if (usedMemoryInByte > application.MaxMemoryInByte || processArray.Count() == 0)
 					{
 						if (usedMemoryInByte > application.MaxMemoryInByte)
-							currentProcess.Kill();
+						{
+                            try
+                            {
+								processArray[processArray.Count() - 1].Kill();
+							}
+                            catch (Exception)
+                            {
+                            }
+						}
 
-						var proc = new Process();
-						proc.StartInfo.FileName = application.ApplicationFullPath;
-						proc.StartInfo.UseShellExecute = true;
-						proc.StartInfo.Verb = "runas";
-						proc.Start();
+                        try
+                        {
+							var proc = new Process();
+							proc.StartInfo.FileName = application.ApplicationFullPath;
+							proc.StartInfo.UseShellExecute = true;
+							proc.StartInfo.Verb = "runas";
+							proc.Start();
+						}
+                        catch (Exception)
+                        {
+                        }
 					}
 				}
 			}

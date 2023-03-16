@@ -1,17 +1,8 @@
 ﻿using Additional;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
-using System.Timers;
-using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using AudioSwitcher.AudioApi.CoreAudio;
 

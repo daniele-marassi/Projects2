@@ -1,5 +1,4 @@
-﻿
-namespace Tools.Songs.Models
+﻿namespace Tools.Songs.Models
 {
     public enum ResultType
     {

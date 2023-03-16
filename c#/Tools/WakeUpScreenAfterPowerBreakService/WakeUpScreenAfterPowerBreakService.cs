@@ -3,7 +3,6 @@ using Additional.NLog;
 using NLog;
 using System;
 using System.Configuration;
-using System.Drawing;
 using System.Net;
 using System.Reflection;
 using System.ServiceProcess;

@@ -189,6 +189,7 @@
   <ItemGroup>
     <Compile Include="ContextMenus.cs" />
     <Compile Include="Hook.cs" />
+    <Compile Include="MainService.cs" />
     <Compile Include="ManagementVolume.cs" />
     <Compile Include="ProcessIcon.cs" />
     <Compile Include="Program.cs" />

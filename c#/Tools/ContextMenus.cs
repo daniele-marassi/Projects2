@@ -32,6 +32,18 @@ namespace Tools
 			ToolStripMenuItem item;
 			ToolStripSeparator sep;
 
+			// ClearNLogFiles.
+			item = new ToolStripMenuItem();
+			item.Text = "ClearNLogFiles";
+			item.Name = "ClearNLogFilesMenuItem";
+			item.Click += new EventHandler(ClearNLogFiles_Click);
+			item.Image = Resources.ServiceDisable;
+			Common.ContextMenus.Menu.Items.Add(item);
+
+			// Separator.
+			sep = new ToolStripSeparator();
+			Common.ContextMenus.Menu.Items.Add(sep);
+
 			// About.
 			item = new ToolStripMenuItem();
 			item.Text = "About";
@@ -211,6 +223,22 @@ namespace Tools
                 aboutBoxFrm.TopMost = true;
                 aboutBoxFrm.Icon = new Icon("Resources/About.ico");
 			}
+		}
+
+		/// <summary>
+		/// Handles the Click event of the About control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		void ClearNLogFiles_Click(object sender, EventArgs e)
+		{
+			var limitLogFileInMB = int.Parse(ConfigurationManager.AppSettings["LimitLogFileInMB"]);
+
+			var logsDirectory = ConfigurationManager.AppSettings["LogsDirectory"];
+
+			var sleepOfTheMainServiceInMilliseconds = int.Parse(ConfigurationManager.AppSettings["SleepOfTheMainServiceInMilliseconds"]);
+
+			MainService.ClearNLogFiles(limitLogFileInMB, logsDirectory, sleepOfTheMainServiceInMilliseconds).GetAwaiter().GetResult();
 		}
 
 		/// <summary>
@@ -514,7 +542,8 @@ namespace Tools
 					_item.Image = Resources.Supp;
 					ProcessIcon._Speech = new Speech();
 					//ProcessIcon._SpeechService = new SpeechService();
-					Task.Run(() => ProcessIcon._Speech.Start());
+					if (!utilty.ProcessIsActiveByWindowCaption(windowCaption))
+						Task.Run(() => ProcessIcon._Speech.Start());
 					//Task.Run(() => ProcessIcon._SpeechService.Start());
 				}
 			}

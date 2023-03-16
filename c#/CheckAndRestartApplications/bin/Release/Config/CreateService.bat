@@ -1,0 +1,1 @@
+﻿sc.exe create CheckAndRestartApplications binPath= "C:\Program Files (x86)\CheckAndRestartApplications\CheckAndRestartApplications.exe"

@@ -7,7 +7,6 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using Additional.NLog;
-using Additional;
 
 namespace RenewNotes.Repositories
 {

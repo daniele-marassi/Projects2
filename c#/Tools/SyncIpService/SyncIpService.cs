@@ -2,7 +2,6 @@
 using Additional.NLog;
 using Newtonsoft.Json;
 using NLog;
-using NLog.Targets;
 using System;
 using System.Collections.Generic;
 using System.Configuration;

@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "a79df016-ec33-4f54-afe6-90b8ae53ae5a": {
+      "ProjectGuid": "a79df016-ec33-4f54-afe6-90b8ae53ae5a",
+      "DisplayName": "CheckAndRestartApplicationsService",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}

@@ -1,5 +1,4 @@
-﻿
-using System.ServiceProcess;
+﻿using System.ServiceProcess;
 
 namespace Tools.ReconnectBluetoothDevice
 {

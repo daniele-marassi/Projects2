@@ -8,3 +8,4 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAndRestartApplications\obj\Debug\C
 C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAndRestartApplications\obj\Debug\CheckAndRestartApplications.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAndRestartApplications\obj\Debug\CheckAndRestartApplications.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAndRestartApplications\obj\Debug\CheckAndRestartApplications.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAndRestartApplications\obj\Debug\CheckAndRestartApplications.csproj.AssemblyReference.cache
