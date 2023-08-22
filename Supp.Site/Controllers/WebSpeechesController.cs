@@ -90,7 +90,7 @@ namespace Supp.Site.Controllers
                     if (result.Successful == false)
                         throw new Exception($"Error - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetAllWebSpeeches)}] - Message: [{result.Message}]");
 
-                    result.Data = recognitionCommon.GetData(result.Data).Data;
+                    result.Data = recognitionCommon.GetData(result.Data, false).Data;
 
                     data = from s in result.Data
                            select s;
@@ -221,7 +221,7 @@ namespace Supp.Site.Controllers
                     var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                     var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
 
-                    result.Data = recognitionCommon.GetData(result.Data).Data;
+                    result.Data = recognitionCommon.GetData(result.Data, false).Data;
 
                     var data = result.Data.FirstOrDefault();
 
@@ -433,7 +433,7 @@ namespace Supp.Site.Controllers
                     var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                     var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
 
-                    result.Data = recognitionCommon.GetData(result.Data).Data;
+                    result.Data = recognitionCommon.GetData(result.Data, false).Data;
 
                     var data = result.Data.FirstOrDefault();
 
@@ -444,7 +444,7 @@ namespace Supp.Site.Controllers
                     if (!getAllWebSpeechesResult.Successful)
                         throw new Exception($"Error [Get failed!] - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetAllWebSpeeches)}] - Message: [{getAllWebSpeechesResult.Message}]");
 
-                    getAllWebSpeechesResult.Data = recognitionCommon.GetData(getAllWebSpeechesResult.Data).Data;
+                    getAllWebSpeechesResult.Data = recognitionCommon.GetData(getAllWebSpeechesResult.Data, false).Data;
 
                     var webSpeeches = getAllWebSpeechesResult.Data.ToList();
 
@@ -547,7 +547,7 @@ namespace Supp.Site.Controllers
                     var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                     var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
 
-                    result.Data = recognitionCommon.GetData(result.Data).Data;
+                    result.Data = recognitionCommon.GetData(result.Data, false).Data;
 
                     var data = result.Data.FirstOrDefault();
 
@@ -779,7 +779,7 @@ namespace Supp.Site.Controllers
                         else
                         {
                             Startup._webSpeechResultList[claims.UserId] = webSpeechResult;
-                            data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request, _param, webSpeechResult).GetAwaiter().GetResult();
+                            data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request, _param, webSpeechResult, true, null).GetAwaiter().GetResult();
                         }
                     }
 
@@ -812,7 +812,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/GetWebSpeechDtoInJson
-        public async Task<string> GetWebSpeechDtoInJson(string _phrase, string _hostSelected, bool? _reset, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step, bool? _recognitionDisable, string _param)
+        public async Task<string> GetWebSpeechDtoInJson(string _phrase, string _hostSelected, bool? _reset, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step, bool? _recognitionDisable, string _param, string _keysMatched)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -869,7 +869,7 @@ namespace Supp.Site.Controllers
 
                     var webSpeechResult = Startup._webSpeechResultList[claims.UserId];
 
-                    var data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request, _param, webSpeechResult).GetAwaiter().GetResult();
+                    var data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request, _param, webSpeechResult, false, _keysMatched).GetAwaiter().GetResult();
 
                     if (data != null)
                     {

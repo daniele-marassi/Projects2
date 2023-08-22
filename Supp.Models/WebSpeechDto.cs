@@ -30,7 +30,6 @@ namespace Supp.Models
         public bool Groupable { get; set; }
         public string GroupName { get; set; }
         public int GroupOrder { get; set; }
-
         public string HostsArray { get; set; }
         public string HostSelected { get; set; }
         public string ListeningWord1 { get; set; }
@@ -60,6 +59,8 @@ namespace Supp.Models
         public IEnumerable<StepType> StepTypes { get { return Supp.Models.StepTypesUtility.Get(); } }
         public Element[] Elements { get; set; }
         public bool LogJSActive { get; set; }
+        public string ClaimsInJson { get; set; }
+        public string WebSpeechesInJson { get; set; }
     }
 
     public class Element

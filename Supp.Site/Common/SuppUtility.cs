@@ -388,12 +388,12 @@ namespace Supp.Site.Common
         }
 
         /// <summary>
-        /// Get Parameters
+        /// Get Answer
         /// </summary>
         /// <param name="value"></param>
         /// <param name="_claims"></param>
         /// <returns></returns>
-        public string GetValue(string value, ClaimsDto _claims)
+        public string GetAnswer(string value, ClaimsDto _claims)
         {
             var rnd = new Random();
             var list = new List<string>() { };
@@ -419,6 +419,12 @@ namespace Supp.Site.Common
             value = value.Replace("NAME", _claims.Name);
 
             return value;
+        }
+
+        public static T Clone<T>(T obj)
+        {
+            var json = JsonConvert.SerializeObject(obj);
+            return (T)JsonConvert.DeserializeObject<T>(json);
         }
     }
 }

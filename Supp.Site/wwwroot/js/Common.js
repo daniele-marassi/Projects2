@@ -164,3 +164,138 @@ function GenerateGuid() {
 
     return result;
 }
+
+function MatchPhrase(_phrase, webSpeechlist, _claims) {
+    var _data = null;
+    var result = { Data: null, WebSpeechKeysMatched: null };
+    result.Data = null;
+    result.WebSpeechKeysMatched = null;
+    var minMatch = 0;
+    var countMatch = 0;
+    var phraseMatch = "";
+    var previousCountMatch = 0;
+    var founded = false;
+
+    webSpeechlist.forEach(
+        function (item) {
+            try {
+                var keysInObjectList = JSON.parse(item.Phrase);
+
+                minMatch = keysInObjectList.length;
+                countMatch = 0;
+                phraseMatch = "";
+
+                keysInObjectList.forEach(
+                    function (keysInObject) {
+                        var keysArray = [];
+
+                        if (Array.isArray(keysInObject)) {
+                            keysArray = keysInObject;
+                        }
+                        else {
+                            keysArray.push(keysInObject);
+                        }
+
+                        founded = false;
+                        keysArray.forEach(
+                            function (key) {
+                                var keys = key.toString().trim().toLowerCase().split(' ');
+                                if (_phrase == null) _phrase = "";
+
+                                if (keys.length == 1) {
+                                    var words = _phrase.trim().toLowerCase().split(' ');
+
+                                    if (!founded && words.includes(key.toString().trim().toLowerCase())) {
+                                        founded = true;
+                                        countMatch++;
+                                        if (phraseMatch != "") phraseMatch += " ";
+                                        phraseMatch += key.toString();
+                                    }
+                                }
+                                else {
+                                    if (!founded) {
+                                        var matchPrhareNoKeysResult = MatchPrhareNoKeys(key.toString().trim().toLowerCase(), _phrase, minMatch, countMatch, phraseMatch, previousCountMatch);
+                                        minMatch = matchPrhareNoKeysResult.MinMatch;
+                                        countMatch = matchPrhareNoKeysResult.CountMatch;
+                                        phraseMatch = matchPrhareNoKeysResult.PhraseMatch;
+                                        founded = matchPrhareNoKeysResult.Founded;
+                                        previousCountMatch = matchPrhareNoKeysResult.PreviousCountMatch;
+                                    }
+                                }
+                            }
+                        );
+                    }
+                );
+            } catch (error) {
+                var matchPrhareNoKeysResult = MatchPrhareNoKeys(item.Phrase, _phrase, minMatch, countMatch, phraseMatch, previousCountMatch);
+                minMatch = matchPrhareNoKeysResult.MinMatch;
+                countMatch = matchPrhareNoKeysResult.CountMatch;
+                phraseMatch = matchPrhareNoKeysResult.PhraseMatch;
+                previousCountMatch = matchPrhareNoKeysResult.PreviousCountMatch;
+            }
+
+            if (countMatch >= minMatch && countMatch > previousCountMatch) {
+                previousCountMatch = countMatch;
+                _data = item;
+                result.WebSpeechKeysMatched = phraseMatch;
+                countMatch = 0;
+            }
+        }
+    );
+
+    if (_data != null) {
+        result.Data = GetAnswer(_data, _claims);
+    }
+
+    return result;
+}
+
+function MatchPrhareNoKeys(itemPhrase, _phrase, minMatch, countMatch, phraseMatch, previousCountMatch) {
+    var result = { MinMatch: 0, CountMatch: 0, PhraseMatch: null, Founded: false, PreviousCountMatch: 0 };
+    result.MinMatch = minMatch;
+    result.CountMatch = countMatch;
+    result.PhraseMatch = phraseMatch;
+    result.Founded = false;
+    result.PreviousCountMatch = previousCountMatch;
+
+    var _countMatch = 0;
+    var _phraseMatch = "";
+    var _minMatch = 0;
+    var founded = false;
+
+    try {
+        var keysArray = itemPhrase.split(' ');
+        _minMatch = keysArray.length;
+        if (_phrase == null) _phrase = "";
+
+        keysArray.forEach(
+            function (key) {
+                if (_phrase.trim().toLowerCase().includes(key.toString().trim().toLowerCase())) {
+                    founded = true;
+                    _countMatch++;
+                    if (_phraseMatch != "") _phraseMatch += " ";
+                    _phraseMatch += key.toString();
+                }
+            }
+        );
+    }
+    catch (error) {
+    }
+
+    if (_countMatch >= result.MinMatch && _countMatch > result.PreviousCountMatch) {
+        previousCountMatch = countMatch;
+        result.MinMatch = _minMatch;
+        result.CountMatch += _countMatch;
+        result.PhraseMatch += _phraseMatch;
+        result.Founded = founded;
+        result.PreviousCountMatch = previousCountMatch;
+    }
+
+    return result;
+}
+
+function GetAnswer(data, _claims) {
+    data.Answer = SuppUtility.GetAnswer(data.Answer, _claims);
+
+    return data;
+}	

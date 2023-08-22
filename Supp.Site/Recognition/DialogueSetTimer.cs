@@ -271,7 +271,7 @@ namespace Supp.Site.Recognition
 
                 getRemindersResult = await webSpeecheRepo.CreateReminder(token, userName, userId, WebSpeechTypes.CreateNote, createCalendarEventRequest, _claims.Configuration.Speech.GoogleCalendarAccount);
             }
-            var param = suppUtility.GetValue(dto.Parameters, _claims).Replace("'", @"""");
+            var param = suppUtility.GetAnswer(dto.Parameters, _claims).Replace("'", @"""");
 
             var timerParam = new TimerParam() { Index = newIndex, Phrase = param, Date = timerDate.ToString("yyyy-MM-dd HH:mm:ss.fff"), Type = dto.Type, WithEvent = withEvent, Summary = summary };
 

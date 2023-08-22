@@ -46,7 +46,7 @@ namespace Supp.Site.Recognition
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public (List<WebSpeechDto> Data, List<ShortcutDto> Shortcuts) GetData(List<WebSpeechDto> data)
+        public (List<WebSpeechDto> Data, List<ShortcutDto> Shortcuts) GetData(List<WebSpeechDto> data, bool loadPage)
         {
             (List<WebSpeechDto> Data, List<ShortcutDto> Shortcuts) result;
             result.Data = new List<WebSpeechDto>() { };
@@ -84,8 +84,11 @@ namespace Supp.Site.Recognition
                     }
                 }
 
-                //if (!item.Type.ToLower().Contains("system"))
+                if (loadPage)
+                {
+                    //if (!item.Type.ToLower().Contains("system"))
                     result.Shortcuts.Add(new ShortcutDto() { Id = item.Id, Type = item.Type, Order = item.Order, Title = item.Name.Replace("_", " "), Action = item.Operation.ToStringExtended().Replace("\\", "/") + " " + item.Parameters.ToStringExtended().Replace("\\", "/"), Ico = item.Ico, Groupable = item.Groupable, GroupName = item.GroupName, GroupOrder = item.GroupOrder });
+                }
 
                 result.Data.Add(item);
             }
@@ -135,7 +138,7 @@ namespace Supp.Site.Recognition
         /// <param name="response"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<WebSpeechDto> GetWebSpeechDto(string _phrase, string _hostSelected, bool _reset, bool _application, long _executionQueueId, bool _alwaysShow, long _id, ClaimsDto _claims, bool _onlyRefresh, string _subType, int _step, int expiresInSeconds, HttpResponse response, HttpRequest request, string _param, WebSpeechResult webSpeechResult)
+        public async Task<WebSpeechDto> GetWebSpeechDto(string _phrase, string _hostSelected, bool _reset, bool _application, long _executionQueueId, bool _alwaysShow, long _id, ClaimsDto _claims, bool _onlyRefresh, string _subType, int _step, int expiresInSeconds, HttpResponse response, HttpRequest request, string _param, WebSpeechResult webSpeechResult, bool loadPage, string _keysMatched)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -155,7 +158,7 @@ namespace Supp.Site.Recognition
                     var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                     var method = currentMethod.Name;
                     var className = currentMethod.DeclaringType.Name;
-                    string _keysMatched = null;
+
                     List<ShortcutDto> shortcuts = new List<ShortcutDto>() { };
                     var startAnswer = "";
 
@@ -169,16 +172,16 @@ namespace Supp.Site.Recognition
 
                     var lastWebSpeechId = webSpeechResult.Data.Select(_ => _.Id).OrderByDescending(_ => _).FirstOrDefault();
 
-                    var getDataResult = GetData(webSpeechResult.Data);
+                    var getDataResult = GetData(webSpeechResult.Data, loadPage);
 
                     webSpeechResult.Data = getDataResult.Data;
-                    shortcuts = getDataResult.Shortcuts.OrderByDescending(_ => _.Order).ThenBy(_=>_.Title).ToList();
+                    if(loadPage) shortcuts = getDataResult.Shortcuts.OrderByDescending(_ => _.Order).ThenBy(_=>_.Title).ToList();
 
                     if (_id == 0 && _phrase != "" && _phrase != null && (_subType == "" || _subType == null || _subType == "null") && _step == 0)
                     {
                         var wakeUpScreenAfterEhiResult = WakeUpScreenAfterEhi(_application, _claims, access_token_cookie);
 
-                        var matchPhraseResult = MatchPhrase(_phrase, webSpeechResult.Data, _claims, _id);
+                        var matchPhraseResult = MatchPhrase(_phrase, webSpeechResult.Data, _claims);
                         data = matchPhraseResult.Data;
                         _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
                     }
@@ -196,7 +199,7 @@ namespace Supp.Site.Recognition
                             var requests = dialogue.GetDialogueRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
                             if (requests != null && requests.Count > 0)
                             {
-                                var dataResult = GetData(requests);
+                                var dataResult = GetData(requests, loadPage);
                                 webSpeechResult.Data.AddRange(dataResult.Data);
                             }
                         }
@@ -206,7 +209,7 @@ namespace Supp.Site.Recognition
                             var requests = dialogue.GetDialogueAddToNote(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
                             if (requests != null && requests.Count > 0)
                             {
-                                var dataResult = GetData(requests);
+                                var dataResult = GetData(requests, loadPage);
                                 webSpeechResult.Data.AddRange(dataResult.Data);
                             }
                         }
@@ -216,7 +219,7 @@ namespace Supp.Site.Recognition
                             var requests = dialogue.GetDialogueCreateNote(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
                             if (requests != null && requests.Count > 0)
                             {
-                                var dataResult = GetData(requests);
+                                var dataResult = GetData(requests, loadPage);
                                 webSpeechResult.Data.AddRange(dataResult.Data);
                             }
                         }
@@ -226,7 +229,7 @@ namespace Supp.Site.Recognition
                             var requests = dialogue.GetDialogueDeleteNote(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
                             if (requests != null && requests.Count > 0)
                             {
-                                var dataResult = GetData(requests);
+                                var dataResult = GetData(requests, loadPage);
                                 webSpeechResult.Data.AddRange(dataResult.Data);
                             }
                         }
@@ -236,7 +239,7 @@ namespace Supp.Site.Recognition
                             var requests = dialogue.GetDialogueSetTimer(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
                             if (requests != null && requests.Count > 0)
                             {
-                                var dataResult = GetData(requests);
+                                var dataResult = GetData(requests, loadPage);
                                 webSpeechResult.Data.AddRange(dataResult.Data);
                             }
                         }
@@ -246,7 +249,7 @@ namespace Supp.Site.Recognition
                             var requests = dialogue.GetDialogueClearNote(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
                             if (requests != null && requests.Count > 0)
                             {
-                                var dataResult = GetData(requests);
+                                var dataResult = GetData(requests, loadPage);
                                 webSpeechResult.Data.AddRange(dataResult.Data);
                             }
                         }
@@ -256,7 +259,7 @@ namespace Supp.Site.Recognition
                             var requests = dialogue.GetDialogueCreateExtendedReminder(_claims.Configuration.General.Culture, lastWebSpeechId, _subType, request);
                             if (requests != null && requests.Count > 0)
                             {
-                                var dataResult = GetData(requests);
+                                var dataResult = GetData(requests, loadPage);
                                 webSpeechResult.Data.AddRange(dataResult.Data);
                             }
                         }
@@ -266,7 +269,7 @@ namespace Supp.Site.Recognition
                             var requests = dialogue.GetDialogueCreateReminder(_claims.Configuration.General.Culture, lastWebSpeechId, _subType, request);
                             if (requests != null && requests.Count > 0)
                             {
-                                var dataResult = GetData(requests);
+                                var dataResult = GetData(requests, loadPage);
                                 webSpeechResult.Data.AddRange(dataResult.Data);
                             }
                         }
@@ -276,7 +279,7 @@ namespace Supp.Site.Recognition
                             var requests = dialogue.GetDialogueDeleteReminder(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
                             if (requests != null && requests.Count > 0)
                             {
-                                var dataResult = GetData(requests);
+                                var dataResult = GetData(requests, loadPage);
                                 webSpeechResult.Data.AddRange(dataResult.Data);
                             }
                         }
@@ -286,7 +289,7 @@ namespace Supp.Site.Recognition
                             var requests = dialogue.GetDialogueWebSearch(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
                             if (requests != null && requests.Count > 0)
                             {
-                                var dataResult = GetData(requests);
+                                var dataResult = GetData(requests, loadPage);
                                 webSpeechResult.Data.AddRange(dataResult.Data);
                             }
                         }
@@ -296,7 +299,7 @@ namespace Supp.Site.Recognition
                             var requests = dialogue.GetDialogueRunExe(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
                             if (requests != null && requests.Count > 0)
                             {
-                                var dataResult = GetData(requests);
+                                var dataResult = GetData(requests, loadPage);
                                 webSpeechResult.Data.AddRange(dataResult.Data);
                             }
                         }
@@ -314,7 +317,7 @@ namespace Supp.Site.Recognition
 
                         if (items != null)
                         {
-                            matchPhraseResult = MatchPhrase(_phrase, items, _claims, _id);
+                            matchPhraseResult = MatchPhrase(_phrase, items, _claims);
                             if (matchPhraseResult.Data != null)
                             {
                                 if (matchPhraseResult.Data.StepType == StepTypes.Default.ToString() && matchPhraseResult.Data.FinalStep == false) data = webSpeechResult.Data.Where(_ => GetParentIds(_.ParentIds).Contains(matchPhraseResult.Data.Id)).FirstOrDefault();
@@ -489,7 +492,7 @@ namespace Supp.Site.Recognition
 
                             if (dialogue != null && dialogue.Count > 0)
                             {
-                                var dataResult = GetData(dialogue);
+                                var dataResult = GetData(dialogue, loadPage);
 
                                 var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
 
@@ -538,7 +541,7 @@ namespace Supp.Site.Recognition
 
                             if (dialogue != null && dialogue.Count > 0)
                             {
-                                var dataResult = GetData(dialogue);
+                                var dataResult = GetData(dialogue, loadPage);
 
                                 var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
 
@@ -607,7 +610,7 @@ namespace Supp.Site.Recognition
 
                             if (dialogue != null && dialogue.Count > 0)
                             {
-                                var dataResult = GetData(dialogue);
+                                var dataResult = GetData(dialogue, loadPage);
 
                                 var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
 
@@ -669,7 +672,7 @@ namespace Supp.Site.Recognition
 
                         if (dialogue != null && dialogue.Count > 0)
                         {
-                            var dataResult = GetData(dialogue);
+                            var dataResult = GetData(dialogue, loadPage);
 
                             var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
 
@@ -711,7 +714,7 @@ namespace Supp.Site.Recognition
 
                         if (dialogue != null && dialogue.Count > 0)
                         {
-                            var dataResult = GetData(dialogue);
+                            var dataResult = GetData(dialogue, loadPage);
 
                             var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
 
@@ -787,7 +790,7 @@ namespace Supp.Site.Recognition
                         var dialogueRequestNotImplemented = dialogue.GetDialogueRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
                         if (dialogueRequestNotImplemented != null && dialogueRequestNotImplemented.Count > 0)
                         {
-                            var dataResult = GetData(dialogueRequestNotImplemented);
+                            var dataResult = GetData(dialogueRequestNotImplemented, loadPage);
                             data = dataResult.Data.Where(_=>_.Step == 1).FirstOrDefault();
                         }
 
@@ -821,9 +824,36 @@ namespace Supp.Site.Recognition
                         await ExecutionFinished(_executionQueueId, _hostSelected, _application, request);
                     }
 
-                    var shortcutsInJson = JsonConvert.SerializeObject(shortcuts);
+                    if (_claims != null && loadPage)
+                    {
+                        var claims = SuppUtility.Clone(_claims);
 
-                    data.ShortcutsInJson = shortcutsInJson;
+                        claims.Configuration.Speech.HostsArray = claims.Configuration.Speech.HostsArray.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
+                        data.ClaimsInJson = JsonConvert.SerializeObject(claims);
+                    }
+
+                    if (webSpeechResult != null && webSpeechResult.Data != null && loadPage)
+                    {
+                        var webSpeeches = SuppUtility.Clone(webSpeechResult.Data);
+
+                        foreach (var item in webSpeeches)
+                        {
+                            if (item.Phrase != null) item.Phrase = item.Phrase.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
+                            if (item.Operation != null) item.Operation = item.Operation.Replace(@"\", @"\\");
+                            if (item.Answer != null) item.Answer = item.Answer.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
+                            if (item.Parameters != null) 
+                                item.Parameters = item.Parameters.Replace(@"\", @"\\");
+                        }
+                        
+                        data.WebSpeechesInJson = JsonConvert.SerializeObject(webSpeeches);
+                    }
+
+                    if (loadPage)
+                    {
+                        var shortcutsInJson = JsonConvert.SerializeObject(shortcuts);
+
+                        data.ShortcutsInJson = shortcutsInJson;
+                    }
 
                     data.Error = null;
 
@@ -836,6 +866,8 @@ namespace Supp.Site.Recognition
                 }
             }
         }
+
+        
 
         private async Task<string> GetHolidays(ClaimsDto _claims, string access_token_cookie, string userName, long userId, string type)
         {
@@ -944,7 +976,14 @@ namespace Supp.Site.Recognition
             }
             catch (Exception)
             {
-                phrases.Add(phraseFromData);
+                try
+                {
+                    phrases.AddRange(phraseFromData.Split(' '));
+                }
+                catch (Exception)
+                {
+                    phrases.Add(phraseFromData);
+                }
             }
 
             if(phrases == null) phrases = new List<string>() { };
@@ -983,9 +1022,8 @@ namespace Supp.Site.Recognition
         /// <param name="_phrase"></param>
         /// <param name="webSpeechlist"></param>
         /// <param name="_claims"></param>
-        /// <param name="actualWebSpeechId"></param>
         /// <returns></returns>
-        public (WebSpeechDto Data, string WebSpeechKeysMatched) MatchPhrase(string _phrase, List<WebSpeechDto> webSpeechlist, ClaimsDto _claims, long actualWebSpeechId)
+        public (WebSpeechDto Data, string WebSpeechKeysMatched) MatchPhrase(string _phrase, List<WebSpeechDto> webSpeechlist, ClaimsDto _claims)
         {
             WebSpeechDto _data = null;
             (WebSpeechDto Data, string WebSpeechKeysMatched) result;
@@ -1008,45 +1046,45 @@ namespace Supp.Site.Recognition
 
                     foreach (var keysInObject in keysInObjectList)
                     {
-                        var t = keysInObject.GetType();
-                        var props = t.GetProperties();
-                        foreach (var prop in props)
-                        {
-                            if (prop.GetIndexParameters().Length == 0)
-                            {
-                                if (prop.Name == "Root")
-                                {
-                                    var keysArray = JsonConvert.DeserializeObject<List<object>>(prop.GetValue(keysInObject).ToString());
-                                    var founded = false;
-                                    foreach (var key in keysArray)
-                                    {
-                                        var keys = key.ToString().Trim().ToLower().Split(' ');
-                                        if (_phrase == null) _phrase = "";
-                                        if (keys.Count() == 1)
-                                        {
-                                            var words = _phrase.Trim().ToLower().Split(' ');
+                        var keysArray = new List<object>();
 
-                                            if (!founded && words.Contains(key.ToString().Trim().ToLower()))
-                                            {
-                                                founded = true;
-                                                countMatch++;
-                                                if (phraseMatch != "") phraseMatch += " ";
-                                                phraseMatch += key.ToString();
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (!founded)
-                                            {
-                                                var matchPrhareNoKeysResult = MatchPrhareNoKeys(key.ToString().Trim().ToLower(), _phrase, minMatch, countMatch, phraseMatch, previousCountMatch);
-                                                minMatch = matchPrhareNoKeysResult.MinMatch;
-                                                countMatch = matchPrhareNoKeysResult.CountMatch;
-                                                phraseMatch = matchPrhareNoKeysResult.PhraseMatch;
-                                                founded = matchPrhareNoKeysResult.Founded;
-                                                previousCountMatch = matchPrhareNoKeysResult.PreviousCountMatch;
-                                            }
-                                        }
-                                    }
+                        var type = keysInObject.GetType();
+                        if (type.Name.Trim().ToLower().Contains("array"))
+                        {
+                            keysArray = JsonConvert.DeserializeObject<List<object>>(keysInObject.ToString());
+                        }
+                        else
+                        {
+                            keysArray.Add(keysInObject.ToString());
+                        }
+
+                        var founded = false;
+                        foreach (var key in keysArray)
+                        {
+                            var keys = key.ToString().Trim().ToLower().Split(' ');
+                            if (_phrase == null) _phrase = "";
+                            if (keys.Count() == 1)
+                            {
+                                var words = _phrase.Trim().ToLower().Split(' ');
+
+                                if (!founded && words.Contains(key.ToString().Trim().ToLower()))
+                                {
+                                    founded = true;
+                                    countMatch++;
+                                    if (phraseMatch != "") phraseMatch += " ";
+                                    phraseMatch += key.ToString();
+                                }
+                            }
+                            else
+                            {
+                                if (!founded)
+                                {
+                                    var matchPrhareNoKeysResult = MatchPrhareNoKeys(key.ToString().Trim().ToLower(), _phrase, minMatch, countMatch, phraseMatch, previousCountMatch);
+                                    minMatch = matchPrhareNoKeysResult.MinMatch;
+                                    countMatch = matchPrhareNoKeysResult.CountMatch;
+                                    phraseMatch = matchPrhareNoKeysResult.PhraseMatch;
+                                    founded = matchPrhareNoKeysResult.Founded;
+                                    previousCountMatch = matchPrhareNoKeysResult.PreviousCountMatch;
                                 }
                             }
                         }
@@ -1132,7 +1170,7 @@ namespace Supp.Site.Recognition
         /// <returns></returns>
         public WebSpeechDto GetAnswer(WebSpeechDto data, ClaimsDto _claims)
         {
-            data.Answer = suppUtility.GetValue(data.Answer, _claims);
+            data.Answer = suppUtility.GetAnswer(data.Answer, _claims);
 
             return data;
         }

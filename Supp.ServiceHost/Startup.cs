@@ -22,6 +22,7 @@ using Microsoft.IdentityModel.Tokens;
 using static Supp.ServiceHost.Common.Config;
 using System.Net;
 using Additional.NLog;
+using Microsoft.Extensions.Options;
 
 namespace Supp.ServiceHost
 {
@@ -89,6 +90,7 @@ namespace Supp.ServiceHost
                 })
                 .AddJwtBearer(cfg =>
                 {
+                    cfg.TokenValidationParameters.ValidateLifetime = false;
                     cfg.RequireHttpsMetadata = false;
                     cfg.SaveToken = true;
                     cfg.TokenValidationParameters = new TokenValidationParameters

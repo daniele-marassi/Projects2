@@ -4,3 +4,9 @@ C:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Release\Supp.Models.csproj
 C:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Release\Supp.Models.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Release\Supp.Models.dll
 C:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Release\Supp.Models.pdb
+H:\Users\ev\GoogleDriveShare\Projects\Supp.Models\bin\Release\Supp.Models.dll
+H:\Users\ev\GoogleDriveShare\Projects\Supp.Models\bin\Release\Supp.Models.pdb
+H:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Release\Supp.Models.csproj.AssemblyReference.cache
+H:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Release\Supp.Models.csproj.CoreCompileInputs.cache
+H:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Release\Supp.Models.dll
+H:\Users\ev\GoogleDriveShare\Projects\Supp.Models\obj\Release\Supp.Models.pdb
