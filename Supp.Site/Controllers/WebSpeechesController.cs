@@ -867,7 +867,10 @@ namespace Supp.Site.Controllers
                         claims = SuppUtility.GetClaims(User);
                     }
 
-                    var webSpeechResult = Startup._webSpeechResultList[claims.UserId];
+                    var webSpeechResult = new WebSpeechResult() { };
+
+                    if(Startup._webSpeechResultList.ContainsKey(claims.UserId))
+                        webSpeechResult = Startup._webSpeechResultList[claims.UserId];
 
                     var data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request, _param, webSpeechResult, false, _keysMatched).GetAwaiter().GetResult();
 
@@ -882,7 +885,7 @@ namespace Supp.Site.Controllers
                 {
                     var data = new WebSpeechDto() { };
                     data.LogJSActive = data.LogJSActive = GeneralSettings.Static.LogJSActive;
-                    data.Error = nameof(WebSpeechesController.Recognition) + " - " + ex.Message.ToString();
+                    data.Error = nameof(WebSpeechesController.Recognition) + " - " + ex.Message.ToString().Replace("'","");
                     logger.Error(ex.ToString());
                     result = JsonConvert.SerializeObject(data);
                 }
