@@ -791,88 +791,94 @@
                 };
 
                 recognition.onresult = function (event) {
-                    var res = event.results[event.results.length-1];
+                    var interim_transcript = "";
 
-                    if(_phrase == null){
-                        _phrase = res[res.length-1].transcript.trim().toLowerCase();
+                    if (typeof (event.results) == "undefined") {
+                        if(recognitionActive == true) StopAnimateIntervals();
+                    } else {
+                        for (var i = event.resultIndex; i < event.results.length; ++i) {
+                            //if (event.results[i].isFinal) {
+                            
+                            //} else {
+                                
+                            //}
 
-                        if (_phrase != "" && _phrase != null) {
-                            countTheTimesToPartialReset = 0;
-                            countTheTimeToResetInSeconds = 0;
-                            countTheTimeToResetInterim_spanInSeconds = 0;
+                            interim_transcript += event.results[i][0].transcript;
+                        }
 
-                            if(recognitionActive == true) StartAnimateIntervalsListening(10);
-                            if(recognitionActive == true) StopAnimateIntervalsListening(500);
+                        document.getElementById("interim_span").innerHTML = Linebreak(interim_transcript);
 
-                            var _phraseSplit = _phrase.split(" ");
-                            if (_phraseSplit.length > 0 && recognitionActive == true) {
-                                if (res.isFinal == true){
-                                    if (_phrase === listeningPhrase && ehi == 0 && _reset == false) {
-                                        ehiRecognitedAudio.play();
+                        var res = event.results[event.results.length-1];
+
+                        if(_phrase == null){
+                            _phrase = interim_transcript.trim().toLowerCase();
+
+                            if (_phrase != "" && _phrase != null) {
+                                countTheTimesToPartialReset = 0;
+                                countTheTimeToResetInSeconds = 0;
+                                countTheTimeToResetInterim_spanInSeconds = 0;
+
+                                if(recognitionActive == true) StartAnimateIntervalsListening(10);
+                                if(recognitionActive == true) StopAnimateIntervalsListening(500);
+
+                                var _phraseSplit = _phrase.split(" ");
+                                if (_phraseSplit.length > 0 && recognitionActive == true) {
+                                    if (res.isFinal == true){
+
+                                        LogWithTime("Recognition: " + interim_transcript);
+                                        document.getElementById("interim_span").innerHTML = "";
+                                        interim_transcript = "";
+
+                                        if (_phrase === listeningPhrase && ehi == 0 && _reset == false) {
+                                            ehiRecognitedAudio.play();
                                             
-                                        var phraseTmp = _phrase;
+                                            var phraseTmp = _phrase;
 
-                                        var matchPhraseResult = MatchPhrase(phraseTmp, webSpeeches, claims);
+                                            var matchPhraseResult = MatchPhrase(phraseTmp, webSpeeches, claims);
 
-                                        if(matchPhraseResult.Data != null){
-                                            id = matchPhraseResult.Data.Id;
-                                            _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
-                                        }   
+                                            if(matchPhraseResult.Data != null){
+                                                id = matchPhraseResult.Data.Id;
+                                                _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
+                                            }   
 
-                                        CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionEhi");
-                                    } else if (ehi == 1 && _phrase != listeningPhrase && _phrase != null && _phrase != "" && _reset == false) {
-                                        ehiRecognitedAudio.play();
+                                            CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionEhi");
+                                        } else if (ehi == 1 && _phrase != listeningPhrase && _phrase != null && _phrase != "" && _reset == false) {
+                                            ehiRecognitedAudio.play();
 
-                                        var phraseTmp = _phrase;
+                                            var phraseTmp = _phrase;
 
-                                        var matchPhraseResult = MatchPhrase(phraseTmp, webSpeeches, claims);
+                                            var matchPhraseResult = MatchPhrase(phraseTmp, webSpeeches, claims);
 
-                                        if(matchPhraseResult.Data != null){
-                                            id = matchPhraseResult.Data.Id;
-                                            _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
-                                        }   
+                                            if(matchPhraseResult.Data != null){
+                                                id = matchPhraseResult.Data.Id;
+                                                _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
+                                            }   
 
-                                        CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionPhrase");
-                                    } else if (ehi == 0 && _phrase != listeningPhrase && _phrase.includes(listeningPhrase) && _phrase != null && _phrase != "" && _reset == false) {
-                                        ehiRecognitedAudio.play();
+                                            CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionPhrase");
+                                        } else if (ehi == 0 && _phrase != listeningPhrase && _phrase.includes(listeningPhrase) && _phrase != null && _phrase != "" && _reset == false) {
+                                            ehiRecognitedAudio.play();
 
-                                        var phraseTmp = _phrase;
-                                        var start = phraseTmp.indexOf(listeningPhrase); 
-                                        start = start + listeningPhrase.length;
-                                        phraseTmp = phraseTmp.substring(start, phraseTmp.length);
-                                        phraseTmp = phraseTmp.trim();
+                                            var phraseTmp = _phrase;
+                                            var start = phraseTmp.indexOf(listeningPhrase); 
+                                            start = start + listeningPhrase.length;
+                                            phraseTmp = phraseTmp.substring(start, phraseTmp.length);
+                                            phraseTmp = phraseTmp.trim();
 
-                                        var matchPhraseResult = MatchPhrase(phraseTmp, webSpeeches, claims);
+                                            var matchPhraseResult = MatchPhrase(phraseTmp, webSpeeches, claims);
 
-                                        if (matchPhraseResult.Data != null) {
-                                            id = matchPhraseResult.Data.Id;
-                                            _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
+                                            if (matchPhraseResult.Data != null) {
+                                                id = matchPhraseResult.Data.Id;
+                                                _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
+                                            }
+
+                                            CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionPhrase");
                                         }
-
-                                        CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionPhrase");
                                     }
                                 }
                             }
-                        }
-                        _phrase = null;
-                    }
-
-                    var interim_transcript = "";
-                    if (typeof (event.results) == "undefined") {
-                        if(recognitionActive == true) StopAnimateIntervals();
-                    }
-
-                    for (var i = event.resultIndex; i < event.results.length; ++i) {
-                        if (event.results[i].isFinal) {
-
-                        } else {
-                            interim_transcript += event.results[i][0].transcript;
+                            _phrase = null;
                         }
                     }
-
-                    if (document.getElementById("interim_span").innerHTML != "" && (interim_transcript == "" || interim_transcript == null)) 
-                        LogWithTime("Recognition: " + document.getElementById("interim_span").innerHTML);
-                    document.getElementById("interim_span").innerHTML = Linebreak(interim_transcript);
                 };
             }
             LogFunctionEnd();
