@@ -32,6 +32,7 @@ using NLog.Time;
 using System.Security.Cryptography.Xml;
 using System.Security.Cryptography;
 using NLog.Fluent;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Supp.Site.Controllers
 {
@@ -635,6 +636,81 @@ namespace Supp.Site.Controllers
             }
         }
 
+        private void ManageAuthentication(ref ClaimsDto claims, ref bool login, ref bool onlyRefresh, ref bool passwordAlreadyEncrypted, ref string _userName, ref string _password, ref bool resetAfterLoad, ref bool application, bool checkIfTokenIsValid = false)
+        {
+            if (User?.Claims?.ToList()?.Count() > 0)
+                claims = SuppUtility.GetClaims(User);
+            else if (claims == null || claims.IsAuthenticated == false && application == false)
+            {
+                throw new Exception("Authentication expired! login again");
+            }
+            else
+            {
+                try
+                {
+                    var claimsString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName);
+                    claims = JsonConvert.DeserializeObject<ClaimsDto>(claimsString);
+                    checkIfTokenIsValid = true;
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            if (claims == null || claims.IsAuthenticated == false)
+            {
+                login = true;
+                //onlyRefresh = true;
+                passwordAlreadyEncrypted = true;
+            }
+
+            if (checkIfTokenIsValid && claims != null && claims.IsAuthenticated == true && login == false)
+            {
+                var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+
+                bool? getAuthenticationResult = authenticationRepo.TokenIsValid(access_token_cookie).GetAwaiter().GetResult();
+                if (getAuthenticationResult != true)
+                {
+                    login = true;
+                    //onlyRefresh = true;
+                    passwordAlreadyEncrypted = true;
+                }
+            }
+
+            if (login == true)
+            {
+                if (_userName == null || _userName == "" || _password == null || _password == "")
+                {
+                    _userName = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
+                    _password = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName);
+                }
+
+                if (_userName != null && _userName != "" && _password != null && _password != "")
+                {
+                    var dto = new LoginDto() { UserName = _userName, Password = _password, PasswordAlreadyEncrypted = passwordAlreadyEncrypted };
+                    var authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response, Request);
+
+                    if (!authenticationResult.IsValidUser)
+                    {
+                        passwordAlreadyEncrypted = false;
+                        dto = new LoginDto() { UserName = _userName, Password = _password, PasswordAlreadyEncrypted = passwordAlreadyEncrypted };
+                        authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response, Request);
+                    }
+
+                    resetAfterLoad = true;
+
+                    if (User?.Claims?.ToList()?.Count() > 0)
+                        claims = SuppUtility.GetClaims(User);
+                }
+            }
+
+            if (claims == null || claims.IsAuthenticated == false)
+            {
+                throw new Exception("Authentication expired! login again");
+            }
+        }
+
         // GET: WebSpeeches/Recognition
         public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step, bool? _login, string _param)
         {
@@ -677,7 +753,6 @@ namespace Supp.Site.Controllers
                     var claims = new ClaimsDto() { IsAuthenticated = false };
 
                     int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName), out expiresInSeconds);
-
 
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteApplicationCookieName);
@@ -722,45 +797,7 @@ namespace Supp.Site.Controllers
                         suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName, passwordMd5, expiresInSeconds);
                     }
 
-                    if (User?.Claims?.ToList()?.Count() > 0)
-                        claims = SuppUtility.GetClaims(User);
-
-                    if(claims == null || claims.IsAuthenticated == false)
-                    {
-                        try
-                        {
-                            var claimsString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName);
-                            claims = JsonConvert.DeserializeObject<ClaimsDto>(claimsString);
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-                    }
-
-                    if ((_password == null || _password == "") && claims.IsAuthenticated == false && application == true)
-                    {
-                        login = true;
-                        onlyRefresh = true;
-                        passwordAlreadyEncrypted = true;
-                        _userName = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
-                        _password = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName);
-                    }
-
-                    if (claims == null ||  claims.IsAuthenticated == false && application == false)
-                    {
-                        throw new Exception("Authentication expired! login again");
-                    }
-
-                    if (_userName != null && _userName != "" && _password != null && _password != "" && login == true)
-                    {
-                        var dto = new LoginDto() { UserName = _userName, Password = _password, PasswordAlreadyEncrypted = passwordAlreadyEncrypted };
-                        var authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response, Request);
-                        resetAfterLoad = true;
-
-                        if (User?.Claims?.ToList()?.Count() > 0)
-                            claims = SuppUtility.GetClaims(User);
-                    } 
+                    ManageAuthentication(ref claims, ref login, ref onlyRefresh, ref passwordAlreadyEncrypted, ref _userName, ref _password, ref resetAfterLoad, ref application);
 
                     var loadDateString = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
 
@@ -875,36 +912,12 @@ namespace Supp.Site.Controllers
                     if (_alwaysShow == null) bool.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName), out alwaysShow);
                     else bool.TryParse(_alwaysShow?.ToString(), out alwaysShow);
 
-                    try
-                    {
-                        var claimsString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName);
-                        claims = JsonConvert.DeserializeObject<ClaimsDto>(claimsString);
-                    }
-                    catch (Exception)
-                    {
-                        if (User?.Claims?.ToList()?.Count() > 0)
-                            claims = SuppUtility.GetClaims(User);
-                        else if (claims == null || claims.IsAuthenticated == false && application == false)
-                        {
-                            throw new Exception("Authentication expired! login again");
-                        }
-                        else
-                        {
-                            _onlyRefresh = true;
-                            var passwordAlreadyEncrypted = true;
-                            var _userName = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
-                            var _password = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName);
-
-                            if (_userName != null && _userName != "" && _password != null && _password != "")
-                            {
-                                var dto = new LoginDto() { UserName = _userName, Password = _password, PasswordAlreadyEncrypted = passwordAlreadyEncrypted };
-                                var authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response, Request);
-
-                                if (User?.Claims?.ToList()?.Count() > 0)
-                                    claims = SuppUtility.GetClaims(User);
-                            }
-                        }
-                    }
+                    var login = false;
+                    var passwordAlreadyEncrypted = true;
+                    var _userName = "";
+                    var _password = "";
+                    var resetAfterLoad = false;
+                    ManageAuthentication(ref claims, ref login, ref onlyRefresh, ref passwordAlreadyEncrypted, ref _userName, ref _password, ref resetAfterLoad, ref application);
 
                     var webSpeechResult = new WebSpeechResult() { };
 

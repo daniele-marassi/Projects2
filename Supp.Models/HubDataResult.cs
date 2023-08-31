@@ -13,8 +13,6 @@ namespace Supp.Models
 
         public bool Successful { get; set; }
 
-        public bool IsAuthenticated { get; set; }
-
         public string Message { get; set; }
 
         public Exception OriginalException { get; set; }

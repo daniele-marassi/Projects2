@@ -116,5 +116,14 @@ namespace Supp.ServiceHost.Controllers
 			
             return Ok(result);
         }
+
+        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser + ", " + Common.Config.Roles.Constants.RoleUser)]
+        [HttpGet("TokenIsValid")] //<host>/api/Authentications/TokenIsValid
+        public async Task<IActionResult> TokenIsValid()
+        {
+            var result = true;
+
+            return Ok(result);
+        }
     }
 }

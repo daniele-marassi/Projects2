@@ -205,6 +205,42 @@ namespace Supp.Site.Repositories
         }
 
         /// <summary>
+        /// TokenIsValid
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task<bool?> TokenIsValid(string token)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                bool? response = false;
+
+                try
+                {
+                    var keyValuePairs = new Dictionary<string, string>() { };
+
+                    var result = await utility.CallApi(HttpMethod.Get, GeneralSettings.Static.BaseUrl, "api/Authentications/TokenIsValid", keyValuePairs, token);
+                    var content = await result.Content.ReadAsStringAsync();
+
+                    if (result.IsSuccessStatusCode == false)
+                    {
+
+                    }
+                    else
+                    {
+                        response = JsonConvert.DeserializeObject<bool?>(content);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.ToString());
+                    //throw ex;
+                }
+                return response;
+            }
+        }
+
+        /// <summary>
         /// Disable Authentications By UserName
         /// </summary>
         /// <param name="userName"></param>
