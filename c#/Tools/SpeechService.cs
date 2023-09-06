@@ -1,4 +1,5 @@
 ﻿using Additional;
+using System;
 using System.Configuration;
 using System.Threading.Tasks;
 
@@ -37,6 +38,9 @@ namespace Tools
                 }
                 
                 if(noLoop) serviceActive = false;
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
             }
         }
 

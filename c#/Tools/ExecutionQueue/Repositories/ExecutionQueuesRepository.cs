@@ -35,8 +35,7 @@ namespace Tools.ExecutionQueue.Repositories
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex.ToString());
-                    //throw ex;
+                    throw ex;
                 }
                 return exists;
             }
@@ -79,8 +78,7 @@ namespace Tools.ExecutionQueue.Repositories
                     response.ResultState = ResultType.Error;
                     response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
-                    logger.Error(ex.ToString());
-                    //throw ex;
+                    throw ex;
                 }
 
                 return response;
@@ -127,8 +125,7 @@ namespace Tools.ExecutionQueue.Repositories
                     response.ResultState = ResultType.Error;
                     response.Message = ex.InnerException != null && ex.InnerException.Message != null ? ex.InnerException.Message : ex.Message;
                     response.OriginalException = null;
-                    logger.Error(ex.ToString());
-                    //throw ex;
+                    throw ex;
                 }
 
                 return response;
@@ -168,8 +165,7 @@ namespace Tools.ExecutionQueue.Repositories
                     response.ResultState = ResultType.Error;
                     response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
-                    logger.Error(ex.ToString());
-                    //throw ex;
+                    throw ex;
                 }
 
                 return response;
@@ -216,8 +212,7 @@ namespace Tools.ExecutionQueue.Repositories
                         response.ResultState = ResultType.Error;
                         response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                         response.OriginalException = null;
-                        logger.Error(ex.ToString());
-                        //throw ex;
+                        throw ex;
                     }
                 }
                 return response;
@@ -258,8 +253,7 @@ namespace Tools.ExecutionQueue.Repositories
                     response.ResultState = ResultType.Error;
                     response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
-                    logger.Error(ex.ToString());
-                    //throw ex;
+                    throw ex;
                 }
                 return response;
             }
@@ -306,8 +300,7 @@ namespace Tools.ExecutionQueue.Repositories
                     response.ResultState = ResultType.Error;
                     response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = null;
-                    logger.Error(ex.ToString());
-                    //throw ex;
+                    throw ex;
                 }
                 return response;
             }

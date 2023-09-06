@@ -44,9 +44,7 @@ namespace Tools
 		bool notifyMute;
 		bool notifyPopupShow;
 
-
 		System.Collections.Specialized.NameValueCollection appSettings;
-
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ProcessIcon"/> class.

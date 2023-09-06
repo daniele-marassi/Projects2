@@ -19,8 +19,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\b
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\bin\Release\ReconnectBluetoothDevice.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\bin\Release\ReconnectBluetoothDevice.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\bin\Release\Additional.dll
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\bin\Release\AudioSwitcher.AudioApi.CoreAudio.dll
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\bin\Release\AudioSwitcher.AudioApi.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\bin\Release\Common.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\bin\Release\InTheHand.Net.Bluetooth.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\bin\Release\MessagesPopUp.exe

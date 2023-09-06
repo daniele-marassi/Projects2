@@ -128,6 +128,9 @@ namespace Tools.SyncIp
                     }
                 }
 
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+
                 System.Threading.Thread.Sleep(sleepOfTheSyncIpServiceInMilliseconds);
             }
         }

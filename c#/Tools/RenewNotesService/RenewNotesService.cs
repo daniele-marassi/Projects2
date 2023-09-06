@@ -164,6 +164,9 @@ namespace Tools.RenewNotes
                     }
                 }
 
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+
                 System.Threading.Thread.Sleep(sleepOfTheRenewNotesServiceInMilliseconds);
             }
         }

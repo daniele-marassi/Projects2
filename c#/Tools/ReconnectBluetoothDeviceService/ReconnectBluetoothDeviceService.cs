@@ -13,6 +13,7 @@ namespace Tools.ReconnectBluetoothDevice
 {
     public partial class ReconnectBluetoothDeviceService : ServiceBase
     {
+        Common.Utility commonUtility;
         Utility utility;
         int sleepOfTheReconnectBluetoothDeviceServiceInMilliseconds = 1000;
         int timeToClosePopUpInMilliseconds = 1000;
@@ -125,7 +126,7 @@ namespace Tools.ReconnectBluetoothDevice
                         if (reconnectBluetoothDeviceResult.Successful && bluetoothDeviceTypeList[i].ToString().ToLower() == "audio" && reconnectBluetoothDeviceResult.PairAlreadyExists == false)
                         {
                             //System.Threading.Thread.Sleep(500);
-                            utility.SetVolume(volumePercent);
+                            Task.Run(() => commonUtility.SetVolume(volumePercent));
                         }
                     }
                     catch (Exception ex)
@@ -145,6 +146,9 @@ namespace Tools.ReconnectBluetoothDevice
                         }
                     }
                 }
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
 
                 System.Threading.Thread.Sleep(sleepOfTheReconnectBluetoothDeviceServiceInMilliseconds);
             }

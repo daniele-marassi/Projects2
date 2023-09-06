@@ -19,7 +19,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakServic
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Release\WakeUpScreenAfterPowerBreak.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Release\WakeUpScreenAfterPowerBreak.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Release\Additional.dll
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Release\AudioSwitcher.AudioApi.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Release\Common.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Release\Google.Apis.Auth.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Release\Google.Apis.Auth.PlatformServices.dll

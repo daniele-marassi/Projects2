@@ -1,4 +1,5 @@
 ﻿using Additional;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -26,7 +27,10 @@ namespace Tools
 				System.Threading.Thread.Sleep(sleepOfTheMainServiceInMilliseconds);
 
 				await ClearNLogFiles(limitLogFileInMB, logsDirectory, sleepOfTheMainServiceInMilliseconds);
-			}
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
 		}
 
 		/// <summary>

@@ -111,6 +111,9 @@ namespace Tools.Songs
                 finally
                 {
                     Common.ContextMenus.SongsManagerActive = false;
+
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
                 }
             }
         }

@@ -4,13 +4,12 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AudioSwitcher.AudioApi.CoreAudio;
 
 namespace Tools
 {
     public class Speech
     {
-        Utility utilty;
+        Utility utility;
         Common.Utility commonUtility;
         System.Collections.Specialized.NameValueCollection appSettings;
         int windowWidth;
@@ -40,7 +39,7 @@ namespace Tools
 
         public Speech()
         {
-            utilty = new Utility();
+            utility = new Utility();
             commonUtility = new Common.Utility();
             appSettings = ConfigurationManager.AppSettings;
             windowWidth = int.Parse(appSettings["WindowWidth"]);
@@ -74,8 +73,6 @@ namespace Tools
             volumePercent = double.Parse(appSettings["VolumePercent"]);
 
             volumeOfNotify = int.Parse(appSettings["VolumeOfNotify"]);
-
-            SetVolume(volumePercent);
         }
 
         private enum TaskBarLocation { TOP, BOTTOM, LEFT, RIGHT }
@@ -111,18 +108,14 @@ namespace Tools
             return result;
         }
 
-        public void SetVolume(double percent)
-        {
-            CoreAudioDevice defaultPlaybackDevice = new CoreAudioController().DefaultPlaybackDevice;
-            defaultPlaybackDevice.Volume = percent;
-        }
-
-        public void Start(bool removeFocus = true, bool windowNormalFormat = false, bool hide= false)
-        {
+        public void Start(bool removeFocus = true, bool windowNormalFormat = false, bool hide= false, bool firstCall = false)
+        {        
             var suppSiteSpeechAppUrlParamsString = "";
             (int? ProcessId, string Error) result;
             result.ProcessId = 0;
             result.Error = String.Empty;
+
+            if (firstCall) Task.Run(() => commonUtility.SetVolume(volumePercent));
 
             if (suppSiteSpeechAppUrlParamsArray.Count() > 0) suppSiteSpeechAppUrl += "?";
 
@@ -134,7 +127,7 @@ namespace Tools
 
             suppSiteSpeechAppUrl += suppSiteSpeechAppUrlParamsString;
 
-            utilty.KillProcessByWindowCaption(windowCaption);
+            utility.KillProcessByWindowCaption(windowCaption);
 
             windowX = 0;
             windowY = workingAreaHeight;
@@ -156,21 +149,24 @@ namespace Tools
                 windowY = workingAreaHeight;
             }
 
-            if (fullScreen && alwaysShow && windowNormalFormat == false && hide == false) result = utilty.RunAS(browserPath, browserExeName, $"-–ignore-certificate-errors --chrome-frame --enable-speech-dispatcher --window-size={workingAreaWidth + 20},{workingAreaHeight + taskBarHeight+10} --window-position={-10},{-(taskBarHeight)} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
-            else if (!fullScreen && alwaysShow && windowNormalFormat == false && hide == false) result = utilty.RunAS(browserPath, browserExeName, $"-–ignore-certificate-errors --chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={(workingAreaWidth - windowWidth) + 10},{(workingAreaHeight - windowHeight) + 10} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
-            else if (windowNormalFormat == false && hide == true) result = utilty.RunAS(browserPath, browserExeName, $"-–ignore-certificate-errors --chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={windowX},{windowY} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
+            if (fullScreen && alwaysShow && windowNormalFormat == false && hide == false) result = utility.RunAS(browserPath, browserExeName, $"-–ignore-certificate-errors --chrome-frame --enable-speech-dispatcher --window-size={workingAreaWidth + 20},{workingAreaHeight + taskBarHeight+10} --window-position={-10},{-(taskBarHeight)} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
+            else if (!fullScreen && alwaysShow && windowNormalFormat == false && hide == false) result = utility.RunAS(browserPath, browserExeName, $"-–ignore-certificate-errors --chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={(workingAreaWidth - windowWidth) + 10},{(workingAreaHeight - windowHeight) + 10} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
+            else if (windowNormalFormat == false && hide == true) result = utility.RunAS(browserPath, browserExeName, $"-–ignore-certificate-errors --chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={windowX},{windowY} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
             else if (windowNormalFormat && hide == false) 
-                result = utilty.RunAS(browserPath, browserExeName, $"-–ignore-certificate-errors --new-window --enable-speech-dispatcher --window-size={workingAreaWidth},{workingAreaHeight} --window-position={0},{0} {suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
+                result = utility.RunAS(browserPath, browserExeName, $"-–ignore-certificate-errors --new-window --enable-speech-dispatcher --window-size={workingAreaWidth},{workingAreaHeight} --window-position={0},{0} {suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
 
             //var _processId = (int)result.ProcessId;
 
             if (removeFocus) commonUtility.ClickOnTaskbar();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         public void Stop()
         {
             var windowCaption = appSettings["WindowCaption"];
-            utilty.KillProcessByWindowCaption(windowCaption);
+            utility.KillProcessByWindowCaption(windowCaption);
         }
 
         public void Show(bool windowNormalFormat = false)
@@ -180,8 +176,8 @@ namespace Tools
             IntPtr result = default(IntPtr);
             try
             {     
-                if(fullScreen && windowNormalFormat == false) result = utilty.MoveExtWindow(windowCaption, -10, -40, workingAreaWidth + 20, workingAreaHeight + 50);
-                else if(windowNormalFormat == false) result = utilty.MoveExtWindow(windowCaption, (workingAreaWidth - windowWidth) + 10, (workingAreaHeight - windowHeight) + 10, windowWidth, windowHeight);
+                if(fullScreen && windowNormalFormat == false) result = utility.MoveExtWindow(windowCaption, -10, -40, workingAreaWidth + 20, workingAreaHeight + 50);
+                else if(windowNormalFormat == false) result = utility.MoveExtWindow(windowCaption, (workingAreaWidth - windowWidth) + 10, (workingAreaHeight - windowHeight) + 10, windowWidth, windowHeight);
 
                 if (result == default(IntPtr) || windowNormalFormat) Start(false, windowNormalFormat);
 
@@ -212,7 +208,7 @@ namespace Tools
 
             try
             {
-                utilty.MoveExtWindow(windowCaption, windowX, windowY, windowWidth, windowHeight);
+                utility.MoveExtWindow(windowCaption, windowX, windowY, windowWidth, windowHeight);
             }
             catch (Exception)
             {
@@ -226,8 +222,8 @@ namespace Tools
 
             try
             {
-                if (fullScreen) utilty.MoveExtWindowByProcessId(processId, -10, -40, workingAreaWidth + 20, workingAreaHeight + 50);
-                else utilty.MoveExtWindowByProcessId(processId, (workingAreaWidth - windowWidth) + 10, (workingAreaHeight - windowHeight) + 10, windowWidth, windowHeight);
+                if (fullScreen) utility.MoveExtWindowByProcessId(processId, -10, -40, workingAreaWidth + 20, workingAreaHeight + 50);
+                else utility.MoveExtWindowByProcessId(processId, (workingAreaWidth - windowWidth) + 10, (workingAreaHeight - windowHeight) + 10, windowWidth, windowHeight);
 
                 var speechService = new SpeechService();
                 Task.Run(() => speechService.Start(true));
@@ -247,7 +243,7 @@ namespace Tools
 
             try
             {
-                utilty.MoveExtWindowByProcessId(processId, windowX, windowY, windowWidth, windowHeight);
+                utility.MoveExtWindowByProcessId(processId, windowX, windowY, windowWidth, windowHeight);
             }
             catch (Exception)
             {

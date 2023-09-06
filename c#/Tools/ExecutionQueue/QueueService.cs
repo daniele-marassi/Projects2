@@ -56,7 +56,7 @@ namespace Tools.ExecutionQueue
 
         public QueueService()
         {
-            InitializeComponent();
+            InitializeComponent(); nLogUtility = new NLogUtility();
             utility = new Additional.Utility();
             commonUtility = new Common.Utility();
             appSettings = ConfigurationManager.AppSettings;
@@ -320,10 +320,13 @@ namespace Tools.ExecutionQueue
                             else oldServiceError = String.Empty;
 
                             oldServiceError += ex.Message;
-                            logger.Error(ex.Message);
+                            logger.Error(ex.ToString());
                         }
                     }
                 }
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
 
                 System.Threading.Thread.Sleep(sleepOfTheQueueServiceInMilliseconds);
             }
@@ -350,91 +353,103 @@ namespace Tools.ExecutionQueue
             result.Output = null;
             result.Error = null;
 
-            result = utility.RunExe(item.FullPath, item.Arguments, async).GetAwaiter().GetResult();
-
-            if (result.Error != null && result.Error != String.Empty)
+            try
             {
-                appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
-                notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+                result = utility.RunExe(item.FullPath, item.Arguments, async).GetAwaiter().GetResult();
 
-                if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServicesError);
-                var error = result.Error + " [" + item.FullPath + "]";
-                if (oldRunExeError == null || (oldRunExeError != null && oldRunExeError?.RemoveIntegers()?.Contains(error.RemoveIntegers()) == false))
+                if (result.Error != null && result.Error != String.Empty)
                 {
-                    using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
-                    {
-                        if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + error, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
-
-                        if (oldRunExeError != null) oldRunExeError += " - ";
-                        else oldRunExeError = String.Empty;
-
-                        oldRunExeError += error;
-                        logger.Error(error);
-                    }
-                }
-            }
-            else 
-            {
-                if (oldRunExeError != null)
-                {
-                    oldRunExeError = null;
                     appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
                     notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
 
-                    if (serviceActive) Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServiceActive);
-                }
-            }
-
-            if (result.Error == null || result.Error == String.Empty)
-            {
-                if (!alwaysShow) item.StateQueue = ExecutionQueueStateQueue.RunningStep1.ToString();
-                if (alwaysShow) item.StateQueue = ExecutionQueueStateQueue.Executed.ToString();
-                item.Output = result.Output;
-            }
-            else
-            {
-                item.StateQueue = ExecutionQueueStateQueue.Failed.ToString();
-                item.Output = result.Error;
-            }
-
-            var updateExecutionQueueResult = await _repo.UpdateExecutionQueue(item);
-
-            if (!updateExecutionQueueResult.Successful)
-            {
-                if (oldUpdateError == null || (oldUpdateError != null && oldUpdateError?.RemoveIntegers()?.Contains(updateExecutionQueueResult.Message.RemoveIntegers()) == false))
-                {
-                    using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+                    if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServicesError);
+                    var error = result.Error + " [" + item.FullPath + "]";
+                    if (oldRunExeError == null || (oldRunExeError != null && oldRunExeError?.RemoveIntegers()?.Contains(error.RemoveIntegers()) == false))
                     {
-                        appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
-                        notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+                        using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+                        {
+                            if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + error, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
 
-                        if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServicesError);
-                        if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + updateExecutionQueueResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+                            if (oldRunExeError != null) oldRunExeError += " - ";
+                            else oldRunExeError = String.Empty;
 
-                        if (oldUpdateError != null) oldUpdateError += " - ";
-                        else oldUpdateError = String.Empty;
-
-                        oldUpdateError += updateExecutionQueueResult.Message;
-
-                        logger.Error(updateExecutionQueueResult.Message);
+                            oldRunExeError += error;
+                            logger.Error(error);
+                        }
                     }
                 }
-            }
-            else
-            {
-                if (oldUpdateError != null)
+                else
                 {
-                    using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+                    if (oldRunExeError != null)
                     {
+                        oldRunExeError = null;
                         appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
                         notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
 
-                        oldUpdateError = null;
                         if (serviceActive) Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServiceActive);
-                        if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + " Update db now work!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
-                        logger.Info("Update db now work!");
                     }
                 }
+
+                if (result.Error == null || result.Error == String.Empty)
+                {
+                    if (!alwaysShow) item.StateQueue = ExecutionQueueStateQueue.RunningStep1.ToString();
+                    if (alwaysShow) item.StateQueue = ExecutionQueueStateQueue.Executed.ToString();
+                    item.Output = result.Output;
+                }
+                else
+                {
+                    item.StateQueue = ExecutionQueueStateQueue.Failed.ToString();
+                    item.Output = result.Error;
+                }
+
+                var updateExecutionQueueResult = await _repo.UpdateExecutionQueue(item);
+
+                if (!updateExecutionQueueResult.Successful)
+                {
+                    if (oldUpdateError == null || (oldUpdateError != null && oldUpdateError?.RemoveIntegers()?.Contains(updateExecutionQueueResult.Message.RemoveIntegers()) == false))
+                    {
+                        using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+                        {
+                            appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                            notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                            if (serviceActive) Common.ContextMenus.SetMenuItemWithError("QueueServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServicesError);
+                            if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + updateExecutionQueueResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+
+                            if (oldUpdateError != null) oldUpdateError += " - ";
+                            else oldUpdateError = String.Empty;
+
+                            oldUpdateError += updateExecutionQueueResult.Message;
+
+                            logger.Error(updateExecutionQueueResult.Message);
+                        }
+                    }
+                }
+                else
+                {
+                    if (oldUpdateError != null)
+                    {
+                        using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+                        {
+                            appSettings = ConfigurationManager.AppSettings; notifyMute = bool.Parse(appSettings["NotifyMute"]);
+                            notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+                            oldUpdateError = null;
+                            if (serviceActive) Common.ContextMenus.SetMenuItemRecover("QueueServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServiceActive);
+                            if (notifyPopupShow) Common.Utility.ShowMessage("QueueService Message:" + " Update db now work!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
+                            logger.Info("Update db now work!");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
             }
         }
 

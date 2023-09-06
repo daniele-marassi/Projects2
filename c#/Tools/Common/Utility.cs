@@ -3,6 +3,8 @@ using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using System.Drawing;
 using Additional;
+using System;
+using System.Configuration;
 
 namespace Tools.Common
 {
@@ -49,6 +51,19 @@ namespace Tools.Common
             System.Threading.Thread.Sleep(1000);
 
             VirtualMouse.LeftClick();
+        }
+
+        public void SetVolume(double percent)
+        {
+            var appSettings = ConfigurationManager.AppSettings;
+            var volumeAppPath = appSettings["VolumeAppPath"];
+
+            var utility = new Additional.Utility();
+
+            utility.RunExe(volumeAppPath, percent.ToString(), false);
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
     }
 }

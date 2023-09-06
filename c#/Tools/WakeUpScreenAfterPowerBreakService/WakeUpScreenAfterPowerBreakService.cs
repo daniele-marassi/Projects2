@@ -94,6 +94,9 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                     }
                 }
 
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+
                 System.Threading.Thread.Sleep(sleepInMilliseconds);
             }
         }

@@ -543,7 +543,7 @@ namespace Tools
 					ProcessIcon._Speech = new Speech();
 					//ProcessIcon._SpeechService = new SpeechService();
 					if (!utilty.ProcessIsActiveByWindowCaption(windowCaption))
-						Task.Run(() => ProcessIcon._Speech.Start());
+						Task.Run(() => ProcessIcon._Speech.Start(firstCall: true));
 					//Task.Run(() => ProcessIcon._SpeechService.Start());
 				}
 			}
