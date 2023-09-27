@@ -1717,9 +1717,17 @@
     <div style="text-align:center;">
         <div id="div_shortcuts" style="display: none; z-index: 999; width: 70%; position: absolute; background-color: rgba(0, 0, 0, 0.95); left: 0; right: 0; margin:auto; box-shadow: 0 0rem 1rem rgba(150, 150, 150, 0.09) !important; border-radius: 25px;">
             <div style="background-color: rgba(0, 0, 0, 0.95);  text-align:right; box-shadow: rgba(150, 150, 150, 0.09) 0 7px 6px -2px; border-radius: 25px;">
-                <a style="z-index:9999; color:#333; font-size:35px; position:absolute; left:10px;">Shortcuts</a>
-                <img class="btn shortcut-dark" id="shortcutGroup_0" src="/Images/Shortcuts/return.png" alt="Go back" style="height:80px; margin:5px; visibility:hidden;" onclick="CloseShortcutsGroup();">
-                <img class="btn shortcut-dark" id="shortcut_0" src="/Images/Shortcuts/close.png" alt="Close" style="height:80px; margin:5px;" onclick="ActionShortcut(0);">
+                <div style="z-index:9997; display:inline-block; left:5px; margin:5px; position:absolute;">
+                    <a style="z-index:9997; color:#333; font-size:35px; ">Shortcuts</a>
+                </div>
+                <div class="btn shortcut-dark" style="z-index:9998;  display:inline-block; height:80px; width:140px;margin:5px; ">
+                </div>
+                <div style="z-index:9998; display:inline-block; margin:5px; ">
+                    <img class="btn shortcut-dark" id="shortcutGroup_0" src="/Images/Shortcuts/return.png" alt="Go back" style="z-index:9998; height:80px;  visibility:hidden;" onclick="CloseShortcutsGroup();">
+                </div>
+                <div style="z-index:9999; display:inline-block;  margin:5px;">
+                    <img class="btn shortcut-dark" id="shortcut_0" src="/Images/Shortcuts/close.png" alt="Close" style="z-index:9999; height:80px; " onclick="ActionShortcut(0);">
+                </div>
             </div>
             <dl id="shortcutsContainer" class="row" style="max-height:600px; overflow-y:auto; " >
             </dl>

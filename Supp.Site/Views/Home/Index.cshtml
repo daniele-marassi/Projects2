@@ -6,16 +6,14 @@
 
 @{
     ViewBag.Title = "Home Page";
+    ViewData["Title"] = ViewBag.Title;
 }
 
-
-    <div class="content-wrapper">
-        <hgroup class="title">
-            <h1>@ViewBag.Title.</h1>
-            <h2>@ViewBag.Message</h2>
-        </hgroup>
-    </div>
-
+<div class="content-wrapper" style="margin-top:100px;"> 
+    <hgroup class="title">
+        <h2>@ViewBag.Message</h2>
+    </hgroup>
+</div>
 
 <div class="text-danger" style="padding:30px;">
     @{
