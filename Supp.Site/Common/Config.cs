@@ -102,7 +102,7 @@ namespace Supp.Site.Common
                 public const string SuppSiteHostSelectedCookieName = "SuppSiteHostSelected";
                 public const string SuppSiteApplicationCookieName = "SuppSiteApplication";
                 public const string SuppSiteAlwaysShowCookieName = "SuppSiteAlwaysShow";
-                public const string SuppSiteClaimsCookieName = "SuppSiteClaims";
+                public const string SuppSiteTokenDtoCookieName = "SuppSiteTokenDto";
                 public const string SuppSiteLoadDateCookieName = "SuppSiteLoadDate";
                 public const string SuppSiteAuthenticatedPasswordCookieName = "SuppSiteAuthenticatedPassword";
                 public const string SuppSiteNewWebSpeechCookieName = "SuppSiteNewWebSpeech";

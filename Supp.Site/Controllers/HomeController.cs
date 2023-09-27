@@ -11,7 +11,7 @@ using System.Threading;
 using System.Globalization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using static Supp.Site.Common.Config;
 using Additional.NLog;
@@ -26,7 +26,6 @@ namespace Supp.Site.Controllers
         private readonly static Logger classLogger  = LogManager.GetCurrentClassLogger();
         private readonly  NLogUtility nLogUtility = new NLogUtility();
         private readonly AuthenticationsRepository authenticationRepo;
-        private readonly UsersRepository userRepo;
         private const string message = "Welcome to Supp Site.";
         public static string[,] Languages;
         public static string Culture = String.Empty;
@@ -36,7 +35,7 @@ namespace Supp.Site.Controllers
         {
             suppUtility = new SuppUtility();
             authenticationRepo = new AuthenticationsRepository();
-            userRepo = new UsersRepository();
+
             Languages = new string[2, 2]
             {
                 { "it-IT", "{0:##,###.00}" },
@@ -99,7 +98,7 @@ namespace Supp.Site.Controllers
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var result = Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response, Request);
+                var result = Authentication(dto, nLogUtility, authenticationRepo, HttpContext, Response, Request);
 
                 if(result.Error == null)
                 {
@@ -123,7 +122,7 @@ namespace Supp.Site.Controllers
             }
         }
 
-        public static (bool IsValidUser, TokenDto Data, Exception Error) Authentication(LoginDto dto, NLogUtility nLogUtility, AuthenticationsRepository authenticationRepo, HttpContext httpContext, ClaimsPrincipal user, HttpResponse response, HttpRequest request)
+        public static (bool IsValidUser, TokenDto Data, Exception Error) Authentication(LoginDto dto, NLogUtility nLogUtility, AuthenticationsRepository authenticationRepo, HttpContext httpContext, HttpResponse response, HttpRequest request)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -136,7 +135,9 @@ namespace Supp.Site.Controllers
 
                 try
                 {
-                    var loginResult = authenticationRepo.Login(dto.UserName, dto.Password, dto.PasswordAlreadyEncrypted).Result;
+                    var tokenRepo = new TokensRepository();
+
+                    var loginResult = tokenRepo.Login(dto.UserName, dto.Password, dto.PasswordAlreadyEncrypted).Result;
 
                     result.IsValidUser = loginResult.IsAuthenticated;
 
@@ -146,35 +147,27 @@ namespace Supp.Site.Controllers
 
                         result.Data = data;
 
-                        var principal = CreatePrincipal(data, nLogUtility, user);
-
-                        CookieOptions option = new CookieOptions();
-                        option.Expires = DateTime.Now.AddSeconds((double)data.ExpiresInSeconds);
-                        var properties = new AuthenticationProperties() { AllowRefresh = true, ExpiresUtc = option.Expires, IsPersistent = true };
-                        httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, properties);
+                        SuppUtility.TokenStorage(data, nLogUtility);
 
                         logger.Info("RemoveCookies - STARTED");
                         suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                         suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
                         suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName);
-                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteClaimsCookieName);
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteTokenDtoCookieName);
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName);
                         logger.Info("RemoveCookies - ENDED");
 
                         logger.Info("SetCookies - STARTED");
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName, data.ExpiresInSeconds.ToString(), data.ExpiresInSeconds);
-                        suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAccessTokenCookieName, data.Token, data.ExpiresInSeconds);
+                        suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAccessTokenCookieName, data.TokenCode, data.ExpiresInSeconds);
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName, dto.UserName, data.ExpiresInSeconds);
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName, data.UserId.ToString(), data.ExpiresInSeconds);
 
                         logger.Info("SetCookies - ENDED");
 
-                        logger.Info("GetClaims - STARTED");
-                        var claims = SuppUtility.GetClaims(principal);
-                        logger.Info("GetClaims - ENDED");
-
-                        logger.Info("SetCookie SuppSiteClaimsCookieName - STARTED");
-                        suppUtility.SetCookie(response, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName, JsonConvert.SerializeObject(claims), data.ExpiresInSeconds);
-                        logger.Info("SetCookie SuppSiteClaimsCookieName - ENDED");
+                        logger.Info("SetCookie SuppSiteTokenDtoCookieName - STARTED");
+                        suppUtility.SetCookie(response, Config.GeneralSettings.Constants.SuppSiteTokenDtoCookieName, JsonConvert.SerializeObject(data), data.ExpiresInSeconds);
+                        logger.Info("SetCookie SuppSiteTokenDtoCookieName - ENDED");
                     }
                     else
                     {
@@ -194,34 +187,6 @@ namespace Supp.Site.Controllers
             }
         }
 
-        private static ClaimsPrincipal CreatePrincipal(TokenDto dto, NLogUtility nLogUtility, ClaimsPrincipal user)
-        {
-            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
-            {
-                var principal = new ClaimsPrincipal();
-                try
-                {
-                    var claims = new List<Claim>
-                    {
-                        new Claim("UserName", dto.UserName),
-                        new Claim("ConfigInJson", dto.ConfigInJson != null? dto.ConfigInJson : String.Empty),
-                        new Claim("Name", dto.Name),
-                        new Claim("Surname", dto.Surname),
-                        new Claim("UserId", dto.UserId.ToString()),
-                        new Claim("Roles", string.Join( ",", dto.Roles.ToArray() ) )
-                    };
-                    principal.AddIdentity(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
-                    user.AddIdentity(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-
-                return principal;
-            }
-        }
-
         public ActionResult Logout()
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
@@ -232,10 +197,10 @@ namespace Supp.Site.Controllers
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName);
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteErrorsCookieName);
-                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteClaimsCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteTokenDtoCookieName);
 
                     HttpContext.SignOutAsync();
-                    return RedirectToAction("Login");
+                    return RedirectToAction("Login", "Home");
                 }
                 catch (Exception ex)
                 {

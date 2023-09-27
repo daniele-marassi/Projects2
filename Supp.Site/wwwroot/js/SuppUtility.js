@@ -1,7 +1,7 @@
 //namespace SuppUtility
 var SuppUtility =
 {
-    GetAnswer: function (value, _claims) {
+    GetAnswer: function (value, identification) {
         var list = [];
 
         try {
@@ -22,8 +22,8 @@ var SuppUtility =
 
         if (value == null) value = "";
 
-        value = value.replace("SURNAME", _claims.Surname);
-        value = value.replace("NAME", _claims.Name);
+        value = value.replace("SURNAME", identification.Surname);
+        value = value.replace("NAME", identification.Name);
 
         return value;
     }

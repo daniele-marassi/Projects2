@@ -234,7 +234,7 @@ namespace Supp.Site.Recognition
         /// <param name="access_token_cookie"></param>
         /// <param name="executionQueueRepo"></param>
         /// <returns></returns>
-        public async Task<WebSpeechDto> RunExe(WebSpeechDto data, string _phrase, string _hostSelected, string access_token_cookie, ExecutionQueuesRepository executionQueueRepo, ClaimsDto _claims)
+        public async Task<WebSpeechDto> RunExe(WebSpeechDto data, string _phrase, string _hostSelected, string access_token_cookie, ExecutionQueuesRepository executionQueueRepo, TokenDto identification)
         {
             if (data.Type == WebSpeechTypes.RunExeWithNumericParameter.ToString() || data.Type == WebSpeechTypes.SystemRunExeWithNumericParameter.ToString())
             {
@@ -273,7 +273,7 @@ namespace Supp.Site.Recognition
 
             if (_phrase != null && _phrase != "")
             {
-                var value = phraseInDateTimeManager.Convert(_phrase, _claims.Configuration.General.Culture);
+                var value = phraseInDateTimeManager.Convert(_phrase, JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture);
                 if (value != null) scheduledDateTime = (DateTime)value;
             }
 

@@ -2,14 +2,13 @@
 using Supp.ServiceHost.Common;
 using Supp.ServiceHost.Repositories;
 using Supp.Models;
-using Microsoft.IdentityModel.Tokens;
+
 using NLog;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Reflection;
-using System.Security.Claims;
+
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,8 +16,10 @@ using static Supp.ServiceHost.Common.Config;
 using Supp.ServiceHost.Contracts;
 using Supp.ServiceHost.Contexts;
 using System.Configuration;
-using Microsoft.IdentityModel.Logging;
+
 using Additional.NLog;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json;
 
 namespace Supp.ServiceHost.Services.Token
 {
@@ -28,9 +29,11 @@ namespace Supp.ServiceHost.Services.Token
         private IUsersRepository iUsersRepo;
         private IUserRoleTypesRepository iUserRoleTypesRepo;
         private IUserRolesRepository iUserRolesRepo;
+        private ITokensRepository iTokensRepo;
         private static Logger classLogger = LogManager.GetCurrentClassLogger();
         private NLogUtility nLogUtility = new NLogUtility();
         private Additional.Utility utility;
+        private SuppUtility suppUtility;
 
         public GrantCredentials(SuppDatabaseContext context)
         {
@@ -38,7 +41,9 @@ namespace Supp.ServiceHost.Services.Token
             iUsersRepo = new UsersRepository(context);
             iUserRoleTypesRepo = new UserRoleTypesRepository(context);
             iUserRolesRepo = new UserRolesRepository(context);
+            iTokensRepo = new TokensRepository(context);
             utility = new Additional.Utility();
+            suppUtility = new SuppUtility();
         }
 
         /// <summary>
@@ -52,7 +57,7 @@ namespace Supp.ServiceHost.Services.Token
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var response = new TokenResult() { Data = new List<TokenDto>(), ResultState = ResultType.NotFound, Successful = true };
+                var response = new TokenResult() { Data = new List<TokenDto>() {}, ResultState = ResultType.NotFound, Successful = true };
 
                 try
                 {
@@ -93,6 +98,8 @@ namespace Supp.ServiceHost.Services.Token
 
                     var roles = getUserRoleTypeResult.Data.Where(_ => userRoleTypeIds.Contains(_.Id)).Select(_ => _.Type).ToList();
 
+                    var rolesInJson = JsonConvert.SerializeObject(roles);
+
                     var passwordMd5 = "";
 
                     var now = DateTime.Now.Date;
@@ -118,28 +125,18 @@ namespace Supp.ServiceHost.Services.Token
                     //check user exists
                     if (userName.Trim().ToLower() == user.UserName.ToLower() && passwordMd5 == authentication.Password && authentication.Enable && ((authentication.PasswordExpiration && passwordExpirationDate >= now) || !authentication.PasswordExpiration))
                     {
-                        var claims = new List<Claim>
-                        {
-                            new Claim("userName", user.UserName),
-                            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                            new Claim("userId", user.Id.ToString())
-                        };
+                        var expires = DateTime.Now.AddDays(GeneralSettings.Static.ExpireDays);
 
-                        claims.AddRange(roles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role)));
+                        var additionalKeys = new List<string>();
+                        additionalKeys.Add("Supp.Site");
+                        additionalKeys.Add(user.Id.ToString());
+                        additionalKeys.Add(userName);
+                        additionalKeys.Add(passwordMd5);
+                        additionalKeys.Add(user.Name);
+                        additionalKeys.Add(user.Surname);
+                        additionalKeys.Add(rolesInJson);
 
-                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GeneralSettings.Static.JwtAppSettingOptions["JwtKey"]));
-                        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                        var expires = DateTime.Now.AddDays(Convert.ToDouble(GeneralSettings.Static.JwtAppSettingOptions["JwtExpireDays"]));
-
-                        var token = new JwtSecurityToken(
-                            GeneralSettings.Static.JwtAppSettingOptions["JwtIssuer"],
-                            GeneralSettings.Static.JwtAppSettingOptions["JwtIssuer"],
-                            claims,
-                            expires: expires,
-                            signingCredentials: creds
-                        );
-
-                        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+                        var tokenString = suppUtility.CreateToken(user.Id, additionalKeys);
 
                         TimeSpan span = expires - now;
                         var expiresIn = (int)span.TotalSeconds;
@@ -154,7 +151,15 @@ namespace Supp.ServiceHost.Services.Token
                         else
                             message = "";
 
-                        response.Data.Add(new TokenDto() { Token = tokenString, ExpiresInSeconds = expiresIn, Roles = roles, UserId = user.Id, UserName = user.UserName, Message = message, Surname = user.Surname, Name = user.Name, ConfigInJson = user.CustomizeParams });
+                        var tokenDto = new TokenDto() { IsAuthenticated = true, ExpiryDate = expires, RolesInJson = rolesInJson, TokenCode = tokenString, ExpiresInSeconds = expiresIn, Roles = roles, UserId = user.Id, UserName = user.UserName, Message = message, Surname = user.Surname, Name = user.Name, ConfigInJson = user.CustomizeParams };
+
+                        if (roles.Contains(Config.Roles.Constants.RoleAdmin) || roles.Contains(Config.Roles.Constants.RoleSuperUser)) tokenDto.ExpiryDate = null;
+
+                        TokenStorage(tokenDto, nLogUtility);
+
+                        await iTokensRepo.CleanAndAddToken(tokenDto);
+
+                        response.Data.Add(tokenDto);
                         response.Successful = true;
                         response.IsAuthenticated = true;
                         response.ResultState = ResultType.Found;
@@ -183,43 +188,28 @@ namespace Supp.ServiceHost.Services.Token
                     logger.Error(ex.ToString());
                     //throw ex;
                 }
-
                 return response;
             }
         }
 
-        public ClaimsPrincipal ValidateToken(string jwtToken)
+        private void TokenStorage(TokenDto dto, NLogUtility nLogUtility)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                ClaimsPrincipal principal = new ClaimsPrincipal() { };
                 try
                 {
-                    if (jwtToken != null)
+                    if (Program.TokensArchive.ContainsKey(dto.UserId))
                     {
-                        IdentityModelEventSource.ShowPII = true;
-
-                        SecurityToken validatedToken;
-                        TokenValidationParameters validationParameters = new TokenValidationParameters();
-
-                        validationParameters.ValidateLifetime = true;
-
-                        validationParameters.ValidIssuer = GeneralSettings.Static.JwtAppSettingOptions["JwtIssuer"];
-                        validationParameters.ValidAudience = GeneralSettings.Static.JwtAppSettingOptions["JwtIssuer"];
-
-                        validationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GeneralSettings.Static.JwtAppSettingOptions["JwtKey"]));
-
-
-                        principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, validationParameters, out validatedToken);
+                        TokenDto tokenDtoDeleted = null;
+                        Program.TokensArchive.TryRemove(dto.UserId, out tokenDtoDeleted);
                     }
+
+                    Program.TokensArchive.TryAdd(dto.UserId, dto);
                 }
                 catch (Exception ex)
                 {
-
                     throw ex;
                 }
-
-                return principal;
             }
         }
     }

@@ -153,19 +153,19 @@ namespace Supp.Site.Controllers
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var claims = new ClaimsDto() { IsAuthenticated = false };
+                var identification = new TokenDto() { IsAuthenticated = false };
                 var suppUtility = new SuppUtility();
 
                 try
                 {
-                    var claimsString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName);
-                    claims = JsonConvert.DeserializeObject<ClaimsDto>(claimsString);
+                    var tokenDtoString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteTokenDtoCookieName);
+                    identification = JsonConvert.DeserializeObject<TokenDto>(tokenDtoString);
                 }
                 catch (Exception)
                 {
 
                 }
-                var configDefaultInJson = JsonConvert.SerializeObject(claims.Configuration);
+                var configDefaultInJson = JsonConvert.SerializeObject(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson));
                 var dto = new UserDto() { ConfigDefaultInJson = configDefaultInJson, CustomizeParams = configDefaultInJson };
                 return View(dto);
             }
@@ -227,18 +227,18 @@ namespace Supp.Site.Controllers
                     var result = await userRepo.GetUsersById((long)id, access_token_cookie);
                     var data = result.Data.FirstOrDefault();
 
-                    var claims = new ClaimsDto() { IsAuthenticated = false };
+                    var identification = new TokenDto() { IsAuthenticated = false };
 
                     try
                     {
-                        var claimsString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName);
-                        claims = JsonConvert.DeserializeObject<ClaimsDto>(claimsString);
+                        var tokenDtoString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteTokenDtoCookieName);
+                        identification = JsonConvert.DeserializeObject<TokenDto>(tokenDtoString);
                     }
                     catch (Exception)
                     {
 
                     }
-                    var configDefaultInJson = JsonConvert.SerializeObject(claims.Configuration);
+                    var configDefaultInJson = JsonConvert.SerializeObject(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson));
 
                     data.ConfigDefaultInJson = configDefaultInJson;
 

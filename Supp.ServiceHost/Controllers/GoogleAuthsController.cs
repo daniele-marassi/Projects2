@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Supp.ServiceHost.Repositories;
 using Supp.Models;
-using Supp.ServiceHost.Services.Token;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Supp.ServiceHost.Contracts;
 using Supp.ServiceHost.Contexts;
+using Supp.ServiceHost.Common;
+using System.Reflection;
 
 namespace Supp.ServiceHost.Controllers
 {
@@ -28,28 +29,37 @@ namespace Supp.ServiceHost.Controllers
             _config = config;
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser + ", " + Common.Config.Roles.Constants.RoleUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser + ", " + Config.Roles.Constants.RoleUser)]
         [HttpGet("GetAllGoogleAuths")] //<host>/api/GoogleAuths/GetAllGoogleAuths
         public async Task<IActionResult> GetAllGoogleAuths()
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             var result = await _repo.GetAllGoogleAuths();
 
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser + ", " + Common.Config.Roles.Constants.RoleUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser + ", " + Config.Roles.Constants.RoleUser)]
         [HttpGet("GetGoogleAuth")] //<host>/api/GoogleAuths/GetGoogleAuth/5
         public async Task<IActionResult> GetGoogleAuth(long id)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             var result = await _repo.GetGoogleAuthsById(id);
 
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser + ", " + Common.Config.Roles.Constants.RoleUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser + ", " + Config.Roles.Constants.RoleUser)]
         [HttpPut("UpdateGoogleAuth")] //<host>/api/GoogleAuths/UpdateGoogleAuth/5
         public async Task<IActionResult> UpdateGoogleAuth(long id, GoogleAuthDto data)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -65,10 +75,13 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser + ", " + Common.Config.Roles.Constants.RoleUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser + ", " + Config.Roles.Constants.RoleUser)]
         [HttpPost("AddGoogleAuth")] //<host>/api/GoogleAuths/AddGoogleAuth
         public async Task<IActionResult> AddGoogleAuth(GoogleAuthDto data)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -79,10 +92,13 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser + ", " + Common.Config.Roles.Constants.RoleUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser + ", " + Config.Roles.Constants.RoleUser)]
         [HttpDelete("DeleteGoogleAuth")] //<host>/api/GoogleAuths/DeleteGoogleAuth/5
         public async Task<IActionResult> DeleteGoogleAuth(long id)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             var result = await _repo.DeleteGoogleAuthById(id);
 
             return Ok(result);

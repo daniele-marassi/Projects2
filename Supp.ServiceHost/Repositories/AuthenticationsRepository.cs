@@ -142,10 +142,10 @@ namespace Supp.ServiceHost.Repositories
 
                 try
                 {
-                    List<User> users = null;
+                    User user = null;
                     try
                     {
-                        users = await db.Users.ToListAsync();
+                        user = await db.Users.Where(_ => _.UserName.ToLower().Trim() == userName.ToLower().Trim())?.FirstOrDefaultAsync();
                     }
                     catch (Exception ex)
                     {
@@ -157,23 +157,15 @@ namespace Supp.ServiceHost.Repositories
                         else throw ex;  
                     }
 
-                    if (users == null || users.Count() == 0) throw new Exception("Users not found!");
-
-                    var user = users.Where(_=>_.UserName.ToLower().Trim() == userName.ToLower().Trim())?.FirstOrDefault();
-
                     if (user == null) throw new Exception($"User: [{userName}] not found!");
 
-                    var authentications = await db.Authentications.ToListAsync();
+                    var authentications = await db.Authentications.Where(_ => _.UserId == user.Id && _.Enable == true)?.ToListAsync();
 
-                    if (authentications == null || authentications.Count() == 0) throw new Exception("Authentications not found!");
-
-                    var _authentications = authentications.Where(_ => _.UserId == user.Id)?.ToList();
-
-                    if (_authentications == null) throw new Exception($"Authentications to user: [{userName}] not found!");
+                    if (authentications == null || authentications.Count() == 0) throw new Exception($"Authentications to user: [{userName}] not found!");
 
                     var config = new MapperConfiguration(cfg => cfg.CreateMap<Authentication, AuthenticationDto>());
                     var mapper = config.CreateMapper();
-                    var dto = mapper.Map<List<AuthenticationDto>>(_authentications);
+                    var dto = mapper.Map<List<AuthenticationDto>>(authentications);
 
                     if (dto != null)
                     {
@@ -210,23 +202,15 @@ namespace Supp.ServiceHost.Repositories
 
                 try
                 {
-                    var users = await db.Users.ToListAsync();
-
-                    if (users == null || users.Count() == 0) throw new Exception("Users not found!");
-
-                    var user = users.Where(_ => _.UserName.ToLower().Trim() == userName.ToLower().Trim())?.FirstOrDefault();
+                    var user = await db.Users.Where(_ => _.UserName.ToLower().Trim() == userName.ToLower().Trim())?.FirstOrDefaultAsync();
 
                     if (user == null) throw new Exception($"User: [{userName}] not found!");
 
-                    var authentications = await db.Authentications.ToListAsync();
+                    var authentications = await db.Authentications.Where(_ => _.UserId == user.Id && _.Enable == true)?.ToListAsync();
 
-                    if (authentications == null || authentications.Count() == 0) throw new Exception("Authentications not found!");
+                    if (authentications == null || authentications.Count() == 0) throw new Exception($"Authentications to user: [{userName}] not found!");
 
-                    var _authentications = authentications.Where(_ => _.UserId == user.Id && _.Enable == true)?.ToList();
-
-                    if (_authentications == null) throw new Exception($"Authentications to user: [{userName}] not found!");
-
-                    foreach (var authentication in _authentications)
+                    foreach (var authentication in authentications)
                     {
                         authentication.Enable = false;
                         db.Entry(authentication).State = EntityState.Modified;
@@ -236,7 +220,7 @@ namespace Supp.ServiceHost.Repositories
 
                     var config = new MapperConfiguration(cfg => cfg.CreateMap<Authentication, AuthenticationDto>());
                     var mapper = config.CreateMapper();
-                    var dto = mapper.Map<List<AuthenticationDto>>(_authentications);
+                    var dto = mapper.Map<List<AuthenticationDto>>(authentications);
 
                     if (dto != null)
                     {

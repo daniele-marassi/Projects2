@@ -83,11 +83,11 @@ namespace Supp.Site.Recognition
         /// <param name="_phrase"></param>
         /// <param name="response"></param>
         /// <param name="request"></param>
-        /// <param name="_claims"></param>
+        /// <param name="identification"></param>
         /// <param name="userName"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public WebSpeechDto Manage(WebSpeechDto data, string _subType, int _step, string _stepType, int expiresInSeconds, string _phrase, HttpResponse response, HttpRequest request, ClaimsDto _claims, string userName, long userId, string _hostSelected)
+        public WebSpeechDto Manage(WebSpeechDto data, string _subType, int _step, string _stepType, int expiresInSeconds, string _phrase, HttpResponse response, HttpRequest request, TokenDto identification, string userName, long userId, string _hostSelected)
         {
             WebSpeechDto newWebSpeech = null;
             string newWebSpeechString = "";
@@ -148,37 +148,37 @@ namespace Supp.Site.Recognition
             var setCookie = false;
 
             // Manage RequestNotImplemented
-            var manageRequestNotImplementedResult = ManageRequestNotImplemented(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, _claims, access_token_cookie);
+            var manageRequestNotImplementedResult = ManageRequestNotImplemented(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, identification, access_token_cookie);
             setCookie = manageRequestNotImplementedResult.SetCookie;
             newWebSpeech = manageRequestNotImplementedResult.NewWebSpeech;
             data = manageRequestNotImplementedResult.Data;
 
             // Manage Note
-            var manageNoteResult = ManageNote(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, _claims, access_token_cookie);
+            var manageNoteResult = ManageNote(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, identification, access_token_cookie);
             setCookie = manageNoteResult.SetCookie;
             newWebSpeech = manageNoteResult.NewWebSpeech;
             data = manageNoteResult.Data;
 
             // Manage WebSearch
-            var manageWebSearchResult = ManageWebSearch(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, _claims);
+            var manageWebSearchResult = ManageWebSearch(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, identification);
             setCookie = manageWebSearchResult.SetCookie;
             newWebSpeech = manageWebSearchResult.NewWebSpeech;
             data = manageWebSearchResult.Data;
 
             // Manage RunExe
-            var manageRunExeResult = ManageRunExe(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, _claims, _hostSelected, access_token_cookie);
+            var manageRunExeResult = ManageRunExe(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, identification, _hostSelected, access_token_cookie);
             setCookie = manageRunExeResult.SetCookie;
             newWebSpeech = manageRunExeResult.NewWebSpeech;
             data = manageRunExeResult.Data;
 
             // Manage Reminder
-            var manageReminderResult = ManageReminder(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, _claims, access_token_cookie);
+            var manageReminderResult = ManageReminder(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, identification, access_token_cookie);
             setCookie = manageReminderResult.SetCookie;
             newWebSpeech = manageReminderResult.NewWebSpeech;
             data = manageReminderResult.Data;
 
             // Manage Timer
-            var manageTimerResult = ManageTimer(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, _claims, access_token_cookie);
+            var manageTimerResult = ManageTimer(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, identification, access_token_cookie);
             setCookie = manageTimerResult.SetCookie;
             newWebSpeech = manageTimerResult.NewWebSpeech;
             data = manageTimerResult.Data;
@@ -193,7 +193,7 @@ namespace Supp.Site.Recognition
             return data;
         }
 
-        private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageRequestNotImplemented(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, ClaimsDto _claims, string access_token_cookie)
+        private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageRequestNotImplemented(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, TokenDto identification, string access_token_cookie)
         {
             (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) result;
 
@@ -250,7 +250,7 @@ namespace Supp.Site.Recognition
             return result;
         }
 
-        private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageNote(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, ClaimsDto _claims, string access_token_cookie)
+        private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageNote(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, TokenDto identification, string access_token_cookie)
         {
             (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) result;
 
@@ -378,7 +378,7 @@ namespace Supp.Site.Recognition
 
                 if (_subType == WebSpeechTypes.SystemDialogueCreateNote.ToString()
                         || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString())
-                    eventResult = dialogueCreateNote.CreateNote(newWebSpeech, access_token_cookie, userName, userId, _claims).GetAwaiter().GetResult();
+                    eventResult = dialogueCreateNote.CreateNote(newWebSpeech, access_token_cookie, userName, userId, identification).GetAwaiter().GetResult();
 
                 if (_subType == WebSpeechTypes.SystemDialogueDeleteNote.ToString()
                         || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()
@@ -391,10 +391,10 @@ namespace Supp.Site.Recognition
                 {
                     newWebSpeech.FinalStep = true;
 
-                    if (_claims.Configuration.General.Culture.ToLower() == "it-it")
+                    if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it")
                         newWebSpeech.Answer = "Errore: " + utility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
 
-                    if (_claims.Configuration.General.Culture.ToLower() == "en-us")
+                    if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us")
                         newWebSpeech.Answer = "Error: " + utility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
                 }
             }
@@ -460,7 +460,7 @@ namespace Supp.Site.Recognition
             return phrase;
         }
 
-        private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageReminder(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, ClaimsDto _claims, string access_token_cookie)
+        private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageReminder(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, TokenDto identification, string access_token_cookie)
         {
             (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) result;
 
@@ -511,10 +511,10 @@ namespace Supp.Site.Recognition
                 var eventResult = new EventResult();
 
                 if (_subType == WebSpeechTypes.SystemDialogueCreateExtendedReminder.ToString())
-                    eventResult = dialogueCreateExtendedReminder.CreateExtendedReminder(newWebSpeech, access_token_cookie, userName, userId, _claims).GetAwaiter().GetResult();
+                    eventResult = dialogueCreateExtendedReminder.CreateExtendedReminder(newWebSpeech, access_token_cookie, userName, userId, identification).GetAwaiter().GetResult();
 
                 if (_subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString())
-                    eventResult = dialogueCreateReminder.CreateReminder(newWebSpeech, access_token_cookie, userName, userId, _claims).GetAwaiter().GetResult();
+                    eventResult = dialogueCreateReminder.CreateReminder(newWebSpeech, access_token_cookie, userName, userId, identification).GetAwaiter().GetResult();
 
                 if (_subType == WebSpeechTypes.SystemDialogueDeleteReminder.ToString())
                     eventResult = dialogueDeleteReminder.DeleteReminder(newWebSpeech, access_token_cookie, userName, userId).GetAwaiter().GetResult();
@@ -523,10 +523,10 @@ namespace Supp.Site.Recognition
                 {
                     newWebSpeech.FinalStep = true;
 
-                    if (_claims.Configuration.General.Culture.ToLower() == "it-it")
+                    if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it")
                         newWebSpeech.Answer = "Errore: " + utility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
 
-                    if (_claims.Configuration.General.Culture.ToLower() == "en-us")
+                    if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us")
                         newWebSpeech.Answer = "Error: " + utility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
                 }
             }
@@ -538,7 +538,7 @@ namespace Supp.Site.Recognition
             return result;
         }
 
-        private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageWebSearch(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, ClaimsDto _claims)
+        private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageWebSearch(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, TokenDto identification)
         {
             (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) result;
 
@@ -581,7 +581,7 @@ namespace Supp.Site.Recognition
             return result;
         }
 
-        private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageRunExe(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, ClaimsDto _claims, string _hostSelected, string access_token_cookie)
+        private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageRunExe(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, TokenDto identification, string _hostSelected, string access_token_cookie)
         {
             (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) result;
 
@@ -611,7 +611,7 @@ namespace Supp.Site.Recognition
                 var dialogueRunExe = new DialogueRunExe();
                 //data.Type = WebSpeechTypes.SystemRunExe.ToString();
 
-                var runExeResult = dialogueRunExe.RunExe(data, newWebSpeech.Elements[1].Value, _hostSelected, access_token_cookie, executionQueueRepo, _claims).GetAwaiter().GetResult();
+                var runExeResult = dialogueRunExe.RunExe(data, newWebSpeech.Elements[1].Value, _hostSelected, access_token_cookie, executionQueueRepo, identification).GetAwaiter().GetResult();
 
                 data.Parameters = runExeResult.Parameters;
             }
@@ -623,7 +623,7 @@ namespace Supp.Site.Recognition
             return result;
         }
 
-        private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageTimer(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, ClaimsDto _claims, string access_token_cookie)
+        private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageTimer(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, TokenDto identification, string access_token_cookie)
         {
             (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) result;
 
@@ -660,23 +660,23 @@ namespace Supp.Site.Recognition
                 if (_subType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || _subType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString())
                 {
                     var cultureInfo = default(CultureInfo);
-                    if (_claims.Configuration.General.Culture.ToLower() == "it-it")
+                    if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it")
                         cultureInfo = new CultureInfo("it-IT");
-                    if (_claims.Configuration.General.Culture.ToLower() == "en-us")
+                    if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us")
                         cultureInfo = new CultureInfo("en-US");
 
                     var date = DateTime.Parse(newWebSpeech.Elements[1].Value, cultureInfo);
-                    eventResult = dialogueSetTimer.SetTimer(newWebSpeech, access_token_cookie, userName, userId, _claims, request, response, expiresInSeconds, date).GetAwaiter().GetResult();
+                    eventResult = dialogueSetTimer.SetTimer(newWebSpeech, access_token_cookie, userName, userId, identification, request, response, expiresInSeconds, date).GetAwaiter().GetResult();
                 }
 
                 if (!eventResult.Successful)
                 {
                     newWebSpeech.FinalStep = true;
 
-                    if (_claims.Configuration.General.Culture.ToLower() == "it-it")
+                    if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it")
                         newWebSpeech.Answer = "Errore: " + utility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
 
-                    if (_claims.Configuration.General.Culture.ToLower() == "en-us")
+                    if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us")
                         newWebSpeech.Answer = "Error: " + utility.SplitCamelCase(_subType.Replace("System", "").Replace("Dialogue", ""));
                 }
             }
@@ -798,17 +798,17 @@ namespace Supp.Site.Recognition
         /// <param name="access_token_cookie"></param>
         /// <param name="executionQueueRepo"></param>
         /// <returns></returns>
-        public async Task<WebSpeechDto> RunExe(WebSpeechDto data, string _phrase, string _hostSelected, string access_token_cookie, ExecutionQueuesRepository executionQueueRepo, ClaimsDto _claims)
+        public async Task<WebSpeechDto> RunExe(WebSpeechDto data, string _phrase, string _hostSelected, string access_token_cookie, ExecutionQueuesRepository executionQueueRepo, TokenDto identification)
         {
             var dialogue = new DialogueRunExe();
-            return await dialogue.RunExe(data, _phrase, _hostSelected, access_token_cookie, executionQueueRepo, _claims);
+            return await dialogue.RunExe(data, _phrase, _hostSelected, access_token_cookie, executionQueueRepo, identification);
         }
 
-        public async Task<WebSpeechDto> SetTimer(WebSpeechDto dto, string token, string userName, long userId, ClaimsDto _claims, HttpRequest request, HttpResponse response, int expiresInSeconds, DateTime timerDate)
+        public async Task<WebSpeechDto> SetTimer(WebSpeechDto dto, string token, string userName, long userId, TokenDto identification, HttpRequest request, HttpResponse response, int expiresInSeconds, DateTime timerDate)
         {
             var dialogue = new DialogueSetTimer();
 
-            var setTimerResult = await dialogue.SetTimer(dto, token, userName, userId, _claims, request, response, expiresInSeconds, timerDate);
+            var setTimerResult = await dialogue.SetTimer(dto, token, userName, userId, identification, request, response, expiresInSeconds, timerDate);
 
             return dto;
         }

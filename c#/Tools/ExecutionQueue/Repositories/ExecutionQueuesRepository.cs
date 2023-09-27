@@ -10,6 +10,7 @@ using Tools.ExecutionQueue.Contracts;
 using Tools.ExecutionQueue.Contexts;
 using Tools.ExecutionQueue.Models;
 using System.Data.Entity;
+using System.Collections;
 
 namespace Tools.ExecutionQueue.Repositories
 {
@@ -101,11 +102,15 @@ namespace Tools.ExecutionQueue.Repositories
                 try
                 {
                     var executionQueues = from eqs in await db.ExecutionQueues.AsNoTracking().ToListAsync()
-                        where
-                            eqs.Host?.Trim().ToLower() == host?.Trim().ToLower()
-                            && eqs.StateQueue?.Trim().ToLower() == stateQueue?.Trim().ToLower()
-                            && eqs.ScheduledDateTime <= scheduledDateTime
-                        select eqs;
+                                          where
+                                              eqs.Host?.Trim().ToLower() == host?.Trim().ToLower()
+                                              && eqs.StateQueue?.Trim().ToLower() == stateQueue?.Trim().ToLower()
+                                              && eqs.ScheduledDateTime <= scheduledDateTime
+                                          select eqs;
+
+                    //if (host == null) host = "";
+                    //if (stateQueue == null) stateQueue = "";
+                    //var executionQueues = await db.ExecutionQueues.Where(_ => _.Host.Trim().ToLower() == host.Trim().ToLower() && _.StateQueue.Trim().ToLower() == stateQueue.Trim().ToLower() && _.ScheduledDateTime <= scheduledDateTime).ToListAsync();
 
                     var config = new MapperConfiguration(cfg => cfg.CreateMap<Models.ExecutionQueue, ExecutionQueueDto>());
                     var mapper = config.CreateMapper();

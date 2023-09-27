@@ -47,6 +47,7 @@ namespace Supp.Models
         public IEnumerable<WebSpeechDto> WebSpeeches { get; set; }
         public long[] WebSpeechIds { get; set; }
         public string ShortcutsInJson { get; set; }
+        public string ShortcutGroupsInJson { get; set; }
         public bool ResetAfterLoad { get; set; }
         public int TimeToResetInSeconds { get; set; }
         public int TimeToEhiTimeoutInSeconds { get; set; }
@@ -59,8 +60,9 @@ namespace Supp.Models
         public IEnumerable<StepType> StepTypes { get { return Supp.Models.StepTypesUtility.Get(); } }
         public Element[] Elements { get; set; }
         public bool LogJSActive { get; set; }
-        public string ClaimsInJson { get; set; }
+        public string IdentificationInJson { get; set; }
         public string WebSpeechesInJson { get; set; }
+        public bool HotShortcut { get; set; }
     }
 
     public class Element

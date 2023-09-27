@@ -44,6 +44,7 @@
         var countTheTimeToResetInterim_spanInSeconds = 0;
         var audioActive = true;
         var shortcuts;
+        var shortcutGroups;
         var synth = null;
         var readOutLoudActive = false;
         var firstLoad = true;
@@ -58,7 +59,7 @@
         var timers = null;
         var lastIndex = 0;
         var newParameters = "";
-        var claims = null;
+        var identification = null;
         var webSpeeches = null;
         var _keysMatched = null;
 
@@ -82,6 +83,7 @@
         var listeningWord2 = "";
         var executionQueueId = "";
         var shortcutsInJson = "";
+        var shortcutGroupsInJson = "";
         var type = "";
         var parameters = ""; 
         var ehi = 0;
@@ -91,8 +93,9 @@
         var step = 0;
         var newWebSpeechRequestName= "";
         var logJSActive = true;
-        var claimsInJson = null;
+        var identificationInJson = null;
         var webSpeechesInJson = null;
+        var userId = -1;
         //@*Model Variables*@
 
         function VariablesAssignmentFromJson(jsonString) {
@@ -138,8 +141,10 @@
 
             executionQueueId = DecodeUnicodeExtended(model["ExecutionQueueId"]);
             shortcutsInJson = DecodeUnicodeExtended(model["ShortcutsInJson"]);
+            shortcutGroupsInJson = DecodeUnicodeExtended(model["ShortcutGroupsInJson"]);
 
-            claimsInJson = DecodeUnicodeExtended(model["ClaimsInJson"]);
+            identificationInJson = DecodeUnicodeExtended(model["IdentificationInJson"]);
+            userId = DecodeUnicodeExtended(model["UserId"]);
             webSpeechesInJson = DecodeUnicodeExtended(model["WebSpeechesInJson"]);
 
             newWebSpeechRequestName = DecodeUnicode(model["NewWebSpeechRequestName"]);
@@ -213,8 +218,10 @@
 
             executionQueueId = "@Model?.ExecutionQueueId";
             shortcutsInJson = "@Model?.ShortcutsInJson";
+            shortcutGroupsInJson = "@Model?.ShortcutGroupsInJson";
 
-            claimsInJson = "@Model?.ClaimsInJson";
+            identificationInJson = "@Model?.IdentificationInJson";
+            userId = "@Model?.UserId";
             webSpeechesInJson = "@Model?.WebSpeechesInJson";
 
             newWebSpeechRequestName = "@Model?.NewWebSpeechRequestName";
@@ -640,21 +647,22 @@
 
                     ehiRecognitedAudio.play();
 
-                    var matchPhraseResult = MatchPhrase(phraseTmp, webSpeeches, claims);
+                    var matchPhraseResult = MatchPhrase(phraseTmp, webSpeeches, identification);
 
                     if(matchPhraseResult.Data != null){
                         id = matchPhraseResult.Data.Id;
-                        _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
+                        _keysMatched = matchPhraseResult.WebSpeechKeysMatched;;
                     }    
                     
-                    CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultSendPhrase");
+                    CallWebSpeechDtoInJson(("_subType=" + subType + "&userId=" + userId  + "&userId=" + userId + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultSendPhrase");
                 }
             }
             LogFunctionEnd();
         }
 
-        function CallWebSpeechDtoInJson(paramString, funcName){     
+        function CallWebSpeechDtoInJson(paramString, funcName){
             LogFunctionStart();
+            
             var _url = url.replace("Recognition","GetWebSpeechDtoInJson")+"?" + paramString;
 
             PartialReset();
@@ -809,79 +817,83 @@
                         document.getElementById("interim_span").innerHTML = Linebreak(interim_transcript);
 
                         var res = event.results[event.results.length-1];
+                        var isFinal = res.isFinal;
 
-                        if(_phrase == null){
-                            _phrase = interim_transcript.trim().toLowerCase();
-
-                            if (_phrase != "" && _phrase != null) {
-                                countTheTimesToPartialReset = 0;
-                                countTheTimeToResetInSeconds = 0;
-                                countTheTimeToResetInterim_spanInSeconds = 0;
-
-                                if(recognitionActive == true) StartAnimateIntervalsListening(10);
-                                if(recognitionActive == true) StopAnimateIntervalsListening(500);
-
-                                var _phraseSplit = _phrase.split(" ");
-                                if (_phraseSplit.length > 0 && recognitionActive == true) {
-                                    if (res.isFinal == true){
-
-                                        LogWithTime("Recognition: " + interim_transcript);
-                                        document.getElementById("interim_span").innerHTML = "";
-                                        interim_transcript = "";
-
-                                        if (_phrase === listeningPhrase && ehi == 0 && _reset == false) {
-                                            ehiRecognitedAudio.play();
-                                            
-                                            var phraseTmp = _phrase;
-
-                                            var matchPhraseResult = MatchPhrase(phraseTmp, webSpeeches, claims);
-
-                                            if(matchPhraseResult.Data != null){
-                                                id = matchPhraseResult.Data.Id;
-                                                _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
-                                            }   
-
-                                            CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionEhi");
-                                        } else if (ehi == 1 && _phrase != listeningPhrase && _phrase != null && _phrase != "" && _reset == false) {
-                                            ehiRecognitedAudio.play();
-
-                                            var phraseTmp = _phrase;
-
-                                            var matchPhraseResult = MatchPhrase(phraseTmp, webSpeeches, claims);
-
-                                            if(matchPhraseResult.Data != null){
-                                                id = matchPhraseResult.Data.Id;
-                                                _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
-                                            }   
-
-                                            CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionPhrase");
-                                        } else if (ehi == 0 && _phrase != listeningPhrase && _phrase.includes(listeningPhrase) && _phrase != null && _phrase != "" && _reset == false) {
-                                            ehiRecognitedAudio.play();
-
-                                            var phraseTmp = _phrase;
-                                            var start = phraseTmp.indexOf(listeningPhrase); 
-                                            start = start + listeningPhrase.length;
-                                            phraseTmp = phraseTmp.substring(start, phraseTmp.length);
-                                            phraseTmp = phraseTmp.trim();
-
-                                            var matchPhraseResult = MatchPhrase(phraseTmp, webSpeeches, claims);
-
-                                            if (matchPhraseResult.Data != null) {
-                                                id = matchPhraseResult.Data.Id;
-                                                _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
-                                            }
-
-                                            CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionPhrase");
-                                        }
-                                    }
-                                }
-                            }
-                            _phrase = null;
-                        }
+                        Recognition(isFinal, interim_transcript);
                     }
                 };
             }
             LogFunctionEnd();
+        }
+
+        function Recognition(isFinal, interim_transcript){
+            if(_phrase == null){
+                _phrase = interim_transcript.trim().toLowerCase();
+
+                if (_phrase != "" && _phrase != null) {
+                    countTheTimesToPartialReset = 0;
+                    countTheTimeToResetInSeconds = 0;
+                    countTheTimeToResetInterim_spanInSeconds = 0;
+
+                    if(recognitionActive == true) StartAnimateIntervalsListening(10);
+                    if(recognitionActive == true) StopAnimateIntervalsListening(500);
+
+                    var _phraseSplit = _phrase.split(" ");
+                    if (_phraseSplit.length > 0 && recognitionActive == true) {
+                        if (isFinal == true){
+                            LogWithTime("Recognition: " + interim_transcript);
+                            document.getElementById("interim_span").innerHTML = "";
+                            interim_transcript = "";
+
+                            if (_phrase === listeningPhrase && ehi == 0 && _reset == false) {
+                                ehiRecognitedAudio.play();
+                                            
+                                var phraseTmp = _phrase;
+
+                                var matchPhraseResult = MatchPhrase(phraseTmp, webSpeeches, identification);
+
+                                if(matchPhraseResult.Data != null){
+                                    id = matchPhraseResult.Data.Id;
+                                    _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
+                                }   
+
+                                CallWebSpeechDtoInJson(("_subType=" + subType + "&userId=" + userId  + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionEhi");
+                            } else if (ehi == 1 && _phrase != listeningPhrase && _phrase != null && _phrase != "" && _reset == false) {
+                                ehiRecognitedAudio.play();
+
+                                var phraseTmp = _phrase;
+
+                                var matchPhraseResult = MatchPhrase(phraseTmp, webSpeeches, identification);
+
+                                if(matchPhraseResult.Data != null){
+                                    id = matchPhraseResult.Data.Id;
+                                    _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
+                                }   
+
+                                CallWebSpeechDtoInJson(("_subType=" + subType + "&userId=" + userId  + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionPhrase");
+                            } else if (ehi == 0 && _phrase != listeningPhrase && _phrase.includes(listeningPhrase) && _phrase != null && _phrase != "" && _reset == false) {
+                                ehiRecognitedAudio.play();
+
+                                var phraseTmp = _phrase;
+                                var start = phraseTmp.indexOf(listeningPhrase); 
+                                start = start + listeningPhrase.length;
+                                phraseTmp = phraseTmp.substring(start, phraseTmp.length);
+                                phraseTmp = phraseTmp.trim();
+
+                                var matchPhraseResult = MatchPhrase(phraseTmp, webSpeeches, identification);
+
+                                if (matchPhraseResult.Data != null) {
+                                    id = matchPhraseResult.Data.Id;
+                                    _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
+                                }
+
+                                CallWebSpeechDtoInJson(("_subType=" + subType + "&userId=" + userId  + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionPhrase");
+                            }
+                        }
+                    }
+                }
+                _phrase = null;
+            }        
         }
 
         function ResultRecognitionPhrase(result){  
@@ -1052,6 +1064,11 @@
             if(resetActive == true && recognitionActive == true && shortcutsOpen == false) countTheTimeToResetInSeconds++;
             else countTheTimeToResetInSeconds = 0;
 
+            if(countTheTimeToResetInterim_spanInSeconds == 2){
+                var interim_transcript = document.getElementById("interim_span").innerHTML;
+                Recognition(true, interim_transcript);
+            }
+
             if(countTheTimeToResetInterim_spanInSeconds >= 10){
                 if (document.getElementById("interim_span").innerHTML != "") LogWithTime("Recognition: " + document.getElementById("interim_span").innerHTML);
                 document.getElementById("interim_span").innerHTML = "";
@@ -1129,7 +1146,7 @@
                 ReadOutLoud(_answer, false, false); 
             } else if(finalStep == false && subType != null && subType != "" ){
                 var phraseTmp = "";
-                CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionPhrase");
+                CallWebSpeechDtoInJson(("_subType=" + subType + "&userId=" + userId  + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionPhrase");
             } else {
                 PartialReset();
             }
@@ -1235,14 +1252,21 @@
             if (shortcutsInJson != undefined && shortcutsInJson != null && shortcutsInJson.trim().toLowerCase() != "null" && shortcutsInJson.trim() != "") {
                 var _shortcutsInJson = (shortcutsInJson).replace(/&quot;/g, '"');
                 shortcuts = JSON.parse(_shortcutsInJson);
-            
-                CreateShortcuts(shortcuts);
+
+                CreateShortcuts(shortcuts, "shortcutsContainer", null);
             }
 
-            if(claimsInJson != undefined && claimsInJson != null && claimsInJson.trim().toLowerCase() != "null" && claimsInJson.trim() != "")
+            if (shortcutGroupsInJson != undefined && shortcutGroupsInJson != null && shortcutGroupsInJson.trim().toLowerCase() != "null" && shortcutGroupsInJson.trim() != "") {
+                var _shortcutGroupsInJson = (shortcutGroupsInJson).replace(/&quot;/g, '"');
+                shortcutGroups = JSON.parse(_shortcutGroupsInJson);
+
+                CreateShortcutGroups(shortcutGroups);
+            }
+
+            if(identificationInJson != undefined && identificationInJson != null && identificationInJson.trim().toLowerCase() != "null" && identificationInJson.trim() != "")
             {
-                var _claimsInJson = (claimsInJson).replace(/&quot;/g, '"');
-                claims = JSON.parse(_claimsInJson);
+                identificationInJson = (identificationInJson).replace(/&quot;/g, '"');
+                identification = JSON.parse(identificationInJson);
             }
 
             if(webSpeechesInJson != undefined && webSpeechesInJson != null && webSpeechesInJson.trim().toLowerCase() != "null" && webSpeechesInJson.trim() != "")
@@ -1306,7 +1330,56 @@
             LogFunctionEnd();
         }
 
-        function OpenShortcuts(){
+        function ActionProgress(id, _index){
+            LogFunctionStart();
+            newParameters = timers[_index]["Summary"];
+            if(timers[_index]["WithEvent"] == true) ActionShortcut(id);
+            LogFunctionEnd();
+        }
+
+        function Action(type, param) {
+            LogFunctionStart();
+
+            if (application == false && type == "Link" && param != null && param != "") {
+                param = DecodeUnicode(param);
+                var _url = param.replace(/&amp;/g, "&");
+                _url = DecodeUnicodeExtended(_url);
+
+                window.open(_url);
+            }
+
+            else if (application == true && type == "Link" && param != null && param != "") {
+                param = DecodeUnicode(param);
+                var _url = param.replace(/&amp;/g, "&");
+                _url = DecodeUnicodeExtended(_url);
+
+                window.open(_url, "open param", "width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1");
+            }
+
+            else if (application == false && (type == "SystemWebSearch" || type == "WebSearch") && param != null && param != "") {
+                param = DecodeUnicode(param);
+                var _url = param.replace(/&amp;/g, "&");
+                _url = DecodeUnicodeExtended(_url);
+
+                window.open(_url);
+            }
+
+            else if (application == true && (type == "SystemWebSearch" || type == "WebSearch") && param != null && param != "") {
+                param = DecodeUnicode(param);
+                var _url = param.replace(/&amp;/g, "&");
+                _url = DecodeUnicodeExtended(_url);
+
+                window.open(_url, "search", "width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1");
+            }
+
+            else if ((type == "SystemSetTimer" || type == "Timer")) {
+
+            }
+
+            LogFunctionEnd();
+        }
+
+        function OpenShortcuts() {
             LogFunctionStart();
             shortcutsOpen = true;
             countTheTimeToResetInSeconds = 0;
@@ -1315,18 +1388,46 @@
             LogFunctionStart();
         }
 
-        function CloseShortcuts(){
+        function CloseShortcuts() {
             LogFunctionStart();
+
+            CloseShortcutsGroup();
+
             var element = document.getElementById("div_shortcuts");
             element.style.display = "none";
-            shortcutsOpen= false;
+            shortcutsOpen = false;
             LogFunctionEnd();
         }
 
-        function ActionProgress(id, _index){
+        function CloseShortcutsGroup() {
             LogFunctionStart();
-            newParameters = timers[_index]["Summary"];
-            if(timers[_index]["WithEvent"] == true) ActionShortcut(id);
+
+            var shortcutsGroupContainer = document.getElementById("shortcutsGroupContainer");
+            shortcutsGroupContainer.style.visibility = "hidden";
+            shortcutsGroupContainer.style.height = "1px";
+
+            var shortcutsContainer = document.getElementById("shortcutsContainer");
+            shortcutsContainer.style.visibility = "visible";
+            shortcutsContainer.style.height = "auto";
+
+            document.getElementById("shortcutGroup_0").style.visibility = "hidden";
+
+            LogFunctionEnd();
+        }
+
+        function OpenShortcutsGroup() {
+            LogFunctionStart();
+
+            var shortcutsGroupContainer = document.getElementById("shortcutsGroupContainer");
+            shortcutsGroupContainer.style.visibility = "visible";
+            shortcutsGroupContainer.style.height = "auto";
+
+            var shortcutsContainer = document.getElementById("shortcutsContainer");
+            shortcutsContainer.style.visibility = "hidden";
+            shortcutsContainer.style.height = "1px";
+
+            document.getElementById("shortcutGroup_0").style.visibility = "visible";
+
             LogFunctionEnd();
         }
 
@@ -1336,6 +1437,8 @@
             actionShortcutTimeout = null;
 
             ehiRecognitedAudio.play();
+
+            if(shortcuts != undefined && shortcuts != null && shortcuts != "" )
 
             for (var i = 0; i < shortcuts.length; ++i) {
                 var shortcut = shortcuts[i];
@@ -1357,7 +1460,7 @@
                         window.open(_url, "open link", "width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1");
                     }
                     else {
-                        CallWebSpeechDtoInJson(("_subType=" + subType + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + shortcut["Id"] + "&_hostSelected=" + $("#hosts_cmb option:selected").text() + "&_application=" + application + "&_param=" + encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultActionShortcut");
+                        CallWebSpeechDtoInJson(("_subType=" + subType + "&userId=" + userId  + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + shortcut["Id"] + "&_hostSelected=" + $("#hosts_cmb option:selected").text() + "&_application=" + application + "&_param=" + encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultActionShortcut");
                     }
                 }
             }     
@@ -1382,58 +1485,16 @@
             LogFunctionEnd();
         }
 
-        function Action(type, param){
+        function AddShortcuts(shortcut, containerName){
             LogFunctionStart();
-
-            if(application == false && type == "Link" && param != null && param != "" ){
-                param = DecodeUnicode(param);
-                var _url = param.replace(/&amp;/g,"&");
-                _url = DecodeUnicodeExtended(_url);
-
-                window.open(_url);
-            }
-
-            else if(application == true && type == "Link" && param != null && param != ""){
-                param = DecodeUnicode(param);
-                var _url = param.replace(/&amp;/g,"&");
-                _url = DecodeUnicodeExtended(_url);
-
-                window.open(_url, "open param", "width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1");
-            } 
-
-            else if(application == false && (type == "SystemWebSearch" || type == "WebSearch") && param != null && param != ""){
-                param = DecodeUnicode(param);
-                var _url = param.replace(/&amp;/g,"&");
-                _url = DecodeUnicodeExtended(_url);
-
-                window.open(_url);
-            }
-
-            else if(application == true && (type == "SystemWebSearch" || type == "WebSearch") && param != null && param != ""){
-                param = DecodeUnicode(param);
-                var _url = param.replace(/&amp;/g,"&");
-                _url = DecodeUnicodeExtended(_url);
-
-                window.open(_url, "search", "width=auto,height=auto,left=10,top=10,scrollbars=1,resizable=1");
-            }
-
-            else if((type == "SystemSetTimer" || type == "Timer")){
-
-            }
-
-            LogFunctionEnd();
-        }
-
-        function AddShortcuts(shortcut){
-            LogFunctionStart();
-            var element = document.getElementById("shortcutsContainer");
+            var element = document.getElementById(containerName);
             var dt = "";
 
             if(shortcut["Ico"] == null || shortcut["Ico"] == "") shortcut["Ico"] = "/Images/Shortcuts/generic.png";
 
             dt += '<dt class="col-sm-3" style="">';
             dt += '<div>';
-            dt += '<img class="btn shortcut-dark" id="shortcut_'+shortcut["Id"]+'" src="'+shortcut["Ico"]+'" alt="'+shortcut["Title"]+'" style="width:50%; margin:5%; box-shadow: rgba(250, 250, 250, 0.95) 0px 0rem 1rem !important;" onclick="ActionShortcut(' + "" + shortcut["Id"] + "" +');">';
+            dt += '<img class="btn shortcut-dark" id="shortcut_'+shortcut["Id"]+'" src="'+shortcut["Ico"]+'" alt="'+shortcut["Title"]+'" style="width:50%; margin:5%; box-shadow: rgba(250, 250, 250, 0.20) 0px 0rem 1rem !important;" onclick="ActionShortcut(' + "" + shortcut["Id"] + "" +');">';
 
             dt += '</div>';
             dt += '<div style="font-size:18px;">'+shortcut["Title"]+'</div>';
@@ -1443,21 +1504,74 @@
             LogFunctionEnd();
         }
 
-        function CreateShortcuts(_shortcuts){
+        function ActionShortcutGroup(name) {
+            LogFunctionStart();
+
+            CreateShortcuts(shortcuts, "shortcutsGroupContainer", name);
+
+            OpenShortcutsGroup();
+
+            LogFunctionEnd();
+        }
+
+        function AddShortcutGroup(shortcutGroup) {
             LogFunctionStart();
             var element = document.getElementById("shortcutsContainer");
-            element.innerHTML = "";
+            var dt = "";
+
+            if (shortcutGroup["Ico"] == null || shortcutGroup["Ico"] == "") shortcutGroup["Ico"] = "/Images/shortcuts/generic.png";
+
+            dt += '<dt class="col-sm-3" style="">';
+            dt += '<div>';
+            dt += '<img class="btn shortcut-dark" id="shortcutGroup_' + shortcutGroup["Id"] + '" src="' + shortcutGroup["Ico"] + '" alt="' + shortcutGroup["GroupName"].trim() + '" style="width:50%; margin:5%; box-shadow: rgba(250, 250, 250, 0.20) 0px 0rem 1rem !important;" onclick="ActionShortcutGroup(' + "'" + shortcutGroup["GroupName"].trim() + "'" + ');">';
+
+            dt += '</div>';
+            dt += '<div style="font-size:18px;">' + shortcutGroup["GroupName"].trim() + " &#9783;&#10136;" + '</div>';
+            dt += '</dt>';
+
+            element.innerHTML += dt;
+            LogFunctionEnd();
+        }
+
+        function CreateShortcutGroups(_shortcuts) {
+            LogFunctionStart();
+            var element = document.getElementById("shortcutsContainer");
 
             for (var i = 0; i < _shortcuts.length; ++i) {
                 var shortcut = _shortcuts[i];
 
-                if(i == 0){
-                    //var _shortcut = JSON.parse('{"Id":"' + i + '", "Ico":"/Images/Shortcuts/close.png", "Title":"Close", "Action":"Close"}');
-                    //AddShortcuts(_shortcut);
-                }
-                
                 if(shortcut["Type"].includes("System") == false){
-                    AddShortcuts(shortcut);
+                    if (shortcut.Groupable == true && shortcut.GroupName != null && shortcut.GroupName.trim() != "") {
+                        AddShortcutGroup(shortcut);
+                    }
+                }
+            }
+
+            element.style.maxHeight = (65 * window.innerHeight / 100) + "px";
+
+            LogFunctionEnd();
+        }
+
+        function CreateShortcuts(_shortcuts, containerName, groupName) {
+            LogFunctionStart();
+            var element = document.getElementById(containerName);
+            element.innerHTML = "";
+
+            if (groupName == undefined || groupName == null || groupName == 'null') groupName = "";
+            
+            groupName = groupName.trim();
+
+            for (var i = 0; i < _shortcuts.length; ++i) {
+                var shortcut = _shortcuts[i];
+
+                if (shortcut["Type"].includes("System") == false) {
+                    if (shortcut.GroupName == undefined || shortcut.GroupName == null || shortcut.GroupName == 'null') shortcut.GroupName = "";
+
+                    shortcut.GroupName = shortcut.GroupName.trim();
+
+                    if (((shortcut.GroupName == "" || shortcut.HotShortcut == true) && groupName == "") || (groupName != "" && shortcut.GroupName == groupName)) {
+                        AddShortcuts(shortcut, containerName);
+                    }
                 }
             }
 
@@ -1469,7 +1583,7 @@
         function InitProgress(_shortcuts, _type, _index){
             LogFunctionStart();
             var shortcut = GetShortcut(_shortcuts, _type);
-            var element = document.getElementById("progress_container");
+            var element = document.getElementById("progress_container");f
             var dt = "";
 
             dt += '<div class="progress" data-percentage="0" id="progress_'+_index+'" style="position: absolute; margin-top:10px; width: 90px; height: 90px;">';
@@ -1568,6 +1682,31 @@
             element.parentNode.removeChild(element);
             LogFunctionEnd();
         }
+
+        window.onload = function (e) {
+                VariablesAssignmentFromModel();
+                if (logJSActive) console.warn("resetAfterLoad:" + resetAfterLoad);
+
+                if (resetAfterLoad == true) {
+                    clearTimeout(initFinalTimeoutStep2);
+                    initFinalTimeoutStep2 = null;
+                    clearTimeout(initFinalTimeoutStep1);
+                    initFinalTimeoutStep1 = null;
+                    if (synth != null) synth.cancel();
+                    answer = null;
+                    synth = null;
+                    speech = null;
+                    CheckPopUpBlock();
+                    Reset(false, onlyRefresh);
+                } else {
+                    InitPage();
+                    InitSpeech();
+                    InitFinal();
+                    ClearUrl();
+                }
+
+                if (recognitionDisable == true) RecognitionDisable();
+        }
     </script>
 }
     
@@ -1576,12 +1715,15 @@
 
 	</div>
     <div style="text-align:center;">
-        <div id="div_shortcuts" style="display: none; z-index: 999; width: 70%; position: absolute; background-color: rgba(0, 0, 0, 0.80); left: 0; right: 0; margin:auto; box-shadow: 0 0rem 1rem rgba(150, 150, 150, 0.95) !important; border-radius: 25px;">
-            <div style="background-color: rgba(0, 0, 0, 0.95);  text-align:right; box-shadow: rgba(150, 150, 150, 0.25) 0 14px 12px -2px; border-radius: 25px;">
+        <div id="div_shortcuts" style="display: none; z-index: 999; width: 70%; position: absolute; background-color: rgba(0, 0, 0, 0.95); left: 0; right: 0; margin:auto; box-shadow: 0 0rem 1rem rgba(150, 150, 150, 0.09) !important; border-radius: 25px;">
+            <div style="background-color: rgba(0, 0, 0, 0.95);  text-align:right; box-shadow: rgba(150, 150, 150, 0.09) 0 7px 6px -2px; border-radius: 25px;">
                 <a style="z-index:9999; color:#333; font-size:35px; position:absolute; left:10px;">Shortcuts</a>
+                <img class="btn shortcut-dark" id="shortcutGroup_0" src="/Images/Shortcuts/return.png" alt="Go back" style="height:80px; margin:5px; visibility:hidden;" onclick="CloseShortcutsGroup();">
                 <img class="btn shortcut-dark" id="shortcut_0" src="/Images/Shortcuts/close.png" alt="Close" style="height:80px; margin:5px;" onclick="ActionShortcut(0);">
             </div>
             <dl id="shortcutsContainer" class="row" style="max-height:600px; overflow-y:auto; " >
+            </dl>
+            <dl id="shortcutsGroupContainer" class="row" style="max-height:600px; height:1px; overflow-y:auto; visibility:hidden;">
             </dl>
         </div>
         <div id="div_ellipse" style="margin-top:50px;">
@@ -1601,7 +1743,7 @@
                 <ellipse id="ellipse6" cx="100" cy="50" rx="70" ry="1" style=" cursor:pointer;" class="btn ellipse-dark" />
             </svg>
         </div>
-        <div id="hosts_cmb_container" style="text-align:center; margin-top:-17%;">
+        <div id="hosts_cmb_container" style="text-align:center; margin-top:-18%;">
         </div>
         <div id="div_text" style="text-align:center; width:100%; margin-top:2px;">
             <button id="recognitionEnableDisable_button" onclick="RecognitionEnableDisable()"  class="btn btn-dark" style="width:57px; border-width:1px; display: inline-block; outline: 0; box-shadow: none!important; height:38px; margin-top:-1px; margin-right:0px;">
@@ -1622,31 +1764,3 @@
         </div>
     </div>
 </>
-
-<script>
-	window.onload = function(e) {
-        LogFunctionStart("window.onload");
-        VariablesAssignmentFromModel();
-        if(logJSActive) console.warn("resetAfterLoad:" + resetAfterLoad);
-        if(resetAfterLoad == true) {
-            clearTimeout(initFinalTimeoutStep2);
-            initFinalTimeoutStep2 = null;
-            clearTimeout(initFinalTimeoutStep1);
-            initFinalTimeoutStep1 = null;
-            if(synth != null) synth.cancel();
-            answer = null;
-            synth= null;
-            speech = null;
-            CheckPopUpBlock();
-            Reset(false, onlyRefresh);
-        } else { 
-		    InitPage();
-            InitSpeech();
-            InitFinal();  
-            ClearUrl();
-        }
-
-        if(recognitionDisable == true) RecognitionDisable();
-        LogFunctionEnd("window.onload");
-	}	
-</script>

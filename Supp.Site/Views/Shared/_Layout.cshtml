@@ -10,7 +10,7 @@
 <link rel="icon" href="/Images/supp.png" type="image/gif" />
 <html lang="en">
     <head>
-        <meta charset="utf-8" />
+        <meta charset="utf-16" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>@ViewData["Title"]</title>
 
@@ -53,27 +53,27 @@
                     <div id="menu_items" class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse" style="margin-left:30px;">
                         <ul class="navbar-nav flex-grow-1">
                             @{
-                                ClaimsDto claims = null;
+                                TokenDto identification = null;
                                 var suppUtility = new SuppUtility();
 
                                 try
                                 {
-                                    var claimsString = suppUtility.ReadCookie(HttpContextAccessor.HttpContext.Request, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName);
-                                    claims = JsonConvert.DeserializeObject<ClaimsDto>(claimsString);
+                                    var identificationString = suppUtility.ReadCookie(HttpContextAccessor.HttpContext.Request, Config.GeneralSettings.Constants.SuppSiteTokenDtoCookieName);
+                                    identification = JsonConvert.DeserializeObject<TokenDto>(identificationString);
                                 }
                                 catch (Exception)
                                 {
 
                                 }
-                                if(claims == null) claims = new ClaimsDto(){ IsAuthenticated=false};
+                                if(identification == null) identification = new TokenDto(){ IsAuthenticated=false};
                             }
 
-                            @if (claims.IsAuthenticated)
+                            @if (identification.IsAuthenticated)
                             {
                                 //var nLogUtility = new NLogUtility();
                                 //nLogUtility.ClearNLogFile("mainLog", Config.GeneralSettings.Static.LimitLogFileInMB);
 
-                                @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
+                                @if (identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
                                 {
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
@@ -85,7 +85,7 @@
                                             <div class="dropdown-divider"></div>
                                             @Html.ActionLink("Media Box", "MediaBox", "Media", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
 
-                                            @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0)
+                                            @if (identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0)
                                             {
                                                 <div class="dropdown-divider"></div>
                                                 @Html.ActionLink("List Media", "Index", "Media", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
@@ -96,7 +96,7 @@
                                     </li>
                                 }
 
-                                @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
+                                @if (identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
                                 {
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
@@ -106,7 +106,7 @@
                                             <div class="dropdown-divider"></div>
                                             @Html.ActionLink("Add Google Accounts", "AddGoogleAccounts", "GoogleAccounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
 
-                                            @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0)
+                                            @if (identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0)
                                             {
                                                 <div class="dropdown-divider"></div>
                                                 @Html.ActionLink("List Google Authorization", "Index", "GoogleAuths", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
@@ -117,7 +117,7 @@
                                     </li>
                                 }
 
-                                @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0)
+                                @if (identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0)
                                 {
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
@@ -146,14 +146,14 @@
                                     </li>
                                 }
 
-                                @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
+                                @if (identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
                                 {
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
                                             Web Speech
                                         </a>
                                         <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
-                                            @if (claims.Roles.Where(_ => _.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0)
+                                            @if (identification.Roles.Where(_ => _.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0)
                                             {
                                                 <div class="dropdown-divider"></div>
                                                 @Html.ActionLink("List Execution Queue", "Index", "ExecutionQueues", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
@@ -166,7 +166,7 @@
                                     </li>
                                 }
 
-                                @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
+                                @if (identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
                                 {
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle text-center bg-black menuCustom" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
@@ -183,12 +183,12 @@
 
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle text-center bg-black menuCustom text-uppercase" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color:#999;">
-                                        @claims.Name
+                                        @identification.Name
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: #000; border: 1px solid #222; color: #fff;">
                                         <div class="dropdown-divider"></div>
                                         @Html.ActionLink("Logout", "Logout", "Home", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })
-                                        @if (claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || claims.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
+                                        @if (identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleAdmin)).Count() > 0 || identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleSuperUser)).Count() > 0 || identification.Roles.Where(_=>_.Contains(Config.Roles.Constants.RoleUser)).Count() > 0)
                                         {
                                             <div class="dropdown-divider"></div>
                                             @Html.ActionLink("Change Password", "ChangePassword", "Accounts", null, new { @class = "btn btn-black", @style = "text-decoration: none; text-align:left; width:98%;margin-left:1px;" })

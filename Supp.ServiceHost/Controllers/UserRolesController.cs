@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Supp.ServiceHost.Repositories;
 using Supp.Models;
-using Supp.ServiceHost.Services.Token;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Supp.ServiceHost.Contracts;
 using Supp.ServiceHost.Contexts;
+using Supp.ServiceHost.Common;
+using System.Reflection;
 
 namespace Supp.ServiceHost.Controllers
 {
@@ -28,28 +29,37 @@ namespace Supp.ServiceHost.Controllers
             _config = config;
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetAllUserRoles")] //<host>/api/UserRoles/GetAllUserRoles
         public async Task<IActionResult> GetAllUserRoles()
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             var result = await _repo.GetAllUserRoles();
 
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetUserRole")] //<host>/api/UserRoles/GetUserRole/5
         public async Task<IActionResult> GetUserRole(long id)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             var result = await _repo.GetUserRolesById(id);
 
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpPut("UpdateUserRole")] //<host>/api/UserRoles/UpdateUserRole/5
         public async Task<IActionResult> UpdateUserRole(long id, UserRoleDto data)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -65,10 +75,13 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpPost("AddUserRole")] //<host>/api/UserRoles/AddUserRole
         public async Task<IActionResult> AddUserRole(UserRoleDto data)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -79,10 +92,13 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpDelete("DeleteUserRole")] //<host>/api/UserRoles/DeleteUserRole/5
         public async Task<IActionResult> DeleteUserRole(long id)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             var result = await _repo.DeleteUserRoleById(id);
 
             return Ok(result);

@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Supp.ServiceHost.Repositories;
 using Supp.Models;
-using Supp.ServiceHost.Services.Token;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Supp.ServiceHost.Contracts;
 using Supp.ServiceHost.Contexts;
+using Supp.ServiceHost.Common;
+using System.Reflection;
 
 namespace Supp.ServiceHost.Controllers
 {
@@ -28,28 +29,37 @@ namespace Supp.ServiceHost.Controllers
             _config = config;
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetAllUserRoleTypes")] //<host>/api/UserRoleTypes/GetAllUserRoleTypes
         public async Task<IActionResult> GetAllUserRoleTypes()
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             var result = await _repo.GetAllUserRoleTypes();
 
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetUserRoleType")] //<host>/api/UserRoleTypes/GetUserRoleType/5
         public async Task<IActionResult> GetUserRoleType(long id)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             var result = await _repo.GetUserRoleTypesById(id);
 
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpPut("UpdateUserRoleType")] //<host>/api/UserRoleTypes/UpdateUserRoleType/5
         public async Task<IActionResult> UpdateUserRoleType(long id, UserRoleTypeDto data)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -65,10 +75,13 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpPost("AddUserRoleType")] //<host>/api/UserRoleTypes/AddUserRoleType
         public async Task<IActionResult> AddUserRoleType(UserRoleTypeDto data)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -79,10 +92,13 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpDelete("DeleteUserRoleType")] //<host>/api/UserRoleTypes/DeleteUserRoleType/5
         public async Task<IActionResult> DeleteUserRoleType(long id)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             var result = await _repo.DeleteUserRoleTypeById(id);
 
             return Ok(result);

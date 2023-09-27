@@ -3729,7 +3729,7 @@ ko.exportSymbol('bindingProvider', ko.bindingProvider);
                         ko.dependencyDetection.ignore(function() {
                             var initResult = handlerInitFn(node, getValueAccessor(bindingKey), allBindings, contextToExtend['$data'], contextToExtend);
 
-                            // If this binding handler claims to control descendant bindings, make a note of this
+                            // If this binding handler identification to control descendant bindings, make a note of this
                             if (initResult && initResult['controlsDescendantBindings']) {
                                 if (bindingHandlerThatControlsDescendantBindings !== undefined)
                                     throw new Error("Multiple bindings (" + bindingHandlerThatControlsDescendantBindings + " and " + bindingKey + ") are trying to control descendant bindings of the same element. You cannot use these bindings together on the same element.");

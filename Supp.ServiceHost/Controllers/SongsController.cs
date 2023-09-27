@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Supp.ServiceHost.Repositories;
 using Supp.Models;
-using Supp.ServiceHost.Services.Token;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Supp.ServiceHost.Contracts;
 using Supp.ServiceHost.Contexts;
+using Supp.ServiceHost.Common;
+using System.Reflection;
 
 namespace Supp.ServiceHost.Controllers
 {
@@ -28,28 +29,37 @@ namespace Supp.ServiceHost.Controllers
             _config = config;
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetAllSongs")] //<host>/api/Songs/GetAllSongs
         public async Task<IActionResult> GetAllSongs()
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             var result = await _repo.GetAllSongs();
 
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetSong")] //<host>/api/Songs/GetSong/5
         public async Task<IActionResult> GetSong(long id)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             var result = await _repo.GetSongsById(id);
 
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpPut("UpdateSong")] //<host>/api/Songs/UpdateSong/5
         public async Task<IActionResult> UpdateSong(long id, SongDto data)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -65,10 +75,13 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpPost("AddSong")] //<host>/api/Songs/AddSong
         public async Task<IActionResult> AddSong(SongDto data)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -79,19 +92,25 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpDelete("DeleteSong")] //<host>/api/Songs/DeleteSong/5
         public async Task<IActionResult> DeleteSong(long id)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             var result = await _repo.DeleteSongById(id);
 
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpDelete("ClearSongs")] //<host>/api/Songs/ClearSongs
         public async Task<IActionResult> ClearSongs()
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             var result = await _repo.ClearSongs();
 
             return Ok(result);

@@ -233,11 +233,11 @@ namespace Supp.Site.Recognition
             return result;
         }
 
-        public async Task<EventResult> SetTimer(WebSpeechDto dto, string token, string userName, long userId, ClaimsDto _claims, HttpRequest request, HttpResponse response, int expiresInSeconds, DateTime timerDate)
+        public async Task<EventResult> SetTimer(WebSpeechDto dto, string token, string userName, long userId, TokenDto identification, HttpRequest request, HttpResponse response, int expiresInSeconds, DateTime timerDate)
         {
             var getRemindersResult = new EventResult() { ResultState = GoogleManagerModels.ResultType.None, Successful = true };
 
-            if(dto.Elements != null && dto.Elements[0] != null) timerDate = (DateTime)phraseInDateTimeManager.Convert(dto.Elements[0].Value, _claims.Configuration.General.Culture);
+            if(dto.Elements != null && dto.Elements[0] != null) timerDate = (DateTime)phraseInDateTimeManager.Convert(dto.Elements[0].Value, JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture);
 
             var withEvent = false;
             var summary = "";
@@ -269,9 +269,9 @@ namespace Supp.Site.Recognition
 
                 var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = summary, Description = "", Color = color, EventDateStart = eventDateStart, EventDateEnd = eventDateEnd, Location = location, NotificationMinutes = notificationMinutes };
 
-                getRemindersResult = await webSpeecheRepo.CreateReminder(token, userName, userId, WebSpeechTypes.CreateNote, createCalendarEventRequest, _claims.Configuration.Speech.GoogleCalendarAccount);
+                getRemindersResult = await webSpeecheRepo.CreateReminder(token, userName, userId, WebSpeechTypes.CreateNote, createCalendarEventRequest, JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.GoogleCalendarAccount);
             }
-            var param = suppUtility.GetAnswer(dto.Parameters, _claims).Replace("'", @"""");
+            var param = suppUtility.GetAnswer(dto.Parameters, identification).Replace("'", @"""");
 
             var timerParam = new TimerParam() { Index = newIndex, Phrase = param, Date = timerDate.ToString("yyyy-MM-dd HH:mm:ss.fff"), Type = dto.Type, WithEvent = withEvent, Summary = summary };
 

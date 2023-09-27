@@ -26,48 +26,6 @@ namespace Supp.Site.Repositories
             utility = new Utility();
         }
 
-        public async Task<TokenResult> Login(string userName, string password, bool passwordAlreadyEncrypted)
-        {
-            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
-            {
-                var response = new TokenResult() { Data = new List<TokenDto>(), ResultState = new ResultType() };
-
-                try
-                {
-                    var keyValuePairs = new Dictionary<string, string>() { };
-                    keyValuePairs["UserName"] = userName;
-                    keyValuePairs["Password"] = password;
-                    keyValuePairs["PasswordAlreadyEncrypted"] = passwordAlreadyEncrypted.ToString();
-
-                    var result = await utility.CallApi(HttpMethod.Get, GeneralSettings.Static.BaseUrl, "api/Authentications/GetToken", keyValuePairs, null);
-
-                    var content = await result.Content.ReadAsStringAsync();
-
-                    if (result.IsSuccessStatusCode == false)
-                    {
-                        response.Successful = false;
-                        response.ResultState = ResultType.Error;
-                        response.Message += result.ReasonPhrase;
-                    }
-                    else
-                    {
-                        response = JsonConvert.DeserializeObject<TokenResult>(content);
-                    }  
-                }
-                catch (Exception ex)
-                {
-                    response.Successful = false;
-                    response.IsAuthenticated = false;
-                    response.ResultState = ResultType.Error;
-                    response.Message = "";
-                    response.OriginalException = ex;
-                    logger.Error(ex.ToString());
-                    //throw ex;
-                }
-                return response;
-            }
-        }
-
         /// <summary>
         /// Get All Authentications
         /// </summary>
@@ -197,42 +155,6 @@ namespace Supp.Site.Repositories
                     response.ResultState = ResultType.Error;
                     response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
                     response.OriginalException = ex;
-                    logger.Error(ex.ToString());
-                    //throw ex;
-                }
-                return response;
-            }
-        }
-
-        /// <summary>
-        /// TokenIsValid
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public async Task<bool?> TokenIsValid(string token)
-        {
-            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
-            {
-                bool? response = false;
-
-                try
-                {
-                    var keyValuePairs = new Dictionary<string, string>() { };
-
-                    var result = await utility.CallApi(HttpMethod.Get, GeneralSettings.Static.BaseUrl, "api/Authentications/TokenIsValid", keyValuePairs, token);
-                    var content = await result.Content.ReadAsStringAsync();
-
-                    if (result.IsSuccessStatusCode == false)
-                    {
-
-                    }
-                    else
-                    {
-                        response = JsonConvert.DeserializeObject<bool?>(content);
-                    }
-                }
-                catch (Exception ex)
-                {
                     logger.Error(ex.ToString());
                     //throw ex;
                 }

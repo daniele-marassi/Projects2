@@ -128,8 +128,20 @@ namespace Tools
 			sep = new ToolStripSeparator();
 			Common.ContextMenus.Menu.Items.Add(sep);
 
-			// ReconnectBluetoothDeviceService.
-			item = new ToolStripMenuItem();
+            // CheckSuppService.
+            item = new ToolStripMenuItem();
+            item.Text = "Check Supp Service";
+            item.Name = "CheckSuppServiceMenuItem";
+            item.Click += new EventHandler(CheckSuppService_Click);
+            item.Image = Resources.ServiceDisable;
+            Common.ContextMenus.Menu.Items.Add(item);
+
+            // Separator.
+            sep = new ToolStripSeparator();
+            Common.ContextMenus.Menu.Items.Add(sep);
+
+            // ReconnectBluetoothDeviceService.
+            item = new ToolStripMenuItem();
 			item.Text = "Reconnect Bluetooth Device Service";
 			item.Name = "ReconnectBluetoothDeviceServiceMenuItem";
 			item.Click += new EventHandler(ReconnectBluetoothDeviceService_Click);
@@ -282,7 +294,12 @@ namespace Tools
 			SetMenuItem("SyncIpServiceMenuItem");
 		}
 
-		void ReconnectBluetoothDeviceService_Click(object sender, EventArgs e)
+        void CheckSuppService_Click(object sender, EventArgs e)
+        {
+            SetMenuItem("CheckSuppServiceMenuItem");
+        }
+        
+        void ReconnectBluetoothDeviceService_Click(object sender, EventArgs e)
 		{
 			SetMenuItem("ReconnectBluetoothDeviceServiceMenuItem");
 		}
@@ -430,7 +447,34 @@ namespace Tools
 				}
 			}
 
-			if (itemName == "ReconnectBluetoothDeviceServiceMenuItem")
+            if (itemName == "CheckSuppServiceMenuItem")
+            {
+                var item = Common.ContextMenus.Menu.Items[itemName];
+
+                if (ProcessIcon.CheckSuppServiceActive == null || (bool)ProcessIcon.CheckSuppServiceActive)
+                {
+                    ProcessIcon.CheckSuppServiceActive = false;
+
+                    AddOrUpdateAppSettings("CheckSuppService", ProcessIcon.CheckSuppServiceActive.ToString());
+
+                    item.Image = Resources.ServiceDisable;
+                    if (ProcessIcon._CheckSuppService != null)
+                    {
+                        ProcessIcon._CheckSuppService.Stop();
+                        ProcessIcon._CheckSuppService = null;
+                    }
+                }
+                else
+                {
+                    ProcessIcon.CheckSuppServiceActive = true;
+                    AddOrUpdateAppSettings("CheckSuppService", ProcessIcon.CheckSuppServiceActive.ToString());
+                    item.Image = Resources.ServiceActive;
+                    ProcessIcon._CheckSuppService = new CheckSupp.CheckSuppService();
+                    Task.Run(() => ProcessIcon._CheckSuppService.Start());
+                }
+            }
+
+            if (itemName == "ReconnectBluetoothDeviceServiceMenuItem")
 			{
 				var item = Common.ContextMenus.Menu.Items[itemName];
 

@@ -164,13 +164,13 @@ namespace Supp.Site.Controllers
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var claims = new ClaimsDto() { IsAuthenticated = false };
+                var tokenDto = new TokenDto() { IsAuthenticated = false };
                 var suppUtility = new SuppUtility();
 
                 try
                 {
-                    var claimsString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName);
-                    claims = JsonConvert.DeserializeObject<ClaimsDto>(claimsString);
+                    var tokensDtoString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteTokenDtoCookieName);
+                    tokenDto = JsonConvert.DeserializeObject<TokenDto>(tokensDtoString);
                 }
                 catch (Exception)
                 {
@@ -238,12 +238,12 @@ namespace Supp.Site.Controllers
                     var result = await songRepo.GetSongsById((long)id, access_token_cookie);
                     var data = result.Data.FirstOrDefault();
 
-                    var claims = new ClaimsDto() { IsAuthenticated = false };
+                    var identification = new TokenDto() { IsAuthenticated = false };
 
                     try
                     {
-                        var claimsString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName);
-                        claims = JsonConvert.DeserializeObject<ClaimsDto>(claimsString);
+                        var tokenDtoString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteTokenDtoCookieName);
+                        identification = JsonConvert.DeserializeObject<TokenDto>(tokenDtoString);
                     }
                     catch (Exception)
                     {
@@ -487,9 +487,9 @@ namespace Supp.Site.Controllers
                     data = new SongDto() { FullPath = "" };
 
                     var expiresInSeconds = 0;
-                    var claims = new ClaimsDto() { IsAuthenticated = false };
+                    var identification = new TokenDto() { IsAuthenticated = false };
 
-                    claims = SuppUtility.GetClaims(User);
+                    identification = SuppUtility.GetIdentification(Request, -1);
 
                     int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName), out expiresInSeconds);
 
@@ -507,8 +507,8 @@ namespace Supp.Site.Controllers
                     }
 
                     data.HostSelected = hostSelected;
-                    data.HostsArray = claims.Configuration.Speech.HostsArray;
-                    data.HostSelected = claims.Configuration.Speech.HostDefault;
+                    data.HostsArray =  JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.HostsArray;
+                    data.HostSelected = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.HostDefault;
                     data.PlayListSelected = playListSelected.ToLower();
                     data.Command = _command;
                     data.Shuffle = shuffle;
@@ -564,7 +564,7 @@ namespace Supp.Site.Controllers
                     var hostSelected = "";
                     var rnd = new Random();
                     var expiresInSeconds = 0;
-                    var claims = new ClaimsDto() { IsAuthenticated = false };
+                    var identification = new TokenDto() { IsAuthenticated = false };
                     var shuffle = false;
                     var repeat = false;
                     var reset = false;
@@ -603,12 +603,12 @@ namespace Supp.Site.Controllers
 
                     try
                     {
-                        var claimsString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName);
-                        claims = JsonConvert.DeserializeObject<ClaimsDto>(claimsString);
+                        var tokenDtoString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteTokenDtoCookieName);
+                        identification = JsonConvert.DeserializeObject<TokenDto>(tokenDtoString);
                     }
                     catch (Exception)
                     {
-                        claims = SuppUtility.GetClaims(User);
+                        identification = SuppUtility.GetIdentification(Request, -1);
                     }
 
                     var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);

@@ -24,6 +24,7 @@ namespace Supp.ServiceHost.Contexts
         public DbSet<Supp.Models.WebSpeech> WebSpeeches { get; set; }
         public DbSet<Supp.Models.ExecutionQueue> ExecutionQueues { get; set; }
         public DbSet<Supp.Models.Song> Songs { get; set; }
+        public DbSet<Supp.Models.Token> Tokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -71,6 +72,9 @@ namespace Supp.ServiceHost.Contexts
                 .Property(b => b.InsDateTime)
                 .HasDefaultValueSql("getdate()");
 
+            modelBuilder.Entity<Supp.Models.Token>()
+                .Property(b => b.InsDateTime)
+                .HasDefaultValueSql("getdate()");
         }
     }
 }

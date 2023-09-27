@@ -1,6 +1,10 @@
 ﻿@model Supp.Models.LoginDto
-
 @using Supp.Site.Controllers;
+@using Newtonsoft.Json;
+@using Supp.Site.Common;
+@using static Supp.Site.Common.Config;
+@using System.Collections.Generic;
+@using System;
 
 @{
     ViewData["Title"] = "Login";
@@ -35,6 +39,28 @@
         </div>
     </div>
 }
+<div class="text-danger" style="padding:30px;">
+    @{
+        var suppUtility = new SuppUtility();
+        string errorsFromCookie = suppUtility.ReadCookie(Context.Request, GeneralSettings.Constants.SuppSiteErrorsCookieName);
 
+        if (errorsFromCookie == null) { errorsFromCookie = String.Empty; }
+        var errors = JsonConvert.DeserializeObject<List<string>>(errorsFromCookie);
+    }
+
+    @if (errors != null)
+    {
+        <ul>
+            @foreach (var error in errors as List<string>)
+            {
+                <li>@Html.Raw(error)</li>
+            }
+        </ul>
+    }
+
+    @{
+        suppUtility.RemoveCookie(Context.Response, Context.Request, GeneralSettings.Constants.SuppSiteErrorsCookieName);
+    }
+</div>
 
 

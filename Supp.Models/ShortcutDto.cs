@@ -17,5 +17,6 @@ namespace Supp.Models
         public bool Groupable { get; set; }
         public string GroupName { get; set; }
         public int GroupOrder { get; set; }
+        public bool HotShortcut { get; set; }  
     }
 }

@@ -57,8 +57,6 @@
         }
 
         function ActionPlayer(command){
-            console.log(command);
-
             var el = document.getElementById('playerCommand_play');
             if(command == 'play' || command == 'forward' || command == 'previous') el.src = '/Images/Player/play_selected.png';
             if(command == 'stop') el.src = '/Images/Player/play.png';
@@ -67,7 +65,6 @@
         }
 
         function ResultActionPlayer(result){
-            console.log('***' + result);
             var model = JSON.parse(result);
 
             var command = DecodeUnicodeExtended(model['Command']);
@@ -217,7 +214,6 @@
 
                 actions +='volume:'+volume;
 
-                console.log(actions);
                 ActionPlayer(actions);
 
                 noAction = false;

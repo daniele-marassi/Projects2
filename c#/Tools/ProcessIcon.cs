@@ -1,5 +1,6 @@
 ﻿using Tools.ExecutionQueue;
 using Tools.SyncIp;
+using Tools.CheckSupp;
 using Tools.RenewNotes;
 using System;
 using System.Configuration;
@@ -21,8 +22,9 @@ namespace Tools
         /// </summary>
         NotifyIcon ni;
 		public static QueueService _QueueService;
-		public static SyncIpService _SyncIpService;
-		public static ReconnectBluetoothDeviceService _ReconnectBluetoothDeviceService;
+        public static SyncIpService _SyncIpService;
+        public static CheckSuppService _CheckSuppService;
+        public static ReconnectBluetoothDeviceService _ReconnectBluetoothDeviceService;
 		public static RenewNotesService _RenewNotesService;
 		public static WakeUpScreenAfterPowerBreakService _WakeUpScreenAfterPowerBreakService;
 		public static Speech _Speech;
@@ -32,7 +34,8 @@ namespace Tools
 		public static bool? HookKeyActive = null;
 		public static bool? QueueServiceActive = null;
 		public static bool? SyncIpServiceActive = null;
-		public static bool? ReconnectBluetoothDeviceServiceActive = null;	
+        public static bool? CheckSuppServiceActive = null;
+        public static bool? ReconnectBluetoothDeviceServiceActive = null;	
 		public static bool? RenewNotesServiceActive = null;
 		public static bool? WakeUpScreenAfterPowerBreakServiceActive = null;
 		public static bool? SpeechServiceActive = null;		
@@ -142,7 +145,19 @@ namespace Tools
 				ContextMenus.SetMenuItem("SyncIpServiceMenuItem");
 			}
 
-			if (bool.Parse(appSettings["ReconnectBluetoothDeviceService"]))
+            if (bool.Parse(appSettings["CheckSuppService"]))
+            {
+                CheckSuppServiceActive = false;
+                ContextMenus.SetMenuItem("CheckSuppServiceMenuItem");
+
+                System.Threading.Thread.Sleep(50);
+            }
+            else
+            {
+                ContextMenus.SetMenuItem("CheckSuppServiceMenuItem");
+            }
+
+            if (bool.Parse(appSettings["ReconnectBluetoothDeviceService"]))
 			{
 				ReconnectBluetoothDeviceServiceActive = false;
 				ContextMenus.SetMenuItem("ReconnectBluetoothDeviceServiceMenuItem");

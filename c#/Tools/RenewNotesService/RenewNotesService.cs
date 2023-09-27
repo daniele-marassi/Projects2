@@ -113,7 +113,7 @@ namespace Tools.RenewNotes
                         var data = loginResult.Data.FirstOrDefault();
 
                         var userId = data.UserId;
-                        var token = data.Token;
+                        var token = data.TokenCode;
 
                         var timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00").AddDays(-7);
                         var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
@@ -194,7 +194,7 @@ namespace Tools.RenewNotes
                     keyValuePairs["Password"] = password;
                     keyValuePairs["PasswordAlreadyEncrypted"] = passwordAlreadyEncrypted.ToString();
 
-                    var result = await utility.CallApi(HttpMethod.Get, suppServiceHostBaseUrl, "api/Authentications/GetToken", keyValuePairs, null);
+                    var result = await utility.CallApi(HttpMethod.Get, suppServiceHostBaseUrl, "api/Tokens/GetToken", keyValuePairs, null);
 
                     var content = await result.Content.ReadAsStringAsync();
 

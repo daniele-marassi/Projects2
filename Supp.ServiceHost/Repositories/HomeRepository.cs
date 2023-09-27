@@ -87,18 +87,31 @@ namespace Supp.ServiceHost.Repositories
                                 || _.AttributeType.Name == typeof(HttpDeleteAttribute).Name
                             );
 
+                            //var customAttributeRoles = methodInfo.CustomAttributes.Where(_ =>
+                            //    _.AttributeType.Name == typeof(AuthorizeAttribute).Name
+                            //);
+
                             var customAttributeRoles = methodInfo.CustomAttributes.Where(_ =>
-                                _.AttributeType.Name == typeof(AuthorizeAttribute).Name
+                                _.AttributeType.Name == nameof(CustomAttribute)
                             );
+
                             string roles = String.Empty;
                             string actionType = String.Empty;
                             string parameters = String.Empty;
                             string controllerName = String.Empty;
                             string apiName = String.Empty;
 
+                            //try
+                            //{
+                            //    roles = customAttributeRoles.FirstOrDefault().NamedArguments.FirstOrDefault().TypedValue.Value.ToString();
+                            //}
+                            //catch (Exception)
+                            //{
+                            //}
+
                             try
                             {
-                                roles = customAttributeRoles.FirstOrDefault().NamedArguments.FirstOrDefault().TypedValue.Value.ToString();
+                                roles = customAttributeRoles.FirstOrDefault().ConstructorArguments[1].Value.ToString();
                             }
                             catch (Exception)
                             {

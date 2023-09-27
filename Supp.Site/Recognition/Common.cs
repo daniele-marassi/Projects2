@@ -45,8 +45,9 @@ namespace Supp.Site.Recognition
         /// GetData
         /// </summary>
         /// <param name="data"></param>
+        /// <param name="loadPage"></param>
         /// <returns></returns>
-        public (List<WebSpeechDto> Data, List<ShortcutDto> Shortcuts) GetData(List<WebSpeechDto> data, bool loadPage)
+        public (List<WebSpeechDto> Data, List<ShortcutDto> Shortcuts) GetData(List<WebSpeechDto> data, bool loadPage, long userId)
         {
             (List<WebSpeechDto> Data, List<ShortcutDto> Shortcuts) result;
             result.Data = new List<WebSpeechDto>() { };
@@ -73,21 +74,21 @@ namespace Supp.Site.Recognition
                     }
                 }
 
-                if (item.WebSpeechIds != null && item.WebSpeechIds.Count() > 0)
-                {
-                    foreach (var id in item.WebSpeechIds.OrderBy(_=>_).ToList())
-                    {
-                        var _phrase = data.Where(_ => _.Id == id).Select(_ => _.Phrase).FirstOrDefault();
-                        if (item.PreviousPhrase == null) item.PreviousPhrase = String.Empty;
-                        if (item.PreviousPhrase != "") item.PreviousPhrase += " -> ";
-                        item.PreviousPhrase += "Id:" + id.ToString() + " - Phrase:" +_phrase;
-                    }
-                }
+                //if (item.WebSpeechIds != null && item.WebSpeechIds.Count() > 0)
+                //{
+                //    foreach (var id in item.WebSpeechIds.OrderBy(_ => _).ToList())
+                //    {
+                //        var _phrase = data.Where(_ => _.Id == id).Select(_ => _.Phrase).FirstOrDefault();
+                //        if (item.PreviousPhrase == null) item.PreviousPhrase = String.Empty;
+                //        if (item.PreviousPhrase != "") item.PreviousPhrase += " -> ";
+                //        item.PreviousPhrase += "Id:" + id.ToString() + " - Phrase:" + _phrase;
+                //    }
+                //}
 
-                if (loadPage)
+                if (loadPage && (item.UserId == 0 || item.UserId == userId) )
                 {
                     //if (!item.Type.ToLower().Contains("system"))
-                    result.Shortcuts.Add(new ShortcutDto() { Id = item.Id, Type = item.Type, Order = item.Order, Title = item.Name.Replace("_", " "), Action = item.Operation.ToStringExtended().Replace("\\", "/") + " " + item.Parameters.ToStringExtended().Replace("\\", "/"), Ico = item.Ico, Groupable = item.Groupable, GroupName = item.GroupName, GroupOrder = item.GroupOrder });
+                    result.Shortcuts.Add(new ShortcutDto() { Id = item.Id, Type = item.Type, Order = item.Order, Title = item.Name.Replace("_", " "), Action = item.Operation.ToStringExtended().Replace("\\", "/") + " " + item.Parameters.ToStringExtended().Replace("\\", "/"), Ico = item.Ico, Groupable = item.Groupable, GroupName = item.GroupName, GroupOrder = item.GroupOrder, HotShortcut = item.HotShortcut });
                 }
 
                 result.Data.Add(item);
@@ -130,19 +131,24 @@ namespace Supp.Site.Recognition
         /// <param name="_executionQueueId"></param>
         /// <param name="_alwaysShow"></param>
         /// <param name="_id"></param>
-        /// <param name="_claims"></param>
+        /// <param name="identification"></param>
         /// <param name="_onlyRefresh"></param>
         /// <param name="_subType"></param>
         /// <param name="_step"></param>
         /// <param name="expiresInSeconds"></param>
         /// <param name="response"></param>
         /// <param name="request"></param>
+        /// <param name="_param"></param>
+        /// <param name="webSpeechResult"></param>
+        /// <param name="loadPage"></param>
+        /// <param name="_keysMatched"></param>
         /// <returns></returns>
-        public async Task<WebSpeechDto> GetWebSpeechDto(string _phrase, string _hostSelected, bool _reset, bool _application, long _executionQueueId, bool _alwaysShow, long _id, ClaimsDto _claims, bool _onlyRefresh, string _subType, int _step, int expiresInSeconds, HttpResponse response, HttpRequest request, string _param, WebSpeechResult webSpeechResult, bool loadPage, string _keysMatched)
+        public async Task<WebSpeechDto> GetWebSpeechDto(string _phrase, string _hostSelected, bool _reset, bool _application, long _executionQueueId, bool _alwaysShow, long _id, TokenDto identification, bool _onlyRefresh, string _subType, int _step, int expiresInSeconds, HttpResponse response, HttpRequest request, string _param, WebSpeechResult webSpeechResult, bool loadPage, string _keysMatched)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
                 WebSpeechDto data = null;
+                
                 try
                 {
                     if (_phrase != null && _phrase != String.Empty)
@@ -150,8 +156,8 @@ namespace Supp.Site.Recognition
                         _phrase = _phrase.Replace("'", " ");
 
                         var percentage = "";
-                        if (_claims.Configuration.General.Culture.ToLower() == "it-it") percentage = " percento";
-                        if (_claims.Configuration.General.Culture.ToLower() == "en-us") percentage = " percent";
+                        if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it") percentage = " percento";
+                        if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us") percentage = " percent";
                         _phrase = _phrase.Replace("%", percentage);
                     }
 
@@ -160,11 +166,8 @@ namespace Supp.Site.Recognition
                     var className = currentMethod.DeclaringType.Name;
 
                     List<ShortcutDto> shortcuts = new List<ShortcutDto>() { };
+                    List<ShortcutDto> shortcutGroups= new List<ShortcutDto>() { };
                     var startAnswer = "";
-
-                    logger.Info("response:" + response?.ToString());
-                    logger.Info("request:" + request?.ToString());
-                    logger.Info("SuppSiteAccessTokenCookieName:" + GeneralSettings.Constants.SuppSiteAccessTokenCookieName?.ToString());
 
                     var access_token_cookie = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                     var userName = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
@@ -174,134 +177,144 @@ namespace Supp.Site.Recognition
                     {
                         var lastWebSpeechId = webSpeechResult.Data.Select(_ => _.Id).OrderByDescending(_ => _).FirstOrDefault();
 
-                        var getDataResult = GetData(webSpeechResult.Data, loadPage);
+                        var getDataResult = GetData(webSpeechResult.Data, loadPage, userId);
 
                         webSpeechResult.Data = getDataResult.Data;
-                        if (loadPage) shortcuts = getDataResult.Shortcuts.OrderByDescending(_ => _.Order).ThenBy(_ => _.Title).ToList();
+                        if (loadPage)
+                        {
+                            shortcuts = getDataResult.Shortcuts.OrderByDescending(_ => _.Order).ThenBy(_ => _.Title).ToList();
+
+                            var _shortcutsGrouped = getDataResult.Shortcuts.Where(_ => _.Groupable == true && _.GroupName != null && _.GroupName?.Trim() != "").OrderByDescending(_ => _.GroupOrder).ThenBy(_ => _.GroupName).GroupBy(_ => _.GroupName).ToList();
+
+                            foreach (var _shortcut in _shortcutsGrouped)
+                            {
+                                shortcutGroups.Add(_shortcut.FirstOrDefault());
+                            }
+                        }
 
                         if (_id == 0 && _phrase != "" && _phrase != null && (_subType == "" || _subType == null || _subType == "null") && _step == 0)
                         {
-                            var wakeUpScreenAfterEhiResult = WakeUpScreenAfterEhi(_application, _claims, access_token_cookie);
+                            var wakeUpScreenAfterEhiResult = WakeUpScreenAfterEhi(_application, identification, access_token_cookie);
 
-                            var matchPhraseResult = MatchPhrase(_phrase, webSpeechResult.Data, _claims);
+                            var matchPhraseResult = MatchPhrase(_phrase, webSpeechResult.Data, identification);
                             data = matchPhraseResult.Data;
                             _keysMatched = matchPhraseResult.WebSpeechKeysMatched;
                         }
                         else if (_id != 0 && (_subType == "" || _subType == null || _subType == "null") && _step == 0)
                         {
                             data = webSpeechResult.Data.Where(_ => _.Id == _id).FirstOrDefault();
-                            if (data != null) data = GetAnswer(data, _claims);
+                            if (data != null) data = GetAnswer(data, identification);
                         }
                         else if (_id != 0 && _subType != "" && _subType != null && _subType != "null" && _step > 0)
                         {
-                            var wakeUpScreenAfterEhiResult = WakeUpScreenAfterEhi(_application, _claims, access_token_cookie);
+                            var wakeUpScreenAfterEhiResult = WakeUpScreenAfterEhi(_application, identification, access_token_cookie);
 
                             if (_subType == WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString())
                             {
-                                var requests = dialogue.GetDialogueRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
+                                var requests = dialogue.GetDialogueRequestNotImplemented(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId);
                                 if (requests != null && requests.Count > 0)
                                 {
-                                    var dataResult = GetData(requests, loadPage);
+                                    var dataResult = GetData(requests, loadPage, userId);
                                     webSpeechResult.Data.AddRange(dataResult.Data);
                                 }
                             }
 
                             if (_subType == WebSpeechTypes.SystemDialogueAddToNote.ToString() || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString())
                             {
-                                var requests = dialogue.GetDialogueAddToNote(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
+                                var requests = dialogue.GetDialogueAddToNote(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, _subType);
                                 if (requests != null && requests.Count > 0)
                                 {
-                                    var dataResult = GetData(requests, loadPage);
+                                    var dataResult = GetData(requests, loadPage, userId);
                                     webSpeechResult.Data.AddRange(dataResult.Data);
                                 }
                             }
 
                             if (_subType == WebSpeechTypes.SystemDialogueCreateNote.ToString() || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString())
                             {
-                                var requests = dialogue.GetDialogueCreateNote(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
+                                var requests = dialogue.GetDialogueCreateNote(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, _subType);
                                 if (requests != null && requests.Count > 0)
                                 {
-                                    var dataResult = GetData(requests, loadPage);
+                                    var dataResult = GetData(requests, loadPage, userId);
                                     webSpeechResult.Data.AddRange(dataResult.Data);
                                 }
                             }
 
                             if (_subType == WebSpeechTypes.SystemDialogueDeleteNote.ToString() || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString())
                             {
-                                var requests = dialogue.GetDialogueDeleteNote(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
+                                var requests = dialogue.GetDialogueDeleteNote(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, _subType);
                                 if (requests != null && requests.Count > 0)
                                 {
-                                    var dataResult = GetData(requests, loadPage);
+                                    var dataResult = GetData(requests, loadPage, userId);
                                     webSpeechResult.Data.AddRange(dataResult.Data);
                                 }
                             }
 
                             if (_subType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || _subType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString())
                             {
-                                var requests = dialogue.GetDialogueSetTimer(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
+                                var requests = dialogue.GetDialogueSetTimer(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, _subType);
                                 if (requests != null && requests.Count > 0)
                                 {
-                                    var dataResult = GetData(requests, loadPage);
+                                    var dataResult = GetData(requests, loadPage, userId);
                                     webSpeechResult.Data.AddRange(dataResult.Data);
                                 }
                             }
 
                             if (_subType == WebSpeechTypes.SystemDialogueClearNote.ToString() || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString())
                             {
-                                var requests = dialogue.GetDialogueClearNote(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
+                                var requests = dialogue.GetDialogueClearNote(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, _subType);
                                 if (requests != null && requests.Count > 0)
                                 {
-                                    var dataResult = GetData(requests, loadPage);
+                                    var dataResult = GetData(requests, loadPage, userId);
                                     webSpeechResult.Data.AddRange(dataResult.Data);
                                 }
                             }
 
                             if (_subType == WebSpeechTypes.SystemDialogueCreateExtendedReminder.ToString())
                             {
-                                var requests = dialogue.GetDialogueCreateExtendedReminder(_claims.Configuration.General.Culture, lastWebSpeechId, _subType, request);
+                                var requests = dialogue.GetDialogueCreateExtendedReminder(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, _subType, request);
                                 if (requests != null && requests.Count > 0)
                                 {
-                                    var dataResult = GetData(requests, loadPage);
+                                    var dataResult = GetData(requests, loadPage, userId);
                                     webSpeechResult.Data.AddRange(dataResult.Data);
                                 }
                             }
 
                             if (_subType == WebSpeechTypes.SystemDialogueCreateReminder.ToString())
                             {
-                                var requests = dialogue.GetDialogueCreateReminder(_claims.Configuration.General.Culture, lastWebSpeechId, _subType, request);
+                                var requests = dialogue.GetDialogueCreateReminder(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, _subType, request);
                                 if (requests != null && requests.Count > 0)
                                 {
-                                    var dataResult = GetData(requests, loadPage);
+                                    var dataResult = GetData(requests, loadPage, userId);
                                     webSpeechResult.Data.AddRange(dataResult.Data);
                                 }
                             }
 
                             if (_subType == WebSpeechTypes.SystemDialogueDeleteReminder.ToString())
                             {
-                                var requests = dialogue.GetDialogueDeleteReminder(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
+                                var requests = dialogue.GetDialogueDeleteReminder(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, _subType);
                                 if (requests != null && requests.Count > 0)
                                 {
-                                    var dataResult = GetData(requests, loadPage);
+                                    var dataResult = GetData(requests, loadPage, userId);
                                     webSpeechResult.Data.AddRange(dataResult.Data);
                                 }
                             }
 
                             if (_subType == WebSpeechTypes.SystemDialogueWebSearch.ToString())
                             {
-                                var requests = dialogue.GetDialogueWebSearch(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
+                                var requests = dialogue.GetDialogueWebSearch(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, _subType);
                                 if (requests != null && requests.Count > 0)
                                 {
-                                    var dataResult = GetData(requests, loadPage);
+                                    var dataResult = GetData(requests, loadPage, userId);
                                     webSpeechResult.Data.AddRange(dataResult.Data);
                                 }
                             }
 
                             if (_subType == WebSpeechTypes.SystemDialogueRunExe.ToString())
                             {
-                                var requests = dialogue.GetDialogueRunExe(_claims.Configuration.General.Culture, lastWebSpeechId, _subType);
+                                var requests = dialogue.GetDialogueRunExe(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, _subType);
                                 if (requests != null && requests.Count > 0)
                                 {
-                                    var dataResult = GetData(requests, loadPage);
+                                    var dataResult = GetData(requests, loadPage, userId);
                                     webSpeechResult.Data.AddRange(dataResult.Data);
                                 }
                             }
@@ -319,7 +332,7 @@ namespace Supp.Site.Recognition
 
                             if (items != null)
                             {
-                                matchPhraseResult = MatchPhrase(_phrase, items, _claims);
+                                matchPhraseResult = MatchPhrase(_phrase, items, identification);
                                 if (matchPhraseResult.Data != null)
                                 {
                                     if (matchPhraseResult.Data.StepType == StepTypes.Default.ToString() && matchPhraseResult.Data.FinalStep == false) data = webSpeechResult.Data.Where(_ => GetParentIds(_.ParentIds).Contains(matchPhraseResult.Data.Id)).FirstOrDefault();
@@ -327,7 +340,7 @@ namespace Supp.Site.Recognition
 
                                     if (data != null)
                                     {
-                                        data = GetAnswer(data, _claims);
+                                        data = GetAnswer(data, identification);
                                         stepType = data.StepType;
                                     }
                                 }
@@ -336,7 +349,7 @@ namespace Supp.Site.Recognition
                             if (data == null && items != null && items.Count == 1 && stepType != StepTypes.Choice.ToString())
                             {
                                 data = items.FirstOrDefault();
-                                data = GetAnswer(data, _claims);
+                                data = GetAnswer(data, identification);
                                 stepType = data.StepType;
                             }
 
@@ -349,7 +362,7 @@ namespace Supp.Site.Recognition
                                 }
                                 if (_phrase == null) _phrase = "";
                                 data.Elements[0].Value = _phrase.Trim();
-                                var value = phraseInDateTimeManager.Convert(_phrase, _claims.Configuration.General.Culture);
+                                var value = phraseInDateTimeManager.Convert(_phrase, JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture);
 
                                 if (value == null) data = null;
                                 else _phrase = value.ToString();
@@ -358,23 +371,23 @@ namespace Supp.Site.Recognition
                             if (data != null && data.StepType == StepTypes.GoToFirstStep.ToString())
                             {
                                 data = webSpeechResult.Data.Where(_ => _.Step == 1 && _.SubType == data.SubType).FirstOrDefault();
-                                data = GetAnswer(data, _claims);
+                                data = GetAnswer(data, identification);
                                 stepType = data.StepType;
                             }
 
-                            if (data != null && _subType != "" && _subType != null && _subType != "null") data = dialogue.Manage(data, _subType, _step, stepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);
+                            if (data != null && _subType != "" && _subType != null && _subType != "null") data = dialogue.Manage(data, _subType, _step, stepType, expiresInSeconds, _phrase, response, request, identification, userName, userId, _hostSelected);
 
                             if (data == null && _subType != "" && _subType != null && _subType != "null")
                             {
                                 data = previousWebSpeech;
                                 if (data != null)
                                 {
-                                    data = GetAnswer(data, _claims);
+                                    data = GetAnswer(data, identification);
 
-                                    if (_claims.Configuration.General.Culture.ToLower() == "it-it")
+                                    if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it")
                                         data.Answer = "Non ho capito!" + " " + data.Answer;
 
-                                    if (_claims.Configuration.General.Culture.ToLower() == "en-us")
+                                    if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us")
                                         data.Answer = "I did not understand!" + " " + data.Answer;
                                 }
                             }
@@ -401,7 +414,7 @@ namespace Supp.Site.Recognition
 
                             if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
                             {
-                                var reminders = ReadReminders(_claims, getRemindersResult.Data, data.Type);
+                                var reminders = ReadReminders(identification, getRemindersResult.Data, data.Type);
                                 if (answer != "") answer += " ";
                                 answer += reminders;
                             }
@@ -409,19 +422,19 @@ namespace Supp.Site.Recognition
                             if (getRemindersResult.Successful)
                             {
                                 if (answer != "") answer += " ";
-                                answer += await GetHolidays(_claims, access_token_cookie, userName, userId, data.Type);
+                                answer += await GetHolidays(identification, access_token_cookie, userName, userId, data.Type);
                             }
 
                             if (getRemindersResult.Successful && answer == "")
                             {
-                                if (_claims.Configuration.General.Culture.ToLower() == "it-it") answer += " Vuoto.";
-                                if (_claims.Configuration.General.Culture.ToLower() == "en-us") answer += " Empty.";
+                                if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it") answer += " Vuoto.";
+                                if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us") answer += " Empty.";
                             }
 
                             if (!getRemindersResult.Successful)
                             {
-                                if (_claims.Configuration.General.Culture.ToLower() == "it-it") answer += " Attenzione! probabilmente il token google è scaduto.";
-                                if (_claims.Configuration.General.Culture.ToLower() == "en-us") answer += " Attention! probably the google token has expired.";
+                                if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it") answer += " Attenzione! probabilmente il token google è scaduto.";
+                                if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us") answer += " Attention! probably the google token has expired.";
                             }
 
                             data.Answer = answer;
@@ -438,8 +451,8 @@ namespace Supp.Site.Recognition
 
                             var answer = "";
 
-                            if (_claims.Configuration.General.Culture.ToLower() == "it-it") answer = "";
-                            if (_claims.Configuration.General.Culture.ToLower() == "en-us") answer = "";
+                            if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it") answer = "";
+                            if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us") answer = "";
 
                             if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
                             {
@@ -455,16 +468,16 @@ namespace Supp.Site.Recognition
                                     }
                                     else
                                     {
-                                        if (_claims.Configuration.General.Culture.ToLower() == "it-it") answer += "vuota!.";
-                                        if (_claims.Configuration.General.Culture.ToLower() == "en-us") answer += "empty!.";
+                                        if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it") answer += "vuota!.";
+                                        if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us") answer += "empty!.";
                                     }
                                 }
                             }
 
                             if (!getRemindersResult.Successful)
                             {
-                                if (_claims.Configuration.General.Culture.ToLower() == "it-it") answer += " Attenzione! probabilmente il token google è scaduto.";
-                                if (_claims.Configuration.General.Culture.ToLower() == "en-us") answer += " Attention! probably the google token has expired.";
+                                if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it") answer += " Attenzione! probabilmente il token google è scaduto.";
+                                if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us") answer += " Attention! probably the google token has expired.";
                             }
 
                             data.Answer = answer;
@@ -490,26 +503,26 @@ namespace Supp.Site.Recognition
                                 List<WebSpeechDto> dialogue = null;
 
                                 if (data.SubType == WebSpeechTypes.SystemDialogueRunExe.ToString())
-                                    dialogue = this.dialogue.GetDialogueRunExe(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
+                                    dialogue = this.dialogue.GetDialogueRunExe(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, data.SubType);
 
                                 if (dialogue != null && dialogue.Count > 0)
                                 {
-                                    var dataResult = GetData(dialogue, loadPage);
+                                    var dataResult = GetData(dialogue, loadPage, userId);
 
                                     var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
 
-                                    _data = GetAnswer(_data, _claims);
+                                    _data = GetAnswer(_data, identification);
 
                                     _data.Parameters = data.Parameters;
                                     _data.Operation = data.Operation;
                                     _data.Type = data.Type;
 
-                                    data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, phrase, response, request, _claims, userName, userId, _hostSelected);
+                                    data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, phrase, response, request, identification, userName, userId, _hostSelected);
                                 }
                             }
                             else
                             {
-                                data = await dialogue.RunExe(data, phrase, _hostSelected, access_token_cookie, executionQueueRepo, _claims);
+                                data = await dialogue.RunExe(data, phrase, _hostSelected, access_token_cookie, executionQueueRepo, identification);
 
                                 if (data.ExecutionQueueId != 0)
                                 {
@@ -530,51 +543,51 @@ namespace Supp.Site.Recognition
                             )
                         {
                             if (_phrase == null) _phrase = "";
-                            var date = phraseInDateTimeManager.Convert(_phrase, _claims.Configuration.General.Culture);
+                            var date = phraseInDateTimeManager.Convert(_phrase, JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture);
 
-                            data.Parameters = data.Parameters.Replace("NAME", _claims.Name);
+                            data.Parameters = data.Parameters.Replace("NAME", identification.Name);
 
                             if ((data.SubType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || data.SubType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString()) && (date == null))
                             {
                                 List<WebSpeechDto> dialogue = null;
 
                                 if ((data.SubType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || data.SubType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString()))
-                                    dialogue = this.dialogue.GetDialogueSetTimer(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
+                                    dialogue = this.dialogue.GetDialogueSetTimer(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, data.SubType);
 
                                 if (dialogue != null && dialogue.Count > 0)
                                 {
-                                    var dataResult = GetData(dialogue, loadPage);
+                                    var dataResult = GetData(dialogue, loadPage, userId);
 
                                     var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
 
-                                    _data = GetAnswer(_data, _claims);
+                                    _data = GetAnswer(_data, identification);
 
                                     _data.Parameters = data.Parameters;
                                     _data.Operation = data.Operation;
                                     _data.Type = data.Type;
 
-                                    data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, date.ToString(), response, request, _claims, userName, userId, _hostSelected);
+                                    data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, date.ToString(), response, request, identification, userName, userId, _hostSelected);
                                 }
                             }
                             else
                             {
-                                data = await dialogue.SetTimer(data, access_token_cookie, userName, userId, _claims, request, response, expiresInSeconds, (DateTime)date);
+                                data = await dialogue.SetTimer(data, access_token_cookie, userName, userId, identification, request, response, expiresInSeconds, (DateTime)date);
                             }
                         }
 
                         if (data != null && data.Type == WebSpeechTypes.Meteo.ToString())
                         {
-                            data.Answer = GetMeteoPhrase(data.Phrase, data.Parameters, _claims.Configuration.General.Culture.ToLower(), true);
+                            data.Answer = GetMeteoPhrase(data.Phrase, data.Parameters, JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower(), true);
                         }
 
                         if (data != null && data.Type == WebSpeechTypes.Time.ToString())
                         {
                             var now = DateTime.Now;
 
-                            var dayofweek = now.ToString("dddd", new CultureInfo(_claims.Configuration.General.Culture));
-                            var month = now.ToString("MMMM", new CultureInfo(_claims.Configuration.General.Culture));
+                            var dayofweek = now.ToString("dddd", new CultureInfo(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture));
+                            var month = now.ToString("MMMM", new CultureInfo(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture));
 
-                            if (_claims.Configuration.General.Culture.ToLower() == "it-it")
+                            if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it")
                             {
                                 data.Answer = now.Hour.ToString();
 
@@ -585,7 +598,7 @@ namespace Supp.Site.Recognition
                                 data.Answer += dayofweek + " " + now.Day.ToString() + " " + month;
                             }
 
-                            if (_claims.Configuration.General.Culture.ToLower() == "en-us")
+                            if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us")
                             {
                                 data.Answer = now.Hour.ToString();
 
@@ -608,20 +621,20 @@ namespace Supp.Site.Recognition
                                 List<WebSpeechDto> dialogue = null;
 
                                 if (data.SubType == WebSpeechTypes.SystemDialogueWebSearch.ToString())
-                                    dialogue = this.dialogue.GetDialogueWebSearch(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
+                                    dialogue = this.dialogue.GetDialogueWebSearch(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, data.SubType);
 
                                 if (dialogue != null && dialogue.Count > 0)
                                 {
-                                    var dataResult = GetData(dialogue, loadPage);
+                                    var dataResult = GetData(dialogue, loadPage, userId);
 
                                     var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
 
-                                    _data = GetAnswer(_data, _claims);
+                                    _data = GetAnswer(_data, identification);
 
                                     _data.Parameters = data.Parameters;
                                     _data.Type = data.Type;
 
-                                    data = this.dialogue.Manage(_data, _data.SubType, _step, _data.StepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);
+                                    data = this.dialogue.Manage(_data, _data.SubType, _step, _data.StepType, expiresInSeconds, _phrase, response, request, identification, userName, userId, _hostSelected);
                                 }
                             }
                             else
@@ -655,13 +668,13 @@ namespace Supp.Site.Recognition
                             List<WebSpeechDto> dialogue = null;
 
                             if (data.SubType == WebSpeechTypes.SystemDialogueAddToNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString())
-                                dialogue = this.dialogue.GetDialogueAddToNote(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
+                                dialogue = this.dialogue.GetDialogueAddToNote(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, data.SubType);
 
                             if (data.SubType == WebSpeechTypes.SystemDialogueClearNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString())
-                                dialogue = this.dialogue.GetDialogueClearNote(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
+                                dialogue = this.dialogue.GetDialogueClearNote(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, data.SubType);
 
                             if (data.SubType == WebSpeechTypes.SystemDialogueCreateNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString())
-                                dialogue = this.dialogue.GetDialogueCreateNote(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
+                                dialogue = this.dialogue.GetDialogueCreateNote(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, data.SubType);
 
                             if (
                                     data.SubType == WebSpeechTypes.SystemDialogueDeleteNote.ToString()
@@ -670,22 +683,22 @@ namespace Supp.Site.Recognition
                                     || data.SubType == WebSpeechTypes.SystemDialogueDeleteTimer.ToString()
                                     || data.SubType == WebSpeechTypes.SystemDialogueDeleteAlarmClock.ToString()
                                 )
-                                dialogue = this.dialogue.GetDialogueDeleteNote(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
+                                dialogue = this.dialogue.GetDialogueDeleteNote(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, data.SubType);
 
                             if (dialogue != null && dialogue.Count > 0)
                             {
-                                var dataResult = GetData(dialogue, loadPage);
+                                var dataResult = GetData(dialogue, loadPage, userId);
 
                                 var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
 
-                                _data = GetAnswer(_data, _claims);
+                                _data = GetAnswer(_data, identification);
 
                                 _data.Parameters = data.Parameters;
                                 if (_param != null && _param != "null" && _param != "") _data.Parameters = _param;
                                 if (_data.Answer == null || _data.Answer == "") _data.Answer = data.Answer;
                                 //_data.Type = data.Type;
 
-                                data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);
+                                data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, _phrase, response, request, identification, userName, userId, _hostSelected);
                             }
                         }
 
@@ -706,37 +719,37 @@ namespace Supp.Site.Recognition
                             List<WebSpeechDto> dialogue = null;
 
                             if (data.SubType == WebSpeechTypes.SystemDialogueCreateExtendedReminder.ToString())
-                                dialogue = this.dialogue.GetDialogueCreateExtendedReminder(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType, request);
+                                dialogue = this.dialogue.GetDialogueCreateExtendedReminder(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, data.SubType, request);
 
                             if (data.SubType == WebSpeechTypes.SystemDialogueCreateReminder.ToString())
-                                dialogue = this.dialogue.GetDialogueCreateReminder(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType, request);
+                                dialogue = this.dialogue.GetDialogueCreateReminder(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, data.SubType, request);
 
                             if (data.SubType == WebSpeechTypes.SystemDialogueDeleteReminder.ToString())
-                                dialogue = this.dialogue.GetDialogueDeleteReminder(_claims.Configuration.General.Culture, lastWebSpeechId, data.SubType);
+                                dialogue = this.dialogue.GetDialogueDeleteReminder(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, data.SubType);
 
                             if (dialogue != null && dialogue.Count > 0)
                             {
-                                var dataResult = GetData(dialogue, loadPage);
+                                var dataResult = GetData(dialogue, loadPage, userId);
 
                                 var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
 
-                                _data = GetAnswer(_data, _claims);
+                                _data = GetAnswer(_data, identification);
 
                                 _data.Parameters = data.Parameters;
                                 //_data.Type = data.Type;
 
-                                data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);
+                                data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, _phrase, response, request, identification, userName, userId, _hostSelected);
                             }
                         }
 
-                        var salutation = _claims.Configuration.Speech.Salutation;
-                        if (_claims.Name == null && _claims.Configuration.General.Culture.ToLower() == "it-it") _claims.Name = "tu";
-                        if (_claims.Name == null && _claims.Configuration.General.Culture.ToLower() == "en-us") _claims.Name = "you";
-                        if (_claims.Surname == null) _claims.Surname = String.Empty;
-                        salutation = salutation.Replace("NAME", _claims.Name);
-                        salutation = salutation.Replace("SURNAME", _claims.Surname);
+                        var salutation = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.Salutation;
+                        if (identification.Name == null && JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it") identification.Name = "tu";
+                        if (identification.Name == null && JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us") identification.Name = "you";
+                        if (identification.Surname == null) identification.Surname = String.Empty;
+                        salutation = salutation.Replace("NAME", identification.Name);
+                        salutation = salutation.Replace("SURNAME", identification.Surname);
 
-                        startAnswer = salutation + " " + SuppUtility.GetSalutation(new CultureInfo(_claims.Configuration.General.Culture, false));
+                        startAnswer = salutation + " " + SuppUtility.GetSalutation(new CultureInfo(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, false));
 
                         if (DateTime.Now.Hour == 3) startAnswer = "";
 
@@ -746,11 +759,11 @@ namespace Supp.Site.Recognition
 
                             var now = DateTime.Now;
 
-                            if (_claims.Configuration.Speech.MeteoParameterToTheSalutation != null && _claims.Configuration.Speech.MeteoParameterToTheSalutation != "" && _application == true && SuppUtility.GetPartOfTheDay(now) == PartsOfTheDayEng.Morning)
+                            if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.MeteoParameterToTheSalutation != null && JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.MeteoParameterToTheSalutation != "" && _application == true && SuppUtility.GetPartOfTheDay(now) == PartsOfTheDayEng.Morning)
                             {
-                                data.Answer += GetMeteoPhrase(String.Empty, _claims.Configuration.Speech.MeteoParameterToTheSalutation, _claims.Configuration.General.Culture.ToLower(), _claims.Configuration.Speech.DescriptionMeteoToTheSalutationActive);
+                                data.Answer += GetMeteoPhrase(String.Empty, JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.MeteoParameterToTheSalutation, JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower(), JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.DescriptionMeteoToTheSalutationActive);
 
-                                if (_claims.Configuration.Speech.RemindersActive)
+                                if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.RemindersActive)
                                 {
                                     var timeMin = DateTime.Now;
                                     var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
@@ -759,7 +772,7 @@ namespace Supp.Site.Recognition
 
                                     if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
                                     {
-                                        var reminders = ReadReminders(_claims, getRemindersResult.Data, WebSpeechTypes.ReadRemindersToday.ToString());
+                                        var reminders = ReadReminders(identification, getRemindersResult.Data, WebSpeechTypes.ReadRemindersToday.ToString());
 
                                         data.Answer += reminders;
                                     }
@@ -767,16 +780,16 @@ namespace Supp.Site.Recognition
                                     if (getRemindersResult.Successful)
                                     {
                                         if (data.Answer != "") data.Answer += " ";
-                                        data.Answer += await GetHolidays(_claims, access_token_cookie, userName, userId, WebSpeechTypes.ReadRemindersToday.ToString());
+                                        data.Answer += await GetHolidays(identification, access_token_cookie, userName, userId, WebSpeechTypes.ReadRemindersToday.ToString());
 
                                         if (data.Answer != "") data.Answer += " ";
-                                        data.Answer += await GetHolidays(_claims, access_token_cookie, userName, userId, WebSpeechTypes.ReadRemindersTomorrow.ToString());
+                                        data.Answer += await GetHolidays(identification, access_token_cookie, userName, userId, WebSpeechTypes.ReadRemindersTomorrow.ToString());
                                     }
 
                                     if (!getRemindersResult.Successful)
                                     {
-                                        if (_claims.Configuration.General.Culture.ToLower() == "it-it") data.Answer += " Attenzione! probabilmente il token google è scaduto.";
-                                        if (_claims.Configuration.General.Culture.ToLower() == "en-us") data.Answer += " Attention! probably the google token has expired.";
+                                        if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it") data.Answer += " Attenzione! probabilmente il token google è scaduto.";
+                                        if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us") data.Answer += " Attention! probably the google token has expired.";
                                     }
                                 }
                             }
@@ -789,33 +802,33 @@ namespace Supp.Site.Recognition
                         {
                             if (_subType == null || _subType == "") _subType = WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString();
 
-                            var dialogueRequestNotImplemented = dialogue.GetDialogueRequestNotImplemented(_claims.Configuration.General.Culture, lastWebSpeechId);
+                            var dialogueRequestNotImplemented = dialogue.GetDialogueRequestNotImplemented(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId);
                             if (dialogueRequestNotImplemented != null && dialogueRequestNotImplemented.Count > 0)
                             {
-                                var dataResult = GetData(dialogueRequestNotImplemented, loadPage);
+                                var dataResult = GetData(dialogueRequestNotImplemented, loadPage, userId);
                                 data = dataResult.Data.Where(_ => _.Step == 1).FirstOrDefault();
                             }
 
-                            data = GetAnswer(data, _claims);
+                            data = GetAnswer(data, identification);
 
-                            data = dialogue.Manage(data, WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString(), _step, StepTypes.Default.ToString(), expiresInSeconds, _phrase, response, request, _claims, userName, userId, _hostSelected);
+                            data = dialogue.Manage(data, WebSpeechTypes.SystemDialogueRequestNotImplemented.ToString(), _step, StepTypes.Default.ToString(), expiresInSeconds, _phrase, response, request, identification, userName, userId, _hostSelected);
                         }
                     }
 
                     if (data == null) data = new WebSpeechDto() { Answer = "", Ehi = 0 };
 
-                    data.HostsArray = _claims.Configuration.Speech.HostsArray;
-                    data.HostSelected = _claims.Configuration.Speech.HostDefault;
-                    data.ListeningWord1 = _claims.Configuration.Speech.ListeningWord1;
-                    data.ListeningWord2 = _claims.Configuration.Speech.ListeningWord2;
-                    data.ListeningAnswer = _claims.Configuration.Speech.ListeningAnswer;
-                    data.Culture = _claims.Configuration.General.Culture;
+                    data.HostsArray = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.HostsArray;
+                    data.HostSelected = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.HostDefault;
+                    data.ListeningWord1 = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.ListeningWord1;
+                    data.ListeningWord2 = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.ListeningWord2;
+                    data.ListeningAnswer = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.ListeningAnswer;
+                    data.Culture = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture;
                     data.StartAnswer = startAnswer;
                     data.Application = _application;
                     data.AlwaysShow = _alwaysShow;
                     data.ExecutionQueueId = _executionQueueId;
-                    data.TimeToResetInSeconds = _claims.Configuration.Speech.TimeToResetInSeconds;
-                    data.TimeToEhiTimeoutInSeconds = _claims.Configuration.Speech.TimeToEhiTimeoutInSeconds;
+                    data.TimeToResetInSeconds = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.TimeToResetInSeconds;
+                    data.TimeToEhiTimeoutInSeconds = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.TimeToEhiTimeoutInSeconds;
                     data.OnlyRefresh = _onlyRefresh;
                     data.LogJSActive = data.LogJSActive = GeneralSettings.Static.LogJSActive;
 
@@ -823,16 +836,21 @@ namespace Supp.Site.Recognition
 
                     if (_reset == true && _alwaysShow == false)
                     {
-                        if (_hostSelected == null || _hostSelected == String.Empty) _hostSelected = _claims.Configuration.Speech.HostDefault;
+                        if (_hostSelected == null || _hostSelected == String.Empty) _hostSelected = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.HostDefault;
                         await ExecutionFinished(_executionQueueId, _hostSelected, _application, request);
                     }
 
-                    if (_claims != null && loadPage)
+                    if (identification != null && loadPage)
                     {
-                        var claims = SuppUtility.Clone(_claims);
+                        var _identification = SuppUtility.Clone(identification);
 
-                        claims.Configuration.Speech.HostsArray = claims.Configuration.Speech.HostsArray.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
-                        data.ClaimsInJson = JsonConvert.SerializeObject(claims);
+                        _identification.RolesInJson = _identification.RolesInJson.Replace(((char)34).ToString(), @"\" + ((char)34));
+
+                        _identification.ConfigInJson = _identification.ConfigInJson.Replace(((char)34).ToString(), @"\" + ((char)34));
+
+                        _identification.ConfigInJson = _identification.ConfigInJson.Replace(@"\\", @"\");
+
+                        data.IdentificationInJson = JsonConvert.SerializeObject(_identification);
                     }
 
                     if (webSpeechResult != null && webSpeechResult.Data != null && loadPage)
@@ -841,11 +859,15 @@ namespace Supp.Site.Recognition
 
                         foreach (var item in webSpeeches)
                         {
-                            if (item.Phrase != null) item.Phrase = item.Phrase.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
-                            if (item.Operation != null) item.Operation = item.Operation.Replace(@"\", @"\\");
-                            if (item.Answer != null) item.Answer = item.Answer.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
-                            if (item.Parameters != null) 
-                                item.Parameters = item.Parameters.Replace(@"\", @"\\");
+                            if (item.Phrase != null && item.Phrase.Contains(@"\\")) item.Phrase = item.Phrase.Replace(@"\\", @"\");
+                            if (item.Answer != null && item.Answer.Contains(@"\\")) item.Phrase = item.Phrase.Replace(@"\\", @"\");
+                            if (item.HostsArray != null && item.Answer.Contains(@"\\")) item.HostsArray = item.HostsArray.Replace(@"\\", @"\");
+
+                            if (item.Phrase != null && !item.Phrase.Contains(@"\")) item.Phrase = item.Phrase.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
+                            if (item.Operation != null && !item.Operation.Contains(@"\\")) item.Operation = item.Operation.Replace(@"\", @"\\");
+                            if (item.Answer != null && !item.Answer.Contains(@"\")) item.Answer = item.Answer.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
+                            if (item.Parameters != null && !item.Parameters.Contains(@"\\")) item.Parameters = item.Parameters.Replace(@"\", @"\\");
+                            if (item.HostsArray != null && !item.HostsArray.Contains(@"\")) item.HostsArray = item.HostsArray.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
                         }
                         
                         data.WebSpeechesInJson = JsonConvert.SerializeObject(webSpeeches);
@@ -856,9 +878,25 @@ namespace Supp.Site.Recognition
                         var shortcutsInJson = JsonConvert.SerializeObject(shortcuts);
 
                         data.ShortcutsInJson = shortcutsInJson;
+
+                        var shortcutGroupsInJson = JsonConvert.SerializeObject(shortcutGroups);
+
+                        data.ShortcutGroupsInJson = shortcutGroupsInJson;
                     }
 
                     data.Error = null;
+
+                    //logger.Info("data:" + JsonConvert.SerializeObject(data));
+
+                    if (data.Phrase != null && data.Phrase.Contains(@"\\")) data.Phrase = data.Phrase.Replace(@"\\", @"\");
+                    if (data.Answer != null && data.Answer.Contains(@"\\")) data.Phrase = data.Phrase.Replace(@"\\", @"\");
+                    if (data.HostsArray != null && data.Answer.Contains(@"\\")) data.HostsArray = data.HostsArray.Replace(@"\\", @"\");
+
+                    if (data.Phrase != null && !data.Phrase.Contains(@"\")) data.Phrase = data.Phrase.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
+                    if (data.Operation != null && !data.Operation.Contains(@"\\")) data.Operation = data.Operation.Replace(@"\", @"\\");
+                    if (data.Answer != null && !data.Answer.Contains(@"\")) data.Answer = data.Answer.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
+                    if (data.Parameters != null && !data.Parameters.Contains(@"\\")) data.Parameters = data.Parameters.Replace(@"\", @"\\");
+                    if (data.HostsArray != null && !data.HostsArray.Contains(@"\")) data.HostsArray = data.HostsArray.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
 
                     return data;
                 }
@@ -870,9 +908,7 @@ namespace Supp.Site.Recognition
             }
         }
 
-        
-
-        private async Task<string> GetHolidays(ClaimsDto _claims, string access_token_cookie, string userName, long userId, string type)
+        private async Task<string> GetHolidays(TokenDto identification, string access_token_cookie, string userName, long userId, string type)
         {
             var result = "";
             var timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00");
@@ -880,13 +916,13 @@ namespace Supp.Site.Recognition
 
             if (type == WebSpeechTypes.ReadRemindersToday.ToString())
             {
-                var getHolidaysTodayResult = await webSpeecheRepo.GetHolidays(access_token_cookie, userName, userId, timeMin, timeMax, _claims.Configuration.General.Culture);
+                var getHolidaysTodayResult = await webSpeecheRepo.GetHolidays(access_token_cookie, userName, userId, timeMin, timeMax, JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture);
 
                 if (getHolidaysTodayResult.Successful && getHolidaysTodayResult.Data.Count > 0)
                 {
                     var holidays = "";
-                    if (_claims.Configuration.General.Culture.ToLower() == "it-it") holidays = " Le festività di oggi: ";
-                    if (_claims.Configuration.General.Culture.ToLower() == "en-us") holidays = " Today's holidays: ";
+                    if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it") holidays = " Le festività di oggi: ";
+                    if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us") holidays = " Today's holidays: ";
 
                     foreach (var item in getHolidaysTodayResult.Data)
                     {
@@ -902,13 +938,13 @@ namespace Supp.Site.Recognition
                 timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00").AddDays(1);
                 timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59").AddDays(1);
 
-                var getHolidaysTomorrowResult = await webSpeecheRepo.GetHolidays(access_token_cookie, userName, userId, timeMin, timeMax, _claims.Configuration.General.Culture);
+                var getHolidaysTomorrowResult = await webSpeecheRepo.GetHolidays(access_token_cookie, userName, userId, timeMin, timeMax, JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture);
 
                 if (getHolidaysTomorrowResult.Successful && getHolidaysTomorrowResult.Data.Count > 0)
                 {
                     var holidays = "";
-                    if (_claims.Configuration.General.Culture.ToLower() == "it-it") holidays = " Le festività di domani: ";
-                    if (_claims.Configuration.General.Culture.ToLower() == "en-us") holidays = " Tomorrow's holidays: ";
+                    if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it") holidays = " Le festività di domani: ";
+                    if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us") holidays = " Tomorrow's holidays: ";
 
                     foreach (var item in getHolidaysTomorrowResult.Data)
                     {
@@ -922,21 +958,21 @@ namespace Supp.Site.Recognition
             return result;
         }
 
-        private string ReadReminders(ClaimsDto _claims, List<CalendarEvent> data, string type)
+        private string ReadReminders(TokenDto identification, List<CalendarEvent> data, string type)
         {
             var reminders = "";
 
-            if (_claims.Configuration.General.Culture.ToLower() == "it-it" && type == WebSpeechTypes.ReadRemindersToday.ToString()) reminders = "I promemoria di oggi:";
-            if (_claims.Configuration.General.Culture.ToLower() == "en-us" && type == WebSpeechTypes.ReadRemindersToday.ToString()) reminders = "Today's reminders:";
+            if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it" && type == WebSpeechTypes.ReadRemindersToday.ToString()) reminders = "I promemoria di oggi:";
+            if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us" && type == WebSpeechTypes.ReadRemindersToday.ToString()) reminders = "Today's reminders:";
                                                                               
-            if (_claims.Configuration.General.Culture.ToLower() == "it-it" && type == WebSpeechTypes.ReadRemindersTomorrow.ToString()) reminders = "I promemoria di domani:";
-            if (_claims.Configuration.General.Culture.ToLower() == "en-us" && type == WebSpeechTypes.ReadRemindersTomorrow.ToString()) reminders = "Tomorrow's reminders:";
+            if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it" && type == WebSpeechTypes.ReadRemindersTomorrow.ToString()) reminders = "I promemoria di domani:";
+            if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us" && type == WebSpeechTypes.ReadRemindersTomorrow.ToString()) reminders = "Tomorrow's reminders:";
 
             foreach (var item in data)
             {
                 reminders += item.Summary;
 
-                if (_claims.Configuration.General.Culture.ToLower() == "it-it")
+                if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it")
                 {
                     reminders += " alle " + item.EventDateStart.Value.Hour.ToString();
 
@@ -945,7 +981,7 @@ namespace Supp.Site.Recognition
                     else reminders += ".";
                 }
 
-                if (_claims.Configuration.General.Culture.ToLower() == "en-us")
+                if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us")
                 {
                     reminders += " at " + item.EventDateStart.Value.Hour.ToString();
 
@@ -1003,16 +1039,16 @@ namespace Supp.Site.Recognition
         /// Wake Up Screen After Ehi
         /// </summary>
         /// <param name="_application"></param>
-        /// <param name="_claims"></param>
+        /// <param name="identification"></param>
         /// <param name="access_token_cookie"></param>
         /// <returns></returns>
-        public async Task<ExecutionQueueResult> WakeUpScreenAfterEhi(bool _application, ClaimsDto _claims, string access_token_cookie)
+        public async Task<ExecutionQueueResult> WakeUpScreenAfterEhi(bool _application, TokenDto identification, string access_token_cookie)
         {
             var response = new ExecutionQueueResult() { Data = new List<ExecutionQueueDto>(), ResultState = Models.ResultType.None, Successful = true };
 
-            if (_application == true && _claims.Configuration.Speech.WakeUpScreenAfterEhiActive == true)
+            if (_application == true && JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.WakeUpScreenAfterEhiActive == true)
             {
-                var executionQueue = new ExecutionQueueDto() { Host = _claims.Configuration.Speech.HostDefault, Type = ExecutionQueueType.WakeUpScreenAfterEhi.ToString(), WebSpeechId = 0, ScheduledDateTime = DateTime.Now, StateQueue = ExecutionQueueStateQueue.NONE.ToString() };
+                var executionQueue = new ExecutionQueueDto() { Host = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.HostDefault, Type = ExecutionQueueType.WakeUpScreenAfterEhi.ToString(), WebSpeechId = 0, ScheduledDateTime = DateTime.Now, StateQueue = ExecutionQueueStateQueue.NONE.ToString() };
                 response = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
             }
 
@@ -1024,9 +1060,9 @@ namespace Supp.Site.Recognition
         /// </summary>
         /// <param name="_phrase"></param>
         /// <param name="webSpeechlist"></param>
-        /// <param name="_claims"></param>
+        /// <param name="identification"></param>
         /// <returns></returns>
-        public (WebSpeechDto Data, string WebSpeechKeysMatched) MatchPhrase(string _phrase, List<WebSpeechDto> webSpeechlist, ClaimsDto _claims)
+        public (WebSpeechDto Data, string WebSpeechKeysMatched) MatchPhrase(string _phrase, List<WebSpeechDto> webSpeechlist, TokenDto identification)
         {
             WebSpeechDto _data = null;
             (WebSpeechDto Data, string WebSpeechKeysMatched) result;
@@ -1113,7 +1149,7 @@ namespace Supp.Site.Recognition
 
             if (_data != null)
             {
-                result.Data = GetAnswer(_data, _claims);            
+                result.Data = GetAnswer(_data, identification);            
             }
 
             return result;
@@ -1170,10 +1206,11 @@ namespace Supp.Site.Recognition
         /// GetAnswer
         /// </summary>
         /// <param name="data"></param>
+        /// <param name="identification"></param>
         /// <returns></returns>
-        public WebSpeechDto GetAnswer(WebSpeechDto data, ClaimsDto _claims)
+        public WebSpeechDto GetAnswer(WebSpeechDto data, TokenDto identification)
         {
-            data.Answer = suppUtility.GetAnswer(data.Answer, _claims);
+            data.Answer = suppUtility.GetAnswer(data.Answer, identification);
 
             return data;
         }

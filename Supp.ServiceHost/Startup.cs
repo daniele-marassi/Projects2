@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Supp.ServiceHost.Contexts;
 using Supp.ServiceHost.Contracts;
 using Supp.ServiceHost.Repositories;
-using Supp.ServiceHost.Services.SignalR;
 using Supp.ServiceHost.Services.Token;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -18,22 +15,92 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
+
 using static Supp.ServiceHost.Common.Config;
 using System.Net;
 using Additional.NLog;
 using Microsoft.Extensions.Options;
+using System.Collections.Concurrent;
+using Supp.Models;
+using Microsoft.AspNetCore.SignalR;
+using GoogleManagerModels;
+using Newtonsoft.Json;
+using NLog;
+using System.Reflection;
+using System.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Supp.ServiceHost
 {
     public class Startup
     {
+        private readonly static Logger classLogger = LogManager.GetCurrentClassLogger();
+        private readonly NLogUtility nLogUtility = new NLogUtility();
+
+        private static IConfiguration _configuration;
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
+            Init(configuration, classLogger, nLogUtility);
         }
 
-        public IConfiguration Configuration { get; }
+        //private async Task Service(IConfiguration configuration, Logger _classLogger, NLogUtility _nLogUtility)
+        //{
+        //    while (true)
+        //    {
+        //        Init(configuration, _classLogger, _nLogUtility);
+        //        System.Threading.Thread.Sleep(10000);
+        //    }
+        //}
+
+        private void Init(IConfiguration configuration, Logger _classLogger, NLogUtility _nLogUtility)
+        {
+            if (Program.TokensArchive == null)
+            {
+                using (var logger = new NLogScope(_classLogger, _nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+                {
+                    if(Program.TokensArchive == null) logger.Error("Startup***************" + " TokensArchive == null");
+                }
+
+                GeneralSettings.Static.SuppDatabaseConnection = _configuration.GetConnectionString("SuppDatabaseConnection");
+                GeneralSettings.Static.LimitLogFileInMB = Int32.Parse(_configuration.GetSection("AppSettings:LimitLogFileInMB").Value);
+                GeneralSettings.Static.ExpireDays = double.Parse(_configuration.GetSection("AppSettings:ExpireDays").Value);
+
+                Program.TokensArchive = new ConcurrentDictionary<long, TokenDto>();
+
+                SuppDatabaseContext _context;
+
+                var optionsBuilder = new DbContextOptionsBuilder<SuppDatabaseContext>();
+
+                try
+                {
+                    optionsBuilder.UseSqlServer(GeneralSettings.Static.SuppDatabaseConnection, builder =>
+                    {
+                        builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                    });
+
+                    _context = new SuppDatabaseContext(optionsBuilder.Options);
+
+                    var iTokensRepo = new TokensRepository(_context);
+
+                    var getAllTokensResult = iTokensRepo.GetAllTokens().GetAwaiter().GetResult();
+
+                    if (getAllTokensResult != null && getAllTokensResult.Successful && getAllTokensResult.Data.Count > 0)
+                    {
+                        foreach (var tokenDto in getAllTokensResult.Data)
+                        {
+                            tokenDto.Roles = JsonConvert.DeserializeObject<List<string>>(tokenDto.RolesInJson);
+
+                            Program.TokensArchive.TryAdd(tokenDto.UserId, tokenDto);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                }
+            }
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -47,8 +114,6 @@ namespace Supp.ServiceHost
 
             services.AddMvc();
             services.AddCors();
-
-            GeneralSettings.Static.SuppDatabaseConnection = Configuration.GetConnectionString("SuppDatabaseConnection");
 
             services.AddDbContext<SuppDatabaseContext>(_ => _.UseSqlServer(GeneralSettings.Static.SuppDatabaseConnection, builder =>
             {
@@ -68,69 +133,9 @@ namespace Supp.ServiceHost
             services.AddScoped<IWebSpeechesRepository, WebSpeechesRepository>();
             services.AddScoped<IExecutionQueuesRepository, ExecutionQueuesRepository>();
             services.AddScoped<ISongsRepository, SongsRepository>();
+            services.AddScoped<ITokensRepository, TokensRepository>();
 
-            //services.AddHostedService<HubWorker>();
-
-            // ===== Add Jwt Authentication ========
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); // => remove default claims
-                                                                        // jwt
-                                                                        // get options
-            GeneralSettings.Static.JwtAppSettingOptions = Configuration.GetSection("JwtIssuerOptions");
-            var ip = Dns.GetHostAddresses(Dns.GetHostName())[1].ToString();
-            GeneralSettings.Static.JwtAppSettingOptions["JwtIssuer"] = GeneralSettings.Static.JwtAppSettingOptions["JwtIssuer"].Replace("IP",ip);
-
-            GeneralSettings.Static.LimitLogFileInMB = Int32.Parse(Configuration.GetSection("AppSettings:LimitLogFileInMB").Value);
-
-            services
-                .AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(cfg =>
-                {
-                    cfg.TokenValidationParameters.ValidateLifetime = false;
-                    cfg.RequireHttpsMetadata = false;
-                    cfg.SaveToken = true;
-                    cfg.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidIssuer = GeneralSettings.Static.JwtAppSettingOptions["JwtIssuer"],
-                        ValidAudience = GeneralSettings.Static.JwtAppSettingOptions["JwtIssuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GeneralSettings.Static.JwtAppSettingOptions["JwtKey"])),
-                        ClockSkew = TimeSpan.Zero // remove delay of token when expire
-                    };
-
-                    cfg.Events = new JwtBearerEvents
-                    {
-                        OnMessageReceived = context =>
-                        {
-                            //if (context.Request.Path.ToString() != "/api/Authentications/GetToken" && context.Request.Path.ToString() != "/")
-                            //{
-                                var accessToken = context.Request.Query["access_token"];
-
-                                //nLogUtility.ClearNLogFile("mainLog", GeneralSettings.Static.LimitLogFileInMB);
-
-                                if (accessToken.Count == 0 || accessToken == String.Empty) accessToken = context.Request.Headers.Where(_ => _.Key == "access_token").FirstOrDefault().Value;
-                                CheckCredentials checkCredentials = new CheckCredentials();
-                                var roles = new List<string>() { Common.Config.Roles.Constants.RoleAdmin, Common.Config.Roles.Constants.RoleSuperUser, Common.Config.Roles.Constants.RoleUser };
-                                checkCredentials.CheckHubAuthorization(context, accessToken, GeneralSettings.Constants.PlcDataHub, roles);
-                            //}
-                            return Task.CompletedTask;
-                        }
-                    };
-                });
-
-            //services.AddSignalR((hubOptions) => {
-            //    hubOptions.EnableDetailedErrors = true;
-            //    hubOptions.KeepAliveInterval = TimeSpan.FromMinutes(1);
-            //})
-            //                .AddJsonProtocol(options => {
-            //                    options.PayloadSerializerOptions.PropertyNamingPolicy = null;
-            //                }).AddHubOptions<Hub>(options => {
-            //                    options.EnableDetailedErrors = true;
-            //                });
-
+            //Task.Run(() => Service(_configuration, classLogger, nLogUtility));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

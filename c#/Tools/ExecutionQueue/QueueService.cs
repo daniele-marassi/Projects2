@@ -20,6 +20,9 @@ using System.Diagnostics;
 using System.IO;
 using static Tools.Common.ContextMenus;
 using ExecutionQueue;
+using System.Reflection.Emit;
+using System.ServiceModel.Channels;
+using System.Timers;
 
 namespace Tools.ExecutionQueue
 {
@@ -54,9 +57,35 @@ namespace Tools.ExecutionQueue
         bool notifyMute;
         bool notifyPopupShow;
 
-        public QueueService()
+        System.Timers.Timer timer;
+
+        private void TimerEventProcessor(object source, ElapsedEventArgs e)
         {
-            InitializeComponent(); nLogUtility = new NLogUtility();
+            StopTimer();
+            Init();
+            serviceActive = true;
+            Start();
+        }
+
+        private void StartTimer()
+        {
+            timer = new System.Timers.Timer();
+            timer.Interval = 50000;
+            timer.Elapsed += new ElapsedEventHandler(TimerEventProcessor);
+            //timer.Enabled = true;
+            timer.Start();
+        }
+
+        private void StopTimer()
+        {
+            //timer.Stop();
+            timer.Enabled = false;
+            timer = null;
+        }
+
+        private void Init()
+        {
+            nLogUtility = new NLogUtility();
             utility = new Additional.Utility();
             commonUtility = new Common.Utility();
             appSettings = ConfigurationManager.AppSettings;
@@ -81,8 +110,16 @@ namespace Tools.ExecutionQueue
 
             volumeOfNotify = int.Parse(appSettings["VolumeOfNotify"]);
 
-            notifyMute = bool.Parse(appSettings["NotifyMute"]);        
+            notifyMute = bool.Parse(appSettings["NotifyMute"]);
             notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
+
+            timer = null;
+        }
+
+        public QueueService()
+        {
+            InitializeComponent();
+            Init();
         }
 
         protected override void OnStart(string[] args)
@@ -328,7 +365,13 @@ namespace Tools.ExecutionQueue
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
 
-                System.Threading.Thread.Sleep(sleepOfTheQueueServiceInMilliseconds);
+                if ((oldServiceError != null || oldUpdateError != null) && timer == null)
+                {
+                    Stop();
+                    StartTimer();
+                }
+                else
+                    System.Threading.Thread.Sleep(sleepOfTheQueueServiceInMilliseconds);
             }
         }
 

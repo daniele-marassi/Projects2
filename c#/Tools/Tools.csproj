@@ -399,6 +399,10 @@
       <Project>{b9466864-1158-409a-9312-5eb002ec0b60}</Project>
       <Name>AboutBox</Name>
     </ProjectReference>
+    <ProjectReference Include="CheckSuppService\CheckSupp.csproj">
+      <Project>{aa17e70a-aa0f-4a88-8fab-5be22b244ce7}</Project>
+      <Name>CheckSupp</Name>
+    </ProjectReference>
     <ProjectReference Include="Common\Common.csproj">
       <Project>{2cebac98-3e27-409c-a7c6-647b5a19be0b}</Project>
       <Name>Common</Name>

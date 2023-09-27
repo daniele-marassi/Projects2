@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Supp.ServiceHost.Repositories;
 using Supp.Models;
-using Supp.ServiceHost.Services.Token;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Supp.ServiceHost.Contracts;
 using Supp.ServiceHost.Contexts;
+using Supp.ServiceHost.Common;
+using System.Reflection;
 
 namespace Supp.ServiceHost.Controllers
 {
@@ -28,28 +29,37 @@ namespace Supp.ServiceHost.Controllers
             _config = config;
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetAllUsers")] //<host>/api/Users/GetAllUsers
         public async Task<IActionResult> GetAllUsers()
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             var result = await _repo.GetAllUsers();
 
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpGet("GetUser")] //<host>/api/Users/GetUser/5
         public async Task<IActionResult> GetUser(long id)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             var result = await _repo.GetUsersById(id);
 
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpPut("UpdateUser")] //<host>/api/Users/UpdateUser/5
         public async Task<IActionResult> UpdateUser(long id, UserDto data)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -65,10 +75,13 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpPost("AddUser")] //<host>/api/Users/AddUser
         public async Task<IActionResult> AddUser(UserDto data)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -79,10 +92,13 @@ namespace Supp.ServiceHost.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = Common.Config.Roles.Constants.RoleAdmin + ", " + Common.Config.Roles.Constants.RoleSuperUser)]
+        [CustomAttribute("Roles", Config.Roles.Constants.RoleAdmin + ", " + Config.Roles.Constants.RoleSuperUser)]
         [HttpDelete("DeleteUser")] //<host>/api/Users/DeleteUser/5
         public async Task<IActionResult> DeleteUser(long id)
         {
+            var checkAuthorizationsResult = SuppUtility.CheckAuthorizations(HttpContext.Request.Headers, SuppUtility.GetRoles(MethodInfo.GetCurrentMethod()));
+            if (!checkAuthorizationsResult.IsAuthorized) return Unauthorized(checkAuthorizationsResult.Message);
+
             var result = await _repo.DeleteUserById(id);
 
             return Ok(result);

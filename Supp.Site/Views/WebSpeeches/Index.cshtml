@@ -92,6 +92,9 @@
                     <th id="selectable">
                         @Html.ActionLink("GroupOrder", "Index", new { sortOrder = "GroupOrder", currentFilter = ViewBag.CurrentFilter })
                     </th>
+                    <th id="selectable">
+                        @Html.ActionLink("HotShortcut", "Index", new { sortOrder = "HotShortcut", currentFilter = ViewBag.CurrentFilter })
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -99,73 +102,76 @@
                 {
                     @foreach (var item in Model)
                     {
-                <tr>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Phrase)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Operation)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.OperationEnable)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Parameters)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Host)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Answer)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Ico)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Order)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Type)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SubType)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PreviousPhrase)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Step)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.StepType)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ElementIndex)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FinalStep)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PrivateInstruction)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Groupable)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.GroupName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.GroupOrder)
-                    </td>
-                </tr>
+                        <tr>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
+                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
+                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Phrase)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Operation)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.OperationEnable)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Parameters)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Host)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Answer)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Ico)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Order)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Type)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SubType)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PreviousPhrase)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Step)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.StepType)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ElementIndex)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.FinalStep)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PrivateInstruction)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Groupable)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.GroupName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.GroupOrder)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.HotShortcut)
+                            </td>
+                        </tr>
                     }
                 }
                 </tbody>

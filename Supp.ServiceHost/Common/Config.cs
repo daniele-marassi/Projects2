@@ -29,10 +29,8 @@ namespace Supp.ServiceHost.Common
             {
                 public static string Token { get; set; }
                 public static string SuppDatabaseConnection { get; set; }
-
                 public static int LimitLogFileInMB { get; set; }
-
-                public static IConfigurationSection JwtAppSettingOptions { get; set; }
+                public static double ExpireDays { get; set; }
             }
 
             public class Constants

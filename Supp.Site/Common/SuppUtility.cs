@@ -1,6 +1,8 @@
 ﻿using Additional.NLog;
+using GoogleManagerModels;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLog;
 using Supp.Models;
 using System;
@@ -10,7 +12,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
-using System.Security.Claims;
+
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -160,46 +162,76 @@ namespace Supp.Site.Common
             SetCookie(response, GeneralSettings.Constants.SuppSiteErrorsCookieName, errorsToJson, 600);
         }
 
+        public static long GetUserIdFromToken(string token)
+        {
+            long userId = 0;
+            try
+            {
+                if (token == null) token = "";
+
+                long.TryParse(token.Split("|")[0], out userId);
+            }
+            catch (Exception)
+            {
+
+            } 
+            
+            return userId;
+        }
+
         /// <summary>
-        /// GetClaims
+        /// Get Identification
         /// </summary>
-        /// <param name="user"></param>
+        /// <param name="request"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        public static ClaimsDto GetClaims(ClaimsPrincipal user)
+        public static TokenDto GetIdentification(HttpRequest request, long userId)
         {
             var nLogUtility = new NLogUtility();
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
-                var dto = new ClaimsDto() { IsAuthenticated = false, Roles = new List<string>() { } };
-
+                var dto = new TokenDto() { IsAuthenticated = false, Roles = new List<string>() { } };
                 try
                 {
-                    var claims = user.Claims.ToList();
+                    var suppUtility = new SuppUtility();
 
-                    if (claims != null && claims.Count > 0)
+                    if (userId > 0)
                     {
-                        dto.IsAuthenticated = true;
+                        var token = "";
 
-                        dto.UserName = claims.Where(_ => _.Type == nameof(ClaimsDto.UserName)).Select(_ => _.Value).FirstOrDefault();
+                        token = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
 
-                        var configInJson = claims.Where(_ => _.Type == "ConfigInJson").Select(_ => _.Value).FirstOrDefault();
-                        if (configInJson != null && configInJson != String.Empty)
+                        if (token == null) token = "";
+
+                        userId = GetUserIdFromToken(token);
+                    }
+
+                    if (Program.TokensArchive.ContainsKey(userId))
+                        dto = Program.TokensArchive[userId];
+                    else
+                    {
+                        var identification = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteTokenDtoCookieName);
+                        if (identification != null && identification != "")
                         {
-                            var config = JsonConvert.DeserializeObject<Configuration>(configInJson);
+                            var token = "";
 
-                            dto.Configuration = config;
-                        }
-                        else dto.Configuration = JsonConvert.DeserializeObject<Configuration>(GeneralSettings.Static.ConfigDefaultInJson);
+                            token = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
 
-                        dto.Name = claims.Where(_ => _.Type == nameof(ClaimsDto.Name)).Select(_ => _.Value).FirstOrDefault();
-                        dto.Surname = claims.Where(_ => _.Type == nameof(ClaimsDto.Surname)).Select(_ => _.Value).FirstOrDefault();
-                        dto.UserId = long.Parse(claims.Where(_ => _.Type == nameof(ClaimsDto.UserId)).Select(_ => _.Value).FirstOrDefault());
+                            if (token != null && token != "")
+                            {
 
-                        var rolesInString = claims.Where(_ => _.Type == nameof(ClaimsDto.Roles)).Select(_ => _.Value).FirstOrDefault();
-                        if (rolesInString != null && rolesInString != String.Empty)
-                        {
-                            var obj = rolesInString.Split(",");
-                            dto.Roles.AddRange(obj);
+                                userId = GetUserIdFromToken(token);
+
+                                try
+                                {
+                                    Program.TokensArchive[userId] = JsonConvert.DeserializeObject<TokenDto>(identification);
+
+                                    dto = Program.TokensArchive[userId];
+                                }
+                                catch (Exception)
+                                {
+                                }
+                            }
                         }
                     }
                 }
@@ -210,6 +242,27 @@ namespace Supp.Site.Common
                 }
 
                 return dto;
+            }
+        }
+
+        public static void TokenStorage(TokenDto dto, NLogUtility nLogUtility)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                try
+                {
+                    if (Program.TokensArchive.ContainsKey(dto.UserId))
+                    {
+                        TokenDto tokenDtoDeleted = null;
+                        Program.TokensArchive.TryRemove(dto.UserId, out tokenDtoDeleted);
+                    }
+
+                    Program.TokensArchive.TryAdd(dto.UserId, dto);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
         }
 
@@ -391,9 +444,9 @@ namespace Supp.Site.Common
         /// Get Answer
         /// </summary>
         /// <param name="value"></param>
-        /// <param name="_claims"></param>
+        /// <param name="identification"></param>
         /// <returns></returns>
-        public string GetAnswer(string value, ClaimsDto _claims)
+        public string GetAnswer(string value, TokenDto identification)
         {
             var rnd = new Random();
             var list = new List<string>() { };
@@ -415,8 +468,8 @@ namespace Supp.Site.Common
 
             if (value == null) value = "";
 
-            value = value.Replace("SURNAME", _claims.Surname);
-            value = value.Replace("NAME", _claims.Name);
+            value = value.Replace("SURNAME", identification.Surname);
+            value = value.Replace("NAME", identification.Name);
 
             return value;
         }

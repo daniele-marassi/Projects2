@@ -5,13 +5,19 @@ namespace Supp.Models
 {
     public class TokenDto
     {
-        public string Token { get; set; }
+        public long Id { get; set; }
+
+        public string TokenCode { get; set; }
+
+        public DateTime? ExpiryDate { get; set; }
 
         public int ExpiresInSeconds { get; set; }
 
         public long UserId { get; set; }
 
         public string UserName { get; set; }
+
+        public string RolesInJson { get; set; }
 
         public List<string> Roles { get; set; }
 
@@ -26,5 +32,9 @@ namespace Supp.Models
         public string Surname { get; set; }
 
         public string ConfigInJson { get; set; }
+
+        public DateTime InsDateTime { get; set; }
+
+        public bool IsAuthenticated { get; set; }
     }
 }

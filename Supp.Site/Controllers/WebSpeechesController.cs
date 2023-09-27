@@ -19,7 +19,7 @@ using System.Globalization;
 
 using System.Threading;
 using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Newtonsoft.Json;
 using System.Web;
@@ -33,6 +33,8 @@ using System.Security.Cryptography.Xml;
 using System.Security.Cryptography;
 using NLog.Fluent;
 using static System.Net.Mime.MediaTypeNames;
+using Google.Apis.Calendar.v3.Data;
+using NuGet.Frameworks;
 
 namespace Supp.Site.Controllers
 {
@@ -41,6 +43,7 @@ namespace Supp.Site.Controllers
         private readonly static Logger classLogger = LogManager.GetCurrentClassLogger();
         private readonly NLogUtility nLogUtility = new NLogUtility();
         private readonly WebSpeechesRepository webSpeecheRepo;
+        private readonly TokensRepository tokensRepo;
         private readonly ExecutionQueuesRepository executionQueueRepo;
         private readonly SuppUtility suppUtility;
         private readonly AuthenticationsRepository authenticationRepo;
@@ -53,6 +56,7 @@ namespace Supp.Site.Controllers
             executionQueueRepo = new ExecutionQueuesRepository();
             suppUtility = new SuppUtility();
             authenticationRepo = new AuthenticationsRepository();
+            tokensRepo = new TokensRepository();
             recognitionCommon = new Recognition.Common();
             utility = new Utility();
         }
@@ -92,7 +96,7 @@ namespace Supp.Site.Controllers
                     if (result.Successful == false)
                         throw new Exception($"Error - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetAllWebSpeeches)}] - Message: [{result.Message}]");
 
-                    result.Data = recognitionCommon.GetData(result.Data, false).Data;
+                    result.Data = recognitionCommon.GetData(result.Data, false, SuppUtility.GetUserIdFromToken(access_token_cookie)).Data;
 
                     data = from s in result.Data
                            select s;
@@ -178,6 +182,9 @@ namespace Supp.Site.Controllers
                         case "GroupOrder":
                             data = data.OrderBy(_ => _.GroupOrder);
                             break;
+                        case "HotShortcut":
+                            data = data.OrderBy(_ => _.HotShortcut);
+                            break;
                         default:
                             data = data.OrderBy(_ => _.Name);
                             break;
@@ -223,7 +230,7 @@ namespace Supp.Site.Controllers
                     var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                     var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
 
-                    result.Data = recognitionCommon.GetData(result.Data, false).Data;
+                    result.Data = recognitionCommon.GetData(result.Data, false, SuppUtility.GetUserIdFromToken(access_token_cookie)).Data;
 
                     var data = result.Data.FirstOrDefault();
 
@@ -302,10 +309,10 @@ namespace Supp.Site.Controllers
                     var webSpeeches = getAllWebSpeechesResult.Data.ToList();
 
                     var shortcutImages = GetShortcutImages();
-                    var claims = SuppUtility.GetClaims(User);
+                    var identification = SuppUtility.GetIdentification(Request, -1);
 
                     var hosts = new List<Host>() { };
-                    var hostsArray = JsonConvert.DeserializeObject<List<string>>(claims.Configuration.Speech.HostsArray);
+                    var hostsArray = JsonConvert.DeserializeObject<List<string>>(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.HostsArray);
 
                     if (hostsArray.Where(_ => _.ToLower() == "all").Count() == 0) hostsArray.Add("All");
 
@@ -356,7 +363,7 @@ namespace Supp.Site.Controllers
                             row.Order = newWebSpeech.Order;
                             row.Hosts = hosts;
 
-                            if (newWebSpeech.PrivateInstruction == true) row.UserId = claims.UserId;
+                            if (newWebSpeech.PrivateInstruction == true) row.UserId = identification.UserId;
                             else row.UserId = 0;
                         }
                     }
@@ -378,7 +385,7 @@ namespace Supp.Site.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Phrase,Operation,OperationEnable,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,SubType,Step,StepType,ElementIndex,InsDateTime,Groupable,GroupName,GroupOrder")] WebSpeechDto dto)
+        public async Task<IActionResult> Create([Bind("Id,Name,Phrase,Operation,OperationEnable,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,SubType,Step,StepType,ElementIndex,InsDateTime,Groupable,GroupName,GroupOrder,HotShortcut")] WebSpeechDto dto)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -392,8 +399,8 @@ namespace Supp.Site.Controllers
                         var className = currentMethod.DeclaringType.Name;
                         var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
 
-                        var claims = SuppUtility.GetClaims(User);
-                        if (dto.PrivateInstruction == true) dto.UserId = claims.UserId;
+                        var identification = SuppUtility.GetIdentification(Request, -1);
+                        if (dto.PrivateInstruction == true) dto.UserId = identification.UserId;
                         else dto.UserId = 0;
 
                         var result = await webSpeecheRepo.AddWebSpeech(dto, access_token_cookie);
@@ -435,7 +442,7 @@ namespace Supp.Site.Controllers
                     var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                     var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
 
-                    result.Data = recognitionCommon.GetData(result.Data, false).Data;
+                    result.Data = recognitionCommon.GetData(result.Data, false, SuppUtility.GetUserIdFromToken(access_token_cookie)).Data;
 
                     var data = result.Data.FirstOrDefault();
 
@@ -446,7 +453,7 @@ namespace Supp.Site.Controllers
                     if (!getAllWebSpeechesResult.Successful)
                         throw new Exception($"Error [Get failed!] - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetAllWebSpeeches)}] - Message: [{getAllWebSpeechesResult.Message}]");
 
-                    getAllWebSpeechesResult.Data = recognitionCommon.GetData(getAllWebSpeechesResult.Data, false).Data;
+                    getAllWebSpeechesResult.Data = recognitionCommon.GetData(getAllWebSpeechesResult.Data, false, SuppUtility.GetUserIdFromToken(access_token_cookie)).Data;
 
                     var webSpeeches = getAllWebSpeechesResult.Data.ToList();
 
@@ -455,9 +462,9 @@ namespace Supp.Site.Controllers
                     data.WebSpeeches = webSpeeches;
                     data.ShortcutImages = shortcutImages;
 
-                    var claims = SuppUtility.GetClaims(User);
+                    var identification = SuppUtility.GetIdentification(Request, -1);
                     var hosts = new List<Host>() { };
-                    var hostsArray = JsonConvert.DeserializeObject<List<string>>(claims.Configuration.Speech.HostsArray);
+                    var hostsArray = JsonConvert.DeserializeObject<List<string>>(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.HostsArray);
 
                     if (hostsArray.Where(_ => _.ToLower() == "all").Count() == 0) hostsArray.Add("All");
 
@@ -485,7 +492,7 @@ namespace Supp.Site.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Phrase,Operation,OperationEnable,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,SubType,Step,StepType,ElementIndex,InsDateTime,Groupable,GroupName,GroupOrder")] WebSpeechDto dto)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Phrase,Operation,OperationEnable,Parameters,Host,Answer,WebSpeechIds,FinalStep,PrivateInstruction,Ico,Order,Type,SubType,Step,StepType,ElementIndex,InsDateTime,Groupable,GroupName,GroupOrder,HotShortcut")] WebSpeechDto dto)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -508,8 +515,8 @@ namespace Supp.Site.Controllers
                         var parentIds = JsonConvert.SerializeObject(dto.WebSpeechIds);
                         dto.ParentIds = parentIds;
 
-                        var claims = SuppUtility.GetClaims(User);
-                        if (dto.PrivateInstruction == true) dto.UserId = claims.UserId;
+                        var identification = SuppUtility.GetIdentification(Request, -1);
+                        if (dto.PrivateInstruction == true) dto.UserId = identification.UserId;
                         else dto.UserId = 0;
 
                         var result = await webSpeecheRepo.UpdateWebSpeech(dto, access_token_cookie);
@@ -549,7 +556,7 @@ namespace Supp.Site.Controllers
                     var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
                     var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
 
-                    result.Data = recognitionCommon.GetData(result.Data, false).Data;
+                    result.Data = recognitionCommon.GetData(result.Data, false, SuppUtility.GetUserIdFromToken(access_token_cookie)).Data;
 
                     var data = result.Data.FirstOrDefault();
 
@@ -636,11 +643,15 @@ namespace Supp.Site.Controllers
             }
         }
 
-        private void ManageAuthentication(ref ClaimsDto claims, ref bool login, ref bool onlyRefresh, ref bool passwordAlreadyEncrypted, ref string _userName, ref string _password, ref bool resetAfterLoad, ref bool application, bool checkIfTokenIsValid = false)
+        private void ManageAuthentication(ref TokenDto identification, ref bool login, ref bool onlyRefresh, ref bool passwordAlreadyEncrypted, ref string _userName, ref string _password, ref bool resetAfterLoad, ref bool application, ref bool reset, long userId, bool checkIfTokenIsValid = false)
         {
-            if (User?.Claims?.ToList()?.Count() > 0)
-                claims = SuppUtility.GetClaims(User);
-            else if (claims == null || claims.IsAuthenticated == false && application == false)
+            var loginIsNecessary = false;
+            if ((identification == null || identification.IsAuthenticated == false))
+            {
+                identification = SuppUtility.GetIdentification(Request, userId);
+                checkIfTokenIsValid = true;
+            }
+            else if ((identification == null || identification.IsAuthenticated == false) && application == false)
             {
                 throw new Exception("Authentication expired! login again");
             }
@@ -648,8 +659,8 @@ namespace Supp.Site.Controllers
             {
                 try
                 {
-                    var claimsString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteClaimsCookieName);
-                    claims = JsonConvert.DeserializeObject<ClaimsDto>(claimsString);
+                    var tokenDtoString = suppUtility.ReadCookie(Request, Config.GeneralSettings.Constants.SuppSiteTokenDtoCookieName);
+                    identification = JsonConvert.DeserializeObject<TokenDto>(tokenDtoString);
                     checkIfTokenIsValid = true;
                 }
                 catch (Exception)
@@ -658,30 +669,37 @@ namespace Supp.Site.Controllers
                 }
             }
 
-            if (claims == null || claims.IsAuthenticated == false)
+            if (identification == null || identification.IsAuthenticated == false)
             {
+                loginIsNecessary = true;
                 login = true;
+                reset = false;
                 //onlyRefresh = true;
-                passwordAlreadyEncrypted = true;
+                resetAfterLoad = true;
             }
 
-            if (checkIfTokenIsValid && claims != null && claims.IsAuthenticated == true && login == false)
+            if (checkIfTokenIsValid && identification != null && identification.IsAuthenticated == true && login == false)
             {
                 var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
 
-                bool? getAuthenticationResult = authenticationRepo.TokenIsValid(access_token_cookie).GetAwaiter().GetResult();
-                if (getAuthenticationResult != true)
+                bool? tokenIsValid = tokensRepo.TokenIsValid(access_token_cookie).GetAwaiter().GetResult();
+                if (tokenIsValid != true)
                 {
+                    loginIsNecessary = true;
                     login = true;
                     //onlyRefresh = true;
-                    passwordAlreadyEncrypted = true;
+                    reset = false;
+                    resetAfterLoad = true;
                 }
             }
 
-            if (login == true)
+            if (loginIsNecessary == true)
             {
+                passwordAlreadyEncrypted = false;
+
                 if (_userName == null || _userName == "" || _password == null || _password == "")
                 {
+                    passwordAlreadyEncrypted = true;
                     _userName = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
                     _password = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName);
                 }
@@ -689,30 +707,36 @@ namespace Supp.Site.Controllers
                 if (_userName != null && _userName != "" && _password != null && _password != "")
                 {
                     var dto = new LoginDto() { UserName = _userName, Password = _password, PasswordAlreadyEncrypted = passwordAlreadyEncrypted };
-                    var authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response, Request);
+                    var authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, Response, Request);
 
                     if (!authenticationResult.IsValidUser)
                     {
-                        passwordAlreadyEncrypted = false;
+                        passwordAlreadyEncrypted = true;
                         dto = new LoginDto() { UserName = _userName, Password = _password, PasswordAlreadyEncrypted = passwordAlreadyEncrypted };
-                        authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, User, Response, Request);
+                        authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, Response, Request);
                     }
 
-                    resetAfterLoad = true;
-
-                    if (User?.Claims?.ToList()?.Count() > 0)
-                        claims = SuppUtility.GetClaims(User);
+                    if (authenticationResult.IsValidUser)
+                    {
+                        userId = (long)authenticationResult.Data?.UserId;
+                        Program.TokensArchive[userId] = authenticationResult.Data;
+                        identification = authenticationResult.Data;
+                    }
+                    else
+                        throw new Exception("Authentication invalid! Login again!");
                 }
+                else
+                    throw new Exception("Password and/or username passed or saved in cookies are empty! Login again!");
             }
 
-            if (claims == null || claims.IsAuthenticated == false)
+            if (identification == null || identification.IsAuthenticated == false)
             {
-                throw new Exception("Authentication expired! login again");
+                throw new Exception("Authentication expired! Login again!");
             }
         }
 
         // GET: WebSpeeches/Recognition
-        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step, bool? _login, string _param)
+        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step, bool? _login, string _param, long? _userId)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -734,6 +758,8 @@ namespace Supp.Site.Controllers
                     long.TryParse(_executionQueueId?.ToString(), out executionQueueId);
                     long id = 0;
                     long.TryParse(_id?.ToString(), out id);
+                    long userId = 0;
+                    long.TryParse(_userId?.ToString(), out userId);
                     bool.TryParse(_reset?.ToString(), out reset);
                     bool.TryParse(_login?.ToString(), out login);
                     bool.TryParse(_onlyRefresh?.ToString(), out onlyRefresh);
@@ -750,7 +776,7 @@ namespace Supp.Site.Controllers
                     else _param = HttpUtility.UrlDecode(_param);
 
                     var expiresInSeconds = 0;
-                    var claims = new ClaimsDto() { IsAuthenticated = false };
+                    var identification = new TokenDto() { IsAuthenticated = false };
 
                     int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName), out expiresInSeconds);
 
@@ -797,7 +823,7 @@ namespace Supp.Site.Controllers
                         suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName, passwordMd5, expiresInSeconds);
                     }
 
-                    ManageAuthentication(ref claims, ref login, ref onlyRefresh, ref passwordAlreadyEncrypted, ref _userName, ref _password, ref resetAfterLoad, ref application);
+                    ManageAuthentication(ref identification, ref login, ref onlyRefresh, ref passwordAlreadyEncrypted, ref _userName, ref _password, ref resetAfterLoad, ref application, ref reset, userId:userId);
 
                     var loadDateString = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
 
@@ -821,20 +847,20 @@ namespace Supp.Site.Controllers
 
                     if (resetAfterLoad == false)
                     {
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        WebSpeechResult _webSpeechResult = null;
 
-                        var webSpeechResult = await webSpeecheRepo.GetAllWebSpeeches(access_token_cookie);
+                        if (Program._webSpeechResultList.ContainsKey(identification.UserId))
+                            _webSpeechResult = Program._webSpeechResultList[identification.UserId];
+                        else
+                            _webSpeechResult = await _GetAllWebSpeeches(className, method, identification);
 
-                        if (webSpeechResult.Successful == false)
+                        if (_webSpeechResult.Successful == false)
                         {
-                            var error = $"Error - Class: [{className}, Method: [{method}], Operation: [{nameof(webSpeecheRepo.GetAllWebSpeeches)}] - Message: [{webSpeechResult.Message}]";
-
-                            data = new WebSpeechDto() { Answer = "", Ehi = 0, Error = error };
+                            data = _webSpeechResult.Data.FirstOrDefault();
                         }
                         else
                         {
-                            Startup._webSpeechResultList[claims.UserId] = webSpeechResult;
-                            data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request, _param, webSpeechResult, true, null).GetAwaiter().GetResult();
+                            data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, identification, onlyRefresh, _subType, step, expiresInSeconds, Response, Request, _param, _webSpeechResult, true, null).GetAwaiter().GetResult();
                         }
                     }
 
@@ -861,13 +887,46 @@ namespace Supp.Site.Controllers
                     ModelState.AddModelError("ModelStateErrors", ex.Message);
                     suppUtility.AddErrorToCookie(Request, Response, ex.Message);
 
-                    return RedirectToAction("Index", "Home");
+                    if(ex.Message.Contains("login", StringComparison.InvariantCultureIgnoreCase))
+                        return RedirectToAction("Login", "Home");
+                    else
+                        return RedirectToAction("Index", "Home");
                 }
             }
         }
 
+        private async Task<WebSpeechResult> _GetAllWebSpeeches(string className, string method, TokenDto identification)
+        {
+            var result = new WebSpeechResult() { };
+
+            var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
+            var _method = currentMethod.Name;
+            var _className = currentMethod.DeclaringType.Name;
+
+            var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+
+            var webSpeechResult = await webSpeecheRepo.GetAllWebSpeeches(access_token_cookie);
+
+            if (webSpeechResult.Successful == false)
+            {
+                var error = $"Error - Class: [{className}, Method: [{method}->{_method}], Operation: [{nameof(webSpeecheRepo.GetAllWebSpeeches)}] - Message: [{webSpeechResult.Message}]";
+                result.Successful = false;
+                result.Message = error;
+                result.Data = new List<WebSpeechDto>() { new WebSpeechDto() { Answer = "", Ehi = 0, Error = error } };
+                result.ResultState = ResultType.Error;
+            }
+            else
+            {
+                result = webSpeechResult;
+
+                Program._webSpeechResultList[identification.UserId] = webSpeechResult;
+            }
+
+            return result;
+        }
+
         // GET: WebSpeeches/GetWebSpeechDtoInJson
-        public async Task<string> GetWebSpeechDtoInJson(string _phrase, string _hostSelected, bool? _reset, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step, bool? _recognitionDisable, string _param, string _keysMatched)
+        public async Task<string> GetWebSpeechDtoInJson(string _phrase, string _hostSelected, bool? _reset, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step, bool? _recognitionDisable, string _param, string _keysMatched, long? _userId)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -875,6 +934,9 @@ namespace Supp.Site.Controllers
 
                 try
                 {
+                    var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
+                    var method = currentMethod.Name;
+                    var className = currentMethod.DeclaringType.Name;
                     var reset = false;
                     var application = false;
                     var alwaysShow = false;
@@ -885,6 +947,10 @@ namespace Supp.Site.Controllers
                     long.TryParse(_executionQueueId?.ToString(), out executionQueueId);
                     long id = 0;
                     long.TryParse(_id?.ToString(), out id);
+
+                    long userId = 0;
+                    long.TryParse(_userId?.ToString(), out userId);
+
                     bool.TryParse(_reset?.ToString(), out reset);
                     bool.TryParse(_onlyRefresh?.ToString(), out onlyRefresh);
                     bool.TryParse(_recognitionDisable?.ToString(), out recognitionDisable);
@@ -901,7 +967,7 @@ namespace Supp.Site.Controllers
                     var expiresInSeconds = 0;
                     int.TryParse(suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName), out expiresInSeconds);
 
-                    var claims = new ClaimsDto() { IsAuthenticated = false };
+                    var identification = new TokenDto() { IsAuthenticated = false };
 
                     if (_hostSelected == null) hostSelected = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
                     else hostSelected = _hostSelected;
@@ -917,20 +983,33 @@ namespace Supp.Site.Controllers
                     var _userName = "";
                     var _password = "";
                     var resetAfterLoad = false;
-                    ManageAuthentication(ref claims, ref login, ref onlyRefresh, ref passwordAlreadyEncrypted, ref _userName, ref _password, ref resetAfterLoad, ref application);
+                    ManageAuthentication(ref identification, ref login, ref onlyRefresh, ref passwordAlreadyEncrypted, ref _userName, ref _password, ref resetAfterLoad, ref application, ref reset, userId: userId);
+
+                    WebSpeechDto data = null;
 
                     var webSpeechResult = new WebSpeechResult() { };
 
-                    if(Startup._webSpeechResultList.ContainsKey(claims.UserId))
-                        webSpeechResult = Startup._webSpeechResultList[claims.UserId];
+                    if (Program._webSpeechResultList.ContainsKey(identification.UserId))
+                        webSpeechResult = Program._webSpeechResultList[identification.UserId];
+                    else
+                    {
+                        var _webSpeechResult = await _GetAllWebSpeeches(className, method, identification);
 
-                    var data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, claims, onlyRefresh, _subType, step, expiresInSeconds, Response, Request, _param, webSpeechResult, false, _keysMatched).GetAwaiter().GetResult();
+                        if (_webSpeechResult.Successful == false)
+                            data = _webSpeechResult.Data.FirstOrDefault();
+                        else
+                            if (Program._webSpeechResultList.ContainsKey(identification.UserId))
+                                webSpeechResult = Program._webSpeechResultList[identification.UserId];
+                    }
+
+                    if(webSpeechResult.Successful)
+                        data = recognitionCommon.GetWebSpeechDto(_phrase, hostSelected, reset, application, executionQueueId, alwaysShow, id, identification, onlyRefresh, _subType, step, expiresInSeconds, Response, Request, _param, webSpeechResult, false, _keysMatched).GetAwaiter().GetResult();
 
                     if (data != null)
                     {
                         data.RecognitionDisable = recognitionDisable;
                         result = System.Text.Json.JsonSerializer.Serialize(data);
-                        result = result.Replace(@"\", "/");
+                        //result = result.Replace(@"\", "/");
                     }
                 }
                 catch (Exception ex)

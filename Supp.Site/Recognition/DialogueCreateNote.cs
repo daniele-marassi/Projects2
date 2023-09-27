@@ -1,4 +1,5 @@
 ﻿using GoogleManagerModels;
+using Newtonsoft.Json;
 using Supp.Models;
 using Supp.Site.Repositories;
 using System;
@@ -316,7 +317,7 @@ namespace Supp.Site.Recognition
             return result;
         }
 
-        public async Task<EventResult> CreateNote(WebSpeechDto dto, string token, string userName, long userId, ClaimsDto _claims)
+        public async Task<EventResult> CreateNote(WebSpeechDto dto, string token, string userName, long userId, TokenDto identification)
         {
             var eventDateStart = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00");
             var eventDateEnd = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
@@ -327,7 +328,7 @@ namespace Supp.Site.Recognition
 
             var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = dto.Elements[1].Value, Description = dto.Elements[2].Value, Color = color, EventDateStart = eventDateStart, EventDateEnd = eventDateEnd, Location = location, NotificationMinutes = notificationMinutes };
 
-            var getRemindersResult = await webSpeecheRepo.CreateReminder(token, userName, userId, WebSpeechTypes.CreateNote, createCalendarEventRequest, _claims.Configuration.Speech.GoogleCalendarAccount);
+            var getRemindersResult = await webSpeecheRepo.CreateReminder(token, userName, userId, WebSpeechTypes.CreateNote, createCalendarEventRequest, JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.GoogleCalendarAccount);
 
             return getRemindersResult;
         }

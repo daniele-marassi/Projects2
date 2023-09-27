@@ -51,7 +51,6 @@
     <Compile Include="AuthenticationLoginParam.cs" />
     <Compile Include="AuthenticationResult.cs" />
     <Compile Include="ChangePasswordDto.cs" />
-    <Compile Include="ClaimsDto.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Days.cs" />
     <Compile Include="DisableAccountDto.cs" />
@@ -67,8 +66,6 @@
     <Compile Include="GoogleAuth.cs" />
     <Compile Include="GoogleAuthDto.cs" />
     <Compile Include="GoogleAuthResult.cs" />
-    <Compile Include="HubDataDto.cs" />
-    <Compile Include="HubDataResult.cs" />
     <Compile Include="LoginDto.cs" />
     <Compile Include="Media.cs" />
     <Compile Include="MediaConfiguration.cs" />
@@ -89,6 +86,7 @@
     <Compile Include="SongResult.cs" />
     <Compile Include="TokenDto.cs" />
     <Compile Include="TokenResult.cs" />
+    <Compile Include="Token.cs" />
     <Compile Include="User.cs" />
     <Compile Include="UserDto.cs" />
     <Compile Include="UserResult.cs" />

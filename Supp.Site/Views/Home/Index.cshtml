@@ -2,6 +2,7 @@
 @using System.Collections.Generic;
 @using System;
 @using Newtonsoft.Json;
+@using Supp.Site.Common;
 
 @{
     ViewBag.Title = "Home Page";
@@ -18,7 +19,9 @@
 
 <div class="text-danger" style="padding:30px;">
     @{
-        Context.Request.Cookies.TryGetValue(GeneralSettings.Constants.SuppSiteErrorsCookieName, out string errorsFromCookie);
+        var suppUtility = new SuppUtility();
+        string errorsFromCookie = suppUtility.ReadCookie(Context.Request, GeneralSettings.Constants.SuppSiteErrorsCookieName);
+
         if (errorsFromCookie == null) { errorsFromCookie = String.Empty; }
         var errors = JsonConvert.DeserializeObject<List<string>>(errorsFromCookie);
     }
@@ -34,6 +37,6 @@
     }
 
     @{
-        Context.Response.Cookies.Delete(GeneralSettings.Constants.SuppSiteErrorsCookieName);
+        suppUtility.RemoveCookie(Context.Response, Context.Request, GeneralSettings.Constants.SuppSiteErrorsCookieName);
     }
 </div>
