@@ -43,7 +43,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\SetDefaultAudioDevice
 C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\SetDefaultAudioDevice\SetDefaultAudioDeviceByName\bin\Release\System.Security.AccessControl.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\SetDefaultAudioDevice\SetDefaultAudioDeviceByName\bin\Release\System.Security.Principal.Windows.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\SetDefaultAudioDevice\SetDefaultAudioDeviceByName\obj\Release\SetDefaultAudioDeviceByName.csproj.AssemblyReference.cache
-C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\SetDefaultAudioDevice\SetDefaultAudioDeviceByName\obj\Release\SetDefaultAudioDeviceByName.csproj.SuggestedBindingRedirects.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\SetDefaultAudioDevice\SetDefaultAudioDeviceByName\obj\Release\SetDefaultAudioDeviceByName.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\SetDefaultAudioDevice\SetDefaultAudioDeviceByName\obj\Release\SetDefaultAudioDeviceByName.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\AdditionalProject\SetDefaultAudioDevice\SetDefaultAudioDeviceByName\obj\Release\SetDefaultAudioDeviceByName.exe

@@ -26,6 +26,7 @@ using InTheHand.Net.Sockets;
 using NAudio.CoreAudioApi;
 using Microsoft.Win32;
 using AudioSwitcher.AudioApi.CoreAudio;
+using System.Security.Authentication;
 
 namespace Additional
 {
@@ -1954,6 +1955,129 @@ namespace Additional
 
             if (result.Output != null) result.Output = result.Output.Replace(System.Environment.NewLine, "");
             if (result.Error != null) result.Error = result.Error.Replace(System.Environment.NewLine, "");
+
+            return result;
+        }
+
+        public class ApiParameters
+        {
+            public Dictionary<string, string> ParametresForUrlQuery { get; set; }
+            public object Object { get; set; }
+            public Dictionary<string, string> Headers { get; set; }
+        }
+
+        /// <summary>
+        /// Call Api
+        /// </summary>
+        /// <param name="methodType"></param>
+        /// <param name="baseUrl"></param>
+        /// <param name="apiUrl"></param>
+        /// <param name="apiParameters"></param>
+        /// <param name="token"></param>
+        /// <param name="tokenType"></param>
+        /// <param name="timeoutInMinutes"></param>
+        /// <param name="skipCertificateValidation"></param>
+        /// <returns></returns>
+        public async Task<T> CallApi<T>(HttpMethod methodType, string baseUrl, string apiUrl, ApiParameters apiParameters = null, string token = null, string tokenType = null, int timeoutInMinutes = 10, bool skipCertificateValidation = false)
+        {
+            T result;
+
+            if(skipCertificateValidation)
+                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+            var handler = new HttpClientHandler()
+            {
+                SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls
+            };
+
+            try
+            {
+                using (HttpClient client = new HttpClient(handler))
+                {
+                    //init
+                    client.BaseAddress = new Uri(baseUrl);
+                    client.Timeout = TimeSpan.FromMinutes(timeoutInMinutes);
+
+                    var par = "";
+
+                    //add parameters in Uri
+                    if (apiParameters != null && apiParameters.ParametresForUrlQuery != null && apiParameters.ParametresForUrlQuery.Count > 0)
+                    {
+                        par = DictionaryToQuery(apiParameters.ParametresForUrlQuery);
+                    }
+
+                    //create request
+                    var request = new HttpRequestMessage(methodType, client.BaseAddress + apiUrl + par);
+
+                    if (token != null && token != String.Empty)
+                    {
+                        request.Headers.Authorization = new AuthenticationHeaderValue(tokenType, token);
+                    }
+
+                    //add parameters in headers
+                    if (apiParameters != null && apiParameters.Object != null)
+                    {
+                        var content = new StringContent(JsonConvert.SerializeObject(apiParameters.Object), Encoding.UTF8, "application/json");
+
+                        content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                        request.Content = content;
+                    }
+
+                    //add additional headers
+                    if (apiParameters != null && apiParameters.Headers != null)
+                    {
+                        foreach (var header in apiParameters.Headers)
+                        {
+                            try
+                            {
+                                request.Headers.Add(header.Key, header.Value);
+                            }
+                            catch (Exception)
+                            {
+                            }
+                        }
+                    }
+
+                    //call
+                    var response = await client.SendAsync(request);
+
+                    if (response.IsSuccessStatusCode == false)
+                    {
+                        throw new Exception($"Call Api Error - ReasonPhrase:{response.ReasonPhrase}, StatusCode:{response.StatusCode}");
+                    }
+                    else
+                    {
+                        var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                        result = JsonConvert.DeserializeObject<T>(content);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Dictionary To Query
+        /// </summary>
+        /// <param name="keyValuePairs"></param>
+        /// <returns></returns>
+        public string DictionaryToQuery(Dictionary<string, string> keyValuePairs)
+        {
+            var result = "";
+            var query = "";
+
+            foreach (var kvp in keyValuePairs)
+            {
+                if (query != "") query += "&";
+                query += $"{kvp.Key}={kvp.Value}";
+            }
+
+            if (query != "") result = "?" + query;
 
             return result;
         }
