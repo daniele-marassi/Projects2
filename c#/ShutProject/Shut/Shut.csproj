@@ -102,6 +102,7 @@
     <Compile Include="ShutBack.Designer.cs">
       <DependentUpon>ShutBack.cs</DependentUpon>
     </Compile>
+    <Compile Include="ThreadHelperClass.cs" />
     <Content Include="Resources\Shut.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

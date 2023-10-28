@@ -13,8 +13,10 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Shut
 {
@@ -81,7 +83,7 @@ namespace Shut
         [DllImport("user32")]
         public static extern void LockWorkStation();
 
-        private ShutBack shutBack = null;
+        private static ShutBack shutBack = null;
 
         private static bool exit = false;
 
@@ -511,6 +513,28 @@ namespace Shut
             this.Left = 0;
             this.Top = Screen.PrimaryScreen.WorkingArea.Height - this.Height;
             OpenTmr.Enabled = true;
+
+            Task.Run(() => ThreadStartTask());
+        }
+
+        private Task ThreadStartTask()
+        {
+            while (true)
+            {
+                System.Threading.Thread.Sleep(100);
+
+                var repositionThread = new Thread(new ThreadStart(this.Reposition));
+                repositionThread.Start();
+            }
+        }
+
+        private void Reposition()
+        {
+            ThreadHelperClass.SetTop(shutBack, Screen.PrimaryScreen.WorkingArea.Height - (shutBack.Height + 0));
+            ThreadHelperClass.SetLeft(shutBack, 0);
+
+            ThreadHelperClass.SetTop(this, Screen.PrimaryScreen.WorkingArea.Height - this.Height);
+            ThreadHelperClass.SetLeft(this, 0);
         }
 
         private void StartColorAndZoomTimer()

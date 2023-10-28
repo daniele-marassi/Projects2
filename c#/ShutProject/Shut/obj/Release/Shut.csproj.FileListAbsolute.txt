@@ -1,0 +1,44 @@
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\About.ico
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\About.png
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Fonts\Cafed_v2.ttf
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Fonts\PAPYRUS.TTF
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\External_library\Additional.dll.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Fonts\We Spray.ttf
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Fonts\Byom-Icons-Trial.ttf
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Fonts\WEBDINGS.TTF
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\External_library\Additional.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\External_library\Additional.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Shut.ico
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Shut.png
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\ShutTask.ico
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\ShutTask.png
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Fonts\multimedia icons.ttf
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Fonts\WINGDING.TTF
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Fonts\WINGDNG2.TTF
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Fonts\WINGDNG3.TTF
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Fonts\CELLPIC.ttf
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Fonts\Mad Bubbles.ttf
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Fonts\SPLAT.TTF
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Fonts\YouMurderer BB.ttf
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Fonts\Dog-Rough.ttf
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Fonts\breezi_font-webfont.ttf
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Resources\Fonts\Icons South St.ttf
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Shut.exe.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Shut.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Shut.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\AboutBox.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Additional.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\System.ValueTuple.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\AboutBox.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\AboutBox.exe.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Additional.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\bin\Release\Additional.dll.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Release\Shut.csproj.AssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Release\Shut.Shut.resources
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Release\Shut.Properties.Resources.resources
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Release\Shut.ShutBack.resources
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Release\Shut.csproj.GenerateResource.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Release\Shut.csproj.CoreCompileInputs.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Release\Shut.csproj.CopyComplete
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Release\Shut.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\ShutProject\Shut\obj\Release\Shut.pdb
