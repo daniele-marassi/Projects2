@@ -43,7 +43,7 @@ namespace AboutBox
         {
             try
             {
-                this.Icon = new Icon("Resources/About.ico");
+                this.Icon = new Icon($"{Directory.GetCurrentDirectory()}\\Resources\\About.ico");
                 this.Visible = false;
                 
                 if (_backGrounColor == default(Color)) _backGrounColor = Color.Gray;

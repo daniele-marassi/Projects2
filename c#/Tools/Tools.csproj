@@ -182,6 +182,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContextMenus.cs" />
+    <Compile Include="ExceptionsManagementFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExceptionsManagementFrm.Designer.cs">
+      <DependentUpon>ExceptionsManagementFrm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Hook.cs" />
     <Compile Include="MainService.cs" />
     <Compile Include="ManagementVolume.cs" />
@@ -277,6 +283,12 @@
     <Content Include="Resources\Error.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\ExceptionsManagement.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ExceptionsManagement.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\NotifyActive.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -333,6 +345,9 @@
     <Content Include="Tools.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="ExceptionsManagementFrm.resx">
+      <DependentUpon>ExceptionsManagementFrm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -373,6 +388,21 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Content Include="Resources\supp.psd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Fonts\Byom-Icons-Trial.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Fonts\Cafed_v2.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Fonts\PAPYRUS.TTF">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Fonts\We Spray.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Fonts\WEBDINGS.TTF">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

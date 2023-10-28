@@ -32,7 +32,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\CheckSuppService\bin\Release\Addi
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\CheckSuppService\bin\Release\Newtonsoft.Json.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\CheckSuppService\bin\Release\NLog.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\CheckSuppService\obj\Release\CheckSupp.csproj.AssemblyReference.cache
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\CheckSuppService\obj\Release\CheckSupp.csproj.SuggestedBindingRedirects.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\CheckSuppService\obj\Release\CheckSupp.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\CheckSuppService\obj\Release\CheckSupp.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\CheckSuppService\obj\Release\CheckSupp.exe

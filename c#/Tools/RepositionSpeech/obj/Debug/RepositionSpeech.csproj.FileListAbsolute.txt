@@ -65,7 +65,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\bin\Debug\Additi
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\bin\Debug\Additional.dll.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\bin\Debug\System.ValueTuple.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\obj\Debug\RepositionSpeech.csproj.AssemblyReference.cache
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\obj\Debug\RepositionSpeech.csproj.SuggestedBindingRedirects.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\obj\Debug\RepositionSpeech.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\obj\Debug\RepositionSpeech.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\obj\Debug\RepositionSpeech.exe

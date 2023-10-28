@@ -179,7 +179,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\EntityFr
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\NLog.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\bin\Debug\System.ValueTuple.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.csproj.AssemblyReference.cache
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.csproj.SuggestedBindingRedirects.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.exe

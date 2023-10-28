@@ -48,7 +48,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakServic
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Release\NLog.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Release\Supp.Models.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\obj\Release\WakeUpScreenAfterPowerBreak.csproj.AssemblyReference.cache
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\obj\Release\WakeUpScreenAfterPowerBreak.csproj.SuggestedBindingRedirects.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\obj\Release\WakeUpScreenAfterPowerBreak.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\obj\Release\WakeUpScreenAfterPowerBreak.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\obj\Release\WakeUpScreenAfterPowerBreak.exe

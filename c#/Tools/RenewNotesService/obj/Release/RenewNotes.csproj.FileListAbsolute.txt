@@ -67,7 +67,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Release\Sup
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Release\GoogleService.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\bin\Release\GoogleService.dll.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\obj\Release\RenewNotes.csproj.AssemblyReference.cache
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\obj\Release\RenewNotes.csproj.SuggestedBindingRedirects.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\obj\Release\RenewNotes.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\obj\Release\RenewNotes.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\obj\Release\RenewNotes.exe

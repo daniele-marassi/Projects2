@@ -2,6 +2,7 @@
 using Tools.ExecutionQueue;
 using System;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace Tools
 {
@@ -10,7 +11,7 @@ namespace Tools
 		[STAThread]
 		static void Main()
 		{
-			//Task.Run(() => MainService.Start());
+			Task.Run(() => MainService.Start());
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);

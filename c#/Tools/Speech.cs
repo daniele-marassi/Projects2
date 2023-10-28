@@ -121,8 +121,14 @@ namespace Tools
 
             foreach (var item in suppSiteSpeechAppUrlParamsArray)
             {
-                if (suppSiteSpeechAppUrlParamsString != "") suppSiteSpeechAppUrlParamsString += "&";
-                suppSiteSpeechAppUrlParamsString += item;
+                if (firstCall && item.Contains("_onlyRefresh"))
+                {
+                }
+                else
+                {
+                    if (suppSiteSpeechAppUrlParamsString != "") suppSiteSpeechAppUrlParamsString += "&";
+                    suppSiteSpeechAppUrlParamsString += item;
+                }
             }
 
             suppSiteSpeechAppUrl += suppSiteSpeechAppUrlParamsString;
@@ -195,6 +201,12 @@ namespace Tools
         public void HideAfterShow()
         {
             Start(false, false, true);
+        }
+
+        public void Restart()
+        {
+            //Stop();
+            Start(false, false, false,false);
         }
 
         public void Hide()

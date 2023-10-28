@@ -131,7 +131,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Additiona
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\Newtonsoft.Json.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\bin\Debug\NLog.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\obj\Debug\SyncIp.csproj.AssemblyReference.cache
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\obj\Debug\SyncIp.csproj.SuggestedBindingRedirects.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\obj\Debug\SyncIp.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\obj\Debug\SyncIp.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\SyncIpService\obj\Debug\SyncIp.exe

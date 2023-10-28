@@ -151,7 +151,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\b
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\bin\Debug\NLog.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\bin\Debug\System.ValueTuple.xml
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\obj\Debug\ReconnectBluetoothDevice.csproj.AssemblyReference.cache
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\obj\Debug\ReconnectBluetoothDevice.csproj.SuggestedBindingRedirects.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\obj\Debug\ReconnectBluetoothDevice.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\obj\Debug\ReconnectBluetoothDevice.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\obj\Debug\ReconnectBluetoothDevice.exe

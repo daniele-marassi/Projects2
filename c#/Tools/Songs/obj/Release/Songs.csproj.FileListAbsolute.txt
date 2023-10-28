@@ -43,7 +43,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Release\System.ValueTup
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Release\it\EntityFramework.resources.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Release\it\EntityFramework.SqlServer.resources.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Release\Songs.csproj.AssemblyReference.cache
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Release\Songs.csproj.SuggestedBindingRedirects.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Release\Songs.csproj.CoreCompileInputs.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Release\Songs.csproj.CopyComplete
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Release\Songs.exe

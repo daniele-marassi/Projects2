@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Configuration;
 using AboutBox;
 using Tools.Songs;
+using System.IO;
 
 namespace Tools
 {
@@ -16,11 +17,6 @@ namespace Tools
 	/// </summary>
 	public class ContextMenus
 	{
-		
-		/// <summary>
-		/// Is the About box displayed?
-		/// </summary>
-
 		/// <summary>
 		/// Creates this instance.
 		/// </summary>
@@ -52,8 +48,20 @@ namespace Tools
 			item.Image = Resources.About;
 			Common.ContextMenus.Menu.Items.Add(item);
 
-			// Separator.
-			sep = new ToolStripSeparator();
+            // Separator.
+            sep = new ToolStripSeparator();
+            Common.ContextMenus.Menu.Items.Add(sep);
+
+            // ExceptionsManagement.
+            item = new ToolStripMenuItem();
+            item.Text = "ExceptionsManagement";
+            item.Name = "ExceptionsManagementMenuItem";
+            item.Click += new EventHandler(ExceptionsManagement_Click);
+            item.Image = Resources.ExceptionsManagement;
+            Common.ContextMenus.Menu.Items.Add(item);
+
+            // Separator.
+            sep = new ToolStripSeparator();
 			Common.ContextMenus.Menu.Items.Add(sep);
 
 			// HookKey.
@@ -231,18 +239,34 @@ namespace Tools
             Utility utility = new Utility();
             if (!utility.IsOpenForm(Application.OpenForms, nameof(AboutBoxFrm)))
             {
-                AboutBoxFrm aboutBoxFrm = new AboutBoxFrm(utility.AssemblyTitle, utility.AssemblyProduct, utility.AssemblyVersion, utility.AssemblyCopyright, utility.AssemblyCompany, utility.AssemblyDescription + " " + Hook.methodOfUse, Color.FromArgb(255,60,60,60), Color.FromArgb(255, 245, 40, 40));
+                var aboutBoxFrm = new AboutBoxFrm(utility.AssemblyTitle, utility.AssemblyProduct, utility.AssemblyVersion, utility.AssemblyCopyright, utility.AssemblyCompany, utility.AssemblyDescription + " " + Hook.methodOfUse, Color.FromArgb(255,60,60,60), Color.FromArgb(255, 245, 40, 40));
                 aboutBoxFrm.TopMost = true;
-                aboutBoxFrm.Icon = new Icon("Resources/About.ico");
-			}
+                aboutBoxFrm.Icon = new Icon($"{Directory.GetCurrentDirectory()}\\Resources\\About.ico");
+            }
 		}
 
-		/// <summary>
-		/// Handles the Click event of the About control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-		void ClearNLogFiles_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Handles the Click event of the About control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        void ExceptionsManagement_Click(object sender, EventArgs e)
+        {
+            Utility utility = new Utility();
+            if (!utility.IsOpenForm(Application.OpenForms, nameof(ExceptionsManagementFrm)))
+            {
+                var exceptionManagementFrm = new ExceptionsManagementFrm(Color.FromArgb(255, 60, 60, 60), Color.FromArgb(255, 245, 40, 40));
+                exceptionManagementFrm.TopMost = true;
+                exceptionManagementFrm.Icon = new Icon($"{Directory.GetCurrentDirectory()}\\Resources\\ExceptionsManagement.ico");
+            }
+        }
+
+        /// <summary>
+        /// Handles the Click event of the About control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        void ClearNLogFiles_Click(object sender, EventArgs e)
 		{
 			var limitLogFileInMB = int.Parse(ConfigurationManager.AppSettings["LimitLogFileInMB"]);
 
