@@ -48,56 +48,65 @@ namespace Tools
             var windowCaption = appSettings["WindowCaption"];
             var exceptions = appSettings["BoxRepositioningExceptions"];
 			string[] exceptionList = null;
+			var cycleCountingForBoxRepositioning = 0;
 
             while (true)
 			{
 				System.Threading.Thread.Sleep(sleepOfTheMainServiceInMilliseconds);
 
-				//await ClearNLogFiles(limitLogFileInMB, logsDirectory, sleepOfTheMainServiceInMilliseconds);
+                //await ClearNLogFiles(limitLogFileInMB, logsDirectory, sleepOfTheMainServiceInMilliseconds);
 
-				if (utilty.ProcessIsActiveByWindowCaption(windowCaption))
+                //Box Repositioning
+                if (cycleCountingForBoxRepositioning >= 600)
 				{
-					var skip = false;				
-					var hWnd = FindWindowByCaption(IntPtr.Zero, windowCaption);
-					var rct = new RECT();
-					GetWindowRect(hWnd, ref rct);
+					cycleCountingForBoxRepositioning = 0;
 
-					if (rct.Top > -10)
+					if (utilty.ProcessIsActiveByWindowCaption(windowCaption))
 					{
-                        ConfigurationManager.RefreshSection("appSettings");
-                        appSettings = ConfigurationManager.AppSettings;
-                        exceptions = appSettings["BoxRepositioningExceptions"];
+						var skip = false;
+						var hWnd = FindWindowByCaption(IntPtr.Zero, windowCaption);
+						var rct = new RECT();
+						GetWindowRect(hWnd, ref rct);
 
-                        if (exceptions != null)
-                            exceptionList = exceptions.Split(',');
-
-                        if (exceptionList != null && exceptionList.Length > 0)
-                        {
-                            foreach (var exception in exceptionList)
-                            {
-                                var result = Process.GetProcessesByName(exception).FirstOrDefault();
-
-                                if (result != null) { skip = true; break; }
-                            }
-                        }
-
-                        if (!skip)
+						if (rct.Top > -10)
 						{
-							try
-							{
-								if (ProcessIcon.SpeechShowHideActive == 1)
-								{
-									ProcessIcon._Speech = new Speech();
+							ConfigurationManager.RefreshSection("appSettings");
+							appSettings = ConfigurationManager.AppSettings;
+							exceptions = appSettings["BoxRepositioningExceptions"];
 
-									Task.Run(() => ProcessIcon._Speech.Restart());
+							if (exceptions != null)
+								exceptionList = exceptions.Split(',');
+
+							if (exceptionList != null && exceptionList.Length > 0)
+							{
+								foreach (var exception in exceptionList)
+								{
+									var result = Process.GetProcessesByName(exception).FirstOrDefault();
+
+									if (result != null) { skip = true; break; }
 								}
 							}
-							catch (Exception)
+
+							if (!skip)
 							{
+								try
+								{
+									if (ProcessIcon.SpeechShowHideActive == 1)
+									{
+										ProcessIcon._Speech = new Speech();
+
+										Task.Run(() => ProcessIcon._Speech.Restart());
+									}
+								}
+								catch (Exception)
+								{
+								}
 							}
 						}
 					}
 				}
+				else
+					cycleCountingForBoxRepositioning++;
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();

@@ -241,7 +241,7 @@ namespace Tools
             {
                 var aboutBoxFrm = new AboutBoxFrm(utility.AssemblyTitle, utility.AssemblyProduct, utility.AssemblyVersion, utility.AssemblyCopyright, utility.AssemblyCompany, utility.AssemblyDescription + " " + Hook.methodOfUse, Color.FromArgb(255,60,60,60), Color.FromArgb(255, 245, 40, 40));
                 aboutBoxFrm.TopMost = true;
-                aboutBoxFrm.Icon = new Icon($"{Directory.GetCurrentDirectory()}\\Resources\\About.ico");
+                aboutBoxFrm.Icon = new Icon($"{Path.GetDirectoryName(Application.ExecutablePath)}\\Resources\\About.ico");
             }
 		}
 
@@ -257,7 +257,7 @@ namespace Tools
             {
                 var exceptionManagementFrm = new ExceptionsManagementFrm(Color.FromArgb(255, 60, 60, 60), Color.FromArgb(255, 245, 40, 40));
                 exceptionManagementFrm.TopMost = true;
-                exceptionManagementFrm.Icon = new Icon($"{Directory.GetCurrentDirectory()}\\Resources\\ExceptionsManagement.ico");
+                exceptionManagementFrm.Icon = new Icon($"{Path.GetDirectoryName(Application.ExecutablePath)}\\Resources\\ExceptionsManagement.ico");
             }
         }
 

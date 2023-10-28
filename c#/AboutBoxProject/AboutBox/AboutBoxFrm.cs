@@ -43,7 +43,7 @@ namespace AboutBox
         {
             try
             {
-                this.Icon = new Icon($"{Directory.GetCurrentDirectory()}\\Resources\\About.ico");
+                this.Icon = new Icon($"{Path.GetDirectoryName(Application.ExecutablePath)}\\Resources\\About.ico");
                 this.Visible = false;
                 
                 if (_backGrounColor == default(Color)) _backGrounColor = Color.Gray;
@@ -54,10 +54,10 @@ namespace AboutBox
 
                 locationCloselbl = new Point(this.Closelbl.Left, this.Closelbl.Top);
 
-                fonts.AddFontFile($"{Directory.GetCurrentDirectory()}\\Resources\\Fonts\\Cafed_v2.ttf");
-                fonts.AddFontFile($"{Directory.GetCurrentDirectory()}\\Resources\\Fonts\\PAPYRUS.ttf");
-                fonts.AddFontFile($"{Directory.GetCurrentDirectory()}\\Resources\\Fonts\\We Spray.ttf");
-                fonts.AddFontFile($"{Directory.GetCurrentDirectory()}\\Resources\\Fonts\\Byom-Icons-Trial.ttf");
+                fonts.AddFontFile($"{Path.GetDirectoryName(Application.ExecutablePath)}\\Resources\\Fonts\\Cafed_v2.ttf");
+                fonts.AddFontFile($"{Path.GetDirectoryName(Application.ExecutablePath)}\\Resources\\Fonts\\PAPYRUS.ttf");
+                fonts.AddFontFile($"{Path.GetDirectoryName(Application.ExecutablePath)}\\Resources\\Fonts\\We Spray.ttf");
+                fonts.AddFontFile($"{Path.GetDirectoryName(Application.ExecutablePath)}\\Resources\\Fonts\\Byom-Icons-Trial.ttf");
 
                 this.BackgroundLbl.Font = utility.GetFonts("We Spray", 500F, fonts);
                 this.LogoRingLbl.Font = utility.GetFonts("Cafeina Dig_v2", 250F, fonts);
