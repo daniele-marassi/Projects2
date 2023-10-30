@@ -57,7 +57,7 @@ namespace Supp.Site.Controllers
 
                     ViewBag.CurrentFilter = searchString;
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                     result = await mediaConfigurationRepo.GetAllMediaConfigurations(access_token_cookie);
 
@@ -148,7 +148,7 @@ namespace Supp.Site.Controllers
                     if (id == null)
                         throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await mediaConfigurationRepo.GetMediaConfigurationsById((long)id, access_token_cookie);
                     var data = result.Data.ToList();
 
@@ -189,7 +189,7 @@ namespace Supp.Site.Controllers
                     var className = currentMethod.DeclaringType.Name;
 
                     var data = new List<AuthenticationDto>() { };
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                     data.Add(new AuthenticationDto() { });
 
@@ -231,7 +231,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
                         var result = await mediaConfigurationRepo.AddMediaConfiguration(dto, access_token_cookie);
 
                         data.AddRange(result.Data);
@@ -266,7 +266,7 @@ namespace Supp.Site.Controllers
                     if (id == null)
                         throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await mediaConfigurationRepo.GetMediaConfigurationsById((long)id, access_token_cookie);
                     var data = result.Data.ToList();
 
@@ -318,7 +318,7 @@ namespace Supp.Site.Controllers
                         if (!MediaConfigurationExists(dto.Id))
                             throw new Exception($"Error [Id not exists!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
                         var result = await mediaConfigurationRepo.UpdateMediaConfiguration(dto, access_token_cookie);
 
                         if (!result.Successful)
@@ -350,7 +350,7 @@ namespace Supp.Site.Controllers
                     if (id == null)
                         throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await mediaConfigurationRepo.GetMediaConfigurationsById((long)id, access_token_cookie);
                     var data = result.Data.ToList();
 
@@ -394,7 +394,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
                         var result = await mediaConfigurationRepo.DeleteMediaConfigurationById(id, access_token_cookie);
 
                         data.AddRange(result.Data);
@@ -426,7 +426,7 @@ namespace Supp.Site.Controllers
                     var method = currentMethod.Name;
                     var className = currentMethod.DeclaringType.Name;
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = mediaConfigurationRepo.GetMediaConfigurationsById(id, access_token_cookie).Result;
                     var data = result.Data.FirstOrDefault();
 

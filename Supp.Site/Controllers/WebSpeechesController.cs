@@ -89,7 +89,7 @@ namespace Supp.Site.Controllers
 
                     ViewBag.CurrentFilter = searchString;
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                     result = await webSpeecheRepo.GetAllWebSpeeches(access_token_cookie);
 
@@ -227,7 +227,7 @@ namespace Supp.Site.Controllers
                     if (id == null)
                         throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
 
                     result.Data = recognitionCommon.GetData(result.Data, false, SuppUtility.GetUserIdFromToken(access_token_cookie)).Data;
@@ -298,7 +298,7 @@ namespace Supp.Site.Controllers
                     var method = currentMethod.Name;
                     var className = currentMethod.DeclaringType.Name;
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                     data.Add(new WebSpeechDto() { });
 
@@ -397,7 +397,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                         var identification = SuppUtility.GetIdentification(Request, -1);
                         if (dto.PrivateInstruction == true) dto.UserId = identification.UserId;
@@ -439,7 +439,7 @@ namespace Supp.Site.Controllers
                     if (id == null)
                         throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
 
                     result.Data = recognitionCommon.GetData(result.Data, false, SuppUtility.GetUserIdFromToken(access_token_cookie)).Data;
@@ -510,7 +510,7 @@ namespace Supp.Site.Controllers
                         if (!WebSpeecheExists(dto.Id))
                             throw new Exception($"Error [Id not exists!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                         var parentIds = JsonConvert.SerializeObject(dto.WebSpeechIds);
                         dto.ParentIds = parentIds;
@@ -553,7 +553,7 @@ namespace Supp.Site.Controllers
                     if (id == null)
                         throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await webSpeecheRepo.GetWebSpeechesById((long)id, access_token_cookie);
 
                     result.Data = recognitionCommon.GetData(result.Data, false, SuppUtility.GetUserIdFromToken(access_token_cookie)).Data;
@@ -590,7 +590,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
                         var result = await webSpeecheRepo.DeleteWebSpeechById(id, access_token_cookie);
 
                         data.AddRange(result.Data);
@@ -624,7 +624,7 @@ namespace Supp.Site.Controllers
                     var method = currentMethod.Name;
                     var className = currentMethod.DeclaringType.Name;
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = webSpeecheRepo.GetWebSpeechesById(id, access_token_cookie).Result;
                     var data = result.Data.FirstOrDefault();
 
@@ -680,7 +680,7 @@ namespace Supp.Site.Controllers
 
             if (checkIfTokenIsValid && identification != null && identification.IsAuthenticated == true && login == false)
             {
-                var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                 bool? tokenIsValid = tokensRepo.TokenIsValid(access_token_cookie).GetAwaiter().GetResult();
                 if (tokenIsValid != true)
@@ -711,7 +711,8 @@ namespace Supp.Site.Controllers
 
                     if (!authenticationResult.IsValidUser)
                     {
-                        passwordAlreadyEncrypted = true;
+                        if (passwordAlreadyEncrypted) passwordAlreadyEncrypted = false;
+                        else passwordAlreadyEncrypted = true;
                         dto = new LoginDto() { UserName = _userName, Password = _password, PasswordAlreadyEncrypted = passwordAlreadyEncrypted };
                         authenticationResult = HomeController.Authentication(dto, nLogUtility, authenticationRepo, HttpContext, Response, Request);
                     }
@@ -903,7 +904,7 @@ namespace Supp.Site.Controllers
             var _method = currentMethod.Name;
             var _className = currentMethod.DeclaringType.Name;
 
-            var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+            var access_token_cookie = suppUtility.GetAccessToken(Request);
 
             var webSpeechResult = await webSpeecheRepo.GetAllWebSpeeches(access_token_cookie);
 

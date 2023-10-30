@@ -199,7 +199,7 @@ namespace Supp.Site.Common
                     {
                         var token = "";
 
-                        token = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        token = suppUtility.GetAccessToken(request);
 
                         if (token == null) token = "";
 
@@ -215,7 +215,7 @@ namespace Supp.Site.Common
                         {
                             var token = "";
 
-                            token = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                            token = suppUtility.GetAccessToken(request);
 
                             if (token != null && token != "")
                             {
@@ -478,6 +478,28 @@ namespace Supp.Site.Common
         {
             var json = JsonConvert.SerializeObject(obj);
             return (T)JsonConvert.DeserializeObject<T>(json);
+        }
+
+        public string GetAccessToken(HttpRequest request)
+        {
+            var access_token_cookie = "";
+            long userId = 0;
+            long.TryParse(ReadCookie(request, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName), out userId);
+
+            if (Program.TokensArchive != null && Program.TokensArchive.ContainsKey(userId))
+            {
+                var tokenDto = Program.TokensArchive[userId];
+
+                if (tokenDto != null)
+                {
+                    access_token_cookie = tokenDto?.TokenCode;
+                }
+            }
+
+            if(access_token_cookie == "" || access_token_cookie == null)
+                access_token_cookie = ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+
+            return access_token_cookie;
         }
     }
 }

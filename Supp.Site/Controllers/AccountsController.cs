@@ -50,7 +50,7 @@ namespace Supp.Site.Controllers
                     var method = currentMethod.Name;
                     var className = currentMethod.DeclaringType.Name;
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                     data.Add(new AccountDto() { });
 
@@ -101,7 +101,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                         var getAllUsersResult = await userRepo.GetAllUsers(access_token_cookie);
                         if (!getAllUsersResult.Successful)
@@ -200,7 +200,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                         var getAuthenticationResult = await authenticationRepo.GetAuthenticationsByUserName(dto.UserName, access_token_cookie);
                         if (!getAuthenticationResult.Successful)
@@ -276,7 +276,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                         var getAuthenticationResult = await authenticationRepo.GetAuthenticationsByUserName(dto.UserName, access_token_cookie);
                         if (!getAuthenticationResult.Successful)
@@ -361,7 +361,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                         var getAuthenticationResult = await authenticationRepo.GetAuthenticationsByUserName(dto.UserName, access_token_cookie);
                         if (!getAuthenticationResult.Successful)
@@ -422,7 +422,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                         var getAuthenticationResult = await authenticationRepo.GetAuthenticationsByUserName(dto.UserName, access_token_cookie);
                         if (!getAuthenticationResult.Successful)
@@ -506,7 +506,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                         var getAuthenticationResult = await authenticationRepo.GetAuthenticationsByUserName(dto.UserName, access_token_cookie);
                         if (!getAuthenticationResult.Successful)

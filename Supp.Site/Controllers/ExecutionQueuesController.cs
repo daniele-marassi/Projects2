@@ -55,7 +55,7 @@ namespace Supp.Site.Controllers
 
                     ViewBag.CurrentFilter = searchString;
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                     result = await executionQueueRepo.GetAllExecutionQueues(access_token_cookie);
 
@@ -154,7 +154,7 @@ namespace Supp.Site.Controllers
                     if (id == null)
                         throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await executionQueueRepo.GetExecutionQueuesById((long)id, access_token_cookie);
                     var data = result.Data.FirstOrDefault();
 
@@ -198,7 +198,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                         if (dto.ScheduledDateTime == null) dto.ScheduledDateTime = DateTime.Now;
 
@@ -236,7 +236,7 @@ namespace Supp.Site.Controllers
                     if (id == null) 
                         throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await executionQueueRepo.GetExecutionQueuesById((long)id, access_token_cookie);
                     var data = result.Data.FirstOrDefault();
 
@@ -277,7 +277,7 @@ namespace Supp.Site.Controllers
                         if (!ExecutionQueueExists(dto.Id))
                             throw new Exception($"Error [Id not exists!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                         if (dto.ScheduledDateTime == null) dto.ScheduledDateTime = DateTime.Now;
 
@@ -312,7 +312,7 @@ namespace Supp.Site.Controllers
                     if (id == null)
                         throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await executionQueueRepo.GetExecutionQueuesById((long)id, access_token_cookie);
                     var data = result.Data.FirstOrDefault();
 
@@ -345,7 +345,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
                         var result = await executionQueueRepo.DeleteExecutionQueueById(id, access_token_cookie);
 
                         data.AddRange(result.Data);
@@ -377,7 +377,7 @@ namespace Supp.Site.Controllers
                     var method = currentMethod.Name;
                     var className = currentMethod.DeclaringType.Name;
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = executionQueueRepo.GetExecutionQueuesById(id, access_token_cookie).Result;
                     var data = result.Data.FirstOrDefault();
 

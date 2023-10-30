@@ -92,7 +92,7 @@ namespace Supp.Site.Recognition
             WebSpeechDto newWebSpeech = null;
             string newWebSpeechString = "";
 
-            var access_token_cookie = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+            var access_token_cookie = suppUtility.GetAccessToken(request);
 
             if (_step == 0)
             {
@@ -809,6 +809,11 @@ namespace Supp.Site.Recognition
             var dialogue = new DialogueSetTimer();
 
             var setTimerResult = await dialogue.SetTimer(dto, token, userName, userId, identification, request, response, expiresInSeconds, timerDate);
+
+            if(!setTimerResult.Successful) 
+            {
+                dto.Answer = utility.SplitCamelCase(setTimerResult.Message).Replace("[","").Replace("]","").Replace("\"","");
+            }
 
             return dto;
         }

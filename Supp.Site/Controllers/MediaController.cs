@@ -14,6 +14,7 @@ using Additional.NLog;
 using AutoMapper;
 using Newtonsoft.Json;
 using GoogleManagerModels;
+using Google.Apis.Calendar.v3.Data;
 
 namespace Supp.Site.Controllers
 {
@@ -23,13 +24,13 @@ namespace Supp.Site.Controllers
         private readonly  NLogUtility nLogUtility = new NLogUtility();
         private readonly MediaRepository mediaRepo;
         private readonly SuppUtility suppUtility;
-        private readonly GoogleAccountsRepository googleAccountRepo;
+        private readonly GoogleAccountsRepository googleAccountRepository;
         
 
         public MediaController()
         {
             mediaRepo = new MediaRepository();
-            googleAccountRepo = new GoogleAccountsRepository();
+            googleAccountRepository = new GoogleAccountsRepository();
             suppUtility = new SuppUtility();
         }
 
@@ -61,7 +62,7 @@ namespace Supp.Site.Controllers
 
                     ViewBag.CurrentFilter = searchString;
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                     result = await mediaRepo.GetAllMedia(access_token_cookie);
 
@@ -71,11 +72,14 @@ namespace Supp.Site.Controllers
                     data = from s in result.Data
                            select s;
 
-                    var googleAccounts = googleAccountRepo.GetAllGoogleAccounts(access_token_cookie).Result.Data.ToList();
+                    var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(access_token_cookie);
+
+                    if (!googleAccountResult.Successful)
+                        throw new Exception(nameof(googleAccountRepository.GetAllGoogleAccounts) + " " + googleAccountResult.Message + "!");
 
                     foreach (var row in data)
                     {
-                        row.GoogleAccounts = googleAccounts;
+                        row.GoogleAccounts = googleAccountResult.Data;
                     }
 
                     long val = 0;
@@ -87,7 +91,7 @@ namespace Supp.Site.Controllers
                     }
                     else if (!String.IsNullOrEmpty(searchString))
                     {
-                        var _googleAccountIds = googleAccounts.Where(_ => _.Account.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())).Select(_ => _.Id).ToList();
+                        var _googleAccountIds = googleAccountResult.Data.Where(_ => _.Account.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())).Select(_ => _.Id).ToList();
                         data = data.Where(_ => _.UserName.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                             || _.Name.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
                             || _.FileId.ToStringExtended().ToUpper().Contains(searchString.ToUpper().Trim())
@@ -214,15 +218,18 @@ namespace Supp.Site.Controllers
                     if (id == null)
                         throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await mediaRepo.GetMediaById((long)id, access_token_cookie);
                     var data = result.Data.ToList();
 
-                    var googleAccounts = googleAccountRepo.GetAllGoogleAccounts(access_token_cookie).Result.Data.ToList();
+                    var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(access_token_cookie);
+
+                    if (!googleAccountResult.Successful)
+                        throw new Exception(nameof(googleAccountRepository.GetAllGoogleAccounts) + " " + googleAccountResult.Message + "!");
 
                     foreach (var row in data)
                     {
-                        row.GoogleAccounts = googleAccounts;
+                        row.GoogleAccounts = googleAccountResult.Data;
                     }
 
                     if (result.Successful == false || data == null)
@@ -251,15 +258,18 @@ namespace Supp.Site.Controllers
                     var className = currentMethod.DeclaringType.Name;
 
                     var data = new List<MediaDto>() { };
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                     data.Add(new MediaDto() { });
 
-                    var googleAccounts = googleAccountRepo.GetAllGoogleAccounts(access_token_cookie).Result.Data.ToList();
+                    var googleAccountResult = googleAccountRepository.GetAllGoogleAccounts(access_token_cookie).GetAwaiter().GetResult();
+
+                    if (!googleAccountResult.Successful)
+                        throw new Exception(nameof(googleAccountRepository.GetAllGoogleAccounts) + " " + googleAccountResult.Message + "!");
 
                     foreach (var row in data)
                     {
-                        row.GoogleAccounts = googleAccounts;
+                        row.GoogleAccounts = googleAccountResult.Data;
                     }
 
                     return View(data.FirstOrDefault());
@@ -290,7 +300,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
                         var result = await mediaRepo.AddMedia(dto, access_token_cookie);
 
                         data.AddRange(result.Data);
@@ -325,15 +335,18 @@ namespace Supp.Site.Controllers
                     if (id == null) 
                         throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await mediaRepo.GetMediaById((long)id, access_token_cookie);
                     var data = result.Data.ToList();
 
-                    var googleAccounts = googleAccountRepo.GetAllGoogleAccounts(access_token_cookie).Result.Data.ToList();
+                    var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(access_token_cookie);
+
+                    if (!googleAccountResult.Successful)
+                        throw new Exception(nameof(googleAccountRepository.GetAllGoogleAccounts) + " " + googleAccountResult.Message + "!");
 
                     foreach (var row in data)
                     {
-                        row.GoogleAccounts = googleAccounts;
+                        row.GoogleAccounts = googleAccountResult.Data;
                     }
 
                     if (result.Successful == false || data == null)
@@ -373,7 +386,7 @@ namespace Supp.Site.Controllers
                         if (!MediaExists(dto.Id))
                             throw new Exception($"Error [Id not exists!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
                         var result = await mediaRepo.UpdateMedia(dto, access_token_cookie);
 
                         if (!result.Successful)
@@ -405,15 +418,18 @@ namespace Supp.Site.Controllers
                     if (id == null)
                         throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await mediaRepo.GetMediaById((long)id, access_token_cookie);
                     var data = result.Data.ToList();
 
-                    var googleAccounts = googleAccountRepo.GetAllGoogleAccounts(access_token_cookie).Result.Data.ToList();
+                    var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(access_token_cookie);
+
+                    if (!googleAccountResult.Successful)
+                        throw new Exception(nameof(googleAccountRepository.GetAllGoogleAccounts) + " " + googleAccountResult.Message + "!");
 
                     foreach (var row in data)
                     {
-                        row.GoogleAccounts = googleAccounts;
+                        row.GoogleAccounts = googleAccountResult.Data;
                     }
                     if (result.Successful == false || data == null)
                         throw new Exception($"Error [Data not found!] - Class: [{className}, Method: [{method}], Operation: [{nameof(mediaRepo.GetMediaById)}] - Message: [{result.Message}]");
@@ -444,7 +460,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
                         var result = await mediaRepo.DeleteMediaById(id, access_token_cookie);
 
                         data.AddRange(result.Data);
@@ -476,7 +492,7 @@ namespace Supp.Site.Controllers
                     var method = currentMethod.Name;
                     var className = currentMethod.DeclaringType.Name;
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await mediaRepo.GetAllMedia(access_token_cookie);
                     var data = result.Data.FirstOrDefault();
 
@@ -509,7 +525,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
                         var result = await mediaRepo.ClearStructureMedia(access_token_cookie, dto.Path);
 
                         data.AddRange(result.Data);
@@ -541,7 +557,7 @@ namespace Supp.Site.Controllers
                     var method = currentMethod.Name;
                     var className = currentMethod.DeclaringType.Name;
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = mediaRepo.GetMediaById(id, access_token_cookie).Result;
                     var data = result.Data.FirstOrDefault();
 
@@ -571,7 +587,7 @@ namespace Supp.Site.Controllers
                 var method = currentMethod.Name;
                 var className = currentMethod.DeclaringType.Name;
 
-                var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                 if (mediaRequested && clear == true)
                 {
@@ -647,15 +663,18 @@ namespace Supp.Site.Controllers
                     var method = currentMethod.Name;
                     var className = currentMethod.DeclaringType.Name;
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await mediaRepo.GetAllMedia(access_token_cookie);
                     var data = result.Data.ToList();
 
-                    //var googleAccounts = googleAccountRepo.GetAllGoogleAccounts(access_token_cookie).Result.Data.ToList();
+                    //var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(access_token_cookie);
+
+                    //if (!googleAccountResult.Successful)
+                    //    throw new Exception(nameof(googleAccountRepository.GetAllGoogleAccounts) + " " + googleAccountResult.Message + "!");
 
                     //foreach (var row in data)
                     //{
-                    //    row.GoogleAccounts = googleAccounts;
+                    //    row.GoogleAccounts = googleAccountResult.Data;
                     //}
 
                     if (result.Successful == false || data == null)

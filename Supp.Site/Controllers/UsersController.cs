@@ -56,7 +56,7 @@ namespace Supp.Site.Controllers
 
                     ViewBag.CurrentFilter = searchString;
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
 
                     result = await userRepo.GetAllUsers(access_token_cookie);
 
@@ -130,7 +130,7 @@ namespace Supp.Site.Controllers
                     if (id == null)
                         throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await userRepo.GetUsersById((long)id, access_token_cookie);
                     var data = result.Data.FirstOrDefault();
 
@@ -188,7 +188,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
                         var result = await userRepo.AddUser(dto, access_token_cookie);
 
                         data.AddRange(result.Data);
@@ -223,7 +223,7 @@ namespace Supp.Site.Controllers
                     if (id == null) 
                         throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await userRepo.GetUsersById((long)id, access_token_cookie);
                     var data = result.Data.FirstOrDefault();
 
@@ -279,7 +279,7 @@ namespace Supp.Site.Controllers
                         if (!UserExists(dto.Id))
                             throw new Exception($"Error [Id not exists!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
                         var result = await userRepo.UpdateUser(dto, access_token_cookie);
 
                         if (!result.Successful)
@@ -311,7 +311,7 @@ namespace Supp.Site.Controllers
                     if (id == null)
                         throw new Exception($"Error [Id is null!] - Class: [{className}, Method: [{method}], Operation: [] - Message: []");
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = await userRepo.GetUsersById((long)id, access_token_cookie);
                     var data = result.Data.FirstOrDefault();
 
@@ -344,7 +344,7 @@ namespace Supp.Site.Controllers
                         var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());
                         var method = currentMethod.Name;
                         var className = currentMethod.DeclaringType.Name;
-                        var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(Request);
                         var result = await userRepo.DeleteUserById(id, access_token_cookie);
 
                         data.AddRange(result.Data);
@@ -376,7 +376,7 @@ namespace Supp.Site.Controllers
                     var method = currentMethod.Name;
                     var className = currentMethod.DeclaringType.Name;
 
-                    var access_token_cookie = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(Request);
                     var result = userRepo.GetUsersById(id, access_token_cookie).Result;
                     var data = result.Data.FirstOrDefault();
 

@@ -285,61 +285,67 @@ namespace Supp.Site.Repositories
 
                 try
                 {
+                    var errors = new List<string>() { };
                     var identity = userName + userId.ToString() + DateTime.Now.ToString("yyyyMMddHHmmssfff");
 
                     var googleAccountRepository = new GoogleAccountsRepository() { };
                     var googleAuthsRepository = new GoogleAuthsRepository() { };
 
                     var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
-                    var googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
 
-                    var googleAccounts = googleAccountResult.Data.Where(_ => _.UserId == userId && _.AccountType == AccountType.Calendar.ToString()).ToList();
-                    var googleAuthIds = googleAccounts.Select(_ => _.GoogleAuthId).ToList();
+                    if (!googleAccountResult.Successful)
+                        errors.Add(nameof(googleAccountRepository.GetAllGoogleAccounts) + " " + googleAccountResult.Message + "!");
 
-                    var errors = new List<string>() { };
-
-                    foreach (var account in googleAccounts)
+                    if (errors.Count == 0)
                     {
-                        var auth = googleAuthResult.Data.Where(_ => _.Id == account.GoogleAuthId).FirstOrDefault();
-                        var tokenFile = JsonConvert.DeserializeObject<TokenFile>(auth.TokenFileInJson);
+                        var googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
 
-                        var googleCalendarUtility = new GoogleCalendarUtility();
-                        var getCalendarEventsRequest = new CalendarEventsRequest()
+                        var googleAccounts = googleAccountResult.Data.Where(_ => _.UserId == userId && _.AccountType == AccountType.Calendar.ToString()).ToList();
+                        var googleAuthIds = googleAccounts.Select(_ => _.GoogleAuthId).ToList();
+
+                        foreach (var account in googleAccounts)
                         {
-                            Auth = new Auth()
+                            var auth = googleAuthResult.Data.Where(_ => _.Id == account.GoogleAuthId).FirstOrDefault();
+                            var tokenFile = JsonConvert.DeserializeObject<TokenFile>(auth.TokenFileInJson);
+
+                            var googleCalendarUtility = new GoogleCalendarUtility();
+                            var getCalendarEventsRequest = new CalendarEventsRequest()
                             {
-                                Installed = new AuthProperties()
+                                Auth = new Auth()
                                 {
-                                    Client_id = auth.Client_id,
-                                    Client_secret = auth.Client_secret,
-                                    Project_id = auth.Project_id
-                                }
-                            },
-                            TokenFile = tokenFile,
-                            Account = account.Account,
-                            TimeMin = timeMin,
-                            TimeMax = timeMax
-                        };
-                        var getCalendarEventsResult = googleCalendarUtility.GetCalendarEvents(getCalendarEventsRequest);
+                                    Installed = new AuthProperties()
+                                    {
+                                        Client_id = auth.Client_id,
+                                        Client_secret = auth.Client_secret,
+                                        Project_id = auth.Project_id
+                                    }
+                                },
+                                TokenFile = tokenFile,
+                                Account = account.Account,
+                                TimeMin = timeMin,
+                                TimeMax = timeMax
+                            };
+                            var getCalendarEventsResult = googleCalendarUtility.GetCalendarEvents(getCalendarEventsRequest);
 
-                        if(webSpeechTypes == WebSpeechTypes.ReadRemindersToday || webSpeechTypes == WebSpeechTypes.ReadRemindersTomorrow)
-                            getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.Contains("#Note", StringComparison.InvariantCultureIgnoreCase) == false).ToList();
+                            if (webSpeechTypes == WebSpeechTypes.ReadRemindersToday || webSpeechTypes == WebSpeechTypes.ReadRemindersTomorrow)
+                                getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.Contains("#Note", StringComparison.InvariantCultureIgnoreCase) == false).ToList();
 
-                        if (webSpeechTypes == WebSpeechTypes.ReadNotes)
-                            getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.Contains("#Note", StringComparison.InvariantCultureIgnoreCase) == true).ToList();
+                            if (webSpeechTypes == WebSpeechTypes.ReadNotes)
+                                getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.Contains("#Note", StringComparison.InvariantCultureIgnoreCase) == true).ToList();
 
-                        if(summaryToSearch != null && summaryToSearch != String.Empty)
-                            getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.Contains(summaryToSearch, StringComparison.InvariantCultureIgnoreCase) == true).ToList();
+                            if (summaryToSearch != null && summaryToSearch != String.Empty)
+                                getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.Contains(summaryToSearch, StringComparison.InvariantCultureIgnoreCase) == true).ToList();
 
-                        response.Data.AddRange(getCalendarEventsResult.Data);
+                            response.Data.AddRange(getCalendarEventsResult.Data);
 
-                        if(getCalendarEventsResult.Successful == false && getCalendarEventsResult.Message != null && getCalendarEventsResult.Message != String.Empty) errors.Add(getCalendarEventsResult.Message);
-                    }
+                            if (getCalendarEventsResult.Successful == false && getCalendarEventsResult.Message != null && getCalendarEventsResult.Message != String.Empty) errors.Add(getCalendarEventsResult.Message);
+                        }
 
-                    if (googleAccounts.Count == 0)
-                    {
-                        response.ResultState = GoogleManagerModels.ResultType.NotFound;
-                        errors.Add("No google accounts found!");
+                        if (googleAccounts.Count == 0)
+                        {
+                            response.ResultState = GoogleManagerModels.ResultType.NotFound;
+                            errors.Add("No google accounts found!");
+                        }
                     }
 
                     if (response.Data.Count == 0 && errors.Count == 0)
@@ -349,7 +355,7 @@ namespace Supp.Site.Repositories
                     if (response.Data.Count > 0 && errors.Count > 0)
                         response.ResultState = GoogleManagerModels.ResultType.FoundWithError;
 
-                    if (response.Data.Count == 0 && errors.Count > 0 && googleAccounts.Count > 0)
+                    if (response.Data.Count == 0 && errors.Count > 0)
                     {
                         response.Successful = false;
                         response.ResultState = GoogleManagerModels.ResultType.Error;
@@ -392,6 +398,7 @@ namespace Supp.Site.Repositories
 
                 try
                 {
+                    var errors = new List<string>() { };
                     var identity = userName + userId.ToString() + DateTime.Now.ToString("yyyyMMddHHmmssfff");
 
                     var googleAccountRepository = new GoogleAccountsRepository() { };
@@ -399,36 +406,41 @@ namespace Supp.Site.Repositories
                     var mediaConfigurationsRepository = new MediaConfigurationsRepository() { };
 
                     var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
-                    var googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
 
-                    var googleAccounts = googleAccountResult.Data.Where(_ => _.UserId == userId && _.AccountType == AccountType.Calendar.ToString()).ToList();
-                    var googleAuthIds = googleAccounts.Select(_ => _.GoogleAuthId).ToList();
+                    if (!googleAccountResult.Successful)
+                        errors.Add(nameof(googleAccountRepository.GetAllGoogleAccounts) + " " + googleAccountResult.Message + "!");
 
-                    var errors = new List<string>() { };
-
-                    foreach (var account in googleAccounts)
+                    if (errors.Count == 0)
                     {
-                        var auth = googleAuthResult.Data.Where(_ => _.Id == account.GoogleAuthId).FirstOrDefault();
-                        var tokenFile = JsonConvert.DeserializeObject<TokenFile>(auth.TokenFileInJson);
+                        var googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
 
-                        var googleCalendarUtility = new GoogleCalendarUtility();
+                        var googleAccounts = googleAccountResult.Data.Where(_ => _.UserId == userId && _.AccountType == AccountType.Calendar.ToString()).ToList();
+                        var googleAuthIds = googleAccounts.Select(_ => _.GoogleAuthId).ToList();
 
-                        var countryAndLanguageType = CountryAndLanguageType.it_italian;
+                        foreach (var account in googleAccounts)
+                        {
+                            var auth = googleAuthResult.Data.Where(_ => _.Id == account.GoogleAuthId).FirstOrDefault();
+                            var tokenFile = JsonConvert.DeserializeObject<TokenFile>(auth.TokenFileInJson);
 
-                        if (culture.Trim().ToLower() == "it-it") countryAndLanguageType = CountryAndLanguageType.it_italian;
-                        if (culture.Trim().ToLower() == "en-us") countryAndLanguageType = CountryAndLanguageType.en_uk;
+                            var googleCalendarUtility = new GoogleCalendarUtility();
 
-                        var getHolidaysResult = await googleCalendarUtility.GetHolidays(countryAndLanguageType, auth.GooglePublicKey, timeMin, timeMax);
+                            var countryAndLanguageType = CountryAndLanguageType.it_italian;
 
-                        response.Data.AddRange(getHolidaysResult.Data);
+                            if (culture.Trim().ToLower() == "it-it") countryAndLanguageType = CountryAndLanguageType.it_italian;
+                            if (culture.Trim().ToLower() == "en-us") countryAndLanguageType = CountryAndLanguageType.en_uk;
 
-                        if (getHolidaysResult.Successful == false && getHolidaysResult.Message != null && getHolidaysResult.Message != String.Empty) errors.Add(getHolidaysResult.Message);
-                    }
+                            var getHolidaysResult = await googleCalendarUtility.GetHolidays(countryAndLanguageType, auth.GooglePublicKey, timeMin, timeMax);
 
-                    if (googleAccounts.Count == 0)
-                    {
-                        response.ResultState = GoogleManagerModels.ResultType.NotFound;
-                        errors.Add("No google accounts found!");
+                            response.Data.AddRange(getHolidaysResult.Data);
+
+                            if (getHolidaysResult.Successful == false && getHolidaysResult.Message != null && getHolidaysResult.Message != String.Empty) errors.Add(getHolidaysResult.Message);
+                        }
+
+                        if (googleAccounts.Count == 0)
+                        {
+                            response.ResultState = GoogleManagerModels.ResultType.NotFound;
+                            errors.Add("No google accounts found!");
+                        }
                     }
 
                     if (response.Data.Count == 0 && errors.Count == 0)
@@ -438,7 +450,7 @@ namespace Supp.Site.Repositories
                     if (response.Data.Count > 0 && errors.Count > 0)
                         response.ResultState = GoogleManagerModels.ResultType.FoundWithError;
 
-                    if (response.Data.Count == 0 && errors.Count > 0 && googleAccounts.Count > 0)
+                    if (response.Data.Count == 0 && errors.Count > 0)
                     {
                         response.Successful = false;
                         response.ResultState = GoogleManagerModels.ResultType.Error;
@@ -480,67 +492,73 @@ namespace Supp.Site.Repositories
 
                 try
                 {
+                    var errors = new List<string>() { };
                     var identity = userName + userId.ToString() + DateTime.Now.ToString("yyyyMMddHHmmssfff");
 
                     var googleAccountRepository = new GoogleAccountsRepository() { };
                     var googleAuthsRepository = new GoogleAuthsRepository() { };
 
                     var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
-                    var googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
 
-                    var googleAccounts = googleAccountResult.Data.Where(_ => _.UserId == userId && _.AccountType == AccountType.Calendar.ToString()).ToList();
-                    var googleAuthIds = googleAccounts.Select(_ => _.GoogleAuthId).ToList();
+                    if (!googleAccountResult.Successful)
+                        errors.Add(nameof(googleAccountRepository.GetAllGoogleAccounts) + " " + googleAccountResult.Message + "!");
 
-                    var errors = new List<string>() { };
-
-                    if (editCalendarEventRequest.SummaryToSearch == null) editCalendarEventRequest.SummaryToSearch = String.Empty;
-
-                    if (webSpeechTypes == WebSpeechTypes.EditNote && editCalendarEventRequest.SummaryToSearch.StartsWith("#Note") == false)
-                        editCalendarEventRequest.SummaryToSearch = "#Note" + " " + editCalendarEventRequest.SummaryToSearch.Trim();
-
-                    foreach (var account in googleAccounts)
+                    if (errors.Count == 0)
                     {
-                        var auth = googleAuthResult.Data.Where(_ => _.Id == account.GoogleAuthId).FirstOrDefault();
-                        var tokenFile = JsonConvert.DeserializeObject<TokenFile>(auth.TokenFileInJson);
+                        var googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
 
-                        var googleCalendarUtility = new GoogleCalendarUtility();
-                        var _editCalendarEventRequest = new EditCalendarEventRequest()
+                        var googleAccounts = googleAccountResult.Data.Where(_ => _.UserId == userId && _.AccountType == AccountType.Calendar.ToString()).ToList();
+                        var googleAuthIds = googleAccounts.Select(_ => _.GoogleAuthId).ToList();
+
+                        if (editCalendarEventRequest.SummaryToSearch == null) editCalendarEventRequest.SummaryToSearch = String.Empty;
+
+                        if (webSpeechTypes == WebSpeechTypes.EditNote && editCalendarEventRequest.SummaryToSearch.StartsWith("#Note") == false)
+                            editCalendarEventRequest.SummaryToSearch = "#Note" + " " + editCalendarEventRequest.SummaryToSearch.Trim();
+
+                        foreach (var account in googleAccounts)
                         {
-                            Auth = new Auth()
+                            var auth = googleAuthResult.Data.Where(_ => _.Id == account.GoogleAuthId).FirstOrDefault();
+                            var tokenFile = JsonConvert.DeserializeObject<TokenFile>(auth.TokenFileInJson);
+
+                            var googleCalendarUtility = new GoogleCalendarUtility();
+                            var _editCalendarEventRequest = new EditCalendarEventRequest()
                             {
-                                Installed = new AuthProperties()
+                                Auth = new Auth()
                                 {
-                                    Client_id = auth.Client_id,
-                                    Client_secret = auth.Client_secret,
-                                    Project_id = auth.Project_id
-                                }
-                            },
-                            TokenFile = tokenFile,
-                            Account = account.Account,
-                            TimeMin = editCalendarEventRequest.TimeMin,
-                            TimeMax = editCalendarEventRequest.TimeMax,
-                            SummaryToSearch = editCalendarEventRequest.SummaryToSearch,
-                            Description = editCalendarEventRequest.Description,
-                            Summary = editCalendarEventRequest.Summary,
-                            Color = editCalendarEventRequest.Color,
-                            EventDateEnd = editCalendarEventRequest.EventDateEnd,
-                            EventDateStart = editCalendarEventRequest.EventDateStart,
-                            IdToSearch = editCalendarEventRequest.IdToSearch,
-                            Location = editCalendarEventRequest.Location,
-                            NotificationMinutes = editCalendarEventRequest.NotificationMinutes,
-                            DescriptionAppended = editCalendarEventRequest.DescriptionAppended
-                        };
-                        var editLastCalendarEventBySummaryResult = googleCalendarUtility.EditLastCalendarEventBySummary(_editCalendarEventRequest);
+                                    Installed = new AuthProperties()
+                                    {
+                                        Client_id = auth.Client_id,
+                                        Client_secret = auth.Client_secret,
+                                        Project_id = auth.Project_id
+                                    }
+                                },
+                                TokenFile = tokenFile,
+                                Account = account.Account,
+                                TimeMin = editCalendarEventRequest.TimeMin,
+                                TimeMax = editCalendarEventRequest.TimeMax,
+                                SummaryToSearch = editCalendarEventRequest.SummaryToSearch,
+                                Description = editCalendarEventRequest.Description,
+                                Summary = editCalendarEventRequest.Summary,
+                                Color = editCalendarEventRequest.Color,
+                                EventDateEnd = editCalendarEventRequest.EventDateEnd,
+                                EventDateStart = editCalendarEventRequest.EventDateStart,
+                                IdToSearch = editCalendarEventRequest.IdToSearch,
+                                Location = editCalendarEventRequest.Location,
+                                NotificationMinutes = editCalendarEventRequest.NotificationMinutes,
+                                DescriptionAppended = editCalendarEventRequest.DescriptionAppended
+                            };
+                            var editLastCalendarEventBySummaryResult = googleCalendarUtility.EditLastCalendarEventBySummary(_editCalendarEventRequest);
 
-                        response.Data.AddRange(editLastCalendarEventBySummaryResult.Data);
+                            response.Data.AddRange(editLastCalendarEventBySummaryResult.Data);
 
-                        if (editLastCalendarEventBySummaryResult.Successful == false && editLastCalendarEventBySummaryResult.Message != null && editLastCalendarEventBySummaryResult.Message != String.Empty) errors.Add(editLastCalendarEventBySummaryResult.Message);
-                    }
+                            if (editLastCalendarEventBySummaryResult.Successful == false && editLastCalendarEventBySummaryResult.Message != null && editLastCalendarEventBySummaryResult.Message != String.Empty) errors.Add(editLastCalendarEventBySummaryResult.Message);
+                        }
 
-                    if (googleAccounts.Count == 0)
-                    {
-                        response.ResultState = GoogleManagerModels.ResultType.NotFound;
-                        errors.Add("No google accounts found!");
+                        if (googleAccounts.Count == 0)
+                        {
+                            response.ResultState = GoogleManagerModels.ResultType.NotFound;
+                            errors.Add("No google accounts found!");
+                        }
                     }
 
                     if (response.Data.Count == 0 && errors.Count == 0)
@@ -550,7 +568,7 @@ namespace Supp.Site.Repositories
                     if (response.Data.Count > 0 && errors.Count > 0)
                         response.ResultState = GoogleManagerModels.ResultType.FoundWithError;
 
-                    if (response.Data.Count == 0 && errors.Count > 0 && googleAccounts.Count > 0)
+                    if (response.Data.Count == 0 && errors.Count > 0)
                     {
                         response.Successful = false;
                         response.ResultState = GoogleManagerModels.ResultType.Error;
@@ -592,58 +610,66 @@ namespace Supp.Site.Repositories
 
                 try
                 {
+                    var errors = new List<string>() { };
                     var identity = userName + userId.ToString() + DateTime.Now.ToString("yyyyMMddHHmmssfff");
 
                     var googleAccountRepository = new GoogleAccountsRepository() { };
                     var googleAuthsRepository = new GoogleAuthsRepository() { };
 
                     var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
-                    var googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
 
-                    var googleAccounts = googleAccountResult.Data.Where(_ => _.UserId == userId && _.AccountType == AccountType.Calendar.ToString()).ToList();
-                    var googleAuthIds = googleAccounts.Select(_ => _.GoogleAuthId).ToList();
+                    if (!googleAccountResult.Successful)
+                        errors.Add(nameof(googleAccountRepository.GetAllGoogleAccounts) + " " + googleAccountResult.Message + "!");
 
-                    var errors = new List<string>() { };
-
-                    if (deleteCalendarEventsRequest.Summary == null) deleteCalendarEventsRequest.Summary = String.Empty;
-
-                    if (webSpeechTypes == WebSpeechTypes.EditNote && deleteCalendarEventsRequest.Summary.StartsWith("#Note") == false)
-                        deleteCalendarEventsRequest.Summary = "#Note" + " " + deleteCalendarEventsRequest.Summary.Trim();
-
-                    foreach (var account in googleAccounts)
+                    if (errors.Count == 0)
                     {
-                        var auth = googleAuthResult.Data.Where(_ => _.Id == account.GoogleAuthId).FirstOrDefault();
-                        var tokenFile = JsonConvert.DeserializeObject<TokenFile>(auth.TokenFileInJson);
+                        var googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
 
-                        var googleCalendarUtility = new GoogleCalendarUtility();
-                        var _deleteCalendarEventsRequest = new DeleteCalendarEventsRequest()
+                        var googleAccounts = googleAccountResult.Data.Where(_ => _.UserId == userId && _.AccountType == AccountType.Calendar.ToString()).ToList();
+                        var googleAuthIds = googleAccounts.Select(_ => _.GoogleAuthId).ToList();
+
+
+
+                        if (deleteCalendarEventsRequest.Summary == null) deleteCalendarEventsRequest.Summary = String.Empty;
+
+                        if (webSpeechTypes == WebSpeechTypes.EditNote && deleteCalendarEventsRequest.Summary.StartsWith("#Note") == false)
+                            deleteCalendarEventsRequest.Summary = "#Note" + " " + deleteCalendarEventsRequest.Summary.Trim();
+
+                        foreach (var account in googleAccounts)
                         {
-                            Auth = new Auth()
+                            var auth = googleAuthResult.Data.Where(_ => _.Id == account.GoogleAuthId).FirstOrDefault();
+                            var tokenFile = JsonConvert.DeserializeObject<TokenFile>(auth.TokenFileInJson);
+
+                            var googleCalendarUtility = new GoogleCalendarUtility();
+                            var _deleteCalendarEventsRequest = new DeleteCalendarEventsRequest()
                             {
-                                Installed = new AuthProperties()
+                                Auth = new Auth()
                                 {
-                                    Client_id = auth.Client_id,
-                                    Client_secret = auth.Client_secret,
-                                    Project_id = auth.Project_id
-                                }
-                            },
-                            TokenFile = tokenFile,
-                            Account = account.Account,
-                            TimeMin = deleteCalendarEventsRequest.TimeMin,
-                            TimeMax = deleteCalendarEventsRequest.TimeMax,
-                            Summary = deleteCalendarEventsRequest.Summary
-                        };
-                        var deleteLastCalendarEventBySummaryResult = googleCalendarUtility.DeleteLastCalendarEventBySummary(_deleteCalendarEventsRequest);
+                                    Installed = new AuthProperties()
+                                    {
+                                        Client_id = auth.Client_id,
+                                        Client_secret = auth.Client_secret,
+                                        Project_id = auth.Project_id
+                                    }
+                                },
+                                TokenFile = tokenFile,
+                                Account = account.Account,
+                                TimeMin = deleteCalendarEventsRequest.TimeMin,
+                                TimeMax = deleteCalendarEventsRequest.TimeMax,
+                                Summary = deleteCalendarEventsRequest.Summary
+                            };
+                            var deleteLastCalendarEventBySummaryResult = googleCalendarUtility.DeleteLastCalendarEventBySummary(_deleteCalendarEventsRequest);
 
-                        response.Data.AddRange(deleteLastCalendarEventBySummaryResult.Data);
+                            response.Data.AddRange(deleteLastCalendarEventBySummaryResult.Data);
 
-                        if (deleteLastCalendarEventBySummaryResult.Successful == false && deleteLastCalendarEventBySummaryResult.Message != null && deleteLastCalendarEventBySummaryResult.Message != String.Empty) errors.Add(deleteLastCalendarEventBySummaryResult.Message);
-                    }
+                            if (deleteLastCalendarEventBySummaryResult.Successful == false && deleteLastCalendarEventBySummaryResult.Message != null && deleteLastCalendarEventBySummaryResult.Message != String.Empty) errors.Add(deleteLastCalendarEventBySummaryResult.Message);
+                        }
 
-                    if (googleAccounts.Count == 0)
-                    {
-                        response.ResultState = GoogleManagerModels.ResultType.NotFound;
-                        errors.Add("No google accounts found!");
+                        if (googleAccounts.Count == 0)
+                        {
+                            response.ResultState = GoogleManagerModels.ResultType.NotFound;
+                            errors.Add("No google accounts found!");
+                        }
                     }
 
                     if (response.Data.Count == 0 && errors.Count == 0)
@@ -653,7 +679,7 @@ namespace Supp.Site.Repositories
                     if (response.Data.Count > 0 && errors.Count > 0)
                         response.ResultState = GoogleManagerModels.ResultType.FoundWithError;
 
-                    if (response.Data.Count == 0 && errors.Count > 0 && googleAccounts.Count > 0)
+                    if (response.Data.Count == 0 && errors.Count > 0)
                     {
                         response.Successful = false;
                         response.ResultState = GoogleManagerModels.ResultType.Error;
@@ -695,61 +721,69 @@ namespace Supp.Site.Repositories
 
                 try
                 {
+                    var errors = new List<string>() { };
+                    List<GoogleAccountDto> googleAccounts = null;
+                    GoogleAccountDto account = null;
                     var identity = userName + userId.ToString() + DateTime.Now.ToString("yyyyMMddHHmmssfff");
 
                     var googleAccountRepository = new GoogleAccountsRepository() { };
                     var googleAuthsRepository = new GoogleAuthsRepository() { };
 
                     var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
-                    var googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
 
-                    var googleAccounts = googleAccountResult.Data.Where(_ => _.UserId == userId && _.AccountType == AccountType.Calendar.ToString()).ToList();
-                    var googleAuthIds = googleAccounts.Select(_ => _.GoogleAuthId).ToList();
+                    if (!googleAccountResult.Successful)
+                        errors.Add(nameof(googleAccountRepository.GetAllGoogleAccounts) + " " + googleAccountResult.Message + "!");
 
-                    var errors = new List<string>() { };
-
-                    if (createCalendarEventsRequest.Summary == null) createCalendarEventsRequest.Summary = String.Empty;
-
-                    if (webSpeechTypes == WebSpeechTypes.EditNote && createCalendarEventsRequest.Summary.StartsWith("#Note") == false)
-                        createCalendarEventsRequest.Summary = "#Note" + " " + createCalendarEventsRequest.Summary.Trim();
-
-                    var account = googleAccounts.Where(_=>_.Account.Trim().ToLower() == accountName.Trim().ToLower()).FirstOrDefault();
-
-                    var auth = googleAuthResult.Data.Where(_ => _.Id == account.GoogleAuthId).FirstOrDefault();
-                    var tokenFile = JsonConvert.DeserializeObject<TokenFile>(auth.TokenFileInJson);
-
-                    var googleCalendarUtility = new GoogleCalendarUtility();
-                    var _createCalendarEventRequest = new CreateCalendarEventRequest()
+                    if (errors.Count == 0)
                     {
-                        Auth = new Auth()
+                        var googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
+
+                        googleAccounts = googleAccountResult.Data.Where(_ => _.UserId == userId && _.AccountType == AccountType.Calendar.ToString()).ToList();
+                        var googleAuthIds = googleAccounts.Select(_ => _.GoogleAuthId).ToList();
+
+                        if (createCalendarEventsRequest.Summary == null) createCalendarEventsRequest.Summary = String.Empty;
+
+                        if (webSpeechTypes == WebSpeechTypes.EditNote && createCalendarEventsRequest.Summary.StartsWith("#Note") == false)
+                            createCalendarEventsRequest.Summary = "#Note" + " " + createCalendarEventsRequest.Summary.Trim();
+
+                        account = googleAccounts.Where(_ => _.Account.Trim().ToLower() == accountName.Trim().ToLower()).FirstOrDefault();
+
+                        var auth = googleAuthResult.Data.Where(_ => _.Id == account.GoogleAuthId).FirstOrDefault();
+                        var tokenFile = JsonConvert.DeserializeObject<TokenFile>(auth.TokenFileInJson);
+
+                        var googleCalendarUtility = new GoogleCalendarUtility();
+                        var _createCalendarEventRequest = new CreateCalendarEventRequest()
                         {
-                            Installed = new AuthProperties()
+                            Auth = new Auth()
                             {
-                                Client_id = auth.Client_id,
-                                Client_secret = auth.Client_secret,
-                                Project_id = auth.Project_id
-                            }
-                        },
-                        TokenFile = tokenFile,
-                        Account = account.Account,
-                        Summary = createCalendarEventsRequest.Summary,
-                        Color = createCalendarEventsRequest.Color,
-                        Description = createCalendarEventsRequest.Description,
-                        EventDateStart = createCalendarEventsRequest.EventDateStart,
-                        EventDateEnd = createCalendarEventsRequest.EventDateEnd,
-                        Location = createCalendarEventsRequest.Location,
-                        NotificationMinutes = createCalendarEventsRequest.NotificationMinutes
-                    };
-                    var createCalendarEventResult = googleCalendarUtility.CreateCalendarEvent(_createCalendarEventRequest);
+                                Installed = new AuthProperties()
+                                {
+                                    Client_id = auth.Client_id,
+                                    Client_secret = auth.Client_secret,
+                                    Project_id = auth.Project_id
+                                }
+                            },
+                            TokenFile = tokenFile,
+                            Account = account.Account,
+                            Summary = createCalendarEventsRequest.Summary,
+                            Color = createCalendarEventsRequest.Color,
+                            Description = createCalendarEventsRequest.Description,
+                            EventDateStart = createCalendarEventsRequest.EventDateStart,
+                            EventDateEnd = createCalendarEventsRequest.EventDateEnd,
+                            Location = createCalendarEventsRequest.Location,
+                            NotificationMinutes = createCalendarEventsRequest.NotificationMinutes
+                        };
+                        var createCalendarEventResult = googleCalendarUtility.CreateCalendarEvent(_createCalendarEventRequest);
 
-                    response.Data.AddRange(createCalendarEventResult.Data);
+                        response.Data.AddRange(createCalendarEventResult.Data);
 
-                    if (createCalendarEventResult.Successful == false && createCalendarEventResult.Message != null && createCalendarEventResult.Message != String.Empty) errors.Add(createCalendarEventResult.Message);
+                        if (createCalendarEventResult.Successful == false && createCalendarEventResult.Message != null && createCalendarEventResult.Message != String.Empty) errors.Add(createCalendarEventResult.Message);
 
-                    if (googleAccounts.Count == 0)
-                    {
-                        response.ResultState = GoogleManagerModels.ResultType.NotFound;
-                        errors.Add("No google accounts found!");
+                        if (googleAccounts.Count == 0)
+                        {
+                            response.ResultState = GoogleManagerModels.ResultType.NotFound;
+                            errors.Add("No google accounts found!");
+                        }
                     }
 
                     if (response.Data.Count == 0 && errors.Count == 0)
@@ -759,7 +793,7 @@ namespace Supp.Site.Repositories
                     if (response.Data.Count > 0 && errors.Count > 0)
                         response.ResultState = GoogleManagerModels.ResultType.FoundWithError;
 
-                    if (response.Data.Count == 0 && errors.Count > 0 && googleAccounts.Count > 0)
+                    if (response.Data.Count == 0 && errors.Count > 0)
                     {
                         response.Successful = false;
                         response.ResultState = GoogleManagerModels.ResultType.Error;

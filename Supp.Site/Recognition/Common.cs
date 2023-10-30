@@ -169,7 +169,7 @@ namespace Supp.Site.Recognition
                     List<ShortcutDto> shortcutGroups= new List<ShortcutDto>() { };
                     var startAnswer = "";
 
-                    var access_token_cookie = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                    var access_token_cookie = suppUtility.GetAccessToken(request);
                     var userName = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
                     var userId = long.Parse(suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName).ToString());
 
@@ -1594,7 +1594,7 @@ namespace Supp.Site.Recognition
                 {
                     try
                     {
-                        var access_token_cookie = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(request);
 
                         var executionQueue = new ExecutionQueueDto() { FullPath = "*", Arguments = "*", Host = _hostSelected, Type = ExecutionQueueType.ForceHideApplication.ToString(), StateQueue = ExecutionQueueStateQueue.RunningStep2.ToString(), WebSpeechId = 0, ScheduledDateTime = DateTime.Now };
                         var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
@@ -1609,7 +1609,7 @@ namespace Supp.Site.Recognition
                 {
                     try
                     {
-                        var access_token_cookie = suppUtility.ReadCookie(request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
+                        var access_token_cookie = suppUtility.GetAccessToken(request);
 
                         var getExecutionQueuesByIdResult = await executionQueueRepo.GetExecutionQueuesById(_id, access_token_cookie);
                         var executionQueue = getExecutionQueuesByIdResult.Data.FirstOrDefault();

@@ -371,6 +371,10 @@ namespace Supp.Site.Repositories
                     var mediaConfigurationsRepository = new MediaConfigurationsRepository() { };
 
                     var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
+
+                    if (!googleAccountResult.Successful)
+                        throw new Exception(nameof(googleAccountRepository.GetAllGoogleAccounts) + " " + googleAccountResult.Message + "!");
+
                     var googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
                     var mediaConfigurationResult = await mediaConfigurationsRepository.GetAllMediaConfigurations(token);
 

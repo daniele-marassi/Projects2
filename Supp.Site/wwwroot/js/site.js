@@ -25,4 +25,7 @@ function MenuClick() {
     //empty function to override
 }
 
+//window.addEventListener('resize', function (event) {
+//    console.log(new Date().toLocaleString());
+//}, true);
 
