@@ -1623,5 +1623,29 @@ namespace Supp.Site.Recognition
                 }
             }
         }
+
+        /// <summary>
+        /// MediaPlayOrPause
+        /// </summary>
+        /// <param name="_hostSelected"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task MediaPlayOrPause(string _hostSelected, HttpRequest request)
+        {
+            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
+            {
+                try
+                {
+                    var access_token_cookie = suppUtility.GetAccessToken(request);
+
+                    var executionQueue = new ExecutionQueueDto() { FullPath = "", Arguments = "", Host = _hostSelected, Type = ExecutionQueueType.MediaPlayOrPause.ToString(), StateQueue = ExecutionQueueStateQueue.NONE.ToString(), WebSpeechId = 0, ScheduledDateTime = DateTime.Now };
+                    var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.ToString());
+                }
+            }
+        }
     }
 }

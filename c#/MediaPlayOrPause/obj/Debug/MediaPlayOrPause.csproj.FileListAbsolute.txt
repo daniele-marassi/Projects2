@@ -1,0 +1,7 @@
+C:\Users\ev\GoogleDriveShare\Projects\c#\MediaPlayOrPause\bin\Debug\MediaPlayOrPause.exe.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\MediaPlayOrPause\bin\Debug\MediaPlayOrPause.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\MediaPlayOrPause\bin\Debug\MediaPlayOrPause.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\MediaPlayOrPause\obj\Debug\MediaPlayOrPause.csproj.AssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\MediaPlayOrPause\obj\Debug\MediaPlayOrPause.csproj.CoreCompileInputs.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\MediaPlayOrPause\obj\Debug\MediaPlayOrPause.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\MediaPlayOrPause\obj\Debug\MediaPlayOrPause.pdb

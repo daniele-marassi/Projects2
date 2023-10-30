@@ -486,6 +486,7 @@
                 LogFunctionStart("speech.onend");
                 if (_finalStep == true || readOutLoudActive == false || _message == null || _message == ""){
                     EndReadOutLoud();
+                    MediaPlayOrPause();
                     
                 } else {
                     if(synth != null) synth.cancel();
@@ -544,6 +545,16 @@
             {
                 var json = "{_id:"+id+",_hostSelected:"+hostSelected+"}";
                 var _url = url.replace("Recognition","ExecutionFinished")+"?_id="+executionQueueId+"&_hostSelected="+hostSelected;
+                SendHttpRequest("POST", _url, json, null);
+            }
+            LogFunctionEnd();
+        }
+
+        function MediaPlayOrPause() {
+            LogFunctionStart();
+            if (url != null && application == true) {
+                var json = "{_hostSelected:" + hostSelected + "}";
+                var _url = url.replace("Recognition", "MediaPlayOrPause") + "?_hostSelected=" + hostSelected;
                 SendHttpRequest("POST", _url, json, null);
             }
             LogFunctionEnd();
@@ -1022,6 +1033,7 @@
                     CirlceProgressBar(percent, GetTimeRemain(difference), timers[i]["Index"]);
                     
                     if(timers[i]["Date"] != null && now >= timers[i]["Date"] && difference < 60){
+                        MediaPlayOrPause();
                         ReadOutLoud(GetValue(timers[i]["Phrase"], culture), false, true);
                         DeleteProgressBar(timers[i]["Index"]);
                     }

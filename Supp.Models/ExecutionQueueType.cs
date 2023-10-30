@@ -7,6 +7,7 @@
         Other = 2,
         SongsPlayer = 3,
         ForceHideApplication = 4,
-        WakeUpScreenAfterEhi = 5
+        WakeUpScreenAfterEhi = 5,
+        MediaPlayOrPause = 6
     }
 }

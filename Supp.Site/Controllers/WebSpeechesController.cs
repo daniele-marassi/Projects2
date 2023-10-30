@@ -880,6 +880,11 @@ namespace Supp.Site.Controllers
 
                     data.ResetAfterLoad = resetAfterLoad;
 
+                    if (data != null && application && data?.Answer != null && data?.Answer != String.Empty)
+                    {
+                        await MediaPlayOrPause(hostSelected);
+                    }
+
                     return View(data);
                 }
                 catch (Exception ex)
@@ -1011,6 +1016,11 @@ namespace Supp.Site.Controllers
                         data.RecognitionDisable = recognitionDisable;
                         result = System.Text.Json.JsonSerializer.Serialize(data);
                         //result = result.Replace(@"\", "/");
+
+                        if (application && data?.Answer != null && data?.Answer != String.Empty) 
+                        {
+                            await MediaPlayOrPause(hostSelected);
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -1030,6 +1040,12 @@ namespace Supp.Site.Controllers
         public async Task ExecutionFinished(long _id, string _hostSelected, bool _application)
         {
             await recognitionCommon.ExecutionFinished(_id, _hostSelected, _application, Request);
+        }
+
+        // GET: WebSpeeches/MediaPlayOrPause
+        public async Task MediaPlayOrPause(string _hostSelected)
+        {
+            await recognitionCommon.MediaPlayOrPause(_hostSelected, Request);
         }
     }
 }

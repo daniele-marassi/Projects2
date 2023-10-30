@@ -23,11 +23,21 @@ using ExecutionQueue;
 using System.Reflection.Emit;
 using System.ServiceModel.Channels;
 using System.Timers;
+using System.Runtime.InteropServices;
 
 namespace Tools.ExecutionQueue
 {
     public partial class QueueService : ServiceBase
     {
+        public const int KEYEVENTF_EXTENTEDKEY = 1;
+        public const int KEYEVENTF_KEYUP = 0;
+        public const int VK_MEDIA_NEXT_TRACK = 0xB0;
+        public const int VK_MEDIA_PLAY_PAUSE = 0xB3;
+        public const int VK_MEDIA_PREV_TRACK = 0xB1;
+
+        [DllImport("user32.dll")]
+        public static extern void keybd_event(byte virtualKey, byte scanCode, uint flags, IntPtr extraInfo);
+
         bool serviceActive = true;
         private IExecutionQueuesRepository _repo;
         private ISongsRepository _songsRepo;
@@ -199,6 +209,13 @@ namespace Tools.ExecutionQueue
 
                             if (item.Type == ExecutionQueueType.WakeUpScreenAfterEhi.ToString())
                             {
+                                item.StateQueue = ExecutionQueueStateQueue.Executed.ToString();
+                            }
+
+                            if (item.Type == ExecutionQueueType.MediaPlayOrPause.ToString())
+                            {
+                                keybd_event(VK_MEDIA_PLAY_PAUSE, 0, KEYEVENTF_EXTENTEDKEY, IntPtr.Zero);
+
                                 item.StateQueue = ExecutionQueueStateQueue.Executed.ToString();
                             }
 
