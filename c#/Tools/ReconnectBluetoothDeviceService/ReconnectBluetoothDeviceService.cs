@@ -126,7 +126,7 @@ namespace Tools.ReconnectBluetoothDevice
                         if (reconnectBluetoothDeviceResult.Successful && bluetoothDeviceTypeList[i].ToString().ToLower() == "audio" && reconnectBluetoothDeviceResult.PairAlreadyExists == false)
                         {
                             //System.Threading.Thread.Sleep(500);
-                            Task.Run(() => commonUtility.SetVolume(volumePercent));
+                            await Task.Run(() => commonUtility.SetVolume(volumePercent));
                         }
                     }
                     catch (Exception ex)

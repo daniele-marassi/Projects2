@@ -95,7 +95,7 @@ namespace Tools
 									{
 										ProcessIcon._Speech = new Speech();
 
-										Task.Run(() => ProcessIcon._Speech.Restart());
+										await Task.Run(() => ProcessIcon._Speech.Restart());
 									}
 								}
 								catch (Exception)

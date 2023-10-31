@@ -319,6 +319,16 @@ namespace Supp.Site.Recognition
                                 }
                             }
 
+                            if (_subType == WebSpeechTypes.SystemDialogueRunMediaAndPlay.ToString())
+                            {
+                                var requests = dialogue.GetDialogueRunMediaAndPlay(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, _subType);
+                                if (requests != null && requests.Count > 0)
+                                {
+                                    var dataResult = GetData(requests, loadPage, userId);
+                                    webSpeechResult.Data.AddRange(dataResult.Data);
+                                }
+                            }
+
                             var stepType = "";
 
                             var previousWebSpeech = webSpeechResult.Data.Where(_ => _.Id == _id).FirstOrDefault();
@@ -523,6 +533,54 @@ namespace Supp.Site.Recognition
                             else
                             {
                                 data = await dialogue.RunExe(data, phrase, _hostSelected, access_token_cookie, executionQueueRepo, identification);
+
+                                if (data.ExecutionQueueId != 0)
+                                {
+                                    _executionQueueId = data.ExecutionQueueId;
+                                }
+                            }
+                        }
+
+                        if (
+                                data != null
+                                && (
+                                    data.Type == WebSpeechTypes.SystemRunMediaAndPlay.ToString()
+                                    || data.Type == WebSpeechTypes.RunMediaAndPlay.ToString()
+                                    || data.Type == WebSpeechTypes.SystemRunMediaAndPlayWithNotNumericParameter.ToString()
+                                    || data.Type == WebSpeechTypes.RunMediaAndPlayWithNotNumericParameter.ToString()
+                                    || data.Type == WebSpeechTypes.SystemRunMediaAndPlayWithNumericParameter.ToString()
+                                    || data.Type == WebSpeechTypes.RunMediaAndPlayWithNumericParameter.ToString()
+                                    )
+                                && data.OperationEnable == true && data.Step == 0
+                            )
+                        {
+                            var phrase = GetValueFromPronouncedPhrase(_phrase, _keysMatched).Trim();
+
+                            if (data.SubType == WebSpeechTypes.SystemDialogueRunMediaAndPlay.ToString() && (phrase == null || phrase == String.Empty))
+                            {
+                                List<WebSpeechDto> dialogue = null;
+
+                                if (data.SubType == WebSpeechTypes.SystemDialogueRunMediaAndPlay.ToString())
+                                    dialogue = this.dialogue.GetDialogueRunMediaAndPlay(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, data.SubType);
+
+                                if (dialogue != null && dialogue.Count > 0)
+                                {
+                                    var dataResult = GetData(dialogue, loadPage, userId);
+
+                                    var _data = dataResult.Data.OrderBy(_ => _.Id).FirstOrDefault();
+
+                                    _data = GetAnswer(_data, identification);
+
+                                    _data.Parameters = data.Parameters;
+                                    _data.Operation = data.Operation;
+                                    _data.Type = data.Type;
+
+                                    data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, phrase, response, request, identification, userName, userId, _hostSelected);
+                                }
+                            }
+                            else
+                            {
+                                data = await dialogue.RunMediaAndPlay(data, phrase, _hostSelected, access_token_cookie, executionQueueRepo, identification);
 
                                 if (data.ExecutionQueueId != 0)
                                 {
@@ -740,6 +798,21 @@ namespace Supp.Site.Recognition
 
                                 data = this.dialogue.Manage(_data, _data.SubType, 0, _data.StepType, expiresInSeconds, _phrase, response, request, identification, userName, userId, _hostSelected);
                             }
+                        }
+
+                        if (data != null && data.Type == WebSpeechTypes.MediaPlayOrPause.ToString())
+                        {
+                            await AddExecutionQueueQuickly(_hostSelected, request, ExecutionQueueType.MediaPlayOrPause);
+                        }
+
+                        if (data != null && data.Type == WebSpeechTypes.MediaNextTrack.ToString())
+                        {
+                            await AddExecutionQueueQuickly(_hostSelected, request, ExecutionQueueType.MediaNextTrack);
+                        }
+
+                        if (data != null && data.Type == WebSpeechTypes.MediaPreviousTrack.ToString())
+                        {
+                            await AddExecutionQueueQuickly(_hostSelected, request, ExecutionQueueType.MediaPreviousTrack);
                         }
 
                         var salutation = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.Salutation;
@@ -1625,12 +1698,13 @@ namespace Supp.Site.Recognition
         }
 
         /// <summary>
-        /// MediaPlayOrPause
+        /// Add Execution Queue Quickly
         /// </summary>
         /// <param name="_hostSelected"></param>
         /// <param name="request"></param>
+        /// <param name="executionQueueType"></param>
         /// <returns></returns>
-        public async Task MediaPlayOrPause(string _hostSelected, HttpRequest request)
+        public async Task AddExecutionQueueQuickly(string _hostSelected, HttpRequest request, ExecutionQueueType executionQueueType)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -1638,7 +1712,7 @@ namespace Supp.Site.Recognition
                 {
                     var access_token_cookie = suppUtility.GetAccessToken(request);
 
-                    var executionQueue = new ExecutionQueueDto() { FullPath = "", Arguments = "", Host = _hostSelected, Type = ExecutionQueueType.MediaPlayOrPause.ToString(), StateQueue = ExecutionQueueStateQueue.NONE.ToString(), WebSpeechId = 0, ScheduledDateTime = DateTime.Now };
+                    var executionQueue = new ExecutionQueueDto() { FullPath = "", Arguments = "", Host = _hostSelected, Type = executionQueueType.ToString(), StateQueue = ExecutionQueueStateQueue.NONE.ToString(), WebSpeechId = 0, ScheduledDateTime = DateTime.Now };
                     var addExecutionQueueResult = await executionQueueRepo.AddExecutionQueue(executionQueue, access_token_cookie);
                 }
                 catch (Exception ex)

@@ -24,6 +24,7 @@ using System.Reflection.Emit;
 using System.ServiceModel.Channels;
 using System.Timers;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
 
 namespace Tools.ExecutionQueue
 {
@@ -47,6 +48,7 @@ namespace Tools.ExecutionQueue
         string host = "";
         int sleepOfTheQueueServiceInMilliseconds = 1000;
         int timeToClosePopUpInMilliseconds = 1000;
+        int sleepOfTheRunMediaAndPlayInMilliseconds = 1000;
         string suppDatabaseConnection = "";
         string rootPath;
         private static Logger classLogger = LogManager.GetCurrentClassLogger();
@@ -111,6 +113,8 @@ namespace Tools.ExecutionQueue
             host = appSettings["Host"];
             sleepOfTheQueueServiceInMilliseconds = int.Parse(appSettings["SleepOfTheQueueServiceInMilliseconds"]);
             timeToClosePopUpInMilliseconds = int.Parse(appSettings["TimeToClosePopUpInMilliseconds"]);
+            sleepOfTheRunMediaAndPlayInMilliseconds = int.Parse(appSettings["SleepOfTheRunMediaAndPlayInMilliseconds"]);
+            
             suppDatabaseConnection = appSettings["SuppDatabaseConnection"];
             limitLogFileInMB = int.Parse(appSettings["LimitLogFileInMB"]);
             _repo = new ExecutionQueuesRepository(suppDatabaseConnection);
@@ -214,9 +218,28 @@ namespace Tools.ExecutionQueue
 
                             if (item.Type == ExecutionQueueType.MediaPlayOrPause.ToString())
                             {
-                                keybd_event(VK_MEDIA_PLAY_PAUSE, 0, KEYEVENTF_EXTENTEDKEY, IntPtr.Zero);
+                                MediaPlayOrPause();
 
                                 item.StateQueue = ExecutionQueueStateQueue.Executed.ToString();
+                            }
+
+                            if (item.Type == ExecutionQueueType.MediaNextTrack.ToString())
+                            {
+                                MediaNextTrack();
+
+                                item.StateQueue = ExecutionQueueStateQueue.Executed.ToString();
+                            }
+
+                            if (item.Type == ExecutionQueueType.MediaPreviousTrack.ToString())
+                            {
+                                MediaPreviousTrack();
+
+                                item.StateQueue = ExecutionQueueStateQueue.Executed.ToString();
+                            }
+
+                            if (item.Type == ExecutionQueueType.RunMediaAndPlay.ToString())
+                            {
+                                item.StateQueue = ExecutionQueueStateQueue.AttemptToStart.ToString();
                             }
 
                             var updateExecutionQueueResult = await _repo.UpdateExecutionQueue(item);
@@ -295,8 +318,13 @@ namespace Tools.ExecutionQueue
 
                                 if (item.Type == ExecutionQueueType.RunExe.ToString() || item.Type == ExecutionQueueType.SystemRunExe.ToString())
                                 {
-                                    //Task.Run(() => RunExeAndUpdateDbAsync(item));
+                                    //await Task.Run(() => RunExeAndUpdateDbAsync(item, false));
                                     await RunExeAndUpdateDbAsync(item, false);
+                                }
+
+                                if (item.Type == ExecutionQueueType.RunMediaAndPlay.ToString())
+                                {
+                                    await RunExeAndUpdateDbAsync(item, false, true);
                                 }
 
                                 if (item.Type == ExecutionQueueType.Other.ToString())
@@ -407,7 +435,7 @@ namespace Tools.ExecutionQueue
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public async Task RunExeAndUpdateDbAsync(ExecutionQueueDto item, bool async)
+        public async Task RunExeAndUpdateDbAsync(ExecutionQueueDto item, bool async, bool playMedia = false)
         {
             (string Output, string Error) result;
             result.Output = null;
@@ -500,6 +528,11 @@ namespace Tools.ExecutionQueue
                             logger.Info("Update db now work!");
                         }
                     }
+
+                    if (playMedia)
+                    {
+                        await Task.Run(() => RunMediaAndPlayWithDelay());
+                    }
                 }
             }
             catch (Exception ex)
@@ -511,6 +544,27 @@ namespace Tools.ExecutionQueue
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
             }
+        }
+
+        private void RunMediaAndPlayWithDelay() 
+        {
+            System.Threading.Thread.Sleep(sleepOfTheRunMediaAndPlayInMilliseconds);
+            keybd_event(VK_MEDIA_PLAY_PAUSE, 0, KEYEVENTF_EXTENTEDKEY, IntPtr.Zero);
+        }
+
+        private void MediaPlayOrPause()
+        {
+            keybd_event(VK_MEDIA_PLAY_PAUSE, 0, KEYEVENTF_EXTENTEDKEY, IntPtr.Zero);
+        }
+
+        private void MediaNextTrack()
+        {
+            keybd_event(VK_MEDIA_NEXT_TRACK, 0, KEYEVENTF_EXTENTEDKEY, IntPtr.Zero);
+        }
+
+        private void MediaPreviousTrack()
+        {
+            keybd_event(VK_MEDIA_PREV_TRACK, 0, KEYEVENTF_EXTENTEDKEY, IntPtr.Zero);
         }
 
         protected override void OnStop()

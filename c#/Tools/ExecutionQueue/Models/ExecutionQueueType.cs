@@ -9,6 +9,9 @@ namespace Tools.ExecutionQueue.Models
         SongsPlayer = 3,
         ForceHideApplication = 4,
         WakeUpScreenAfterEhi = 5,
-        MediaPlayOrPause = 6
+        MediaPlayOrPause = 6,
+        RunMediaAndPlay = 7,
+        MediaNextTrack = 8,
+        MediaPreviousTrack = 9
     }
 }

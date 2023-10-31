@@ -171,6 +171,12 @@ namespace Supp.Site.Recognition
             newWebSpeech = manageRunExeResult.NewWebSpeech;
             data = manageRunExeResult.Data;
 
+            // Manage RunMediaAndPlay
+            var manageRunMediaAndPlayResult = ManageRunMediaAndPlay(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, identification, _hostSelected, access_token_cookie);
+            setCookie = manageRunExeResult.SetCookie;
+            newWebSpeech = manageRunExeResult.NewWebSpeech;
+            data = manageRunExeResult.Data;
+
             // Manage Reminder
             var manageReminderResult = ManageReminder(setCookie, newWebSpeech, data.StepType, expiresInSeconds, data.SubType, _phrase, data, data.Step, userName, userId, response, request, identification, access_token_cookie);
             setCookie = manageReminderResult.SetCookie;
@@ -623,6 +629,48 @@ namespace Supp.Site.Recognition
             return result;
         }
 
+        private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageRunMediaAndPlay(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, TokenDto identification, string _hostSelected, string access_token_cookie)
+        {
+            (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) result;
+
+            result.SetCookie = false;
+            result.NewWebSpeech = null;
+            result.Data = null;
+
+            if (_stepType == StepTypes.GetElementValue.ToString()
+                && newWebSpeech.ElementIndex == 1
+                && (
+                        _subType == WebSpeechTypes.SystemDialogueRunMediaAndPlay.ToString()
+                   )
+               )
+            {
+                if (_phrase == null) _phrase = "";
+                newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = _phrase.Trim();
+                setCookie = true;
+            }
+
+            if (
+                _stepType == StepTypes.Execute.ToString()
+                && (
+                        _subType == WebSpeechTypes.SystemDialogueRunMediaAndPlay.ToString()
+                   )
+                )
+            {
+                var dialogueRunMediaAndPlay = new DialogueRunMediaAndPlay();
+                //data.Type = WebSpeechTypes.SystemRunMediaAndPlay.ToString();
+
+                var runMediaAndPlayResult = dialogueRunMediaAndPlay.RunMediaAndPlay(data, newWebSpeech.Elements[1].Value, _hostSelected, access_token_cookie, executionQueueRepo, identification).GetAwaiter().GetResult();
+
+                data.Parameters = runMediaAndPlayResult.Parameters;
+            }
+
+            result.SetCookie = setCookie;
+            result.NewWebSpeech = newWebSpeech;
+            result.Data = data;
+
+            return result;
+        }
+
         private (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) ManageTimer(bool setCookie, WebSpeechDto newWebSpeech, string _stepType, int expiresInSeconds, string _subType, string _phrase, WebSpeechDto data, int _step, string userName, long userId, HttpResponse response, HttpRequest request, TokenDto identification, string access_token_cookie)
         {
             (bool SetCookie, WebSpeechDto NewWebSpeech, WebSpeechDto Data) result;
@@ -804,6 +852,21 @@ namespace Supp.Site.Recognition
             return await dialogue.RunExe(data, _phrase, _hostSelected, access_token_cookie, executionQueueRepo, identification);
         }
 
+        /// <summary>
+        /// Run Media And Play
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="_phrase"></param>
+        /// <param name="_hostSelected"></param>
+        /// <param name="access_token_cookie"></param>
+        /// <param name="executionQueueRepo"></param>
+        /// <returns></returns>
+        public async Task<WebSpeechDto> RunMediaAndPlay(WebSpeechDto data, string _phrase, string _hostSelected, string access_token_cookie, ExecutionQueuesRepository executionQueueRepo, TokenDto identification)
+        {
+            var dialogue = new DialogueRunMediaAndPlay();
+            return await dialogue.RunMediaAndPlay(data, _phrase, _hostSelected, access_token_cookie, executionQueueRepo, identification);
+        }
+
         public async Task<WebSpeechDto> SetTimer(WebSpeechDto dto, string token, string userName, long userId, TokenDto identification, HttpRequest request, HttpResponse response, int expiresInSeconds, DateTime timerDate)
         {
             var dialogue = new DialogueSetTimer();
@@ -828,6 +891,19 @@ namespace Supp.Site.Recognition
         public List<WebSpeechDto> GetDialogueRunExe(string culture, long lastWebSpeechId, string _subType)
         {
             var dialogue = new DialogueRunExe();
+            return dialogue.Get(culture, lastWebSpeechId, _subType);
+        }
+
+        /// <summary>
+        /// Get Dialogue Run Media And Play
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <param name="lastWebSpeechId"></param>
+        /// <param name="_subType"></param>
+        /// <returns></returns>
+        public List<WebSpeechDto> GetDialogueRunMediaAndPlay(string culture, long lastWebSpeechId, string _subType)
+        {
+            var dialogue = new DialogueRunMediaAndPlay();
             return dialogue.Get(culture, lastWebSpeechId, _subType);
         }
 

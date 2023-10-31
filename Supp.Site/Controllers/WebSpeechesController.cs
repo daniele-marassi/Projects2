@@ -1045,7 +1045,19 @@ namespace Supp.Site.Controllers
         // GET: WebSpeeches/MediaPlayOrPause
         public async Task MediaPlayOrPause(string _hostSelected)
         {
-            await recognitionCommon.MediaPlayOrPause(_hostSelected, Request);
+            await recognitionCommon.AddExecutionQueueQuickly(_hostSelected, Request, ExecutionQueueType.MediaPlayOrPause);
+        }
+
+        // GET: WebSpeeches/MediaNextTrack
+        public async Task MediaNextTrack(string _hostSelected)
+        {
+            await recognitionCommon.AddExecutionQueueQuickly(_hostSelected, Request, ExecutionQueueType.MediaNextTrack);
+        }
+
+        // GET: WebSpeeches/MediaPreviousTrack
+        public async Task MediaPreviousTrack(string _hostSelected)
+        {
+            await recognitionCommon.AddExecutionQueueQuickly(_hostSelected, Request, ExecutionQueueType.MediaPreviousTrack);
         }
     }
 }

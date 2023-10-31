@@ -42,6 +42,13 @@ namespace Supp.Models
         SystemRunExeWithNumericParameter,
         RunExeWithNotNumericParameter,
         SystemRunExeWithNotNumericParameter,
+        RunMediaAndPlay,
+        SystemRunMediaAndPlay,
+        SystemDialogueRunMediaAndPlay,
+        RunMediaAndPlayWithNumericParameter,
+        SystemRunMediaAndPlayWithNumericParameter,
+        RunMediaAndPlayWithNotNumericParameter,
+        SystemRunMediaAndPlayWithNotNumericParameter,
         ReadThermostat,
         SystemReadThermostat,
         SetThermostat,
@@ -70,7 +77,10 @@ namespace Supp.Models
         SystemDialogueSetAlarmClock,
         DeleteAlarmClock,
         SystemDeleteAlarmClock,
-        SystemDialogueDeleteAlarmClock
+        SystemDialogueDeleteAlarmClock,
+        MediaPlayOrPause,
+        MediaNextTrack,
+        MediaPreviousTrack
     }
 
     public class WebSpeechTypesUtility

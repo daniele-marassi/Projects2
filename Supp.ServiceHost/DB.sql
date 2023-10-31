@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [Supp.DataBase]    Script Date: 26/09/2023 22:48:58 ******/
+/****** Object:  Database [Supp.DataBase]    Script Date: 31/10/2023 10:57:07 ******/
 CREATE DATABASE [Supp.DataBase]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -78,13 +78,13 @@ ALTER DATABASE [Supp.DataBase] SET QUERY_STORE = OFF
 GO
 USE [Supp.DataBase]
 GO
-/****** Object:  User [Admin]    Script Date: 26/09/2023 22:48:58 ******/
+/****** Object:  User [Admin]    Script Date: 31/10/2023 10:57:07 ******/
 CREATE USER [Admin] FOR LOGIN [Admin] WITH DEFAULT_SCHEMA=[dbo]
 GO
-/****** Object:  Schema [auth]    Script Date: 26/09/2023 22:48:58 ******/
+/****** Object:  Schema [auth]    Script Date: 31/10/2023 10:57:07 ******/
 CREATE SCHEMA [auth]
 GO
-/****** Object:  Table [auth].[Authentications]    Script Date: 26/09/2023 22:48:58 ******/
+/****** Object:  Table [auth].[Authentications]    Script Date: 31/10/2023 10:57:07 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -105,7 +105,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[Tokens]    Script Date: 26/09/2023 22:48:59 ******/
+/****** Object:  Table [auth].[Tokens]    Script Date: 31/10/2023 10:57:07 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -129,7 +129,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[UserRoles]    Script Date: 26/09/2023 22:48:59 ******/
+/****** Object:  Table [auth].[UserRoles]    Script Date: 31/10/2023 10:57:07 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -145,7 +145,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[UserRoleTypes]    Script Date: 26/09/2023 22:48:59 ******/
+/****** Object:  Table [auth].[UserRoleTypes]    Script Date: 31/10/2023 10:57:07 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -160,7 +160,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[Users]    Script Date: 26/09/2023 22:48:59 ******/
+/****** Object:  Table [auth].[Users]    Script Date: 31/10/2023 10:57:07 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -178,7 +178,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ExecutionQueues]    Script Date: 26/09/2023 22:48:59 ******/
+/****** Object:  Table [dbo].[ExecutionQueues]    Script Date: 31/10/2023 10:57:07 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -203,7 +203,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[GoogleAccounts]    Script Date: 26/09/2023 22:48:59 ******/
+/****** Object:  Table [dbo].[GoogleAccounts]    Script Date: 31/10/2023 10:57:07 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -222,7 +222,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[GoogleAuths]    Script Date: 26/09/2023 22:48:59 ******/
+/****** Object:  Table [dbo].[GoogleAuths]    Script Date: 31/10/2023 10:57:07 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -241,7 +241,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Media]    Script Date: 26/09/2023 22:48:59 ******/
+/****** Object:  Table [dbo].[Media]    Script Date: 31/10/2023 10:57:07 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -279,7 +279,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[MediaConfigurations]    Script Date: 26/09/2023 22:48:59 ******/
+/****** Object:  Table [dbo].[MediaConfigurations]    Script Date: 31/10/2023 10:57:07 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -296,7 +296,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Songs]    Script Date: 26/09/2023 22:48:59 ******/
+/****** Object:  Table [dbo].[Songs]    Script Date: 31/10/2023 10:57:07 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -315,7 +315,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[WebSpeeches]    Script Date: 26/09/2023 22:48:59 ******/
+/****** Object:  Table [dbo].[WebSpeeches]    Script Date: 31/10/2023 10:57:07 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -362,9 +362,9 @@ SET IDENTITY_INSERT [auth].[Authentications] OFF
 SET IDENTITY_INSERT [auth].[Tokens] ON 
 
 INSERT [auth].[Tokens] ([Id], [UserId], [TokenCode], [ExpiryDate], [ExpiresInSeconds], [UserName], [RolesInJson], [Name], [Surname], [ConfigInJson], [InsDateTime]) VALUES (494, 1, N'1|e894d67378cf3f2ec4ca4238a0b92382b45425b73f8cbee00dcc509a6f75849bc4ca4238a0b92382e3afed0047b080590dcc509a6f75849bd0fada10f400c1e5e3afed0047b08059bf318f3dc85e3f51d0fada10f400c1e5efac344901c6b016bf318f3dc85e3f51e3afed0047b08059efac344901c6b016d0fada10f400c1e5e3afed0047b08059e3afed0047b08059d0fada10f400c1e5d0fada10f400c1e5e3afed0047b080599f9cb79859dbe06bd0fada10f400c1e545084e074e7146939f9cb79859dbe06b1329e03393e056f545084e074e714693e20b4b0a38b3965b', NULL, 31596529, N'Admin', N'["Admin","User","SuperUser"]', N'Admin', N'Admin', N'', CAST(N'2023-09-20T16:48:53.553' AS DateTime))
-INSERT [auth].[Tokens] ([Id], [UserId], [TokenCode], [ExpiryDate], [ExpiresInSeconds], [UserName], [RolesInJson], [Name], [Surname], [ConfigInJson], [InsDateTime]) VALUES (892, 8, N'8|e894d67378cf3f2ec9f0f895fb98ab91b45425b73f8cbee059f51fd0297e236dc9f0f895fb98ab91d71e6670ea1eff5959f51fd0297e236db223cde37ee6480ad71e6670ea1eff59bf318f3dc85e3f51b223cde37ee6480aefac344901c6b016bf318f3dc85e3f51db0c619c8f3dab03efac344901c6b0161dd8a18c33bee3f9db0c619c8f3dab038872127956df27401dd8a18c33bee3f9ab1e36854104cd658872127956df2740b3065929dadc89f1ab1e36854104cd65359326578202c07cb3065929dadc89f16c9f5f1329f941c2359326578202c07c5f9385d70889a35d', NULL, 31598161, N'daniele.marassi.phone1@gmail.com', N'["User","SuperUser"]', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"EV-PC\",\"EV-TB\"]","HostDefault":"EV-PC","ListeningWord1":"","ListeningWord2":"cortana","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"trieste-oggi-32006","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "True", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "False", "GoogleCalendarAccount": "daniele.marassi"}}', CAST(N'2023-09-25T17:16:01.757' AS DateTime))
-INSERT [auth].[Tokens] ([Id], [UserId], [TokenCode], [ExpiryDate], [ExpiresInSeconds], [UserName], [RolesInJson], [Name], [Surname], [ConfigInJson], [InsDateTime]) VALUES (959, 4, N'4|e894d67378cf3f2ea87ff679a2f3e71db45425b73f8cbee09181a67b7542122ca87ff679a2f3e71db78b7c4b7bde17e29181a67b7542122c01b358a015119262b78b7c4b7bde17e2bf318f3dc85e3f5101b358a015119262efac344901c6b016bf318f3dc85e3f51db0c619c8f3dab03efac344901c6b0161dd8a18c33bee3f9db0c619c8f3dab038872127956df27401dd8a18c33bee3f9ab1e36854104cd658872127956df2740b3065929dadc89f1ab1e36854104cd65359326578202c07cb3065929dadc89f1e5254f927a8ce06b359326578202c07c43090e553c773370', NULL, 31615872, N'daniele.marassi@gmail.com', N'["User","SuperUser"]', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"EV-PC\",\"EV-TB\"]","HostDefault":"EV-PC","ListeningWord1":"","ListeningWord2":"cortana","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"trieste-oggi-32006","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "True", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "False", "GoogleCalendarAccount": "daniele.marassi"}}', CAST(N'2023-09-26T22:11:12.043' AS DateTime))
-INSERT [auth].[Tokens] ([Id], [UserId], [TokenCode], [ExpiryDate], [ExpiresInSeconds], [UserName], [RolesInJson], [Name], [Surname], [ConfigInJson], [InsDateTime]) VALUES (960, 5, N'5|e894d67378cf3f2ee4da3b7fbbce2345b45425b73f8cbee0d7772b0674a318d5e4da3b7fbbce2345a1cb419d64bbbc71d7772b0674a318d546b778683b1771d2a1cb419d64bbbc71bf318f3dc85e3f5146b778683b1771d2efac344901c6b016bf318f3dc85e3f51db0c619c8f3dab03efac344901c6b0161dd8a18c33bee3f9db0c619c8f3dab038872127956df27401dd8a18c33bee3f9ab1e36854104cd658872127956df2740b3065929dadc89f1ab1e36854104cd65359326578202c07cb3065929dadc89f1e762768beba192b1359326578202c07ced772e6440fec139', NULL, 31616372, N'daniele.marassi.ev.tb@gmail.com', N'["User","SuperUser"]', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"EV-PC\",\"EV-TB\"]","HostDefault":"EV-TB","ListeningWord1":"","ListeningWord2":"cortana","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"trieste-oggi-32006","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "True", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "True", "GoogleCalendarAccount": "daniele.marassi"}}', CAST(N'2023-09-26T22:19:32.403' AS DateTime))
+INSERT [auth].[Tokens] ([Id], [UserId], [TokenCode], [ExpiryDate], [ExpiresInSeconds], [UserName], [RolesInJson], [Name], [Surname], [ConfigInJson], [InsDateTime]) VALUES (31983, 8, N'8|e894d67378cf3f2ec9f0f895fb98ab91b45425b73f8cbee059f51fd0297e236dc9f0f895fb98ab91d71e6670ea1eff5959f51fd0297e236db223cde37ee6480ad71e6670ea1eff59bf318f3dc85e3f51b223cde37ee6480aefac344901c6b016bf318f3dc85e3f51db0c619c8f3dab03efac344901c6b0161dd8a18c33bee3f9db0c619c8f3dab038872127956df27401dd8a18c33bee3f9ab1e36854104cd658872127956df2740b3065929dadc89f1ab1e36854104cd65359326578202c07cb3065929dadc89f19f70c11ea578bcec359326578202c07c1f9676d5e32ad4fb', NULL, 31580485, N'daniele.marassi.phone1@gmail.com', N'["User","SuperUser"]', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"EV-PC\",\"EV-TB\"]","HostDefault":"EV-PC","ListeningWord1":"","ListeningWord2":"cortana","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"trieste-oggi-32006","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "True", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "False", "GoogleCalendarAccount": "daniele.marassi"}}', CAST(N'2023-10-17T12:21:25.970' AS DateTime))
+INSERT [auth].[Tokens] ([Id], [UserId], [TokenCode], [ExpiryDate], [ExpiresInSeconds], [UserName], [RolesInJson], [Name], [Surname], [ConfigInJson], [InsDateTime]) VALUES (32691, 4, N'4|e894d67378cf3f2ea87ff679a2f3e71db45425b73f8cbee09181a67b7542122ca87ff679a2f3e71db78b7c4b7bde17e29181a67b7542122c01b358a015119262b78b7c4b7bde17e2bf318f3dc85e3f5101b358a015119262efac344901c6b016bf318f3dc85e3f51db0c619c8f3dab03efac344901c6b0161dd8a18c33bee3f9db0c619c8f3dab038872127956df27401dd8a18c33bee3f9ab1e36854104cd658872127956df2740b3065929dadc89f1ab1e36854104cd65359326578202c07cb3065929dadc89f135f2425ab3f9969a359326578202c07c2459b4ffc64cf8d1', NULL, 31584713, N'daniele.marassi@gmail.com', N'["User","SuperUser"]', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"EV-PC\",\"EV-TB\"]","HostDefault":"EV-PC","ListeningWord1":"","ListeningWord2":"cortana","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"trieste-oggi-32006","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "True", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "False", "GoogleCalendarAccount": "daniele.marassi"}}', CAST(N'2023-10-30T13:31:53.657' AS DateTime))
+INSERT [auth].[Tokens] ([Id], [UserId], [TokenCode], [ExpiryDate], [ExpiresInSeconds], [UserName], [RolesInJson], [Name], [Surname], [ConfigInJson], [InsDateTime]) VALUES (32738, 5, N'5|e894d67378cf3f2ee4da3b7fbbce2345b45425b73f8cbee0d7772b0674a318d5e4da3b7fbbce2345a1cb419d64bbbc71d7772b0674a318d546b778683b1771d2a1cb419d64bbbc71bf318f3dc85e3f5146b778683b1771d2efac344901c6b016bf318f3dc85e3f51db0c619c8f3dab03efac344901c6b0161dd8a18c33bee3f9db0c619c8f3dab038872127956df27401dd8a18c33bee3f9ab1e36854104cd658872127956df2740b3065929dadc89f1ab1e36854104cd65359326578202c07cb3065929dadc89f16463754f99d40d14359326578202c07c5c4c28a7cf75f8a9', NULL, 31573930, N'daniele.marassi.ev.tb@gmail.com', N'["User","SuperUser"]', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"EV-PC\",\"EV-TB\"]","HostDefault":"EV-TB","ListeningWord1":"","ListeningWord2":"cortana","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"trieste-oggi-32006","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "True", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "True", "GoogleCalendarAccount": "daniele.marassi"}}', CAST(N'2023-10-31T10:32:10.830' AS DateTime))
 SET IDENTITY_INSERT [auth].[Tokens] OFF
 SET IDENTITY_INSERT [auth].[UserRoles] ON 
 
@@ -403,6 +403,8 @@ INSERT [dbo].[GoogleAccounts] ([Id], [Account], [FolderToFilter], [GoogleAuthId]
 INSERT [dbo].[GoogleAccounts] ([Id], [Account], [FolderToFilter], [GoogleAuthId], [UserId], [AccountType], [InsDateTime]) VALUES (31, N'daniele.marassi', N'', 31, 4, N'Calendar', CAST(N'2022-02-05T23:26:51.887' AS DateTime))
 INSERT [dbo].[GoogleAccounts] ([Id], [Account], [FolderToFilter], [GoogleAuthId], [UserId], [AccountType], [InsDateTime]) VALUES (32, N'daniele.marassi.media1', N'Roberta_me', 32, 4, N'Drive', CAST(N'2022-02-05T23:29:44.887' AS DateTime))
 INSERT [dbo].[GoogleAccounts] ([Id], [Account], [FolderToFilter], [GoogleAuthId], [UserId], [AccountType], [InsDateTime]) VALUES (33, N'daniele.marassi.media1', N'Roberta_me', 33, 5, N'Drive', CAST(N'2022-02-05T23:30:27.597' AS DateTime))
+INSERT [dbo].[GoogleAccounts] ([Id], [Account], [FolderToFilter], [GoogleAuthId], [UserId], [AccountType], [InsDateTime]) VALUES (34, N'daniele.marassi', N'', 31, 8, N'Calendar', CAST(N'2023-09-27T14:08:12.680' AS DateTime))
+INSERT [dbo].[GoogleAccounts] ([Id], [Account], [FolderToFilter], [GoogleAuthId], [UserId], [AccountType], [InsDateTime]) VALUES (35, N'daniele.marassi.media1', N'Roberta_me', 32, 8, N'Drive', CAST(N'2023-09-27T14:08:12.877' AS DateTime))
 SET IDENTITY_INSERT [dbo].[GoogleAccounts] OFF
 SET IDENTITY_INSERT [dbo].[GoogleAuths] ON 
 
@@ -443,12 +445,12 @@ INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (22, N'Volume:_Disattiva-Riattiva', N'[["silenzia", "mute", "muto","disattiva audio","disattiva volume","riattiva audio","ripristina audio","riattiva volume","ripristina volume"]]', N'C:\Program Files (x86)\Commands\Volume\Silenzia.exe', NULL, N'All', N'["ok","va bene","certo","bene"]', 1, 4, NULL, N'/Images/Shortcuts/volume-mute.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2021-04-08T20:52:40.000' AS DateTime), 1, N'Volume', 0, 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (24, N'Playlist:_Soft', N'[["playlist", "play list"], ["soft"]]', NULL, N'https://192.168.1.105:83/Songs/SongsPlayer?_playListSelected=Soft&_volume=40&_command=play&_shuffle=true', N'All', N'["ok","va bene","certo","bene"]', 1, 4, NULL, N'/Images/Shortcuts/music.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-08-15T00:49:23.000' AS DateTime), 1, N'Playlist', 0, 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (25, N'Playlist:_Tango', N'[["playlist", "play list"], ["tango"]]', NULL, N'https://192.168.1.105:83/Songs/SongsPlayer?_playListSelected=Tango&_volume=60&_command=play&_shuffle=true', N'All', N'["ok","va bene","certo","bene"]', 1, 4, NULL, N'/Images/Shortcuts/music.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-08-15T00:50:06.000' AS DateTime), 1, N'Playlist', 0, 0)
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (26, N'Spotify:_Tango_Nuevo', N'[["spotify"],["tango"],["nuevo"]]', NULL, N'https://open.spotify.com/playlist/36A11xexKdLaMZWpUzLq2O', N'All', N'["ok","va bene","certo","bene"]', 1, 4, NULL, N'/Images/Shortcuts/spotify.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-08-16T09:56:31.000' AS DateTime), 1, N'Spotify', 0, 0)
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (27, N'Spotify:_Tango_Tradizionale', N'[["spotify"],["tango"],["tradizionale"]]', NULL, N'https://open.spotify.com/playlist/2LOKmWnLCkiizHwiljfhX9', N'All', N'["ok","va bene","certo","bene"]', 1, 4, NULL, N'/Images/Shortcuts/spotify.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-08-16T09:57:48.000' AS DateTime), 1, N'Spotify', 0, 0)
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (28, N'Spotify:_2000', N'[["spotify"], ["2000"]]', NULL, N'https://open.spotify.com/playlist/3W4uVzChUd70KYwpAJEBDo', N'All', N'["ok","va bene","certo","bene"]', 1, 4, NULL, N'/Images/Shortcuts/spotify.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-08-16T09:59:01.000' AS DateTime), 1, N'Spotify', 0, 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (26, N'Spotify:_Tango_Nuevo', N'[["spotify"],["tango"],["nuevo"]]', N'C:\Program Files\Google\Chrome\Application\chrome.exe', N'https://open.spotify.com/playlist/36A11xexKdLaMZWpUzLq2O', N'All', N'["ok","va bene","certo","bene"]', 1, 4, NULL, N'/Images/Shortcuts/spotify.png', 0, N'RunMediaAndPlay', 1, NULL, 0, NULL, 0, CAST(N'2021-08-16T09:56:31.000' AS DateTime), 1, N'Spotify', 0, 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (27, N'Spotify:_Tango_Tradizionale', N'[["spotify"],["tango"],["tradizionale"]]', N'C:\Program Files\Google\Chrome\Application\chrome.exe', N'https://open.spotify.com/playlist/2LOKmWnLCkiizHwiljfhX9', N'All', N'["ok","va bene","certo","bene"]', 1, 4, NULL, N'/Images/Shortcuts/spotify.png', 0, N'RunMediaAndPlay', 1, NULL, 0, NULL, 0, CAST(N'2021-08-16T09:57:48.000' AS DateTime), 1, N'Spotify', 0, 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (28, N'Spotify:_2000', N'[["spotify"], ["2000"]]', N'C:\Program Files\Google\Chrome\Application\chrome.exe', N'https://open.spotify.com/playlist/3W4uVzChUd70KYwpAJEBDo', N'All', N'["ok","va bene","certo","bene"]', 1, 4, NULL, N'/Images/Shortcuts/spotify.png', 0, N'RunMediaAndPlay', 1, NULL, 0, NULL, 0, CAST(N'2021-08-16T09:59:01.000' AS DateTime), 1, N'Spotify', 0, 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (29, N'Restart', N'[["pc", "computer"], ["restart", "riavvia"]]', N'C:\Program Files (x86)\Shut\Shut.exe', N'restart', N'All', N'["ok","va bene","certo","bene"]', 1, 4, NULL, N'/Images/Shortcuts/restart.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2021-10-25T23:00:57.000' AS DateTime), 1, N'PC', 0, 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (30, N'Shutdown_PC', N'[["pc", "computer"], ["spegni", "chiudi", "shutdown"]]', N'C:\Program Files (x86)\Shut\Shut.exe', N'shutdown', N'EV-PC', N'["ok","va bene","certo","bene"]', 1, 4, NULL, N'/Images/Shortcuts/shutdown.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2021-10-25T23:02:13.000' AS DateTime), 1, N'PC', 0, 0)
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (31, N'Spotify:_Dance', N'[["spotify"], ["dance"]]', NULL, N'https://open.spotify.com/playlist/0XNgv74fN0N4usS4vLjNAA?si=5041b18841e7434d', N'All', N'["ok","va bene","certo","bene"]', 1, 4, NULL, N'/Images/Shortcuts/spotify.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-08-16T09:56:31.000' AS DateTime), 1, N'Spotify', 0, 1)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (31, N'Spotify:_Dance', N'[["spotify"], ["dance"]]', N'C:\Program Files\Google\Chrome\Application\chrome.exe', N'https://open.spotify.com/playlist/0XNgv74fN0N4usS4vLjNAA?si=5041b18841e7434d', N'All', N'["ok","va bene","certo","bene"]', 1, 4, NULL, N'/Images/Shortcuts/spotify.png', 0, N'RunMediaAndPlay', 1, NULL, 0, NULL, 0, CAST(N'2021-08-16T09:56:31.000' AS DateTime), 1, N'Spotify', 0, 1)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (32, N'Lista_Spesa:_Scrivi', N'[["scrivi","aggiungi","inserisci","accoda"],["spesa"]]', NULL, N'lista spesa', N'All', NULL, 0, 4, NULL, N'/Images/Shortcuts/buy-add.png', 0, N'EditNote', 1, N'SystemDialogueAddToNoteWithName', 0, NULL, 0, CAST(N'2021-12-22T21:54:43.000' AS DateTime), 1, N'Lista Spesa', 0, 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (33, N'Lista_Spesa:_Pulisci', N'[["pulisci","svuota"],["spesa"]]', NULL, N'lista spesa', N'All', NULL, 0, 4, NULL, N'/Images/Shortcuts/buy-clear.png', 0, N'EditNote', 1, N'SystemDialogueClearNoteWithName', 0, NULL, 0, CAST(N'2021-12-23T15:55:00.000' AS DateTime), 1, N'Lista Spesa', 0, 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (34, N'Come_stai', N'[["come stai", "come ti senti"]]', NULL, NULL, N'All', N'["benissimo", "alla grande"]', 1, 4, NULL, N'/Images/Shortcuts/answer.png', 0, N'Request', 1, NULL, 0, NULL, 0, CAST(N'2021-12-28T23:18:58.000' AS DateTime), 1, N'Answer', 0, 0)
@@ -459,10 +461,10 @@ INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (40, N'TV:_Canale_5', N'[["canale"],["5"]]', NULL, N'https://www.mediasetplay.mediaset.it/diretta/canale5_cC5', N'All', N'["ok","va bene","certo","bene"]', 1, 0, NULL, N'/Images/Shortcuts/tv.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-06-23T23:15:18.000' AS DateTime), 1, N'TV', 0, 1)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (41, N'Playlist:_Soft', N'[["playlist", "play list"], ["soft"]]', NULL, N'https://192.168.1.105:83/Songs/SongsPlayer?_playListSelected=Soft&_volume=40&_command=play&_shuffle=true', N'All', N'["ok","va bene","certo","bene"]', 1, 5, NULL, N'/Images/Shortcuts/music.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-08-15T00:49:23.000' AS DateTime), 1, N'Playlist', 0, 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (42, N'Playlist:_Tango', N'[["playlist", "play list"], ["tango"]]', NULL, N'https://192.168.1.105:83/Songs/SongsPlayer?_playListSelected=Tango&_volume=60&_command=play&_shuffle=true', N'All', N'["ok","va bene","certo","bene"]', 1, 5, NULL, N'/Images/Shortcuts/music.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-08-15T00:50:06.000' AS DateTime), 1, N'Playlist', 0, 0)
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (43, N'Spotify:_Tango_Nuevo', N'[["spotify"],["tango"],["nuevo"]]', NULL, N'https://open.spotify.com/playlist/36A11xexKdLaMZWpUzLq2O', N'All', N'["ok","va bene","certo","bene"]', 1, 5, NULL, N'/Images/Shortcuts/spotify.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-08-16T09:56:31.000' AS DateTime), 1, N'Spotify', 0, 0)
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (44, N'Spotify:_Tango_Tradizionale', N'[["spotify"],["tango"],["tradizionale"]]', NULL, N'https://open.spotify.com/playlist/2LOKmWnLCkiizHwiljfhX9', N'All', N'["ok","va bene","certo","bene"]', 1, 5, NULL, N'/Images/Shortcuts/spotify.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-08-16T09:57:48.000' AS DateTime), 1, N'Spotify', 0, 0)
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (45, N'Spotify:_2000', N'[["spotify"], ["2000"]]', NULL, N'https://open.spotify.com/playlist/3W4uVzChUd70KYwpAJEBDo', N'All', N'["ok","va bene","certo","bene"]', 1, 5, NULL, N'/Images/Shortcuts/spotify.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-08-16T09:59:01.000' AS DateTime), 1, N'Spotify', 0, 0)
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (48, N'Spotify:_Dance', N'[["spotify"], ["dance"]]', NULL, N'https://open.spotify.com/playlist/0XNgv74fN0N4usS4vLjNAA?si=5041b18841e7434d', N'All', N'["ok","va bene","certo","bene"]', 1, 5, NULL, N'/Images/Shortcuts/spotify.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-08-16T09:56:31.000' AS DateTime), 1, N'Spotify', 0, 1)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (43, N'Spotify:_Tango_Nuevo', N'[["spotify"],["tango"],["nuevo"]]', N'C:\Program Files\Google\Chrome\Application\chrome.exe', N'https://open.spotify.com/playlist/36A11xexKdLaMZWpUzLq2O', N'All', N'["ok","va bene","certo","bene"]', 1, 5, NULL, N'/Images/Shortcuts/spotify.png', 0, N'RunMediaAndPlay', 1, NULL, 0, NULL, 0, CAST(N'2021-08-16T09:56:31.000' AS DateTime), 1, N'Spotify', 0, 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (44, N'Spotify:_Tango_Tradizionale', N'[["spotify"],["tango"],["tradizionale"]]', N'C:\Program Files\Google\Chrome\Application\chrome.exe', N'https://open.spotify.com/playlist/2LOKmWnLCkiizHwiljfhX9', N'All', N'["ok","va bene","certo","bene"]', 1, 5, NULL, N'/Images/Shortcuts/spotify.png', 0, N'RunMediaAndPlay', 1, NULL, 0, NULL, 0, CAST(N'2021-08-16T09:57:48.000' AS DateTime), 1, N'Spotify', 0, 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (45, N'Spotify:_2000', N'[["spotify"], ["2000"]]', N'C:\Program Files\Google\Chrome\Application\chrome.exe', N'https://open.spotify.com/playlist/3W4uVzChUd70KYwpAJEBDo', N'All', N'["ok","va bene","certo","bene"]', 1, 5, NULL, N'/Images/Shortcuts/spotify.png', 0, N'RunMediaAndPlay', 1, NULL, 0, NULL, 0, CAST(N'2021-08-16T09:59:01.000' AS DateTime), 1, N'Spotify', 0, 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (48, N'Spotify:_Dance', N'[["spotify"], ["dance"]]', N'C:\Program Files\Google\Chrome\Application\chrome.exe', N'https://open.spotify.com/playlist/0XNgv74fN0N4usS4vLjNAA?si=5041b18841e7434d', N'All', N'["ok","va bene","certo","bene"]', 1, 5, NULL, N'/Images/Shortcuts/spotify.png', 0, N'RunMediaAndPlay', 1, NULL, 0, NULL, 0, CAST(N'2021-08-16T09:56:31.000' AS DateTime), 1, N'Spotify', 0, 1)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (49, N'Lista_Spesa:_Scrivi', N'[["scrivi","aggiungi","inserisci","accoda"],["spesa"]]', NULL, N'lista spesa', N'All', NULL, 0, 5, NULL, N'/Images/Shortcuts/buy-add.png', 0, N'EditNote', 1, N'SystemDialogueAddToNoteWithName', 0, NULL, 0, CAST(N'2021-12-22T21:54:43.000' AS DateTime), 1, N'Lista Spesa', 0, 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (50, N'Lista_Spesa:_Pulisci', N'[["pulisci","svuota"],["spesa"]]', NULL, N'lista spesa', N'All', NULL, 0, 5, NULL, N'/Images/Shortcuts/buy-clear.png', 0, N'EditNote', 1, N'SystemDialogueClearNoteWithName', 0, NULL, 0, CAST(N'2021-12-23T15:55:00.000' AS DateTime), 1, N'Lista Spesa', 0, 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (51, N'Come_stai', N'[["come stai", "come ti senti"]]', NULL, NULL, N'All', N'["benissimo", "alla grande"]', 1, 5, NULL, N'/Images/Shortcuts/answer.png', 0, N'Request', 1, NULL, 0, NULL, 0, CAST(N'2021-12-28T23:18:58.267' AS DateTime), 1, N'Answer', 0, 0)
@@ -483,14 +485,17 @@ INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (73, N'TV:_Canale_8', N'[["canale"],["8"]]', NULL, N'https://www.tv8.it/streaming', N'All', N'["ok","va bene","certo","bene"]', 1, 0, NULL, N'/Images/Shortcuts/tv.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-06-23T23:15:18.000' AS DateTime), 1, N'TV', 0, 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (74, N'TV:_Canale_9', N'[["canale"],["9"]]', NULL, N'https://nove.tv/live-streaming-nove', N'All', N'["ok","va bene","certo","bene"]', 1, 0, NULL, N'/Images/Shortcuts/tv.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-06-23T23:15:18.000' AS DateTime), 1, N'TV', 0, 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (75, N'TV:_Canale_1', N'[["canale"],["1"]]', NULL, N'https://www.raiplay.it/dirette/rai1', N'All', N'["ok","va bene","certo","bene"]', 1, 0, NULL, N'/Images/Shortcuts/tv.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-06-23T23:15:18.000' AS DateTime), 1, N'TV', 0, 0)
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (76, N'Firefox:_Open', N'[["firefox"],["open","apri", "esegui", "start", "execute", "avvia","show", "mostrami"]]', N'C:\Program Files\Mozilla Firefox\firefox.exe', NULL, N'All', N'["ok","va bene","certo","bene"]', 1, 0, N'null', N'/Images/Shortcuts/firefox.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2022-01-08T10:10:37.000' AS DateTime), 1, N'App', 0, 0)
-INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (77, N'Chrome:_Open', N'[["chrome"],["open","apri", "esegui", "start", "execute", "avvia","show", "mostrami"]]', N'C:\Program Files\Google\Chrome\Application\chrome.exe', NULL, N'All', N'["ok","va bene","certo","bene"]', 1, 0, N'null', N'/Images/Shortcuts/chrome.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2022-01-08T10:10:37.000' AS DateTime), 1, N'App', 0, 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (76, N'Firefox:_Open', N'[["firefox"],["open","apri", "esegui", "start", "execute", "avvia","show", "mostrami"]]', N'C:\Program Files\Mozilla Firefox\firefox.exe', NULL, N'All', N'["ok","va bene","certo","bene"]', 1, 0, NULL, N'/Images/Shortcuts/firefox.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2022-01-08T10:10:37.000' AS DateTime), 1, N'App', 0, 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (77, N'Chrome:_Open', N'[["chrome"],["open","apri", "esegui", "start", "execute", "avvia","show", "mostrami"]]', N'C:\Program Files\Google\Chrome\Application\chrome.exe', NULL, N'All', N'["ok","va bene","certo","bene"]', 1, 0, NULL, N'/Images/Shortcuts/chrome.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2022-01-08T10:10:37.000' AS DateTime), 1, N'App', 0, 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (78, N'TV:_Canale_7', N'[["canale"],["7"]]', NULL, N'https://www.la7.it/dirette-tv', N'All', N'["ok","va bene","certo","bene"]', 1, 0, NULL, N'/Images/Shortcuts/tv.png', 0, N'Link', 1, NULL, 0, NULL, 0, CAST(N'2021-06-23T23:15:18.000' AS DateTime), 1, N'TV', 0, 0)
 INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (80, N'Collegamento_Telefono', N'[["Collegamento"],["Telefono"]]', N'C:\Windows\explorer.exe', N'shell:appsFolder\Microsoft.YourPhone_8wekyb3d8bbwe!App', N'All', N'["ok","va bene","certo","bene"]', 1, 0, NULL, N'/Images/Shortcuts/generic.png', 0, N'RunExe', 1, NULL, 0, NULL, 0, CAST(N'2022-01-09T11:36:09.053' AS DateTime), 1, N'App', 0, 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (81, N'Media:play_or_stop', N'[["play","stop"]]', NULL, NULL, N'All', NULL, 1, 0, NULL, N'/Images/Player/play_pause.png', 0, N'MediaPreviousTrack', 1, NULL, 0, NULL, 0, CAST(N'2021-08-14T23:14:07.000' AS DateTime), 1, N'MediaControls', 0, 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (90, N'Media:next', N'[["prossimo","prossima","next"],["brano","canzone","track","song", "traccia"]]', NULL, NULL, N'All', NULL, 1, 0, NULL, N'/Images/Player/forward.png', 0, N'MediaPreviousTrack', 1, NULL, 0, NULL, 0, CAST(N'2021-08-14T23:14:07.000' AS DateTime), 1, N'MediaControls', 0, 0)
+INSERT [dbo].[WebSpeeches] ([Id], [Name], [Phrase], [Operation], [Parameters], [Host], [Answer], [FinalStep], [UserId], [ParentIds], [Ico], [Order], [Type], [OperationEnable], [SubType], [Step], [StepType], [ElementIndex], [InsDateTime], [Groupable], [GroupName], [GroupOrder], [HotShortcut]) VALUES (91, N'Media:previous', N'[["precedente","previous"],["brano","canzone","track","song", "traccia"]]', NULL, NULL, N'All', NULL, 1, 0, NULL, N'/Images/Player/previous.png', 0, N'MediaPreviousTrack', 1, NULL, 0, NULL, 0, CAST(N'2021-08-14T23:14:07.000' AS DateTime), 1, N'MediaControls', 0, 0)
 SET IDENTITY_INSERT [dbo].[WebSpeeches] OFF
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__UserRole__F9B8A48B5D9B3C08]    Script Date: 26/09/2023 22:49:00 ******/
+/****** Object:  Index [UQ__UserRole__F9B8A48B5D9B3C08]    Script Date: 31/10/2023 10:57:07 ******/
 ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED 
 (
 	[Type] ASC
@@ -498,7 +503,7 @@ ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__UserRole__F9B8A48BD16EC4B7]    Script Date: 26/09/2023 22:49:00 ******/
+/****** Object:  Index [UQ__UserRole__F9B8A48BD16EC4B7]    Script Date: 31/10/2023 10:57:07 ******/
 ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED 
 (
 	[Type] ASC
@@ -506,7 +511,7 @@ ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__Users__C9F28456571BFA96]    Script Date: 26/09/2023 22:49:00 ******/
+/****** Object:  Index [UQ__Users__C9F28456571BFA96]    Script Date: 31/10/2023 10:57:07 ******/
 ALTER TABLE [auth].[Users] ADD UNIQUE NONCLUSTERED 
 (
 	[UserName] ASC
@@ -514,7 +519,7 @@ ALTER TABLE [auth].[Users] ADD UNIQUE NONCLUSTERED
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__Users__C9F2845683FCF02F]    Script Date: 26/09/2023 22:49:00 ******/
+/****** Object:  Index [UQ__Users__C9F2845683FCF02F]    Script Date: 31/10/2023 10:57:07 ******/
 ALTER TABLE [auth].[Users] ADD UNIQUE NONCLUSTERED 
 (
 	[UserName] ASC
@@ -522,7 +527,7 @@ ALTER TABLE [auth].[Users] ADD UNIQUE NONCLUSTERED
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__WebSpeec__A20D0832FFBD5F5E]    Script Date: 26/09/2023 22:49:00 ******/
+/****** Object:  Index [UQ__WebSpeec__A20D0832FFBD5F5E]    Script Date: 31/10/2023 10:57:07 ******/
 ALTER TABLE [dbo].[WebSpeeches] ADD UNIQUE NONCLUSTERED 
 (
 	[Name] ASC,

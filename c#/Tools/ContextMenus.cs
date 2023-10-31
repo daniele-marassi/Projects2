@@ -612,7 +612,7 @@ namespace Tools
 					//ProcessIcon._SpeechService = new SpeechService();
 					if (!utilty.ProcessIsActiveByWindowCaption(windowCaption))
 						Task.Run(() => ProcessIcon._Speech.Start(firstCall: true));
-					//Task.Run(() => ProcessIcon._SpeechService.Start());
+					//await Task.Run(() => ProcessIcon._SpeechService.Start());
 				}
 			}
 
