@@ -1918,8 +1918,9 @@ namespace Additional
         /// <param name="fullPath"></param>
         /// <param name="arguments"></param>
         /// <param name="async"></param>
+        /// <param name="useShellExecute"></param>
         /// <returns></returns>
-        public async Task<(string Output, string Error)> RunExe(string fullPath, string arguments, bool async)
+        public async Task<(string Output, string Error)> RunExe(string fullPath, string arguments, bool async, bool useShellExecute = false)
         {
             (string Output, string Error) result;
             result.Output = null;
@@ -1930,7 +1931,7 @@ namespace Additional
                 Process process = new Process();
                 process.StartInfo.FileName = fullPath;
                 process.StartInfo.Arguments = arguments;
-                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.UseShellExecute = useShellExecute;
                 process.StartInfo.RedirectStandardOutput = async;
                 process.StartInfo.RedirectStandardError = async;
                 process.Start();
@@ -2055,7 +2056,7 @@ namespace Additional
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception($"Call Api Error - " + ex.Message, ex.InnerException);
             }
 
             return result;

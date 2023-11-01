@@ -443,7 +443,7 @@ namespace Tools.ExecutionQueue
 
             try
             {
-                result = utility.RunExe(item.FullPath, item.Arguments, async).GetAwaiter().GetResult();
+                result = utility.RunExe(item.FullPath, item.Arguments, async, true).GetAwaiter().GetResult();
 
                 if (result.Error != null && result.Error != String.Empty)
                 {
