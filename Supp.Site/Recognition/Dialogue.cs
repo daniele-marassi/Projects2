@@ -286,6 +286,9 @@ namespace Supp.Site.Recognition
                 && (
                         _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()
 
+                        || _subType == WebSpeechTypes.DialogueAddToNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.DialogueClearNoteWithName.ToString()
+
                         || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString()
 
                         || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()
@@ -311,6 +314,9 @@ namespace Supp.Site.Recognition
                         _subType == WebSpeechTypes.SystemDialogueAddToNote.ToString()
                         || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()
 
+                        || _subType == WebSpeechTypes.DialogueAddToNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.DialogueClearNoteWithName.ToString()
+
                         || _subType == WebSpeechTypes.SystemDialogueClearNote.ToString()
                         || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString()
 
@@ -325,6 +331,9 @@ namespace Supp.Site.Recognition
                 if (
                     (
                         _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()
+
+                        || _subType == WebSpeechTypes.DialogueAddToNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.DialogueClearNoteWithName.ToString()
 
                         || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString()
 
@@ -358,6 +367,9 @@ namespace Supp.Site.Recognition
                         _subType == WebSpeechTypes.SystemDialogueAddToNote.ToString()
                         || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()
 
+                        || _subType == WebSpeechTypes.DialogueAddToNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.DialogueClearNoteWithName.ToString()
+
                         || _subType == WebSpeechTypes.SystemDialogueCreateNote.ToString()
                         || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString()
 
@@ -375,11 +387,11 @@ namespace Supp.Site.Recognition
                 var eventResult = new EventResult();
 
                 if (_subType == WebSpeechTypes.SystemDialogueAddToNote.ToString()
-                        || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString())
+                        || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString() || _subType == WebSpeechTypes.DialogueAddToNoteWithName.ToString())
                 eventResult = dialogueAddToNote.AddElementInNote(newWebSpeech, access_token_cookie, userName, userId).GetAwaiter().GetResult();
 
                 if (_subType == WebSpeechTypes.SystemDialogueClearNote.ToString()
-                        || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString())
+                        || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString() || _subType == WebSpeechTypes.DialogueClearNoteWithName.ToString())
                     eventResult = dialogueClearNote.ClearNote(newWebSpeech, access_token_cookie, userName, userId).GetAwaiter().GetResult();
 
                 if (_subType == WebSpeechTypes.SystemDialogueCreateNote.ToString()

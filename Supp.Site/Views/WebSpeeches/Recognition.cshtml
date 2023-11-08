@@ -443,6 +443,8 @@
 
             speech = new SpeechSynthesisUtterance();
 
+            if (voices == undefined || voices == null || voices.length == 0) voices = window.speechSynthesis.getVoices();
+
             //console.warn(voices);
             
             // Set the text and voice attributes.
@@ -453,7 +455,14 @@
             speech.lang = culture;
 
             if(culture.toLowerCase() == "it-it") speech.voice = FindInArrayOfObject(voices, "name", "Google italiano");
+
+            if (culture.toLowerCase() == "it-it" && (speech.voice == null || speech.voice == undefined)) speech.voice = voices[14];
+            if (culture.toLowerCase() == "it-it" && (speech.voice == null || speech.voice == undefined)) speech.voice = voices[4];
+
             if(culture.toLowerCase() == "en-us") speech.voice = FindInArrayOfObject(voices, "name", "Google UK English Female");
+
+            if (culture.toLowerCase() == "en-us" && (speech.voice == null || speech.voice == undefined)) speech.voice = voices[7];
+            if (culture.toLowerCase() == "en-us" && (speech.voice == null || speech.voice == undefined)) speech.voice = voices[2];
 
             synth = window.speechSynthesis;
             var speakHasError = false;
@@ -816,13 +825,11 @@
                         if(recognitionActive == true) StopAnimateIntervals();
                     } else {
                         for (var i = event.resultIndex; i < event.results.length; ++i) {
-                            //if (event.results[i].isFinal) {
-                            
-                            //} else {
-                                
-                            //}
-
-                            interim_transcript += event.results[i][0].transcript;
+                            if (event.results[i].isFinal) {
+                                interim_transcript += event.results[i][0].transcript;
+                            } else {
+                                interim_transcript += event.results[i][0].transcript;
+                            }
                         }
 
                         document.getElementById("interim_span").innerHTML = Linebreak(interim_transcript);
@@ -910,6 +917,9 @@
         function ResultRecognitionPhrase(result){  
             LogFunctionStart();
             VariablesAssignmentFromJson(result);
+
+            if (finalStep == false) ehi = 1;
+            else ehi = 0;
             
             Action(type, parameters);
             Speak();
@@ -921,6 +931,9 @@
         function ResultRecognitionEhi(result){
             LogFunctionStart();
             VariablesAssignmentFromJson(result);
+
+            if (finalStep == false) ehi = 1;
+            else ehi = 0;
             
             Action(type, parameters);
             Speak();

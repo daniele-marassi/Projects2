@@ -219,7 +219,7 @@ namespace Supp.Site.Recognition
                                 }
                             }
 
-                            if (_subType == WebSpeechTypes.SystemDialogueAddToNote.ToString() || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString())
+                            if (_subType == WebSpeechTypes.SystemDialogueAddToNote.ToString() || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString() || _subType == WebSpeechTypes.DialogueAddToNoteWithName.ToString())
                             {
                                 var requests = dialogue.GetDialogueAddToNote(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, _subType);
                                 if (requests != null && requests.Count > 0)
@@ -259,7 +259,7 @@ namespace Supp.Site.Recognition
                                 }
                             }
 
-                            if (_subType == WebSpeechTypes.SystemDialogueClearNote.ToString() || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString())
+                            if (_subType == WebSpeechTypes.SystemDialogueClearNote.ToString() || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString() || _subType == WebSpeechTypes.DialogueClearNoteWithName.ToString())
                             {
                                 var requests = dialogue.GetDialogueClearNote(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, _subType);
                                 if (requests != null && requests.Count > 0)
@@ -474,7 +474,7 @@ namespace Supp.Site.Recognition
 
                                     if (item.Description != String.Empty && item.Description != null)
                                     {
-                                        answer += item.Description + ".";
+                                        answer += item.Description.Replace("\n", ", ") + ".";
                                     }
                                     else
                                     {
@@ -725,10 +725,10 @@ namespace Supp.Site.Recognition
                         {
                             List<WebSpeechDto> dialogue = null;
 
-                            if (data.SubType == WebSpeechTypes.SystemDialogueAddToNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString())
+                            if (data.SubType == WebSpeechTypes.SystemDialogueAddToNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString() || data.SubType == WebSpeechTypes.DialogueAddToNoteWithName.ToString())
                                 dialogue = this.dialogue.GetDialogueAddToNote(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, data.SubType);
 
-                            if (data.SubType == WebSpeechTypes.SystemDialogueClearNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString())
+                            if (data.SubType == WebSpeechTypes.SystemDialogueClearNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString() || data.SubType == WebSpeechTypes.DialogueClearNoteWithName.ToString())
                                 dialogue = this.dialogue.GetDialogueClearNote(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, lastWebSpeechId, data.SubType);
 
                             if (data.SubType == WebSpeechTypes.SystemDialogueCreateNote.ToString() || data.SubType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString())

@@ -114,7 +114,7 @@ function Capitalize(s) {
 function FindInArrayOfObject(obj, fieldName, value) {
     var countLayer = obj.length;
     for (var x = 0; x < countLayer; x++) {
-        if (obj[x][fieldName] === value) {
+        if (obj[x][fieldName].trim().toLowerCase() === value.trim().toLowerCase()) {
             return obj[x];
         }
     }
