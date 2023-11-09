@@ -32,8 +32,8 @@ namespace Tools.RenewNotes
         private static Logger classLogger = LogManager.GetCurrentClassLogger();
         private NLogUtility nLogUtility = new NLogUtility();
         private int limitLogFileInMB = 0;
-        string suppUsername;
-        string suppPassword;
+        string service1Username;
+        string service1Password;
         string suppServiceHostBaseUrl;
         int volumeOfNotify;
         bool notifyMute;
@@ -57,8 +57,8 @@ namespace Tools.RenewNotes
             timeToClosePopUpInMilliseconds = int.Parse(ConfigurationManager.AppSettings["TimeToClosePopUpInMilliseconds"]);
             rootPath = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
 
-            suppUsername = appSettings["SuppUsername"];
-            suppPassword = appSettings["SuppPassword"];
+            service1Username = appSettings["Service1Username"];
+            service1Password = appSettings["Service1Password"];
             suppServiceHostBaseUrl = appSettings["SuppServiceHostBaseUrl"];
 
             volumeOfNotify = int.Parse(appSettings["VolumeOfNotify"]);
@@ -79,7 +79,7 @@ namespace Tools.RenewNotes
                 if (serviceActive == false) return;
                 try
                 {
-                    var loginResult = await Login(suppUsername, suppPassword, false);
+                    var loginResult = await Login(service1Username, service1Password, false);
 
                     if ((loginResult.Successful == false || loginResult.Data.Count == 0) && (showError == null || loginResult.Message != showError))
                     {
@@ -117,7 +117,7 @@ namespace Tools.RenewNotes
 
                         var timeMin = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00").AddDays(-7);
                         var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
-                        var renewNotesResult = await RenewNotes(token, suppUsername, userId, timeMin, timeMax);
+                        var renewNotesResult = await RenewNotes(token, service1Username, userId, timeMin, timeMax);
 
                         if ((renewNotesResult.Successful == false || renewNotesResult.Data.Count == 0) && (showError == null || renewNotesResult.Message != showError))
                         {

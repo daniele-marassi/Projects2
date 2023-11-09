@@ -35,6 +35,7 @@ using NLog.Fluent;
 using static System.Net.Mime.MediaTypeNames;
 using Google.Apis.Calendar.v3.Data;
 using NuGet.Frameworks;
+using Microsoft.AspNetCore.Hosting.Server;
 
 namespace Supp.Site.Controllers
 {
@@ -737,7 +738,7 @@ namespace Supp.Site.Controllers
         }
 
         // GET: WebSpeeches/Recognition
-        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step, bool? _login, string _param, long? _userId)
+        public async Task<IActionResult> Recognition(string _phrase, string _hostSelected, bool? _reset, string _userName, string _password, bool? _application, long? _executionQueueId, bool? _alwaysShow, long? _id, bool? _onlyRefresh, string _subType, int? _step, bool? _login, string _param, long? _userId, string _message)
         {
             using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
             {
@@ -771,6 +772,7 @@ namespace Supp.Site.Controllers
                     if (_userName == "null") _userName = null;
                     if (_password == "null") _password = null;
                     if (_phrase == "null") _phrase = null;
+                    if (_message == "null") _message = null;
                     if (_hostSelected == "null") _hostSelected = null;
                     if (_subType == "null") _subType = null;
                     if (_param == "null") _param = null;
@@ -874,9 +876,12 @@ namespace Supp.Site.Controllers
                         data.Application = application;
                         data.AlwaysShow = alwaysShow;
                         data.ExecutionQueueId = executionQueueId;
-                        data.OnlyRefresh = onlyRefresh;
+                        data.OnlyRefresh = resetAfterLoad ? onlyRefresh : false;
                         data.LogJSActive = GeneralSettings.Static.LogJSActive;
                     }
+
+                    if (_message != null && _message != "")
+                        data.Message = _message.Replace("NAME", identification.Name);
 
                     data.ResetAfterLoad = resetAfterLoad;
 

@@ -63,6 +63,7 @@ namespace Supp.Models
         public string IdentificationInJson { get; set; }
         public string WebSpeechesInJson { get; set; }
         public bool HotShortcut { get; set; }
+        public string Message { get; set; }
     }
 
     public class Element

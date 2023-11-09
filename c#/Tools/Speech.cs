@@ -29,8 +29,6 @@ namespace Tools
         string[] suppSiteSpeechAppUrlParamsArray;
         int workingAreaWidth;
         int workingAreaHeight;
-        int screenWidth;
-        int screenHeight;
         bool fullScreen;
         int showTimeout;
         bool alwaysShow;
@@ -67,8 +65,7 @@ namespace Tools
 
             workingAreaWidth = Screen.PrimaryScreen.WorkingArea.Width;
             workingAreaHeight = Screen.PrimaryScreen.WorkingArea.Height;
-            screenWidth = Screen.PrimaryScreen.Bounds.Width;
-            screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
             showTimeout = int.Parse(appSettings["ShowTimeout"]);
             volumePercent = double.Parse(appSettings["VolumePercent"]);
 

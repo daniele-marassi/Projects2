@@ -6,7 +6,6 @@
 @{
     ViewData["Title"] = "Box";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var culture = HomeController.Culture;
 }
 
 @using (Html.BeginForm("Recognition", "WebSpeeches", FormMethod.Get))
@@ -26,7 +25,6 @@
         var ellipseStep = [];
         var animateIntervals = [];
         var recognitionActive = true;
-        var recognitionDisable = false;
         var speech = null;
         var serviceInterval = null;
         var hosts = [];
@@ -62,6 +60,7 @@
         var identification = null;
         var webSpeeches = null;
         var _keysMatched = null;
+        var initSpeechExecuted = false;
 
         //@*Model Variables*@
         var name = "";
@@ -96,6 +95,7 @@
         var identificationInJson = null;
         var webSpeechesInJson = null;
         var userId = -1;
+        var message = "";
         //@*Model Variables*@
 
         function VariablesAssignmentFromJson(jsonString) {
@@ -105,6 +105,7 @@
 
             name = DecodeUnicodeExtended(model["Name"]);
             answer = DecodeUnicodeExtended(model["Answer"]);
+            message = DecodeUnicodeExtended(model["Message"]);
             startAnswer = DecodeUnicodeExtended(model["StartAnswer"]);
             finalStep = GetBoolean(DecodeUnicodeExtended(model["FinalStep"]));
             hostsArrayString = DecodeUnicodeExtended(model["HostsArray"]);
@@ -182,6 +183,7 @@
             LogFunctionStart();
             name = "@Model?.Name";
             answer = "@Model?.Answer";
+            message = "@Model?.Message";
             startAnswer = "@Model?.StartAnswer";
             finalStep = GetBoolean("@Model?.FinalStep");
             hostsArrayString = "@Model?.HostsArray";
@@ -375,6 +377,31 @@
             }
         }
 
+        function InitSpeech() {
+            speech = new SpeechSynthesisUtterance();
+
+            voices = window.speechSynthesis.getVoices();
+
+            // Set the text and voice attributes.
+           
+            speech.volume = 1;
+            speech.rate = 1;
+            speech.pitch = 1;
+            speech.lang = culture;
+
+            if (culture.toLowerCase() == "it-it") speech.voice = FindInArrayOfObject(voices, "name", "Google italiano");
+
+            if (culture.toLowerCase() == "it-it" && (speech.voice == null || speech.voice == undefined)) speech.voice = voices[14];
+            if (culture.toLowerCase() == "it-it" && (speech.voice == null || speech.voice == undefined)) speech.voice = voices[4];
+
+            if (culture.toLowerCase() == "en-us") speech.voice = FindInArrayOfObject(voices, "name", "Google UK English Female");
+
+            if (culture.toLowerCase() == "en-us" && (speech.voice == null || speech.voice == undefined)) speech.voice = voices[7];
+            if (culture.toLowerCase() == "en-us" && (speech.voice == null || speech.voice == undefined)) speech.voice = voices[2];
+
+            synth = window.speechSynthesis;
+        }
+
         function ReadOutLoud(_message, _finalStep) {
             LogFunctionStart();
             readOutLoudActive = true;
@@ -441,30 +468,15 @@
 
             StartAnimateIntervalsListening(10);
 
-            speech = new SpeechSynthesisUtterance();
+            //if (speech == undefined || speech == null)
 
-            if (voices == undefined || voices == null || voices.length == 0) voices = window.speechSynthesis.getVoices();
+            if (initSpeechExecuted == false) { 
+                InitSpeech();
+                initSpeechExecuted = true;
+            }
 
-            //console.warn(voices);
-            
-            // Set the text and voice attributes.
             speech.text = message.trim();
-            speech.volume = 1;
-            speech.rate = 1;
-            speech.pitch = 1;
-            speech.lang = culture;
 
-            if(culture.toLowerCase() == "it-it") speech.voice = FindInArrayOfObject(voices, "name", "Google italiano");
-
-            if (culture.toLowerCase() == "it-it" && (speech.voice == null || speech.voice == undefined)) speech.voice = voices[14];
-            if (culture.toLowerCase() == "it-it" && (speech.voice == null || speech.voice == undefined)) speech.voice = voices[4];
-
-            if(culture.toLowerCase() == "en-us") speech.voice = FindInArrayOfObject(voices, "name", "Google UK English Female");
-
-            if (culture.toLowerCase() == "en-us" && (speech.voice == null || speech.voice == undefined)) speech.voice = voices[7];
-            if (culture.toLowerCase() == "en-us" && (speech.voice == null || speech.voice == undefined)) speech.voice = voices[2];
-
-            synth = window.speechSynthesis;
             var speakHasError = false;
             var _error = "";
 
@@ -499,8 +511,6 @@
                     
                 } else {
                     if(synth != null) synth.cancel();
-                    synth= null;
-                    speech = null;
                     ReadOutLoud(_message, _finalStep); 
                 }
                 LogFunctionEnd("speech.onend");
@@ -511,8 +521,6 @@
         function EndReadOutLoud(){
             LogFunctionStart();
             if(synth != null) synth.cancel();
-            synth= null;
-            speech = null;
 
             document.getElementById('ellipse2').style.fill = "white";
 
@@ -755,7 +763,7 @@
             LogFunctionEnd();
         }
 
-        function InitSpeech(){
+        function InitRecognition() {
             LogFunctionStart();
             if (!("webkitSpeechRecognition" in window)) {
                 Upgrade();
@@ -1047,17 +1055,32 @@
                     
                     if(timers[i]["Date"] != null && now >= timers[i]["Date"] && difference < 60){
                         MediaPlayOrPause();
-                        ReadOutLoud(GetValue(timers[i]["Phrase"], culture), false, true);
+                        ReadOutLoud(GetValue(timers[i]["Phrase"], culture), false);
                         DeleteProgressBar(timers[i]["Index"]);
                     }
                 }
             }
         }
 
+        function ReadTextFile(file) {
+            var allText = "";
+            var rawFile = new XMLHttpRequest();
+            rawFile.open("GET", file, false);
+            rawFile.onreadystatechange = function () {
+                if (rawFile.readyState === 4) {
+                    if (rawFile.status === 200 || rawFile.status == 0) {
+                        allText = rawFile.responseText;
+                    }
+                }
+            }
+
+            rawFile.send(null);
+
+            return allText;
+        }
+
         function Service() {
             TimerManager();
-
-            if(voices == undefined || voices == null || voices.length == 0) voices = window.speechSynthesis.getVoices();
 
             //timeToEhiTimeoutInSeconds = 10; // to debug
 
@@ -1079,15 +1102,15 @@
             //console.log("recognitionActive:"+recognitionActive + " resetActive:"+resetActive+ " shortcutsOpen:" +shortcutsOpen+ " countTheTimeToResetInSeconds:"+countTheTimeToResetInSeconds);
 
             // reset after idle time countTheTimeToResetInSeconds
-            if(resetActive && countTheTimeToResetInSeconds == timeToResetInSeconds && recognitionActive == true && shortcutsOpen == false){
-                if(logJSActive) console.warn("TheTimeToResetInSeconds");
-                countTheTimeToResetInSeconds = 0;
-                resetActive = false;  
-                Reset(false, true);
-            }
-
-            if(resetActive == true && recognitionActive == true && shortcutsOpen == false) countTheTimeToResetInSeconds++;
-            else countTheTimeToResetInSeconds = 0;
+            //if(resetActive && countTheTimeToResetInSeconds == timeToResetInSeconds && recognitionActive == true && shortcutsOpen == false){
+            //    if(logJSActive) console.warn("TheTimeToResetInSeconds");
+            //    countTheTimeToResetInSeconds = 0;
+            //    resetActive = false;  
+            //    Reset(false, true);
+            //}
+            //
+            //if(resetActive == true && recognitionActive == true && shortcutsOpen == false) countTheTimeToResetInSeconds++;
+            //else countTheTimeToResetInSeconds = 0;
 
             if(countTheTimeToResetInterim_spanInSeconds == 2){
                 var interim_transcript = document.getElementById("interim_span").innerHTML;
@@ -1159,16 +1182,20 @@
 
         function Speak(){
             LogFunctionStart();
+
+            if (answer == null || answer == "") answer = message;
+
             if (answer != null && answer != "") {
                 document.getElementById("final_span").innerHTML = "";
                 document.getElementById("interim_span").innerHTML = "";
                 var _answer = HexDecode(answer);
                 _answer = GetValue(_answer, culture);
                 answer = null;
-                
-                LogWithTime("Answer: " + _answer);
+                message = null;
 
-                ReadOutLoud(_answer, false, false); 
+                LogWithTime("Answer: " + _answer);
+                
+                ReadOutLoud(_answer, false); 
             } else if(finalStep == false && subType != null && subType != "" ){
                 var phraseTmp = "";
                 CallWebSpeechDtoInJson(("_subType=" + subType + "&userId=" + userId  + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionPhrase");
@@ -1184,7 +1211,7 @@
             if(_reset == false){ 
                  _reset = true;
                 clearInterval(serviceInterval);
-                location.href = "@Url.Action("Recognition", "WebSpeeches")?_reset="+ reset + "&_application="+application + "&_executionQueueId="+ executionQueueId + "&_hostSelected=" + $("#hosts_cmb option:selected").text() + "&_onlyRefresh="+_onlyRefresh;
+                location.href = "@Url.Action("Recognition", "WebSpeeches")?_reset=" + reset + "&_application=" + application + "&_executionQueueId=" + executionQueueId + "&_hostSelected=" + $("#hosts_cmb option:selected").text() + "&_onlyRefresh=" + _onlyRefresh + "&_message=" + message;
             }
             LogFunctionEnd();
         }
@@ -1721,12 +1748,14 @@
                     answer = null;
                     synth = null;
                     speech = null;
+                    voices = null;
                     CheckPopUpBlock();
                     Reset(false, onlyRefresh);
                 } else {
                     InitPage();
-                    InitSpeech();
+                    InitRecognition();
                     InitFinal();
+                    InitSpeech();
                     ClearUrl();
                 }
 
@@ -1796,4 +1825,4 @@
 	        </button>
         </div>
     </div>
-</>
+</div>

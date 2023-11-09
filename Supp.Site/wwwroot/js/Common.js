@@ -340,4 +340,4 @@ function GetAnswer(data, identification) {
     data.Answer = SuppUtility.GetAnswer(data.Answer, identification);
 
     return data;
-}	
+}

@@ -60,9 +60,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External_library\GoogleCalendar\GoogleCalendar.dll</HintPath>
     </Reference>
-    <Reference Include="GoogleManagerModels, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Supp.Site\ExternalLibraries\GoogleManagerModels.dll</HintPath>
+    <Reference Include="GoogleManagerModels">
+      <HintPath>..\External_library\GoogleManagerModels.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -95,6 +94,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Repositories\GoogleAccountsRepository.cs" />
+    <Compile Include="Repositories\GoogleAuthsRepository.cs" />
     <Compile Include="WakeUpScreenAfterPowerBreakService.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -109,8 +110,38 @@
     <Content Include="External_library\Additional.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External_library\GoogleCalendar\GoogleCalendar.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External_library\GoogleCalendar\GoogleCalendar.pdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External_library\GoogleCalendar\GoogleService.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External_library\GoogleCalendar\GoogleService.pdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External_library\GoogleManagerModels.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External_library\GoogleManagerModels.pdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External_library\Supp.Models.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External_library\Supp.Models.pdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External_library\GoogleCalendar\GoogleCalendar.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External_library\GoogleCalendar\GoogleService.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
   </ItemGroup>
@@ -130,6 +161,10 @@
     <ProjectReference Include="..\MessagesPopUp\MessagesPopUp.csproj">
       <Project>{55c3206f-a2d0-47fc-968e-834fd5896e1f}</Project>
       <Name>MessagesPopUp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RenewNotesService\RenewNotes.csproj">
+      <Project>{0D06903F-D4AA-430D-A58B-F81AA899CB8C}</Project>
+      <Name>RenewNotes</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
