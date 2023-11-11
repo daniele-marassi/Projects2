@@ -32,6 +32,8 @@ namespace Supp.Models
             public int TimeToEhiTimeoutInSeconds { get; set; }
             public bool WakeUpScreenAfterEhiActive { get; set; }
             public string GoogleCalendarAccount { get; set; }
+            public bool MessagingActive { get; set; }
+            public string NicknamesInJson { get; set; }
         }
     }
 }

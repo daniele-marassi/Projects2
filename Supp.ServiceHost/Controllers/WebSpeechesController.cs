@@ -60,8 +60,6 @@ namespace Supp.ServiceHost.Controllers
 
             var result = await _repo.GetWebSpeechesById(id);
 
-            
-            
             if (checkAuthorizationsResult.Identification.Roles.Where(_ => _.Contains(Config.Roles.Constants.RoleAdmin)).Count() == 0)
             {
                 result.Data = result.Data.Where(_ => _.UserId == checkAuthorizationsResult.Identification.UserId || _.UserId == 0).ToList();

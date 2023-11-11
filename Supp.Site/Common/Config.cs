@@ -44,6 +44,10 @@ namespace Supp.Site.Common
                 public static bool WakeUpScreenAfterEhiActive { get; set; }
                 public static string GoogleCalendarAccount { get; set; }
                 public static bool LogJSActive { get; set; }
+                public static bool MessagingActive { get; set; }
+                public static string NicknamesInJson { get; set; }
+
+
 
                 public static string ConfigDefaultInJson
                 {
@@ -70,7 +74,9 @@ namespace Supp.Site.Common
                                 TimeToResetInSeconds = GeneralSettings.Static.TimeToResetInSeconds,
                                 TimeToEhiTimeoutInSeconds = GeneralSettings.Static.TimeToEhiTimeoutInSeconds,
                                 WakeUpScreenAfterEhiActive = GeneralSettings.Static.WakeUpScreenAfterEhiActive,
-                                GoogleCalendarAccount = GeneralSettings.Static.GoogleCalendarAccount
+                                GoogleCalendarAccount = GeneralSettings.Static.GoogleCalendarAccount,
+                                MessagingActive = GeneralSettings.Static.MessagingActive,
+                                NicknamesInJson = GeneralSettings.Static.NicknamesInJson
                             }
                         };
 
@@ -140,6 +146,8 @@ namespace Supp.Site.Common
                     GeneralSettings.Static.TimeToEhiTimeoutInSeconds = int.Parse(configuration.GetSection("AppSettings:TimeToEhiTimeoutInSeconds").Value);
                     GeneralSettings.Static.RemindersActive = bool.Parse(configuration.GetSection("AppSettings:WakeUpScreenAfterEhiActive").Value);
                     GeneralSettings.Static.GoogleCalendarAccount = configuration.GetSection("AppSettings:GoogleCalendarAccount").Value;
+                    GeneralSettings.Static.MessagingActive = bool.Parse(configuration.GetSection("AppSettings:MessagingActive").Value);
+                    GeneralSettings.Static.NicknamesInJson = configuration.GetSection("AppSettings:NicknamesInJson").Value;
                 }
             }
         }

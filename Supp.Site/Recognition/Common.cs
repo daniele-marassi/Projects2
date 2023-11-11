@@ -905,6 +905,9 @@ namespace Supp.Site.Recognition
                     data.OnlyRefresh = _onlyRefresh;
                     data.LogJSActive = data.LogJSActive = GeneralSettings.Static.LogJSActive;
                     data.UserId = identification.UserId;
+                    data.MessagingActive = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.MessagingActive;
+                    data.Name = identification.Name;
+                    data.NicknamesInJson = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.NicknamesInJson;
 
                     if ((_phrase != null && _phrase != "") && (data.FinalStep == false || _phrase == (data.ListeningWord1 + " " + data.ListeningWord2).Trim().ToLower())) data.Ehi = 1;
 

@@ -98,6 +98,8 @@
         var webSpeechesInJson = null;
         var userId = -1;
         var message = "";
+        var messagingActive = false;
+        var nicknamesInJson = null;
         //@*Model Variables*@
 
         function VariablesAssignmentFromJson(jsonString) {
@@ -111,11 +113,13 @@
             startAnswer = DecodeUnicodeExtended(model["StartAnswer"]);
             finalStep = GetBoolean(DecodeUnicodeExtended(model["FinalStep"]));
             hostsArrayString = DecodeUnicodeExtended(model["HostsArray"]);
+            nicknamesInJson = DecodeUnicodeExtended(model["NicknamesInJson"]);
             _error = DecodeUnicodeExtended(model["Error"]);
             application = GetBoolean(DecodeUnicodeExtended(model["Application"]));
             alwaysShow = GetBoolean(DecodeUnicodeExtended(model["AlwaysShow"]));
             resetAfterLoad = GetBoolean(DecodeUnicodeExtended(model["ResetAfterLoad"]));
             recognitionDisable = GetBoolean(DecodeUnicodeExtended(model["RecognitionDisable"]));
+            messagingActive = GetBoolean(DecodeUnicodeExtended(model["MessagingActive"]));
             onlyRefresh = GetBoolean(DecodeUnicodeExtended(model["OnlyRefresh"]));
             culture = DecodeUnicodeExtended(model["Culture"]);
             id = DecodeUnicodeExtended( model["Id"]);
@@ -189,11 +193,13 @@
             startAnswer = "@Model?.StartAnswer";
             finalStep = GetBoolean("@Model?.FinalStep");
             hostsArrayString = "@Model?.HostsArray";
+            nicknamesInJson = "@Model?.NicknamesInJson";
             _error = "@Model?.Error";
             application = GetBoolean("@Model?.Application");
             alwaysShow = GetBoolean("@Model?.AlwaysShow");
             resetAfterLoad = GetBoolean("@Model?.ResetAfterLoad");
             recognitionDisable = GetBoolean("@Model?.RecognitionDisable");
+            messagingActive = GetBoolean("@Model?.MessagingActive");
             onlyRefresh = GetBoolean("@Model?.OnlyRefresh");
             culture = "@Model?.Culture";
             id = "@Model?.Id";
@@ -645,7 +651,7 @@
             if(IsMobile() == true){
                 document.getElementById("div_start").style.display = "block";
             }
-                    
+                   
             hostsArrayString = hostsArrayString.replace(/&quot;/g,'"');
             if(_error != null && _error != "") console.warn(_error);
             try {
@@ -1121,8 +1127,13 @@
             LogFunctionEnd();
         }
 
+        function RandomIntFromInterval(min, max) {
+          return Math.floor(Math.random() * (max - min + 1) + min);
+        }
+
+
         function MessageManager(){
-            if (readingMessage == false && cleaningMessage == false && readOutLoudActive == false && userId > 0) {
+            if (readingMessage == false && cleaningMessage == false && readOutLoudActive == false && userId > 0 && messagingActive == true) {
                 (async () => {
                     var url = "/Files/Message_" + userId + ".txt";
 
@@ -1133,6 +1144,21 @@
                             readingMessage = true;
                             var message = ReadTextFile(url);
                             CallCleanMessage(userId);
+
+                            try {
+                                var _nicknamesInJson = nicknamesInJson.replace(/&quot;/g,'"');
+
+                                var nicknames = JSON.parse(_nicknamesInJson);
+
+                                var rndInt = RandomIntFromInterval(0, nicknames.length-1);
+
+                                message = message.replace("NAME", nicknames[rndInt]);
+
+                                message = message.replace("NAME", name);
+                            }
+                            catch (error) {  
+                            }   
+
                             ReadOutLoud(message, false);
                         }
                     }

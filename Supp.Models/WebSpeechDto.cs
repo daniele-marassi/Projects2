@@ -64,6 +64,8 @@ namespace Supp.Models
         public string WebSpeechesInJson { get; set; }
         public bool HotShortcut { get; set; }
         public string Message { get; set; }
+        public bool MessagingActive { get; set; }
+        public string NicknamesInJson { get; set; }  
     }
 
     public class Element
