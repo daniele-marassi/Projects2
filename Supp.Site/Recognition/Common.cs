@@ -938,13 +938,15 @@ namespace Supp.Site.Recognition
                         {
                             if (item.Phrase != null && item.Phrase.Contains(@"\\")) item.Phrase = item.Phrase.Replace(@"\\", @"\");
                             if (item.Answer != null && item.Answer.Contains(@"\\")) item.Phrase = item.Phrase.Replace(@"\\", @"\");
-                            if (item.HostsArray != null && item.Answer.Contains(@"\\")) item.HostsArray = item.HostsArray.Replace(@"\\", @"\");
+                            if (item.HostsArray != null && item.HostsArray.Contains(@"\\")) item.HostsArray = item.HostsArray.Replace(@"\\", @"\");
+                            if (item.NicknamesInJson != null && item.NicknamesInJson.Contains(@"\\")) item.NicknamesInJson = item.NicknamesInJson.Replace(@"\\", @"\");
 
                             if (item.Phrase != null && !item.Phrase.Contains(@"\")) item.Phrase = item.Phrase.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
                             if (item.Operation != null && !item.Operation.Contains(@"\\")) item.Operation = item.Operation.Replace(@"\", @"\\");
                             if (item.Answer != null && !item.Answer.Contains(@"\")) item.Answer = item.Answer.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
                             if (item.Parameters != null && !item.Parameters.Contains(@"\\")) item.Parameters = item.Parameters.Replace(@"\", @"\\");
                             if (item.HostsArray != null && !item.HostsArray.Contains(@"\")) item.HostsArray = item.HostsArray.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
+                            if (item.NicknamesInJson != null && !item.NicknamesInJson.Contains(@"\")) item.NicknamesInJson = item.NicknamesInJson.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
                         }
                         
                         data.WebSpeechesInJson = JsonConvert.SerializeObject(webSpeeches);
@@ -967,13 +969,16 @@ namespace Supp.Site.Recognition
 
                     if (data.Phrase != null && data.Phrase.Contains(@"\\")) data.Phrase = data.Phrase.Replace(@"\\", @"\");
                     if (data.Answer != null && data.Answer.Contains(@"\\")) data.Phrase = data.Phrase.Replace(@"\\", @"\");
-                    if (data.HostsArray != null && data.Answer.Contains(@"\\")) data.HostsArray = data.HostsArray.Replace(@"\\", @"\");
+                    if (data.HostsArray != null && data.HostsArray.Contains(@"\\")) data.HostsArray = data.HostsArray.Replace(@"\\", @"\");
+                    if (data.NicknamesInJson != null && data.NicknamesInJson.Contains(@"\\")) data.NicknamesInJson = data.NicknamesInJson.Replace(@"\\", @"\");
 
                     if (data.Phrase != null && !data.Phrase.Contains(@"\")) data.Phrase = data.Phrase.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
                     if (data.Operation != null && !data.Operation.Contains(@"\\")) data.Operation = data.Operation.Replace(@"\", @"\\");
                     if (data.Answer != null && !data.Answer.Contains(@"\")) data.Answer = data.Answer.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
                     if (data.Parameters != null && !data.Parameters.Contains(@"\\")) data.Parameters = data.Parameters.Replace(@"\", @"\\");
                     if (data.HostsArray != null && !data.HostsArray.Contains(@"\")) data.HostsArray = data.HostsArray.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
+
+                    if (data.NicknamesInJson != null && !data.NicknamesInJson.Contains(@"\")) data.NicknamesInJson = data.NicknamesInJson.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
 
                     return data;
                 }
