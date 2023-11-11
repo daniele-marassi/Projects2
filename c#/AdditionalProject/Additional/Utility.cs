@@ -1374,42 +1374,64 @@ namespace Additional
         /// <param name="apiUrl"></param>
         /// <param name="keyValuePairs"></param>
         /// <param name="token"></param>
+        /// <param name="skipCertificateValidation"></param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> CallApi(HttpMethod methodType, string baseUrl, string apiUrl, Dictionary<string, string> keyValuePairs = null, string token = null)
+        public async Task<HttpResponseMessage> CallApi(HttpMethod methodType, string baseUrl, string apiUrl, Dictionary<string, string> keyValuePairs = null, string token = null, bool skipCertificateValidation = false)
         {
             HttpResponseMessage response = new HttpResponseMessage();
-            using (HttpClient client = new HttpClient())
+
+            if (skipCertificateValidation)
+                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+            var handler = new HttpClientHandler()
             {
-                //init
-                client.BaseAddress = new Uri(baseUrl);
-                client.Timeout = TimeSpan.FromMinutes(10);
+                SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls
+            };
 
-                var par = "";
-
-                //add parameters in Uri
-                if (((keyValuePairs != null && keyValuePairs.Count > 0) && (methodType == HttpMethod.Get || methodType == HttpMethod.Delete)))
+            try
+            {
+                using (HttpClient client = new HttpClient(handler))
                 {
-                    par = JsonToQuery(JsonConvert.SerializeObject(keyValuePairs));
-                }
+                    //init
+                    client.BaseAddress = new Uri(baseUrl);
+                    client.Timeout = TimeSpan.FromMinutes(10);
 
-                //create request
-                var request = new HttpRequestMessage(methodType, client.BaseAddress + apiUrl + par);
+                    var par = "";
 
-                if (token != null && token != String.Empty)
-                {
-                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                }
+                    //add parameters in Uri
+                    if (((keyValuePairs != null && keyValuePairs.Count > 0) && (methodType == HttpMethod.Get || methodType == HttpMethod.Delete)))
+                    {
+                        par = JsonToQuery(JsonConvert.SerializeObject(keyValuePairs));
+                    }
 
-                //add parameters in headers
-                if ((keyValuePairs != null && keyValuePairs.Count > 0) && (methodType == HttpMethod.Post || methodType == HttpMethod.Put))
-                {
-                    var content = new FormUrlEncodedContent(keyValuePairs);
-                    content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
-                    request.Content = content;
+                    //create request
+                    var request = new HttpRequestMessage(methodType, client.BaseAddress + apiUrl + par);
+
+                    if (token != null && token != String.Empty)
+                    {
+                        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    }
+
+                    //add parameters in headers
+                    if ((keyValuePairs != null && keyValuePairs.Count > 0) && (methodType == HttpMethod.Post || methodType == HttpMethod.Put))
+                    {
+                        var content = new FormUrlEncodedContent(keyValuePairs);
+                        content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+                        request.Content = content;
+                    }
+                    //Console.WriteLine(request);
+                    //call
+                    response = await client.SendAsync(request);
+
+                    if (response.IsSuccessStatusCode == false)
+                    {
+                        throw new Exception($"Call Api Error - ReasonPhrase:{response.ReasonPhrase}, StatusCode:{response.StatusCode}");
+                    }
                 }
-                //Console.WriteLine(request);
-                //call
-                response = await client.SendAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Call Api Error - " + ex.Message, ex.InnerException);
             }
 
             return response;

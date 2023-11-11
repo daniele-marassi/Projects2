@@ -878,6 +878,7 @@ namespace Supp.Site.Controllers
                         data.ExecutionQueueId = executionQueueId;
                         data.OnlyRefresh = resetAfterLoad ? onlyRefresh : false;
                         data.LogJSActive = GeneralSettings.Static.LogJSActive;
+                        data.UserId = identification.UserId;
                     }
 
                     if (_message != null && _message != "")
@@ -1063,6 +1064,56 @@ namespace Supp.Site.Controllers
         public async Task MediaPreviousTrack(string _hostSelected)
         {
             await recognitionCommon.AddExecutionQueueQuickly(_hostSelected, Request, ExecutionQueueType.MediaPreviousTrack);
+        }
+
+        // GET: WebSpeeches/CleanMessage
+        public async Task<bool> CleanMessage(long userId)
+        {
+            var result = true;
+            var path = System.IO.Directory.GetCurrentDirectory();
+
+            var filePath = Path.Combine(path, "wwwroot\\Files\\Message_" + userId.ToString() + ".txt");
+
+            if (System.IO.File.Exists(filePath))
+            {
+                try
+                {
+                    System.IO.File.Delete(filePath);
+                }
+                catch (Exception)
+                {
+
+                    result = false;
+                }
+                    
+            }
+
+            return result;
+        }
+
+        // GET: WebSpeeches/AddMessage
+        public async Task<bool> AddMessage(string message, long userId)
+        {
+            var result = true;
+
+            var filePath = "";
+            try
+            {
+                var path = System.IO.Directory.GetCurrentDirectory();
+
+                filePath = Path.Combine(path, "wwwroot\\Files\\Message_" + userId.ToString() + ".txt");
+
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    writer.Write(message);
+                }
+            }
+            catch (Exception)
+            {
+                result = false;
+            }
+
+            return result;
         }
     }
 }

@@ -904,6 +904,7 @@ namespace Supp.Site.Recognition
                     data.TimeToEhiTimeoutInSeconds = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.TimeToEhiTimeoutInSeconds;
                     data.OnlyRefresh = _onlyRefresh;
                     data.LogJSActive = data.LogJSActive = GeneralSettings.Static.LogJSActive;
+                    data.UserId = identification.UserId;
 
                     if ((_phrase != null && _phrase != "") && (data.FinalStep == false || _phrase == (data.ListeningWord1 + " " + data.ListeningWord2).Trim().ToLower())) data.Ehi = 1;
 

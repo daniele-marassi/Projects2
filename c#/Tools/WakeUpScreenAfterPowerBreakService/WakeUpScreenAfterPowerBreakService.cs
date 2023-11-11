@@ -1,5 +1,6 @@
 ﻿using Additional;
 using Additional.NLog;
+using Google.Apis.Keep.v1.Data;
 using GoogleCalendar;
 using GoogleManagerModels;
 using Newtonsoft.Json;
@@ -13,9 +14,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.ServiceModel.Channels;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Google.Apis.Requests.BatchRequest;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using static Tools.Common.ContextMenus;
@@ -43,21 +47,17 @@ namespace Tools.WakeUpScreenAfterPowerBreak
         string suppServiceHostBaseUrl;
         string culture;
         private static DateTime dateLastMessage;
-        string suppSiteSpeechAppUrlParamsSeparatedWithCommaForMessageString;
-        string suppSiteSpeechAppUrl;
-        string windowCaption;
-        bool fullScreen;
-        bool alwaysShow;
-        string browserPath;
-        string browserExeName;
         string suppSiteBaseUrl;
-        int workingAreaWidth;
-        int workingAreaHeight;
-        int windowWidth;
-        int windowHeight;
-        string host;
-        string windowsUsername;
-        string windowsPassword;
+        long suppSiteUserId = 0;
+
+        public const int KEYEVENTF_EXTENTEDKEY = 1;
+        public const int KEYEVENTF_KEYUP = 0;
+        public const int VK_MEDIA_NEXT_TRACK = 0xB0;
+        public const int VK_MEDIA_PLAY_PAUSE = 0xB3;
+        public const int VK_MEDIA_PREV_TRACK = 0xB1;
+
+        [DllImport("user32.dll")]
+        public static extern void keybd_event(byte virtualKey, byte scanCode, uint flags, IntPtr extraInfo);
 
         public WakeUpScreenAfterPowerBreakService()
         {
@@ -74,25 +74,8 @@ namespace Tools.WakeUpScreenAfterPowerBreak
             service1Password = appSettings["Service1Password"];
             suppServiceHostBaseUrl = appSettings["SuppServiceHostBaseUrl"];
             culture = appSettings["Culture"];
-            suppSiteSpeechAppUrl = appSettings["SuppSiteSpeechAppUrl"];
-            windowCaption = appSettings["WindowCaption"];
-            fullScreen = bool.Parse(appSettings["FullScreen"]);
-            alwaysShow = bool.Parse(appSettings["AlwaysShow"]);
-            browserPath = appSettings["BrowserPath"];
-            browserExeName = appSettings["BrowserExeName"];
             suppSiteBaseUrl = appSettings["SuppSiteBaseUrl"];
-
-            workingAreaWidth = Screen.PrimaryScreen.WorkingArea.Width;
-            workingAreaHeight = Screen.PrimaryScreen.WorkingArea.Height;
-
-            windowWidth = int.Parse(appSettings["WindowWidth"]);
-            windowHeight = int.Parse(appSettings["WindowHeight"]);
-
-            host = appSettings["Host"];
-            windowsUsername = appSettings["WindowsUsername"];
-            windowsPassword = appSettings["WindowsPassword"];
-
-            suppSiteSpeechAppUrlParamsSeparatedWithCommaForMessageString = appSettings["SuppSiteSpeechAppUrlParamsSeparatedWithCommaForMessage"];
+            long.TryParse(appSettings["SuppSiteUserId"], out suppSiteUserId);
 
             this.ServiceName = "WakeUpScreenAfterPowerBreakService";
             utility = new Utility();
@@ -146,7 +129,7 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                                 var token = data.TokenCode;
 
                                 var timeMin = DateTime.Now;
-                                var timeMax = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
+                                var timeMax = DateTime.Parse(DateTime.Now.AddMinutes(60).ToString());
 
                                 var getRemindersResult = await GetReminders(token, service1Username, userId, timeMin, timeMax, WebSpeechTypes.ReadRemindersToday);
 
@@ -158,12 +141,28 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                                     if (answer != "") answer += " ";
                                     answer += reminders;
 
-                                    var _suppSiteSpeechAppUrl = suppSiteSpeechAppUrl + "?" + suppSiteSpeechAppUrlParamsSeparatedWithCommaForMessageString.Replace(",","&").Replace("#MESSAGE#", answer);
+                                    bool response = false;
+                                    var keyValuePairs = new Dictionary<string, string>() { };
+                                    keyValuePairs.Add("message", answer);
+                                    keyValuePairs.Add("userId", suppSiteUserId.ToString());
 
-                                    await Task.Run(() => Restart(_suppSiteSpeechAppUrl));
+                                    var result = await utility.CallApi(HttpMethod.Post, suppSiteBaseUrl, "WebSpeeches/AddMessage", keyValuePairs, loginResult.Data.FirstOrDefault().TokenCode, true);
+                                    var content = await result.Content.ReadAsStringAsync();
+
+                                    if (result.IsSuccessStatusCode == false)
+                                    {
+
+                                    }
+                                    else
+                                    {
+                                        response = JsonConvert.DeserializeObject<bool>(content);
+                                        if(response) 
+                                        {
+                                            MediaPlayOrPause();
+                                        }
+                                    }
                                 }
                             }
-
                         }
                     }
                 }
@@ -432,85 +431,9 @@ namespace Tools.WakeUpScreenAfterPowerBreak
             }
         }
 
-        public void Restart(string suppSiteSpeechAppUrl)
+        private void MediaPlayOrPause()
         {
-            //Stop();
-            Start(false, false, false, false, suppSiteSpeechAppUrl);
-        }
-
-        public void Start(bool removeFocus = true, bool windowNormalFormat = false, bool hide = false, bool firstCall = false, string suppSiteSpeechAppUrl = "")
-        {
-            (int? ProcessId, string Error) result;
-            result.ProcessId = 0;
-            result.Error = String.Empty;
-
-            utility.KillProcessByWindowCaption(windowCaption);
-
-            var windowX = 0;
-            var windowY = Screen.PrimaryScreen.WorkingArea.Height;
-
-            windowY = 0;
-            //windowWidth = 10;
-            //windowHeight = 10;
-
-            var taskBarInfo = GetTaskBarInfo();
-            var taskBarHeight = 0;
-            var taskBarWidth = 0;
-
-            if (taskBarInfo.Position == TaskBarLocation.TOP || taskBarInfo.Position == TaskBarLocation.BOTTOM) taskBarHeight = taskBarInfo.Amount;
-            if (taskBarInfo.Position == TaskBarLocation.LEFT || taskBarInfo.Position == TaskBarLocation.RIGHT) taskBarWidth = taskBarInfo.Amount;
-
-            if (hide == true)
-            {
-                windowX = 0;
-                windowY = Screen.PrimaryScreen.WorkingArea.Height;
-            }
-
-            if (fullScreen && alwaysShow && windowNormalFormat == false && hide == false) result = utility.RunAS(browserPath, browserExeName, $"-–ignore-certificate-errors --chrome-frame --enable-speech-dispatcher --window-size={workingAreaWidth + 20},{workingAreaHeight + taskBarHeight + 10} --window-position={-10},{-(taskBarHeight)} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
-            else if (!fullScreen && alwaysShow && windowNormalFormat == false && hide == false) result = utility.RunAS(browserPath, browserExeName, $"-–ignore-certificate-errors --chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={(workingAreaWidth - windowWidth) + 10},{(workingAreaHeight - windowHeight) + 10} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
-            else if (windowNormalFormat == false && hide == true) result = utility.RunAS(browserPath, browserExeName, $"-–ignore-certificate-errors --chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={windowX},{windowY} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
-            else if (windowNormalFormat && hide == false)
-                result = utility.RunAS(browserPath, browserExeName, $"-–ignore-certificate-errors --new-window --enable-speech-dispatcher --window-size={workingAreaWidth},{workingAreaHeight} --window-position={0},{0} {suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
-
-            //var _processId = (int)result.ProcessId;
-
-            if (removeFocus) commonUtility.ClickOnTaskbar();
-
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-        }
-
-        private enum TaskBarLocation { TOP, BOTTOM, LEFT, RIGHT }
-
-        private (TaskBarLocation Position, int Amount) GetTaskBarInfo()
-        {
-            (TaskBarLocation Position, int Amount) result;
-            result.Position = TaskBarLocation.BOTTOM;
-            result.Amount = 0;
-
-            TaskBarLocation taskBarLocation = TaskBarLocation.BOTTOM;
-            bool taskBarOnTopOrBottom = (Screen.PrimaryScreen.WorkingArea.Width == Screen.PrimaryScreen.Bounds.Width);
-            if (taskBarOnTopOrBottom)
-            {
-                if (Screen.PrimaryScreen.WorkingArea.Top > 0) taskBarLocation = TaskBarLocation.TOP;
-                result.Amount = Screen.PrimaryScreen.Bounds.Height - Screen.PrimaryScreen.WorkingArea.Height;
-            }
-            else
-            {
-                if (Screen.PrimaryScreen.WorkingArea.Left > 0)
-                {
-                    taskBarLocation = TaskBarLocation.LEFT;
-                }
-                else
-                {
-                    taskBarLocation = TaskBarLocation.RIGHT;
-                }
-                result.Amount = Screen.PrimaryScreen.Bounds.Width - Screen.PrimaryScreen.WorkingArea.Width;
-            }
-
-            result.Position = taskBarLocation;
-
-            return result;
+            keybd_event(VK_MEDIA_PLAY_PAUSE, 0, KEYEVENTF_EXTENTEDKEY, IntPtr.Zero);
         }
     }
 }

@@ -61,6 +61,8 @@
         var webSpeeches = null;
         var _keysMatched = null;
         var initSpeechExecuted = false;
+        var readingMessage = false;
+        var cleaningMessage = false;
 
         //@*Model Variables*@
         var name = "";
@@ -553,6 +555,9 @@
             else PartialReset();
 
             if(recognitionDisable == true) RecognitionDisable();
+
+            readingMessage = false;
+
             LogFunctionEnd();
         }
 
@@ -1062,10 +1067,10 @@
             }
         }
 
-        function ReadTextFile(file) {
+        function ReadTextFile(url) {
             var allText = "";
             var rawFile = new XMLHttpRequest();
-            rawFile.open("GET", file, false);
+            rawFile.open("GET", url, false);
             rawFile.onreadystatechange = function () {
                 if (rawFile.readyState === 4) {
                     if (rawFile.status === 200 || rawFile.status == 0) {
@@ -1079,8 +1084,67 @@
             return allText;
         }
 
+        async function FileExists(url) {
+            var result = false;
+
+            try {
+                var response = await fetch(url);
+
+                if (response.status == 200) {
+                    result = true;
+                } else if (response.status === 404) {
+                    result = false;
+                }
+            }
+            catch (error) { result = false; }
+
+            return result;
+        }
+
+        function CallCleanMessage(_userId){
+            LogFunctionStart();
+            
+            cleaningMessage = true;
+
+            var _url = url.replace("Recognition","CleanMessage")+"?" + "userId=" + _userId;
+                    
+            SendHttpRequest("POST", _url, null, "ResultCleanMessage");
+
+            LogFunctionEnd();
+        } 
+
+        function ResultCleanMessage(result) {
+            LogFunctionStart();
+
+            cleaningMessage = false; 
+
+            LogFunctionEnd();
+        }
+
+        function MessageManager(){
+            if (readingMessage == false && cleaningMessage == false && readOutLoudActive == false && userId > 0) {
+                (async () => {
+                    var url = "/Files/Message_" + userId + ".txt";
+
+                    try {
+                        var messageExists = await FileExists(url);
+
+                        if (messageExists == true) {
+                            readingMessage = true;
+                            var message = ReadTextFile(url);
+                            CallCleanMessage(userId);
+                            ReadOutLoud(message, false);
+                        }
+                    }
+                    catch (error) { readingMessage = false; }
+                })();
+            }
+        }
+
         function Service() {
             TimerManager();
+
+            MessageManager();
 
             //timeToEhiTimeoutInSeconds = 10; // to debug
 
