@@ -17,6 +17,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using static Supp.Site.Common.Config;
+using System.Xml.Linq;
 
 namespace Supp.Site.Recognition
 {
@@ -387,20 +388,28 @@ namespace Supp.Site.Recognition
 
                             if (data != null && _subType != "" && _subType != null && _subType != "null") data = dialogue.Manage(data, _subType, _step, stepType, expiresInSeconds, _phrase, response, request, identification, userName, userId, _hostSelected);
 
+                            var answer1 = "";
+
+                            if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it")
+                                answer1 = "Non ho capito!" + " ";
+
+                            if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us")
+                                answer1 = "I did not understand!" + " ";
+
                             if (data == null && _subType != "" && _subType != null && _subType != "null")
                             {
                                 data = previousWebSpeech;
+
                                 if (data != null)
                                 {
                                     data = GetAnswer(data, identification);
 
-                                    if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it")
-                                        data.Answer = "Non ho capito!" + " " + data.Answer;
-
-                                    if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us")
-                                        data.Answer = "I did not understand!" + " " + data.Answer;
+                                    if (!data.Answer.Contains(answer1, StringComparison.InvariantCultureIgnoreCase)) 
+                                        data.Answer = answer1 + data.Answer;
                                 }
                             }
+                            else if(data != null && data.Answer != null)
+                                data.Answer = data.Answer.Replace(answer1, "");
                         }
 
                         if (data != null && (data.Type == WebSpeechTypes.ReadRemindersToday.ToString() || data.Type == WebSpeechTypes.ReadRemindersTomorrow.ToString()))
@@ -947,6 +956,14 @@ namespace Supp.Site.Recognition
                             if (item.Parameters != null && !item.Parameters.Contains(@"\\")) item.Parameters = item.Parameters.Replace(@"\", @"\\");
                             if (item.HostsArray != null && !item.HostsArray.Contains(@"\")) item.HostsArray = item.HostsArray.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
                             if (item.NicknamesInJson != null && !item.NicknamesInJson.Contains(@"\")) item.NicknamesInJson = item.NicknamesInJson.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
+
+                            //if (item.Elements != null)
+                            //{
+                            //    foreach (var element in item.Elements)
+                            //    {
+                            //        element.Value = element.Value;
+                            //    }
+                            //}
                         }
                         
                         data.WebSpeechesInJson = JsonConvert.SerializeObject(webSpeeches);
@@ -977,8 +994,8 @@ namespace Supp.Site.Recognition
                     if (data.Answer != null && !data.Answer.Contains(@"\")) data.Answer = data.Answer.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
                     if (data.Parameters != null && !data.Parameters.Contains(@"\\")) data.Parameters = data.Parameters.Replace(@"\", @"\\");
                     if (data.HostsArray != null && !data.HostsArray.Contains(@"\")) data.HostsArray = data.HostsArray.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
-
                     if (data.NicknamesInJson != null && !data.NicknamesInJson.Contains(@"\")) data.NicknamesInJson = data.NicknamesInJson.Replace(((char)34).ToString(), @"\" + ((char)34).ToString());
+
 
                     return data;
                 }

@@ -36,6 +36,8 @@ using static System.Net.Mime.MediaTypeNames;
 using Google.Apis.Calendar.v3.Data;
 using NuGet.Frameworks;
 using Microsoft.AspNetCore.Hosting.Server;
+using GoogleManagerModels;
+using static Google.Apis.Requests.BatchRequest;
 
 namespace Supp.Site.Controllers
 {
@@ -786,6 +788,10 @@ namespace Supp.Site.Controllers
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteApplicationCookieName);
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteErrorsCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteNewWebSpeechDtoInJsonCookieName);
 
                     if (_hostSelected != null && _hostSelected != "")
                     {
@@ -925,7 +931,7 @@ namespace Supp.Site.Controllers
                 result.Successful = false;
                 result.Message = error;
                 result.Data = new List<WebSpeechDto>() { new WebSpeechDto() { Answer = "", Ehi = 0, Error = error } };
-                result.ResultState = ResultType.Error;
+                result.ResultState = Models.ResultType.Error;
             }
             else
             {

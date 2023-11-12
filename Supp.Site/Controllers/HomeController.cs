@@ -18,6 +18,8 @@ using Additional.NLog;
 
 using Newtonsoft.Json;
 using System.Web;
+using GoogleManagerModels;
+using static Google.Apis.Requests.BatchRequest;
 
 namespace Supp.Site.Controllers
 {
@@ -151,10 +153,19 @@ namespace Supp.Site.Controllers
 
                         logger.Info("RemoveCookies - STARTED");
                         suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
-                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
                         suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName);
-                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteTokenDtoCookieName);
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteErrorsCookieName);
                         suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName);
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteApplicationCookieName);
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName);
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteTokenDtoCookieName);
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName);
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
+                        suppUtility.RemoveCookie(response, request, GeneralSettings.Constants.SuppSiteNewWebSpeechDtoInJsonCookieName);
+
                         logger.Info("RemoveCookies - ENDED");
 
                         logger.Info("SetCookies - STARTED");
@@ -194,10 +205,19 @@ namespace Supp.Site.Controllers
                 try
                 {
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAccessTokenCookieName);
-                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteErrorsCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteHostSelectedCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteApplicationCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName);
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteTokenDtoCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteNewWebSpeechCookieName);
+                    suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteNewWebSpeechDtoInJsonCookieName);
+
 
                     HttpContext.SignOutAsync();
                     return RedirectToAction("Login", "Home");
