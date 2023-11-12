@@ -88,6 +88,55 @@ namespace Supp.Site.Recognition
                     }
                 );
 
+                if (_subType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || _subType == WebSpeechTypes.DialogueSetTimer.ToString())
+                {
+                    id++;
+                    step++;
+                    result.Add(
+                        new WebSpeechDto()
+                        {
+                            Id = id,
+                            Name = _subType + "_" + id.ToString(),
+                            Phrase = @"EMPTY",
+                            Answer = @"[""Dimmi per cosa"",""Per cosa?""]",
+                            Host = "All",
+                            FinalStep = false,
+                            UserId = 0,
+                            Order = 0,
+                            Type = WebSpeechTypes.SystemRequest.ToString(),
+                            SubType = _subType,
+                            Step = step,
+                            OperationEnable = true,
+                            ParentIds = "[" + (id - 1).ToString() + "]",
+                            StepType = StepTypes.Ask.ToString(),
+                            ElementIndex = 0
+                        }
+                    );
+
+                    id++;
+                    step++;
+                    result.Add(
+                        new WebSpeechDto()
+                        {
+                            Id = id,
+                            Name = _subType + "_" + id.ToString(),
+                            Phrase = @"EMPTY",
+                            Answer = null,
+                            Host = "All",
+                            FinalStep = false,
+                            UserId = 0,
+                            Order = 0,
+                            Type = WebSpeechTypes.SystemRequest.ToString(),
+                            SubType = _subType,
+                            Step = step,
+                            OperationEnable = true,
+                            ParentIds = "[" + (id - 1).ToString() + "]",
+                            StepType = StepTypes.GetElementValue.ToString(),
+                            ElementIndex = 2
+                        }
+                    );
+                }
+
                 id++;
                 step++;
                 result.Add(
@@ -107,7 +156,7 @@ namespace Supp.Site.Recognition
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
                         StepType = StepTypes.ApplyNow.ToString(),
-                        ElementIndex = 1
+                        ElementIndex = 0
                     }
                 );
 
@@ -183,6 +232,55 @@ namespace Supp.Site.Recognition
                     }
                 );
 
+                if (_subType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || _subType == WebSpeechTypes.DialogueSetTimer.ToString())
+                {
+                    id++;
+                    step++;
+                    result.Add(
+                        new WebSpeechDto()
+                        {
+                            Id = id,
+                            Name = _subType + "_" + id.ToString(),
+                            Phrase = @"EMPTY",
+                            Answer = @"[""Dimmi per cosa"",""Per cosa?""]",
+                            Host = "All",
+                            FinalStep = false,
+                            UserId = 0,
+                            Order = 0,
+                            Type = WebSpeechTypes.SystemRequest.ToString(),
+                            SubType = _subType,
+                            Step = step,
+                            OperationEnable = true,
+                            ParentIds = "[" + (id - 1).ToString() + "]",
+                            StepType = StepTypes.Ask.ToString(),
+                            ElementIndex = 0
+                        }
+                    );
+
+                    id++;
+                    step++;
+                    result.Add(
+                        new WebSpeechDto()
+                        {
+                            Id = id,
+                            Name = _subType + "_" + id.ToString(),
+                            Phrase = @"EMPTY",
+                            Answer = null,
+                            Host = "All",
+                            FinalStep = false,
+                            UserId = 0,
+                            Order = 0,
+                            Type = WebSpeechTypes.SystemRequest.ToString(),
+                            SubType = _subType,
+                            Step = step,
+                            OperationEnable = true,
+                            ParentIds = "[" + (id - 1).ToString() + "]",
+                            StepType = StepTypes.GetElementValue.ToString(),
+                            ElementIndex = 2
+                        }
+                    );
+                }
+
                 id++;
                 step++;
                 result.Add(
@@ -202,7 +300,7 @@ namespace Supp.Site.Recognition
                         OperationEnable = true,
                         ParentIds = "[" + (id - 1).ToString() + "]",
                         StepType = StepTypes.ApplyNow.ToString(),
-                        ElementIndex = 1
+                        ElementIndex = 0
                     }
                 );
 
@@ -233,7 +331,7 @@ namespace Supp.Site.Recognition
             return result;
         }
 
-        public async Task<EventResult> SetTimer(WebSpeechDto dto, string token, string userName, long userId, TokenDto identification, HttpRequest request, HttpResponse response, int expiresInSeconds, DateTime timerDate)
+        public async Task<EventResult> SetTimer(WebSpeechDto dto, string token, string userName, long userId, TokenDto identification, HttpRequest request, HttpResponse response, int expiresInSeconds, DateTime timerDate, string reason = null)
         {
             var getRemindersResult = new EventResult() { ResultState = GoogleManagerModels.ResultType.None, Successful = true };
 
@@ -261,11 +359,12 @@ namespace Supp.Site.Recognition
                 var color = GoogleCalendarColors.Flamingo;
                 var location = "";
                 
-                if(dto.SubType == WebSpeechTypes.SystemDialogueSetTimer.ToString())
+                if(dto.SubType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || dto.SubType == WebSpeechTypes.DialogueSetTimer.ToString() || dto.SubType == WebSpeechTypes.SystemDialogueSetTimerWithFixedName.ToString() || dto.SubType == WebSpeechTypes.DialogueSetTimerWithFixedName.ToString() && (reason == null || reason == ""))
                     summary = "#Timer_" + newIndex.ToString();
-
-                if (dto.SubType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString())
+                else if (dto.SubType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString() && (reason == null || reason == ""))
                     summary = "#AlarmClock_" + newIndex.ToString();
+                else
+                    summary = "#" + reason?.Replace(" ", "_") + "_" + newIndex.ToString();
 
                 var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = summary, Description = "", Color = color, EventDateStart = eventDateStart, EventDateEnd = eventDateEnd, Location = location, NotificationMinutes = notificationMinutes };
 
@@ -275,6 +374,8 @@ namespace Supp.Site.Recognition
             if (getRemindersResult.Successful)
             {
                 var param = suppUtility.GetAnswer(dto.Parameters, identification).Replace("'", @"""");
+
+                param += ", " + reason;
 
                 var timerParam = new TimerParam() { Index = newIndex, Phrase = param, Date = timerDate.ToString("yyyy-MM-dd HH:mm:ss.fff"), Type = dto.Type, WithEvent = withEvent, Summary = summary };
 

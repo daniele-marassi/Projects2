@@ -284,16 +284,16 @@ namespace Supp.Site.Recognition
 
             if (_stepType == StepTypes.ApplyNow.ToString()
                 && (
-                        _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()
+                        _subType == WebSpeechTypes.SystemDialogueAddToNoteWithFixedName.ToString()
 
-                        || _subType == WebSpeechTypes.DialogueAddToNoteWithName.ToString()
-                        || _subType == WebSpeechTypes.DialogueClearNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.DialogueAddToNoteWithFixedName.ToString()
+                        || _subType == WebSpeechTypes.DialogueClearNoteWithFixedName.ToString()
 
-                        || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueClearNoteWithFixedName.ToString()
 
-                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithFixedName.ToString()
 
-                        || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithFixedName.ToString()
 
                         || _subType == WebSpeechTypes.SystemDialogueDeleteTimer.ToString()
 
@@ -312,34 +312,34 @@ namespace Supp.Site.Recognition
                 && newWebSpeech.ElementIndex == 2
                 && (
                         _subType == WebSpeechTypes.SystemDialogueAddToNote.ToString()
-                        || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithFixedName.ToString()
 
-                        || _subType == WebSpeechTypes.DialogueAddToNoteWithName.ToString()
-                        || _subType == WebSpeechTypes.DialogueClearNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.DialogueAddToNoteWithFixedName.ToString()
+                        || _subType == WebSpeechTypes.DialogueClearNoteWithFixedName.ToString()
 
                         || _subType == WebSpeechTypes.SystemDialogueClearNote.ToString()
-                        || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueClearNoteWithFixedName.ToString()
 
                         || _subType == WebSpeechTypes.SystemDialogueDeleteNote.ToString()
-                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithFixedName.ToString()
 
                         || _subType == WebSpeechTypes.SystemDialogueCreateNote.ToString()
-                        || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithFixedName.ToString()
                    )
                )
             {
                 if (
                     (
-                        _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()
+                        _subType == WebSpeechTypes.SystemDialogueAddToNoteWithFixedName.ToString()
 
-                        || _subType == WebSpeechTypes.DialogueAddToNoteWithName.ToString()
-                        || _subType == WebSpeechTypes.DialogueClearNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.DialogueAddToNoteWithFixedName.ToString()
+                        || _subType == WebSpeechTypes.DialogueClearNoteWithFixedName.ToString()
 
-                        || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueClearNoteWithFixedName.ToString()
 
-                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithFixedName.ToString()
 
-                        || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithFixedName.ToString()
                     )
                         && data.Parameters != null && data.Parameters != String.Empty
                    )
@@ -365,19 +365,19 @@ namespace Supp.Site.Recognition
                 _stepType == StepTypes.ApplyNow.ToString()
                 && (
                         _subType == WebSpeechTypes.SystemDialogueAddToNote.ToString()
-                        || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithFixedName.ToString()
 
-                        || _subType == WebSpeechTypes.DialogueAddToNoteWithName.ToString()
-                        || _subType == WebSpeechTypes.DialogueClearNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.DialogueAddToNoteWithFixedName.ToString()
+                        || _subType == WebSpeechTypes.DialogueClearNoteWithFixedName.ToString()
 
                         || _subType == WebSpeechTypes.SystemDialogueCreateNote.ToString()
-                        || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithFixedName.ToString()
 
                         || _subType == WebSpeechTypes.SystemDialogueClearNote.ToString()
-                        || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueClearNoteWithFixedName.ToString()
 
                         || _subType == WebSpeechTypes.SystemDialogueDeleteNote.ToString()
-                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithFixedName.ToString()
 
                         || _subType == WebSpeechTypes.SystemDialogueDeleteTimer.ToString()
                         || _subType == WebSpeechTypes.SystemDialogueDeleteAlarmClock.ToString()
@@ -387,19 +387,19 @@ namespace Supp.Site.Recognition
                 var eventResult = new EventResult();
 
                 if (_subType == WebSpeechTypes.SystemDialogueAddToNote.ToString()
-                        || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithName.ToString() || _subType == WebSpeechTypes.DialogueAddToNoteWithName.ToString())
+                        || _subType == WebSpeechTypes.SystemDialogueAddToNoteWithFixedName.ToString() || _subType == WebSpeechTypes.DialogueAddToNoteWithFixedName.ToString())
                 eventResult = dialogueAddToNote.AddElementInNote(newWebSpeech, access_token_cookie, userName, userId).GetAwaiter().GetResult();
 
                 if (_subType == WebSpeechTypes.SystemDialogueClearNote.ToString()
-                        || _subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString() || _subType == WebSpeechTypes.DialogueClearNoteWithName.ToString())
+                        || _subType == WebSpeechTypes.SystemDialogueClearNoteWithFixedName.ToString() || _subType == WebSpeechTypes.DialogueClearNoteWithFixedName.ToString())
                     eventResult = dialogueClearNote.ClearNote(newWebSpeech, access_token_cookie, userName, userId).GetAwaiter().GetResult();
 
                 if (_subType == WebSpeechTypes.SystemDialogueCreateNote.ToString()
-                        || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithName.ToString())
+                        || _subType == WebSpeechTypes.SystemDialogueCreateNoteWithFixedName.ToString())
                     eventResult = dialogueCreateNote.CreateNote(newWebSpeech, access_token_cookie, userName, userId, identification).GetAwaiter().GetResult();
 
                 if (_subType == WebSpeechTypes.SystemDialogueDeleteNote.ToString()
-                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()
+                        || _subType == WebSpeechTypes.SystemDialogueDeleteNoteWithFixedName.ToString()
                         || _subType == WebSpeechTypes.SystemDialogueDeleteTimer.ToString()
                         || _subType == WebSpeechTypes.SystemDialogueDeleteAlarmClock.ToString()
                         )
@@ -694,7 +694,7 @@ namespace Supp.Site.Recognition
             if (_stepType == StepTypes.GetElementDateTime.ToString()
                 && newWebSpeech.ElementIndex == 1
                 && (
-                        _subType == WebSpeechTypes.SystemDialogueSetTimer.ToString()
+                        _subType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || _subType == WebSpeechTypes.DialogueSetTimer.ToString() || _subType == WebSpeechTypes.SystemDialogueSetTimerWithFixedName.ToString() || _subType == WebSpeechTypes.DialogueSetTimerWithFixedName.ToString()
                         || _subType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString()
                    )
                )
@@ -707,17 +707,29 @@ namespace Supp.Site.Recognition
                 setCookie = true;
             }
 
+            if (_stepType == StepTypes.GetElementValue.ToString()
+                && newWebSpeech.ElementIndex == 2
+                && (
+                        _subType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || _subType == WebSpeechTypes.DialogueSetTimer.ToString() || _subType == WebSpeechTypes.SystemDialogueSetTimerWithFixedName.ToString() || _subType == WebSpeechTypes.DialogueSetTimerWithFixedName.ToString()
+                   )
+               )
+            {
+                if (_phrase == null) _phrase = "";
+                newWebSpeech.Elements[newWebSpeech.ElementIndex].Value = _phrase.Trim();
+                setCookie = true;
+            }
+
             if (
                 _stepType == StepTypes.ApplyNow.ToString()
                 && (
-                        _subType == WebSpeechTypes.SystemDialogueSetTimer.ToString()
+                        _subType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || _subType == WebSpeechTypes.DialogueSetTimer.ToString() || _subType == WebSpeechTypes.SystemDialogueSetTimerWithFixedName.ToString() || _subType == WebSpeechTypes.DialogueSetTimerWithFixedName.ToString()
                         || _subType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString()
                     )
                 )
             {
                 var eventResult = new EventResult();
 
-                if (_subType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || _subType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString())
+                if (_subType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || _subType == WebSpeechTypes.DialogueSetTimer.ToString() || _subType == WebSpeechTypes.SystemDialogueSetTimerWithFixedName.ToString() || _subType == WebSpeechTypes.DialogueSetTimerWithFixedName.ToString() || _subType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString())
                 {
                     var cultureInfo = default(CultureInfo);
                     if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it")
@@ -726,7 +738,7 @@ namespace Supp.Site.Recognition
                         cultureInfo = new CultureInfo("en-US");
 
                     var date = DateTime.Parse(newWebSpeech.Elements[1].Value, cultureInfo);
-                    eventResult = dialogueSetTimer.SetTimer(newWebSpeech, access_token_cookie, userName, userId, identification, request, response, expiresInSeconds, date).GetAwaiter().GetResult();
+                    eventResult = dialogueSetTimer.SetTimer(newWebSpeech, access_token_cookie, userName, userId, identification, request, response, expiresInSeconds, date, newWebSpeech.Elements[2]?.Value).GetAwaiter().GetResult();
                 }
 
                 if (!eventResult.Successful)
@@ -879,11 +891,11 @@ namespace Supp.Site.Recognition
             return await dialogue.RunMediaAndPlay(data, _phrase, _hostSelected, access_token_cookie, executionQueueRepo, identification);
         }
 
-        public async Task<WebSpeechDto> SetTimer(WebSpeechDto dto, string token, string userName, long userId, TokenDto identification, HttpRequest request, HttpResponse response, int expiresInSeconds, DateTime timerDate)
+        public async Task<WebSpeechDto> SetTimer(WebSpeechDto dto, string token, string userName, long userId, TokenDto identification, HttpRequest request, HttpResponse response, int expiresInSeconds, DateTime timerDate, string reason = null)
         {
             var dialogue = new DialogueSetTimer();
 
-            var setTimerResult = await dialogue.SetTimer(dto, token, userName, userId, identification, request, response, expiresInSeconds, timerDate);
+            var setTimerResult = await dialogue.SetTimer(dto, token, userName, userId, identification, request, response, expiresInSeconds, timerDate, reason);
 
             if(!setTimerResult.Successful) 
             {

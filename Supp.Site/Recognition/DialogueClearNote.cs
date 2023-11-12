@@ -83,7 +83,7 @@ namespace Supp.Site.Recognition
                 }
 
                 if (_subType == WebSpeechTypes.SystemDialogueClearNote.ToString()) id++;
-                if (_subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString() || _subType == WebSpeechTypes.DialogueClearNoteWithName.ToString()) id = startId;
+                if (_subType == WebSpeechTypes.SystemDialogueClearNoteWithFixedName.ToString() || _subType == WebSpeechTypes.DialogueClearNoteWithFixedName.ToString()) id = startId;
                 step++;
                 result.Add(
                     new WebSpeechDto()
@@ -182,7 +182,7 @@ namespace Supp.Site.Recognition
                 }
 
                 if (_subType == WebSpeechTypes.SystemDialogueClearNote.ToString()) id++;
-                if (_subType == WebSpeechTypes.SystemDialogueClearNoteWithName.ToString() || _subType == WebSpeechTypes.DialogueClearNoteWithName.ToString()) id = startId;
+                if (_subType == WebSpeechTypes.SystemDialogueClearNoteWithFixedName.ToString() || _subType == WebSpeechTypes.DialogueClearNoteWithFixedName.ToString()) id = startId;
                 step++;
                 result.Add(
                     new WebSpeechDto()

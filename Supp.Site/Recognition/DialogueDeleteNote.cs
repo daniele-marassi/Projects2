@@ -83,7 +83,7 @@ namespace Supp.Site.Recognition
                 }
 
                 if (_subType == WebSpeechTypes.SystemDialogueDeleteNote.ToString()) id++;
-                if (_subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()) id = startId;
+                if (_subType == WebSpeechTypes.SystemDialogueDeleteNoteWithFixedName.ToString()) id = startId;
                 step++;
                 result.Add(
                     new WebSpeechDto()
@@ -182,7 +182,7 @@ namespace Supp.Site.Recognition
                 }
 
                 if (_subType == WebSpeechTypes.SystemDialogueDeleteNote.ToString()) id++;
-                if (_subType == WebSpeechTypes.SystemDialogueDeleteNoteWithName.ToString()) id = startId;
+                if (_subType == WebSpeechTypes.SystemDialogueDeleteNoteWithFixedName.ToString()) id = startId;
                 step++;
                 result.Add(
                     new WebSpeechDto()
