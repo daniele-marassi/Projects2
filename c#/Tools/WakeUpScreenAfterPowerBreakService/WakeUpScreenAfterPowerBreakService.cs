@@ -1,5 +1,6 @@
 ﻿using Additional;
 using Additional.NLog;
+using Common;
 using Google.Apis.Keep.v1.Data;
 using GoogleCalendar;
 using GoogleManagerModels;
@@ -55,6 +56,11 @@ namespace Tools.WakeUpScreenAfterPowerBreak
         public const int VK_MEDIA_NEXT_TRACK = 0xB0;
         public const int VK_MEDIA_PLAY_PAUSE = 0xB3;
         public const int VK_MEDIA_PREV_TRACK = 0xB1;
+
+        private static GoogleAccountResult googleAccountResult = null;
+        private static GoogleAuthResult googleAuthResult = null;
+
+        
 
         [DllImport("user32.dll")]
         public static extern void keybd_event(byte virtualKey, byte scanCode, uint flags, IntPtr extraInfo);
@@ -119,11 +125,16 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                         {
                             dateLastMessage = DateTime.Now;
 
-                            var loginResult = await Login(service1Username, service1Password, false);
-
-                            if (loginResult.Successful && loginResult.Data.Count > 0)
+                            if (Variables.ServiceLoginResult == null || Variables.ServiceLoginResult?.Successful == false || Variables.ServiceLoginResult?.Data?.Count == 0)
                             {
-                                var data = loginResult.Data.FirstOrDefault();
+                                Variables.ServiceLoginResult = await Login(service1Username, service1Password, false);
+                                googleAccountResult = null;
+                                googleAuthResult = null;
+                            }
+
+                            if (Variables.ServiceLoginResult.Successful && Variables.ServiceLoginResult.Data.Count > 0)
+                            {
+                                var data = Variables.ServiceLoginResult.Data.FirstOrDefault();
 
                                 var userId = data.UserId;
                                 var token = data.TokenCode;
@@ -146,7 +157,7 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                                     keyValuePairs.Add("message", answer);
                                     keyValuePairs.Add("userId", suppSiteUserId.ToString());
 
-                                    var result = await utility.CallApi(HttpMethod.Post, suppSiteBaseUrl, "WebSpeeches/AddMessage", keyValuePairs, loginResult.Data.FirstOrDefault().TokenCode, true);
+                                    var result = await utility.CallApi(HttpMethod.Post, suppSiteBaseUrl, "WebSpeeches/AddMessage", keyValuePairs, Variables.ServiceLoginResult.Data.FirstOrDefault().TokenCode, true);
                                     var content = await result.Content.ReadAsStringAsync();
 
                                     if (result.IsSuccessStatusCode == false)
@@ -342,14 +353,16 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                     var googleAccountRepository = new GoogleAccountsRepository(suppServiceHostBaseUrl) { };
                     var googleAuthsRepository = new GoogleAuthsRepository(suppServiceHostBaseUrl) { };
 
-                    var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
+                    if (googleAccountResult == null || googleAccountResult?.Successful == false || googleAccountResult?.Data?.Count() == 0)
+                        googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
 
                     if (!googleAccountResult.Successful)
                         errors.Add(nameof(googleAccountRepository.GetAllGoogleAccounts) + " " + googleAccountResult.Message + "!");
 
                     if (errors.Count == 0)
                     {
-                        var googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
+                        if (googleAuthResult == null || googleAuthResult?.Successful == false || googleAuthResult?.Data?.Count() == 0)
+                            googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
 
                         var googleAccounts = googleAccountResult.Data.Where(_ => _.UserId == userId && _.AccountType == AccountType.Calendar.ToString()).ToList();
                         var googleAuthIds = googleAccounts.Select(_ => _.GoogleAuthId).ToList();
@@ -376,6 +389,7 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                                 TimeMin = timeMin,
                                 TimeMax = timeMax
                             };
+
                             var getCalendarEventsResult = googleCalendarUtility.GetCalendarEvents(getCalendarEventsRequest);
 
                             if (webSpeechTypes == WebSpeechTypes.ReadRemindersToday || webSpeechTypes == WebSpeechTypes.ReadRemindersTomorrow)

@@ -1,5 +1,6 @@
 ﻿using Additional;
 using Additional.NLog;
+using Common;
 using Google.Apis.Calendar.v3.Data;
 using GoogleCalendar;
 using GoogleManagerModels;
@@ -79,9 +80,10 @@ namespace Tools.RenewNotes
                 if (serviceActive == false) return;
                 try
                 {
-                    var loginResult = await Login(service1Username, service1Password, false);
+                    if (Variables.ServiceLoginResult == null || Variables.ServiceLoginResult?.Successful == false || Variables.ServiceLoginResult?.Data?.Count == 0)
+                        Variables.ServiceLoginResult = await Login(service1Username, service1Password, false);
 
-                    if ((loginResult.Successful == false || loginResult.Data.Count == 0) && (showError == null || loginResult.Message != showError))
+                    if ((Variables.ServiceLoginResult.Successful == false || Variables.ServiceLoginResult.Data.Count == 0) && (showError == null || Variables.ServiceLoginResult.Message != showError))
                     {
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
@@ -89,12 +91,12 @@ namespace Tools.RenewNotes
                             notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
 
                             if (serviceActive) Common.ContextMenus.SetMenuItemWithError("RenewNotesServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServicesError);
-                            if (notifyPopupShow) Common.Utility.ShowMessage("RenewNotesService Login Message:" + loginResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
-                            showError = loginResult.Message;
-                            logger.Error(loginResult.Message);
+                            if (notifyPopupShow) Common.Utility.ShowMessage("RenewNotesService Login Message:" + Variables.ServiceLoginResult.Message, MessagesPopUp.MessageType.Error, timeToClosePopUpInMilliseconds, rootPath);
+                            showError = Variables.ServiceLoginResult.Message;
+                            logger.Error(Variables.ServiceLoginResult.Message);
                         }
                     }
-                    else if (loginResult.Successful && loginResult.Data.Count > 0 && showError != null)
+                    else if (Variables.ServiceLoginResult.Successful && Variables.ServiceLoginResult.Data.Count > 0 && showError != null)
                     {
                         using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
                         {
@@ -104,13 +106,13 @@ namespace Tools.RenewNotes
                             if (serviceActive) Common.ContextMenus.SetMenuItemRecover("RenewNotesServiceMenuItem", volumeOfNotify, notifyMute, ResourcesType.ServiceActive);
                             if (notifyPopupShow) Common.Utility.ShowMessage("RenewNotesService Login Message:" + "Service recovered!", MessagesPopUp.MessageType.Info, timeToClosePopUpInMilliseconds, rootPath);
                             showError = null;
-                            logger.Info(loginResult.Message);
+                            logger.Info(Variables.ServiceLoginResult.Message);
                         }
                     }
 
-                    if (loginResult.Successful && loginResult.Data.Count > 0)
+                    if (Variables.ServiceLoginResult.Successful && Variables.ServiceLoginResult.Data.Count > 0)
                     {
-                        var data = loginResult.Data.FirstOrDefault();
+                        var data = Variables.ServiceLoginResult.Data.FirstOrDefault();
 
                         var userId = data.UserId;
                         var token = data.TokenCode;

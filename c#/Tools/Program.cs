@@ -3,12 +3,13 @@ using Tools.ExecutionQueue;
 using System;
 using System.Windows.Forms;
 using System.Threading.Tasks;
+using Supp.Models;
 
 namespace Tools
 {
 	public class Program
 	{
-		[STAThread]
+        [STAThread]
 		static void Main()
 		{
 			Task.Run(() => MainService.Start());
