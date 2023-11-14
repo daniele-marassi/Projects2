@@ -1683,7 +1683,9 @@
                 var shortcut = _shortcuts[i];
 
                 if(shortcut["Type"].includes("System") == false){
-                    if (shortcut.Groupable == true && shortcut.GroupName != null && shortcut.GroupName.trim() != "") {
+
+                    if (shortcut.GroupName != undefined && shortcut.GroupName != null && shortcut.GroupName != 'null' && shortcut.GroupName != "" && shortcut.GroupName != " ") {
+                        shortcut.GroupName = shortcut.GroupName.trim();
                         AddShortcutGroup(shortcut);
                     }
                 }
@@ -1707,7 +1709,7 @@
                 var shortcut = _shortcuts[i];
 
                 if (shortcut["Type"].includes("System") == false) {
-                    if (shortcut.GroupName == undefined || shortcut.GroupName == null || shortcut.GroupName == 'null') shortcut.GroupName = "";
+                    if (shortcut.GroupName == undefined || shortcut.GroupName == null || shortcut.GroupName == 'null' || shortcut.GroupName == "" || shortcut.GroupName == " ") shortcut.GroupName = "";
 
                     shortcut.GroupName = shortcut.GroupName.trim();
 
