@@ -63,6 +63,8 @@
         var initSpeechExecuted = false;
         var readingMessage = false;
         var cleaningMessage = false;
+        var consoleLog = [];
+        var consoleWarn = [];
 
         //@*Model Variables*@
         var name = "";
@@ -501,7 +503,7 @@
             var speakIsSuccesuful = synth.speaking;
 
             if(speakIsSuccesuful == false || speakHasError == true) {
-                console.warn("speakIsSuccesuful:" + speakIsSuccesuful + " - speakHasError:" + speakHasError + " _error:"+_error);
+                if(logJSActive) console.warn("speakIsSuccesuful:" + speakIsSuccesuful + " - speakHasError:" + speakHasError + " _error:"+_error);
                 EndReadOutLoud();
 
                 setTimeout(function () {
@@ -651,9 +653,9 @@
             if(IsMobile() == true){
                 document.getElementById("div_start").style.display = "block";
             }
-                   
-            hostsArrayString = hostsArrayString.replace(/&quot;/g,'"');
-            if(_error != null && _error != "") console.warn(_error);
+
+            hostsArrayString = hostsArrayString.replace(/&quot;/g, '"').replace(/\\/g, "");
+            if(_error != null && _error != "" && logJSActive) console.warn(_error);
             try {
                 hosts = JSON.parse(hostsArrayString);
             }
@@ -792,7 +794,7 @@
                 };
 
                 recognition.onerror = function (event) {
-                    console.warn("recognition.onerror: " + event.error);
+                    if(logJSActive) console.warn("recognition.onerror: " + event.error);
 
                     firstLoad = true;
 
@@ -808,15 +810,15 @@
                         if (IsMobile() == false) StartButton(event);
                     }
                     if (event.error == "no-speech") {
-                        console.warn("info_no_speech");
+                        if(logJSActive) console.warn("info_no_speech");
                         ignore_onend = true;
                     }
                     if (event.error == "audio-capture") {
-                        console.warn("info_no_microphone");
+                        if(logJSActive) console.warn("info_no_microphone");
                         ignore_onend = true;
                     }
                     if (event.error == "not-allowed") {
-                        console.warn("not-allowed");
+                        if(logJSActive) console.warn("not-allowed");
                         ignore_onend = true;
                     }
                 };
@@ -978,7 +980,9 @@
             var dateString = date.toISOString().replace("T"," ").replace("Z","");
             value = dateString + " - " + value;
             if(isAWarning == true) console.warn(value);
-            else console.log(value);  
+            else console.log(value);
+
+            consoleLog.push(value);
 
             return value;
         }
@@ -990,7 +994,9 @@
             var value = LogFunctionStart.caller.name;
             if(functionName != null && functionName != undefined) value =functionName;
             value = dateString + " - Function: " + value +" - START";
-            console.warn(value);  
+            console.warn(value);
+
+            consoleWarn.push(value);
 
             return value;
         }
@@ -1002,7 +1008,9 @@
             var value = LogFunctionEnd.caller.name;
             if(functionName != null && functionName != undefined) value =functionName;
             value = dateString + " - Function: " + value +" - END";
-            console.warn(value);  
+            console.warn(value);
+
+            consoleWarn.push(value);
 
             return value;
         }
@@ -1066,7 +1074,12 @@
                     
                     if(timers[i]["Date"] != null && now >= timers[i]["Date"] && difference < 60){
                         MediaPlayOrPause();
-                        ReadOutLoud(GetValue(timers[i]["Phrase"], culture), false);
+
+                        var _answer = GetValue(timers[i]["Phrase"], culture);
+
+                        LogWithTime("Answer: " + _answer);
+
+                        ReadOutLoud(_answer, false);
                         DeleteProgressBar(timers[i]["Index"]);
                     }
                 }
@@ -1100,6 +1113,12 @@
                     result = true;
                 } else if (response.status === 404) {
                     result = false;
+                    if (!logJSActive) { 
+                        console.clear();
+
+                        consoleLog.forEach((element) => console.log(element));
+                        consoleWarn.forEach((element) => console.warn(element));
+                    }
                 }
             }
             catch (error) { result = false; }
@@ -1131,7 +1150,6 @@
           return Math.floor(Math.random() * (max - min + 1) + min);
         }
 
-
         function MessageManager(){
             if (readingMessage == false && cleaningMessage == false && readOutLoudActive == false && userId > 0 && messagingActive == true) {
                 (async () => {
@@ -1146,7 +1164,7 @@
                             CallCleanMessage(userId);
 
                             try {
-                                var _nicknamesInJson = nicknamesInJson.replace(/&quot;/g,'"');
+                                var _nicknamesInJson = nicknamesInJson.replace(/&quot;/g, '"').replace(/\\/g, "");
 
                                 var nicknames = JSON.parse(_nicknamesInJson);
 
@@ -1157,7 +1175,9 @@
                                 message = message.replace("NAME", name);
                             }
                             catch (error) {  
-                            }   
+                            }
+
+                            LogWithTime("Message: " + message);
 
                             ReadOutLoud(message, false);
                         }
