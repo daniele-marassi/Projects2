@@ -7,57 +7,31 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using static Supp.Site.Common.Config;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
 using Supp.Models;
-using Additional.NLog;
-using System.Reflection;
-using NLog;
-using System.Configuration;
 using Supp.Site.Repositories;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Collections;
+using Supp.Site.Common;
 
 namespace Supp.Site
 {
     public class Startup
     {
-        private readonly static Logger classLogger = LogManager.GetCurrentClassLogger();
-        private readonly NLogUtility nLogUtility = new NLogUtility();
-
         private static IConfiguration _configuration;
 
         public Startup(IConfiguration configuration)
         {
             _configuration = configuration;
-            Init(configuration, classLogger, nLogUtility);
+            Init(configuration);
         }
 
-        //private async Task Service(IConfiguration configuration, Logger _classLogger, NLogUtility _nLogUtility)
-        //{
-        //    while (true)
-        //    {
-        //        Init(configuration, _classLogger, _nLogUtility);
-        //        System.Threading.Thread.Sleep(10000);
-        //    }
-        //}
-
-        private void Init(IConfiguration configuration, Logger _classLogger, NLogUtility _nLogUtility)
+        private void Init(IConfiguration configuration)
         {
             if (Program.TokensArchive == null || Program._webSpeechResultList == null)
             {
-                using (var logger = new NLogScope(_classLogger, _nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
-                {
-                    if (Program.TokensArchive == null) logger.Error("Startup***************" + " TokensArchive == null");
-                    if (Program._webSpeechResultList == null) logger.Error("Startup***************" + " _webSpeechResultList == null");
-                }
-
                 GeneralSettings.SetGeneralSettings(configuration);
-                var ip = Dns.GetHostAddresses(Dns.GetHostName())[1].ToString();
-                GeneralSettings.Static.BaseUrl = GeneralSettings.Static.BaseUrl.Replace("IP", ip);
+                //var ip = Dns.GetHostAddresses(Dns.GetHostName())[1].ToString();
+                //GeneralSettings.Static.BaseUrl = GeneralSettings.Static.BaseUrl.Replace("IP", ip);
 
                 if (Program.TokensArchive == null) Program.TokensArchive = new ConcurrentDictionary<long, TokenDto>();
 
@@ -85,7 +59,7 @@ namespace Supp.Site
                             {
                                 foreach (var userId in userIdList)
                                 {
-                                    Program._webSpeechResultList[userId] = getAllWebSpeechesResult;
+                                    Program._webSpeechResultList[userId] = SuppUtility.Clone(getAllWebSpeechesResult);
                                 }
                             }
                         }
@@ -113,8 +87,6 @@ namespace Supp.Site
                     options.LoginPath = "/Home/Login";
                 }
             );
-
-            //Task.Run(() => Service(_configuration, classLogger, nLogUtility));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

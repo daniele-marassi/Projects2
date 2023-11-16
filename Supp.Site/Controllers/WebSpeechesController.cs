@@ -859,7 +859,7 @@ namespace Supp.Site.Controllers
                         WebSpeechResult _webSpeechResult = null;
 
                         if (Program._webSpeechResultList.ContainsKey(identification.UserId))
-                            _webSpeechResult = Program._webSpeechResultList[identification.UserId];
+                            _webSpeechResult = SuppUtility.Clone(Program._webSpeechResultList[identification.UserId]);
                         else
                             _webSpeechResult = await _GetAllWebSpeeches(className, method, identification);
 
@@ -937,7 +937,7 @@ namespace Supp.Site.Controllers
             {
                 result = webSpeechResult;
 
-                Program._webSpeechResultList[identification.UserId] = webSpeechResult;
+                Program._webSpeechResultList[identification.UserId] = SuppUtility.Clone(webSpeechResult);
             }
 
             return result;
@@ -1008,7 +1008,7 @@ namespace Supp.Site.Controllers
                     var webSpeechResult = new WebSpeechResult() { };
 
                     if (Program._webSpeechResultList.ContainsKey(identification.UserId))
-                        webSpeechResult = Program._webSpeechResultList[identification.UserId];
+                        webSpeechResult = SuppUtility.Clone(Program._webSpeechResultList[identification.UserId]);
                     else
                     {
                         var _webSpeechResult = await _GetAllWebSpeeches(className, method, identification);
@@ -1017,7 +1017,7 @@ namespace Supp.Site.Controllers
                             data = _webSpeechResult.Data.FirstOrDefault();
                         else
                             if (Program._webSpeechResultList.ContainsKey(identification.UserId))
-                                webSpeechResult = Program._webSpeechResultList[identification.UserId];
+                                webSpeechResult = SuppUtility.Clone(Program._webSpeechResultList[identification.UserId]);
                     }
 
                     if(webSpeechResult.Successful)

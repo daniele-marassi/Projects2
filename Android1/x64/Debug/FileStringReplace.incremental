@@ -1,0 +1,1 @@
+$(GradleVersion)=7.3.3;$(GradlePlugin)=gradle:7.2.0;$(AntDependencies)=;$(ApplicationId)=applicationId = "com.Android1";$(ConfigurationType)=application;$(AarDependencies)=;$(AarDependenciesSettings)=;$(ApplicationName)=com.Android1;$(AndroidAppLibName)=Android1;$(AndroidBuildToolsVersion)=32.0.0;$(AndroidAPILevelNumber)=33;$(androidapilevel)=android-33;$(projectname)=Android1;
