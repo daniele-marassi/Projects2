@@ -852,6 +852,7 @@ namespace Supp.Site.Controllers
                     }
 
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
+
                     if (_onlyRefresh != null) suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteLoadDateCookieName, DateTime.Now.ToString(), expiresInSeconds);
 
                     if (resetAfterLoad == false)

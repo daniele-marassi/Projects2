@@ -30,6 +30,7 @@ namespace Supp.Site
             if (Program.TokensArchive == null || Program._webSpeechResultList == null)
             {
                 GeneralSettings.SetGeneralSettings(configuration);
+
                 //var ip = Dns.GetHostAddresses(Dns.GetHostName())[1].ToString();
                 //GeneralSettings.Static.BaseUrl = GeneralSettings.Static.BaseUrl.Replace("IP", ip);
 
