@@ -50,7 +50,7 @@ namespace Supp.Site.Recognition
                         Id = id,
                         Name = _subType + "_" + id.ToString(),
                         Phrase = @"EMPTY",
-                        Answer = @"[""Dimmi quando"",""Quando?""]",
+                        Answer = @"[""Dimmi quando deve scadere"",""Quando deve scadere?""]",
                         Host = "All",
                         FinalStep = false,
                         UserId = 0,
@@ -194,7 +194,7 @@ namespace Supp.Site.Recognition
                         Id = id,
                         Name = _subType + "_" + id.ToString(),
                         Phrase = @"EMPTY",
-                        Answer = @"[""Tell me when"",""When?""]",
+                        Answer = @"[""Tell me when it expires"",""When it expires?""]",
                         Host = "All",
                         FinalStep = false,
                         UserId = 0,
@@ -359,12 +359,12 @@ namespace Supp.Site.Recognition
                 var color = GoogleCalendarColors.Flamingo;
                 var location = "";
                 
-                if(dto.SubType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || dto.SubType == WebSpeechTypes.DialogueSetTimer.ToString() || dto.SubType == WebSpeechTypes.SystemDialogueSetTimerWithFixedName.ToString() || dto.SubType == WebSpeechTypes.DialogueSetTimerWithFixedName.ToString() && (reason == null || reason == ""))
+                if((dto.SubType == WebSpeechTypes.SystemDialogueSetTimer.ToString() || dto.SubType == WebSpeechTypes.DialogueSetTimer.ToString() || dto.SubType == WebSpeechTypes.SystemDialogueSetTimerWithFixedName.ToString() || dto.SubType == WebSpeechTypes.DialogueSetTimerWithFixedName.ToString()) && (reason == null || reason == ""))
                     summary = "#Timer_" + newIndex.ToString();
                 else if (dto.SubType == WebSpeechTypes.SystemDialogueSetAlarmClock.ToString() && (reason == null || reason == ""))
                     summary = "#AlarmClock_" + newIndex.ToString();
                 else
-                    summary = "#" + reason?.Replace(" ", "_") + "_" + newIndex.ToString();
+                    summary = "#Timer_" + reason?.Replace(" ", "_") + "_" + newIndex.ToString();
 
                 var createCalendarEventRequest = new CreateCalendarEventRequest() { Summary = summary, Description = "", Color = color, EventDateStart = eventDateStart, EventDateEnd = eventDateEnd, Location = location, NotificationMinutes = notificationMinutes };
 
