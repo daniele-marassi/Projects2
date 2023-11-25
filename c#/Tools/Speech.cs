@@ -105,7 +105,7 @@ namespace Tools
             return result;
         }
 
-        public void Start(bool removeFocus = true, bool windowNormalFormat = false, bool hide= false, bool firstCall = false)
+        public void Start(bool removeFocus = true, bool windowNormalFormat = false, bool hide= false, bool firstCall = false, bool withOutLogin = true)
         {        
             var suppSiteSpeechAppUrlParamsString = "";
             (int? ProcessId, string Error) result;
@@ -118,7 +118,7 @@ namespace Tools
 
             foreach (var item in suppSiteSpeechAppUrlParamsArray)
             {
-                if (firstCall && item.Contains("_onlyRefresh"))
+                if ((firstCall && item.Contains("_onlyRefresh")) || (withOutLogin && item.Contains("_login")))
                 {
                 }
                 else
@@ -203,7 +203,7 @@ namespace Tools
         public void Restart()
         {
             //Stop();
-            Start(false, false, false,false);
+            Start(false, false, false,false, true);
         }
 
         public void Hide()

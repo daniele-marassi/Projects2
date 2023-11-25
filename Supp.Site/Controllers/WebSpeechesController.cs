@@ -675,13 +675,13 @@ namespace Supp.Site.Controllers
             if (identification == null || identification.IsAuthenticated == false)
             {
                 loginIsNecessary = true;
-                login = true;
-                reset = false;
+                //login = true;
+                //reset = false;
                 //onlyRefresh = true;
                 resetAfterLoad = true;
             }
 
-            if (checkIfTokenIsValid && identification != null && identification.IsAuthenticated == true && login == false)
+            if (checkIfTokenIsValid && identification != null && identification.IsAuthenticated == true)
             {
                 var access_token_cookie = suppUtility.GetAccessToken(Request);
 
@@ -689,11 +689,13 @@ namespace Supp.Site.Controllers
                 if (tokenIsValid != true)
                 {
                     loginIsNecessary = true;
-                    login = true;
+                    //login = true;
                     //onlyRefresh = true;
-                    reset = false;
+                    //reset = false;
                     resetAfterLoad = true;
                 }
+                else
+                    login = false;
             }
 
             if (loginIsNecessary == true)
@@ -832,24 +834,24 @@ namespace Supp.Site.Controllers
                         suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName, passwordMd5, expiresInSeconds);
                     }
 
+                    if ((_onlyRefresh == null && _onlyRefresh == true) || login == true) resetAfterLoad = true;
+
                     ManageAuthentication(ref identification, ref login, ref onlyRefresh, ref passwordAlreadyEncrypted, ref _userName, ref _password, ref resetAfterLoad, ref application, ref reset, userId:userId);
 
-                    var loadDateString = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
+                    //var loadDateString = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
 
-                    if (_onlyRefresh == null) resetAfterLoad = true;
+                    //if (loadDateString != null && loadDateString != "" && resetAfterLoad == false && onlyRefresh == false)
+                    //{
+                    //    DateTime loadDate;
+                    //    DateTime.TryParse(loadDateString, out loadDate);
 
-                    if (loadDateString != null && loadDateString != "" && resetAfterLoad == false && onlyRefresh == false)
-                    {
-                        DateTime loadDate;
-                        DateTime.TryParse(loadDateString, out loadDate);
-
-                        DateTime now = DateTime.Now;
-                        TimeSpan difference = now.Subtract(loadDate);
-                        if (difference.TotalSeconds >= 2)
-                        {
-                            resetAfterLoad = true;
-                        }
-                    }
+                    //    DateTime now = DateTime.Now;
+                    //    TimeSpan difference = now.Subtract(loadDate);
+                    //    if (difference.TotalSeconds >= 2)
+                    //    {
+                    //        resetAfterLoad = true;
+                    //    }
+                    //}
 
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
 
@@ -877,13 +879,12 @@ namespace Supp.Site.Controllers
                     if (resetAfterLoad == true || data == null)
                     {
                         data = new WebSpeechDto() { };
-
+                        data.OnlyRefresh = false;
                         data.Id = id;
                         data.HostSelected = hostSelected;
                         data.Application = application;
                         data.AlwaysShow = alwaysShow;
                         data.ExecutionQueueId = executionQueueId;
-                        data.OnlyRefresh = resetAfterLoad ? onlyRefresh : false;
                         data.LogJSActive = GeneralSettings.Static.LogJSActive;
                         data.UserId = identification.UserId;
                     }

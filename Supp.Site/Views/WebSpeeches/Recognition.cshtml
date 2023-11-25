@@ -1163,23 +1163,12 @@
                             var message = ReadTextFile(url);
                             CallCleanMessage(userId);
 
-                            try {
-                                var _nicknamesInJson = nicknamesInJson.replace(/&quot;/g, '"').replace(/\\/g, "");
+                            var _message = HexDecode(message);
+                            _message = GetValue(_message, culture);
 
-                                var nicknames = JSON.parse(_nicknamesInJson);
+                            LogWithTime("Message: " + _message);
 
-                                var rndInt = RandomIntFromInterval(0, nicknames.length-1);
-
-                                message = message.replace("NAME", nicknames[rndInt]);
-
-                                message = message.replace("NAME", name);
-                            }
-                            catch (error) {  
-                            }
-
-                            LogWithTime("Message: " + message);
-
-                            ReadOutLoud(message, false);
+                            ReadOutLoud(_message, false);
                         }
                     }
                     catch (error) { readingMessage = false; }
@@ -1286,6 +1275,24 @@
 
             if (_culture.toLowerCase() == "en-us")
                 value = value.replace("TIME", HH + " and " + mm + "minutes");
+
+            try {
+                var _nicknamesInJson = nicknamesInJson.replace(/&quot;/g, '"').replace(/\\/g, "");
+
+                var nicknames = JSON.parse(_nicknamesInJson);
+
+                var rndInt = RandomIntFromInterval(0, nicknames.length - 1);
+
+                value = value.replace("NAME", nicknames[rndInt]);
+
+                value = value.replace("NAME", name);
+            }
+            catch (error) {
+            }
+
+            value = value.replace("#", "");
+
+            value = value.replace("_", " ");
                 
             return value;
         }
