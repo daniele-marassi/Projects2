@@ -66,6 +66,7 @@ namespace Supp.Models
         public string Message { get; set; }
         public bool MessagingActive { get; set; }
         public string NicknamesInJson { get; set; }  
+        public string SslCertificateExpirationDate { get; set; }
     }
 
     public class Element

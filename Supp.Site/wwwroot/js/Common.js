@@ -60,7 +60,19 @@ function GetBoolean(value) {
     return result;
 }
 
-function SendHttpRequest(method, url, json, funcName) {
+function SendHttpRequest(method, url, json, funcName, _sslCertificateExpirationDate) {
+
+    if (_sslCertificateExpirationDate != undefined && _sslCertificateExpirationDate != null && _sslCertificateExpirationDate != "") {
+
+        var expiration = new Date(_sslCertificateExpirationDate);
+        var now = new Date();
+        if (now > expiration) {
+            alert("Ssl certificate expirated!");
+            location.reload();
+            return;
+        }
+    }
+
     var xhr = new XMLHttpRequest();
     xhr.open(method, url, true);
     xhr.onload = function (e) {

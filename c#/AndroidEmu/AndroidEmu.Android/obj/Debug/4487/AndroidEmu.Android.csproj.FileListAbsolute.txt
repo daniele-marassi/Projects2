@@ -1,3 +1,0 @@
-C:\Users\ev\GoogleDriveShare\Projects\c#\AndroidEmu\AndroidEmu.Android\obj\Debug\4487\MonoAndroid,Version=v4.4.87.AssemblyAttributes.cs
-C:\Users\ev\GoogleDriveShare\Projects\c#\AndroidEmu\AndroidEmu.Android\obj\Debug\4487\build.props
-C:\Users\ev\GoogleDriveShare\Projects\c#\AndroidEmu\AndroidEmu.Android\obj\Debug\4487\adb.props

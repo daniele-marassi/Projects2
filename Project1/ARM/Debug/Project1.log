@@ -1,4 +1,0 @@
-﻿  C:\Microsoft\AndroidNDK\android-ndk-r23c\build\\..\build\core\build-local.mk:151: *** Android NDK: Aborting    .  Stop.
-  Android NDK: Could not find application project directory !    
-  Android NDK: Please define the NDK_PROJECT_PATH variable to point to it.    
-C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.MakeFile.Targets(45,5): error MSB3073: uscita dal comando ""C:\\Microsoft\AndroidNDK\android-ndk-r23c\ndk-build.cmd"" con codice 2.

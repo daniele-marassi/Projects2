@@ -38,6 +38,10 @@ using NuGet.Frameworks;
 using Microsoft.AspNetCore.Hosting.Server;
 using GoogleManagerModels;
 using static Google.Apis.Requests.BatchRequest;
+using System.Security.Cryptography.X509Certificates;
+using System.Reflection.Metadata;
+using Microsoft.AspNetCore.Http.Extensions;
+using System.Runtime.ConstrainedExecution;
 
 namespace Supp.Site.Controllers
 {
@@ -889,6 +893,12 @@ namespace Supp.Site.Controllers
                         data.UserId = identification.UserId;
                     }
 
+                    string url = HttpContext.Request.GetDisplayUrl();
+
+                    var cert = await GetServerCertificateAsync(url);
+
+                    data.SslCertificateExpirationDate = cert.GetExpirationDateString();
+
                     if (_message != null && _message != "")
                         data.Message = _message.Replace("NAME", identification.Name);
 
@@ -913,6 +923,24 @@ namespace Supp.Site.Controllers
                         return RedirectToAction("Index", "Home");
                 }
             }
+        }
+
+        static async Task<X509Certificate2> GetServerCertificateAsync(string url)
+        {
+            X509Certificate2 certificate = null;
+            var httpClientHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (_, cert, __, ___) =>
+                {
+                    certificate = new X509Certificate2(cert.GetRawCertData());
+                    return true;
+                }
+            };
+
+            var httpClient = new HttpClient(httpClientHandler);
+            await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, url));
+
+            return certificate ?? throw new NullReferenceException();
         }
 
         private async Task<WebSpeechResult> _GetAllWebSpeeches(string className, string method, TokenDto identification)
