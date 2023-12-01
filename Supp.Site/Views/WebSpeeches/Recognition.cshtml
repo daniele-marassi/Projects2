@@ -509,12 +509,10 @@
                 element.classList.remove("flex-sm-row-reverse");
                 element.style.color = "#333";
 
-                document.getElementById("footerContainer").style.color = "#333";  
-
-                var heightScreen = window.screen.height * window.devicePixelRatio;
-
-                document.getElementById("hosts_cmb_container").style.marginTop="-19.8%";
+                document.getElementById("footerContainer").style.color = "#333";
             }
+
+            document.getElementById("mainContainer").classList.remove("container");
 
             document.getElementById("sendPhrase_text")
                 .addEventListener("keyup", function(event) {
@@ -1769,7 +1767,7 @@
 
 	</div>
     <div style="text-align:center;">
-        <div id="div_shortcuts" style="display: none; z-index: 999; width: 70%; max-width:1000px; position: absolute; background-color: rgba(1, 1, 1, 0.95); left: 0; right: 0; margin:auto; box-shadow: 0 0rem 1rem rgba(150, 150, 150, 0.09) !important; border-radius: 25px;">
+        <div id="div_shortcuts" style="top: 100px; display: none; z-index: 999; width: 70%; max-width:1000px; position: absolute; background-color: rgba(1, 1, 1, 0.95); left: 0; right: 0; margin:auto; box-shadow: 0 0rem 1rem rgba(150, 150, 150, 0.09) !important; border-radius: 25px;">
             <div style="background-color: rgba(1, 1, 1, 0.95);  text-align:right; box-shadow: rgba(150, 150, 150, 0.09) 0 7px 6px -2px; border-radius: 25px;">
                 <div style="z-index:9997; display:inline-block; left:5px; margin:5px; position:absolute;">
                     <a style="z-index:9997; color:#333; font-size:35px; ">Shortcuts</a>
@@ -1788,17 +1786,17 @@
             <dl id="shortcutsGroupContainer" class="row" style="max-height:600px; height:1px; overflow-y:auto; visibility:hidden;">
             </dl>
         </div>
-        <div id="div_boxAnimated" style="margin-top:50px;">
-            <div class="parent" style="width: 100%; height: 400px; overflow:hidden;" onclick="BoxAnimatedClick();">
-                <div class="child1" style="overflow:hidden; z-index:999; width: 100%; height: 100%;   box-shadow: rgba(0, 0, 0, 1) 0px 0px 100px 100px inset, rgba(0, 0, 0, 1) 0px 0px 100px 100px inset;" onclick="BoxAnimatedClick();"></div>
+        <div id="div_boxAnimated" style="margin-top:-100px;">
+            <div class="parent" style="width: 100%; height: 800px; overflow:hidden;" onclick="BoxAnimatedClick();">
+                <div class="child1" style="overflow:hidden; z-index:2; width: 100%; height: 100%;   box-shadow: rgba(0, 0, 0, 1) 0px 0px 100px 100px inset, rgba(0, 0, 0, 1) 0px 0px 100px 100px inset;" onclick="BoxAnimatedClick();"></div>
 
                 <div id="boxAnimated" class="child2" style="width: 100%; height: 100%; overflow:hidden; top:0px;" onclick="BoxAnimatedClick();">
 
                 </div>
             </div>
         </div>
-        <div id="hosts_cmb_container" style="text-align:center;">
-        </div>
+        <div style="text-align:center; margin-top:-10%; z-index:888; position:absolute; width:100%;">
+        <div id="hosts_cmb_container" style="text-align:center; "></div>
         <div id="div_text" style="text-align:center; width:100%; margin-top:2px;">
             <button id="recognitionEnableDisable_button" onclick="RecognitionEnableDisable()"  class="btn btn-dark" style="width:57px; border-width:1px; display: inline-block; outline: 0; box-shadow: none!important; height:38px; margin-top:-1px; margin-right:0px;">
                 <img id="recognitionEnableDisable_image" src="/Images/micOn.png" alt="Microphone" style="height:34px; opacity:0.2; margin-top:-5px;">
@@ -1811,10 +1809,12 @@
             <span class="final" id="final_span"></span> 
             <span class="interim" id="interim_span" style=""></span>
         </div>
+
         <div id="div_start" style="display: none;">
 	        <button id="start_button" onclick="StartButton(event);" style="border-width:1px; display: inline-block; outline: 0; box-shadow: none!important; height:100px; margin-top:100px; margin-right:0px;" class="btn btn-dark">
 		        <img alt="Start" id="start_img" src="/Images/microphone.gif" style="height:100%; margin:-5px;">
 	        </button>
+        </div>
         </div>
     </div>
 </div>

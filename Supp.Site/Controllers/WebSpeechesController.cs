@@ -893,11 +893,11 @@ namespace Supp.Site.Controllers
                         data.UserId = identification.UserId;
                     }
 
-                    string url = HttpContext.Request.GetDisplayUrl();
+                    //string url = HttpContext.Request.GetDisplayUrl();
 
-                    var cert = await GetServerCertificateAsync(url);
+                    //var cert = await GetServerCertificateAsync(url);
 
-                    data.SslCertificateExpirationDate = cert.GetExpirationDateString();
+                    //data.SslCertificateExpirationDate = cert.GetExpirationDateString();
 
                     if (_message != null && _message != "")
                         data.Message = _message.Replace("NAME", identification.Name);
@@ -1150,11 +1150,6 @@ namespace Supp.Site.Controllers
             }
 
             return result;
-        }
-
-        public async Task<IActionResult> Test()
-        {
-            return View();
         }
     }
 }
