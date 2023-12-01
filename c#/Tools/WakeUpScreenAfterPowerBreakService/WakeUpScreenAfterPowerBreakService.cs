@@ -123,8 +123,6 @@ namespace Tools.WakeUpScreenAfterPowerBreak
 
                         if ((DateTime.Now - dateLastMessage).TotalMinutes > 60)
                         {
-                            dateLastMessage = DateTime.Now;
-
                             if (Variables.ServiceLoginResult == null || Variables.ServiceLoginResult?.Successful == false || Variables.ServiceLoginResult?.Data?.Count == 0)
                             {
                                 Variables.ServiceLoginResult = await Login(service1Username, service1Password, false);
@@ -148,6 +146,8 @@ namespace Tools.WakeUpScreenAfterPowerBreak
 
                                 if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
                                 {
+                                    dateLastMessage = DateTime.Now;
+
                                     var reminders = ReadReminders(getRemindersResult.Data, WebSpeechTypes.ReadRemindersToday.ToString());
                                     if (answer != "") answer += " ";
                                     answer += reminders;

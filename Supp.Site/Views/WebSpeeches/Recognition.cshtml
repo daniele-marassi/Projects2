@@ -21,9 +21,6 @@
         var recognition = null;
         var _phrase = null;
         var listeningPhrase = "";
-        var r = [];
-        var ellipseStep = [];
-        var animateIntervals = [];
         var recognitionActive = true;
         var speech = null;
         var serviceInterval = null;
@@ -65,6 +62,7 @@
         var cleaningMessage = false;
         var consoleLog = [];
         var consoleWarn = [];
+        var boxAnimatedInlistening = null;
 
         //@*Model Variables*@
         var name = "";
@@ -281,119 +279,19 @@
             LogFunctionEnd();
         }
         
-        function AddAnimateInterval(id, size, range, amount, milliseconds) {
-            if (animateIntervals[id] != null) clearInterval(animateIntervals[id]);
-            animateIntervals[id] = setInterval( function() { SetEllipse(id, size, range, amount, 0); }, milliseconds );
+        function StopBoxAnimated(){
+            document.getElementById("boxAnimated").innerHTML = "";
         }
 
-        function StopAnimateIntervalsListening(milliseconds) {
-            //if (animateIntervals["StopAnimateIntervalsListening"] != null) 
-            clearInterval(animateIntervals["StopAnimateIntervalsListening"]);
-            animateIntervals["StopAnimateIntervalsListening"] = setInterval( function() { StopAnimateIntervalsListeningDelay(); }, milliseconds );
-        }
-
-        function StopAnimateIntervalsListeningDelay(){
-            StopAnimateIntervals(); 
-            StartAnimateIntervals(70); 
-            clearInterval(animateIntervals["StopAnimateIntervalsListening"]);
-        }
-
-        function StopAnimateIntervals(){
-            clearInterval(animateIntervals["ellipse1"]);
-            clearInterval(animateIntervals["ellipse2"]);
-@*            clearInterval(animateIntervals["ellipse3"]);
-            clearInterval(animateIntervals["ellipse4"]);
-            clearInterval(animateIntervals["ellipse5"]);*@
-
-            animateIntervals["ellipse1"] = null;
-            animateIntervals["ellipse2"] = null;
-@*            animateIntervals["ellipse3"] = null;
-            animateIntervals["ellipse4"] = null;
-            animateIntervals["ellipse5"] = null;*@
-            DefaultEllipses(1);
-        }
-
-        function DefaultEllipses(amount){
-            SetEllipse("ellipse1", 50, 4, 1, amount, 10);
-            SetEllipse("ellipse2", 50, 4, 1, amount, 1);
-@*            SetEllipse("ellipse3", 50, 4, 1, amount, 1);
-            SetEllipse("ellipse4", 50, 4, 1, amount, 1);
-            SetEllipse("ellipse5", 50, 4, 1, amount, 1); *@  
-        }
-
-        function StartAnimateIntervalsListening(amount){
-            AddAnimateInterval("ellipse1", 50, 8, 1, amount + 0);
-           AddAnimateInterval("ellipse2", 50, 6, 1, amount + 5);
-@*             AddAnimateInterval("ellipse3", 50, 7, 1, amount + 10);
-            AddAnimateInterval("ellipse4", 50, 9, 1, amount + 15);
-            AddAnimateInterval("ellipse5", 50, 10, 1, amount + 20); *@          
-        }        
-
-        function StartAnimateIntervals(amount){
-            AddAnimateInterval("ellipse1", 50, 4, 1, amount + 10);
-            AddAnimateInterval("ellipse2", 50, 4, 1, amount + 14);
-@*            AddAnimateInterval("ellipse3", 50, 4, 1, amount + 16);
-            AddAnimateInterval("ellipse4", 50, 4, 1, amount + 18);
-            AddAnimateInterval("ellipse5", 50, 4, 1, amount + 20);*@   
-        }
-
-        function SetEllipse(id, size, range, amount, reset) {
-            var ellipse = document.getElementById(id);
-
-            if (r[id] == null){
-                r[id] = new Array();
-                r[id]["x"]=0;
-                r[id]["y"]=0;
+        function StartBoxAnimated(listening) {
+            if (listening == true && boxAnimatedInlistening != true) {
+                document.getElementById("boxAnimated").innerHTML = boxAnimatedListening;
+                boxAnimatedInlistening = true;
             }
 
-            if(reset == 1) {
-                ellipse.setAttribute("ry", 1);
-                ellipse.setAttribute("rx", size);
-                r[id]["x"]=0;
-                r[id]["y"]=0;
-                return;
-            }
-
-            var xy ="";
-            if(Math.floor(Math.random() * 2)==0) {
-                xy ="y";
-            } else { 
-                xy ="x";
-            }
-
-            if (ellipseStep[id] == null) ellipseStep[id] = 0;
-
-            if (ellipse != null) {
-                if (r[id][xy] < range && ellipseStep[id] == 0) {
-                    r[id][xy] = r[id][xy] + amount;
-                }
-
-                if (r[id][xy] >= range && ellipseStep[id] == 0) {
-                    ellipseStep[id] = amount;
-                }
-
-                if (r[id][xy] <= range && ellipseStep[id] == 1) {
-                    r[id][xy] = r[id][xy] - amount;
-                }
-
-                if (r[id][xy] <= -range && ellipseStep[id] == 1) {
-                    ellipseStep[id] = 0;
-                }
-
-            var syze_y = 1 + (Math.floor(Math.random() * 9) /10);
-
-            //syze_y = (amount );
-
-            if(syze_y <= 0)
-                syze_y =1;
-
-                if(xy == "y") {
-                    ellipse.setAttribute("ry", syze_y);
-                } 
-
-                if(xy == "x"){ 
-                     ellipse.setAttribute("rx", size + r[id]["x"]);
-                }
+            if (listening == false && boxAnimatedInlistening != false) {
+                document.getElementById("boxAnimated").innerHTML = boxAnimatedSpeech;
+                boxAnimatedInlistening = false;
             }
         }
 
@@ -486,7 +384,7 @@
 
             document.getElementById("final_span").innerHTML = message.trim();
 
-            StartAnimateIntervalsListening(10);
+            StartBoxAnimated(false);
 
             //if (speech == undefined || speech == null)
 
@@ -499,8 +397,6 @@
 
             var speakHasError = false;
             var _error = "";
-
-            document.getElementById('ellipse2').style.fill = "red";
 
             try {
                synth.speak(speech);
@@ -542,8 +438,6 @@
             LogFunctionStart();
             if(synth != null) synth.cancel();
 
-            document.getElementById('ellipse2').style.fill = "white";
-
             if(recognition != null && IsMobile() == false){                  
                 try {
                     recognition.start();
@@ -552,11 +446,9 @@
             }
 
             if(IsMobile() == false){
-                StopAnimateIntervalsListening(100);
+                StartBoxAnimated(true);
             } else {
-                StopAnimateIntervals();
-                clearInterval(animateIntervals["StopAnimateIntervalsListening"]);
-                animateIntervals["StopAnimateIntervalsListening"] = null;                    
+                StopBoxAnimated();                
             }
 
             recognitionActive = true;
@@ -621,35 +513,7 @@
 
                 var heightScreen = window.screen.height * window.devicePixelRatio;
 
-                var ellipse = document.getElementById("svg_ellipse");
-
-                if(heightScreen == 1080)
-                    ellipse.setAttribute("viewBox", "23.8 -13 153 140");
-
-                if(heightScreen == 1440)
-                    ellipse.setAttribute("viewBox", "34.3 -13 132 140");
-
-                if(heightScreen == 2160)
-                    ellipse.setAttribute("viewBox", "34.3 -13 132 140");
- 
                 document.getElementById("hosts_cmb_container").style.marginTop="-19.8%";
-                 
-                var ellipse6 = document.getElementById("ellipse6");
-
-@*                if(heightScreen == 1080){
-                    ellipse6.setAttribute("rx", "58");
-                    ellipse6.setAttribute("ry", "58");
-                }
-
-                if(heightScreen == 1440){
-                    ellipse6.setAttribute("rx", "56");
-                    ellipse6.setAttribute("ry", "56");
-                }
-
-                if(heightScreen == 2160){
-                    ellipse6.setAttribute("rx", "60");
-                    ellipse6.setAttribute("ry", "60");
-                }*@
             }
 
             document.getElementById("sendPhrase_text")
@@ -754,7 +618,7 @@
 
         function Upgrade() {
             LogFunctionStart();
-            if(recognitionActive == true) StopAnimateIntervals();
+            if(recognitionActive == true) StopBoxAnimated();
             LogFunctionEnd();
         }
 
@@ -767,7 +631,7 @@
             }
             catch (error) { } 
 
-            if (animateIntervals["ellipse1"] == null && recognitionActive == true) StartAnimateIntervals(70);
+            if (recognitionActive == true) StartBoxAnimated(true);
             final_transcript = "";
             recognition.lang = culture;
 
@@ -810,9 +674,7 @@
 
                     if (IsMobile() == true) {
                         document.getElementById("start_img").src = "/Images/microphone.gif";
-                        StopAnimateIntervals();
-                        clearInterval(animateIntervals["StopAnimateIntervalsListening"]);
-                        animateIntervals["StopAnimateIntervalsListening"] = null;
+                        StopBoxAnimated();
                     }
 
                     if(recognitionActive == true){
@@ -842,9 +704,7 @@
 
                     if(IsMobile() == true){
                         document.getElementById("start_img").src = "/Images/microphone.gif";
-                        StopAnimateIntervals();
-                        clearInterval(animateIntervals["StopAnimateIntervalsListening"]);
-                        animateIntervals["StopAnimateIntervalsListening"] = null;
+                        StopBoxAnimated();
                     }
                     LogFunctionEnd("recognition.onend");
                 };
@@ -853,8 +713,10 @@
                     var interim_transcript = "";
 
                     if (typeof (event.results) == "undefined") {
-                        if(recognitionActive == true) StopAnimateIntervals();
+                        if(recognitionActive == true) StopBoxAnimated();
                     } else {
+                        if(recognitionActive == true) StartBoxAnimated(false);
+
                         for (var i = event.resultIndex; i < event.results.length; ++i) {
                             if (event.results[i].isFinal) {
                                 interim_transcript += event.results[i][0].transcript;
@@ -883,9 +745,6 @@
                     countTheTimesToPartialReset = 0;
                     countTheTimeToResetInSeconds = 0;
                     countTheTimeToResetInterim_spanInSeconds = 0;
-
-                    if(recognitionActive == true) StartAnimateIntervalsListening(10);
-                    if(recognitionActive == true) StopAnimateIntervalsListening(500);
 
                     var _phraseSplit = _phrase.split(" ");
                     if (_phraseSplit.length > 0 && recognitionActive == true) {
@@ -938,6 +797,8 @@
 
                                 CallWebSpeechDtoInJson(("_subType=" + subType + "&userId=" + userId  + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionPhrase");
                             }
+
+                            if (recognitionActive == true) StartBoxAnimated(true);
                         }
                     }
                 }
@@ -1492,9 +1353,7 @@
             SetAudio();
             recognition.abort();
             recognition.stop();
-            StopAnimateIntervals();
-            clearInterval(animateIntervals["StopAnimateIntervalsListening"]);
-            animateIntervals["StopAnimateIntervalsListening"] = null;
+            StopBoxAnimated();
             document.getElementById("recognitionEnableDisable_image").src = "/Images/micOff.png";
             LogFunctionEnd();
         }
@@ -1801,7 +1660,7 @@
             return shortcut;
         }
 
-	    function EllipseClick() {
+        function BoxAnimatedClick() {
            LogFunctionStart();
            ehiRecognitedAudio.play();
 	       if(readOutLoudActive == false) OpenShortcuts();
@@ -1892,6 +1751,18 @@
         }
     </script>
 }
+
+<style>
+    .parent {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+        .parent div {
+            grid-row-start: 1;
+            grid-column-start: 1;
+        }
+</style>
     
 <div id="main" style="overflow:hidden;">
     <div id="progress_container" style="position: absolute; margin-top:50px;">
@@ -1917,24 +1788,16 @@
             <dl id="shortcutsGroupContainer" class="row" style="max-height:600px; height:1px; overflow-y:auto; visibility:hidden;">
             </dl>
         </div>
-        <div id="div_ellipse" style="margin-top:50px;">
-            <svg id="svg_ellipse" viewBox="14.3 -13 172 140" xmlns="http://www.w3.org/2000/svg" onclick="EllipseClick();" >
-                <defs>
-                    <filter id="blurMe">
-                        <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
-                    </filter>
-                </defs>
-                <ellipse id="ellipse1" cx="100" cy="50" rx="50" ry="1" style="fill: #ffffff;" filter="url(#blurMe)"/>
-                <ellipse id="ellipse2" cx="100" cy="50" rx="50" ry="1" style="fill: #ffffff;" filter="url(#blurMe)"/>
-@*                <ellipse id="ellipse1" cx="100" cy="50" rx="50" ry="1" style="fill: #c9c30d;" filter="url(#blurMe)"/>
-                <ellipse id="ellipse2" cx="100" cy="50" rx="50" ry="1" style="fill: #02ad02;" filter="url(#blurMe)"/>
-                <ellipse id="ellipse3" cx="100" cy="50" rx="50" ry="1" style="fill: #026aad;" filter="url(#blurMe)"/>
-                <ellipse id="ellipse4" cx="100" cy="50" rx="50" ry="1" style="fill: #7a1cc9;" filter="url(#blurMe)"/>
-                <ellipse id="ellipse5" cx="100" cy="50" rx="50" ry="1" style="fill: #c22b10;" filter="url(#blurMe)"/>*@
-                <ellipse id="ellipse6" cx="100" cy="50" rx="70" ry="1" style=" cursor:pointer;" class="btn ellipse-dark" />
-            </svg>
+        <div id="div_boxAnimated" style="margin-top:50px;">
+            <div class="parent" style="width: 100%; height: 400px; overflow:hidden;" onclick="BoxAnimatedClick();">
+                <div class="child1" style="overflow:hidden; z-index:999; width: 100%; height: 100%;   box-shadow: rgba(0, 0, 0, 1) 0px 0px 100px 100px inset, rgba(0, 0, 0, 1) 0px 0px 100px 100px inset;" onclick="BoxAnimatedClick();"></div>
+
+                <div id="boxAnimated" class="child2" style="width: 100%; height: 100%; overflow:hidden; top:0px;" onclick="BoxAnimatedClick();">
+
+                </div>
+            </div>
         </div>
-        <div id="hosts_cmb_container" style="text-align:center; margin-top:-18%;">
+        <div id="hosts_cmb_container" style="text-align:center;">
         </div>
         <div id="div_text" style="text-align:center; width:100%; margin-top:2px;">
             <button id="recognitionEnableDisable_button" onclick="RecognitionEnableDisable()"  class="btn btn-dark" style="width:57px; border-width:1px; display: inline-block; outline: 0; box-shadow: none!important; height:38px; margin-top:-1px; margin-right:0px;">

@@ -1151,5 +1151,10 @@ namespace Supp.Site.Controllers
 
             return result;
         }
+
+        public async Task<IActionResult> Test()
+        {
+            return View();
+        }
     }
 }
