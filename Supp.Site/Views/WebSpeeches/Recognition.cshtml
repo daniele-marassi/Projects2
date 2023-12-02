@@ -628,9 +628,10 @@
                 recognition.abort();
                 recognition.stop();
             }
-            catch (error) { } 
+            catch (error) { }
 
-            if (recognitionActive == true) StartBoxAnimated(true);
+            if (recognitionActive == true && IsMobile() == false) StartBoxAnimated(true);
+
             final_transcript = "";
             recognition.lang = culture;
 
@@ -639,13 +640,15 @@
             }
             catch (error) { } 
 
-            if(IsMobile() == true){
+            recognitionActive = true;
+            ignore_onend = false;
+
+            if (IsMobile() == true) {
+                StartBoxAnimated(true);
                 ehi = 1;
                 document.getElementById("start_img").src = "/Images/microphone.png";
             }
 
-            recognitionActive = true;
-            ignore_onend = false;
             LogFunctionEnd();
         }
 
@@ -714,8 +717,7 @@
                     if (typeof (event.results) == "undefined") {
                         if(recognitionActive == true) StopBoxAnimated();
                     } else {
-                        if(recognitionActive == true) StartBoxAnimated(false);
-
+                        StartBoxAnimated(false);
                         for (var i = event.resultIndex; i < event.results.length; ++i) {
                             if (event.results[i].isFinal) {
                                 interim_transcript += event.results[i][0].transcript;
@@ -1813,7 +1815,7 @@
         </div>
 
         <div id="div_start" style="display: none;">
-	        <button id="start_button" onclick="StartButton(event);" style="border-width:1px; display: inline-block; outline: 0; box-shadow: none!important; height:100px; margin-top:100px; margin-right:0px;" class="btn btn-dark">
+	        <button id="start_button" onclick="StartButton(event);" style="border-width:1px; display: inline-block; outline: 0; box-shadow: none!important; height:100px; margin-top:50px; margin-right:0px;" class="btn btn-dark">
 		        <img alt="Start" id="start_img" src="/Images/microphone.gif" style="height:100%; margin:-5px;">
 	        </button>
         </div>
