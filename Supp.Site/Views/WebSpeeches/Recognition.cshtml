@@ -280,6 +280,7 @@
         }
         
         function StopBoxAnimated(){
+            boxAnimatedInlistening = null;
             document.getElementById("boxAnimated").innerHTML = "";
         }
 
@@ -1339,6 +1340,7 @@
                 RecognitionDisable();     
             } else {
                 RecognitionEnable(false, true);
+                StartBoxAnimated(true);
             }
             LogFunctionEnd();
         }
@@ -1795,7 +1797,7 @@
                 </div>
             </div>
         </div>
-        <div style="text-align:center; margin-top:-10%; z-index:888; position:absolute; width:100%;">
+        <div style="text-align:center; bottom:100px; z-index:888; position:absolute; width:100%;">
         <div id="hosts_cmb_container" style="text-align:center; "></div>
         <div id="div_text" style="text-align:center; width:100%; margin-top:2px;">
             <button id="recognitionEnableDisable_button" onclick="RecognitionEnableDisable()"  class="btn btn-dark" style="width:57px; border-width:1px; display: inline-block; outline: 0; box-shadow: none!important; height:38px; margin-top:-1px; margin-right:0px;">
