@@ -660,7 +660,7 @@ namespace Supp.Site.Controllers
             }
             else if ((identification == null || identification.IsAuthenticated == false) && application == false)
             {
-                throw new Exception("Authentication expired! login again");
+                throw new Exception("Authentication expired! login again 1");
             }
             else
             {
@@ -706,11 +706,16 @@ namespace Supp.Site.Controllers
             {
                 passwordAlreadyEncrypted = false;
 
-                if (_userName == null || _userName == "" || _password == null || _password == "")
+                if ( _password == null || _password == "")
+                {
+                    passwordAlreadyEncrypted = true;
+                    _password = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName);
+                }
+
+                if (_userName == null || _userName == "")
                 {
                     passwordAlreadyEncrypted = true;
                     _userName = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
-                    _password = suppUtility.ReadCookie(Request, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName);
                 }
 
                 if (_userName != null && _userName != "" && _password != null && _password != "")
@@ -733,15 +738,15 @@ namespace Supp.Site.Controllers
                         identification = authenticationResult.Data;
                     }
                     else
-                        throw new Exception("Authentication invalid! Login again!");
+                        throw new Exception("Authentication invalid! Login again! 2");
                 }
                 else
-                    throw new Exception("Password and/or username passed or saved in cookies are empty! Login again!");
+                    throw new Exception("Password and/or username passed or saved in cookies are empty! Login again! 3");
             }
 
             if (identification == null || identification.IsAuthenticated == false)
             {
-                throw new Exception("Authentication expired! Login again!");
+                throw new Exception("Authentication expired! Login again! 4");
             }
         }
 
