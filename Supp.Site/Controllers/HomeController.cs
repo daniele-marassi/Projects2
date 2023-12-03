@@ -20,6 +20,8 @@ using Newtonsoft.Json;
 using System.Web;
 using GoogleManagerModels;
 using static Google.Apis.Requests.BatchRequest;
+using System.Security.Cryptography;
+using Additional;
 
 namespace Supp.Site.Controllers
 {
@@ -32,11 +34,13 @@ namespace Supp.Site.Controllers
         public static string[,] Languages;
         public static string Culture = String.Empty;
         private static SuppUtility suppUtility;
+        private static Utility utility;
 
         public HomeController()
         {
             suppUtility = new SuppUtility();
             authenticationRepo = new AuthenticationsRepository();
+            utility = new Utility();
 
             Languages = new string[2, 2]
             {
@@ -171,8 +175,22 @@ namespace Supp.Site.Controllers
                         logger.Info("SetCookies - STARTED");
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteExpiresInSecondsCookieName, data.ExpiresInSeconds.ToString(), data.ExpiresInSeconds);
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAccessTokenCookieName, data.TokenCode, data.ExpiresInSeconds);
-                        suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName, dto.UserName, data.ExpiresInSeconds);
                         suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAuthenticatedUserIdCookieName, data.UserId.ToString(), data.ExpiresInSeconds);
+                        suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName, dto.UserName, data.ExpiresInSeconds);
+                        
+                        var passwordMd5 = "";
+
+                        if (!dto.PasswordAlreadyEncrypted)
+                        {
+                            using (MD5 md5Hash = MD5.Create())
+                            {
+                                passwordMd5 = utility.GetMd5Hash(md5Hash, dto.Password);
+                            }
+                        }
+                        else
+                            passwordMd5 = dto.Password;
+
+                        suppUtility.SetCookie(response, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName, passwordMd5, data.ExpiresInSeconds);
 
                         logger.Info("SetCookies - ENDED");
 

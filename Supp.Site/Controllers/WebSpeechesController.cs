@@ -660,7 +660,7 @@ namespace Supp.Site.Controllers
             }
             else if ((identification == null || identification.IsAuthenticated == false) && application == false)
             {
-                throw new Exception("Authentication expired! login again 1");
+                throw new Exception("Authentication expired! Login again!");
             }
             else
             {
@@ -738,15 +738,15 @@ namespace Supp.Site.Controllers
                         identification = authenticationResult.Data;
                     }
                     else
-                        throw new Exception("Authentication invalid! Login again! 2");
+                        throw new Exception("Authentication invalid! Login again!");
                 }
                 else
-                    throw new Exception("Password and/or username passed or saved in cookies are empty! Login again! 3");
+                    throw new Exception("Password and/or username passed or saved in cookies are empty! Login again!");
             }
 
             if (identification == null || identification.IsAuthenticated == false)
             {
-                throw new Exception("Authentication expired! Login again! 4");
+                throw new Exception("Authentication expired! Login again!");
             }
         }
 
@@ -804,6 +804,23 @@ namespace Supp.Site.Controllers
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteLoadDateCookieName);
                     suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteNewWebSpeechDtoInJsonCookieName);
 
+                    if (_userName != null && _userName != "" && _password != null && _password != "")
+                    {
+                        suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName);
+                        suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName);
+
+                        suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteAuthenticatedUserNameCookieName, _userName, expiresInSeconds);
+
+                        var passwordMd5 = "";
+
+                        using (MD5 md5Hash = MD5.Create())
+                        {
+                            passwordMd5 = utility.GetMd5Hash(md5Hash, _password);
+                        }
+
+                        suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName, passwordMd5, expiresInSeconds);
+                    }
+
                     if (_hostSelected != null && _hostSelected != "")
                     {
                         suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteHostSelectedCookieName, _hostSelected, expiresInSeconds);
@@ -827,20 +844,6 @@ namespace Supp.Site.Controllers
                     {
                         suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteAlwaysShowCookieName, _alwaysShow.ToString(), expiresInSeconds);
                         bool.TryParse(_alwaysShow?.ToString(), out application);
-                    }
-
-                    if (_password != null && _password != "" && login == true)
-                    {
-                        suppUtility.RemoveCookie(Response, Request, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName);
-
-                        var passwordMd5 = "";
-
-                        using (MD5 md5Hash = MD5.Create())
-                        {
-                            passwordMd5 = utility.GetMd5Hash(md5Hash, _password);
-                        }
-
-                        suppUtility.SetCookie(Response, GeneralSettings.Constants.SuppSiteAuthenticatedPasswordCookieName, passwordMd5, expiresInSeconds);
                     }
 
                     if ((_onlyRefresh == null && _onlyRefresh == true) || login == true) resetAfterLoad = true;
