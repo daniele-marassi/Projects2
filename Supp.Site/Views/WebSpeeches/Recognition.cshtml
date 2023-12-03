@@ -446,10 +446,10 @@
                 catch (error) { } 
             }
 
-            if(IsMobile() == false){
+            if (IsMobile() == false) {
                 StartBoxAnimated(true);
             } else {
-                StopBoxAnimated();                
+                StopBoxAnimated();
             }
 
             recognitionActive = true;
@@ -741,7 +741,7 @@
             if(_phrase == null){
                 _phrase = interim_transcript.trim().toLowerCase();
 
-                if (_phrase == null || _phrase == "") {
+                if ((_phrase == null || _phrase == "") && readOutLoudActive == false) {
                     if (IsMobile() == false) {
                         StartBoxAnimated(true);
                     } else {
@@ -808,10 +808,12 @@
                                 CallWebSpeechDtoInJson(("_subType=" + subType + "&userId=" + userId  + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionPhrase");
                             }
 
-                            if (IsMobile() == false) {
-                                StartBoxAnimated(true);
-                            } else {
-                                StopBoxAnimated();
+                            if (readOutLoudActive == false) {
+                                if (IsMobile() == false) {
+                                    StartBoxAnimated(true);
+                                } else {
+                                    StopBoxAnimated();
+                                }
                             }
                         }
                     }
