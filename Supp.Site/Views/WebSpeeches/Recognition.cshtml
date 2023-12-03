@@ -623,13 +623,21 @@
         function StartButton(event) {
             LogFunctionStart();
 
+            recognitionActive = true;
+
+            if (IsMobile() == false) StartBoxAnimated(true);
+
+            if (IsMobile() == true) {
+                StartBoxAnimated(true);
+                ehi = 1;
+                document.getElementById("start_img").src = "/Images/microphone.png";
+            }
+
             try {
                 recognition.abort();
                 recognition.stop();
             }
             catch (error) { }
-
-            if (recognitionActive == true && IsMobile() == false) StartBoxAnimated(true);
 
             final_transcript = "";
             recognition.lang = culture;
@@ -639,14 +647,7 @@
             }
             catch (error) { } 
 
-            recognitionActive = true;
             ignore_onend = false;
-
-            if (IsMobile() == true) {
-                StartBoxAnimated(true);
-                ehi = 1;
-                document.getElementById("start_img").src = "/Images/microphone.png";
-            }
 
             LogFunctionEnd();
         }
@@ -716,16 +717,15 @@
                     if (typeof (event.results) == "undefined") {
                         if(recognitionActive == true) StopBoxAnimated();
                     } else {
-                        StartBoxAnimated(false);
                         for (var i = event.resultIndex; i < event.results.length; ++i) {
                             if (event.results[i].isFinal) {
                                 interim_transcript += event.results[i][0].transcript;
                             } else {
                                 interim_transcript += event.results[i][0].transcript;
                             }
-                        }
 
-                        document.getElementById("interim_span").innerHTML = Linebreak(interim_transcript);
+                            document.getElementById("interim_span").innerHTML = Linebreak(interim_transcript);
+                        }
 
                         var res = event.results[event.results.length-1];
                         var isFinal = res.isFinal;
@@ -741,7 +741,17 @@
             if(_phrase == null){
                 _phrase = interim_transcript.trim().toLowerCase();
 
+                if (_phrase == null || _phrase == "") {
+                    if (IsMobile() == false) {
+                        StartBoxAnimated(true);
+                    } else {
+                        StopBoxAnimated();
+                    }
+                }
+
                 if (_phrase != "" && _phrase != null) {
+                    StartBoxAnimated(false);
+
                     countTheTimesToPartialReset = 0;
                     countTheTimeToResetInSeconds = 0;
                     countTheTimeToResetInterim_spanInSeconds = 0;
@@ -798,7 +808,11 @@
                                 CallWebSpeechDtoInJson(("_subType=" + subType + "&userId=" + userId  + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionPhrase");
                             }
 
-                            if (recognitionActive == true) StartBoxAnimated(true);
+                            if (IsMobile() == false) {
+                                StartBoxAnimated(true);
+                            } else {
+                                StopBoxAnimated();
+                            }
                         }
                     }
                 }
