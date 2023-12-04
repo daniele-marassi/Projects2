@@ -681,7 +681,7 @@ namespace Supp.Site.Controllers
                 loginIsNecessary = true;
                 //login = true;
                 //reset = false;
-                //onlyRefresh = true;
+                onlyRefresh = true;
                 resetAfterLoad = true;
             }
 
@@ -694,7 +694,7 @@ namespace Supp.Site.Controllers
                 {
                     loginIsNecessary = true;
                     //login = true;
-                    //onlyRefresh = true;
+                    onlyRefresh = true;
                     //reset = false;
                     resetAfterLoad = true;
                 }
