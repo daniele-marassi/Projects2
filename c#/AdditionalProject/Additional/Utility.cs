@@ -152,15 +152,23 @@ namespace Additional
 
                 bluetoothDiscoverDeviceInfo = GetBluetoothDeviceByName(GetBluetoothDiscoverDevices(), deviceName);
 
-                if (bluetoothDiscoverDeviceInfo != null)
+                if (bluetoothDiscoverDeviceInfo != null || bluetoothPairedDeviceInfo != null)
                 {
+                    BluetoothAddress deviceAddress = null;
+
+                    if (bluetoothDiscoverDeviceInfo != null)
+                        deviceAddress = bluetoothDiscoverDeviceInfo?.DeviceAddress;
+                    else
+                        deviceAddress = bluetoothPairedDeviceInfo?.DeviceAddress;
+
                     if (removeDevice)
                     {
-                        RemoveBluetoothDevice(bluetoothDiscoverDeviceInfo?.DeviceAddress);
+                        RemoveBluetoothDevice(deviceAddress);
+
                         System.Threading.Thread.Sleep(2000);
                     }
 
-                    var connectResult = ConnectBluetoothSpeakers(bluetoothDiscoverDeviceInfo?.DeviceAddress, password);
+                    var connectResult = ConnectBluetoothSpeakers(deviceAddress, password);
 
                     result.Message = connectResult.Message;
                     result.Successful = connectResult.Successful;

@@ -74,6 +74,8 @@ namespace Tools.ReconnectBluetoothDevice
 
             notifyMute = bool.Parse(ConfigurationManager.AppSettings["NotifyMute"]);
             notifyPopupShow = bool.Parse(ConfigurationManager.AppSettings["NotifyPopupShow"]);
+
+            commonUtility = new Common.Utility();
         }
 
         public void Stop()
