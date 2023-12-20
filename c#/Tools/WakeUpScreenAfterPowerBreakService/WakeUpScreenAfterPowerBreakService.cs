@@ -393,13 +393,19 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                             var getCalendarEventsResult = googleCalendarUtility.GetCalendarEvents(getCalendarEventsRequest);
 
                             if (webSpeechTypes == WebSpeechTypes.ReadRemindersToday || webSpeechTypes == WebSpeechTypes.ReadRemindersTomorrow)
+                            {
                                 getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.ToLower().Contains(("#Note").ToLower()) == false).ToList();
+                                getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.ToLower().Contains(("#Timer").ToLower()) == false).ToList();
+                                getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.ToLower().Contains(("#AlarmClock").ToLower()) == false).ToList();
+                            }
 
                             if (webSpeechTypes == WebSpeechTypes.ReadNotes)
                                 getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.ToLower().Contains(("#Note").ToLower()) == true).ToList();
 
                             if (summaryToSearch != null && summaryToSearch != String.Empty)
                                 getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.ToLower().Contains(summaryToSearch.ToLower()) == true).ToList();
+
+                            getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.ToLower().Contains(("#Timer").ToLower()) == false).ToList();
 
                             response.Data.AddRange(getCalendarEventsResult.Data);
 
