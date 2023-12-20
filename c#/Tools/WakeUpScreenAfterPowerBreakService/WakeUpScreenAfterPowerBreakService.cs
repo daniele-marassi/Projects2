@@ -35,7 +35,7 @@ namespace Tools.WakeUpScreenAfterPowerBreak
         int timeToClosePopUpInMilliseconds = 1000;
         string rootPath;
         string showError = null;
-        bool serviceActive = true;
+        private static bool serviceActive = true;
         private static Logger classLogger = LogManager.GetCurrentClassLogger();
         private NLogUtility nLogUtility = new NLogUtility();
         private int limitLogFileInMB = 0;

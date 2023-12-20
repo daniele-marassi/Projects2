@@ -23,7 +23,7 @@ namespace Tools.Songs
 {
     public partial class SongsManager : ServiceBase
     {
-        bool serviceActive = true;
+        private static bool serviceActive = true;
         private ISongsRepository _repo;
         string oldServiceError = null;
         string oldAddError = null;

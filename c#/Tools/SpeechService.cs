@@ -7,7 +7,7 @@ namespace Tools
 {
     public class SpeechService
     {
-        public bool serviceActive = true;
+        public static bool serviceActive = true;
         Speech speech;
         string windowCaption;
         Utility utilty;

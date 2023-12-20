@@ -39,7 +39,7 @@ namespace Tools.ExecutionQueue
         [DllImport("user32.dll")]
         public static extern void keybd_event(byte virtualKey, byte scanCode, uint flags, IntPtr extraInfo);
 
-        bool serviceActive = true;
+        private static bool serviceActive = true;
         private IExecutionQueuesRepository _repo;
         private ISongsRepository _songsRepo;
         string oldServiceError = null;
