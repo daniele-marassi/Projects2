@@ -63,7 +63,6 @@ C:\Users\eV\Downloads\AboutBoxProject\AboutBox\bin\Debug\Additional.pdb
 C:\Users\eV\Downloads\AboutBoxProject\AboutBox\bin\Debug\Additional.dll.config
 C:\Users\eV\Downloads\AboutBoxProject\AboutBox\bin\Debug\NLog.xml
 C:\Users\eV\Downloads\AboutBoxProject\AboutBox\obj\Debug\AboutBox.csproj.AssemblyReference.cache
-C:\Users\eV\Downloads\AboutBoxProject\AboutBox\obj\Debug\AboutBox.csproj.SuggestedBindingRedirects.cache
 C:\Users\eV\Downloads\AboutBoxProject\AboutBox\obj\Debug\AboutBox.AboutBoxFrm.resources
 C:\Users\eV\Downloads\AboutBoxProject\AboutBox\obj\Debug\AboutBox.Properties.Resources.resources
 C:\Users\eV\Downloads\AboutBoxProject\AboutBox\obj\Debug\AboutBox.csproj.GenerateResource.cache

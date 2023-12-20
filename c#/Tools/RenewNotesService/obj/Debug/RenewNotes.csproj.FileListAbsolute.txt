@@ -61,7 +61,6 @@ C:\Users\eV\Downloads\Tools\RenewNotesService\bin\Debug\Supp.Models.pdb
 C:\Users\eV\Downloads\Tools\RenewNotesService\bin\Debug\GoogleService.pdb
 C:\Users\eV\Downloads\Tools\RenewNotesService\bin\Debug\GoogleService.dll.config
 C:\Users\eV\Downloads\Tools\RenewNotesService\obj\Debug\RenewNotes.csproj.AssemblyReference.cache
-C:\Users\eV\Downloads\Tools\RenewNotesService\obj\Debug\RenewNotes.csproj.SuggestedBindingRedirects.cache
 C:\Users\eV\Downloads\Tools\RenewNotesService\obj\Debug\RenewNotes.csproj.CoreCompileInputs.cache
 C:\Users\eV\Downloads\Tools\RenewNotesService\obj\Debug\RenewNotes.csproj.CopyComplete
 C:\Users\eV\Downloads\Tools\RenewNotesService\obj\Debug\RenewNotes.exe
@@ -202,3 +201,9 @@ Y:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\obj\Debug\Renew
 \\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\obj\Debug\RenewNotes.csproj.CopyComplete
 \\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\obj\Debug\RenewNotes.exe
 \\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\c#\Tools\RenewNotesService\obj\Debug\RenewNotes.pdb
+C:\Users\ev\Downloads\Tools\RenewNotesService\bin\Debug\Resources\ServiceActive.png
+C:\Users\ev\Downloads\Tools\RenewNotesService\bin\Debug\Resources\ServiceDisable.png
+C:\Users\ev\Downloads\Tools\RenewNotesService\bin\Debug\Resources\ServicesError.png
+C:\Users\ev\Downloads\Tools\RenewNotesService\bin\Debug\Resources\SongsManagerError.png
+C:\Users\ev\Downloads\Tools\RenewNotesService\bin\Debug\Resources\SongsManagerDisable.png
+C:\Users\ev\Downloads\Tools\RenewNotesService\bin\Debug\Resources\SongsManagerActive.png

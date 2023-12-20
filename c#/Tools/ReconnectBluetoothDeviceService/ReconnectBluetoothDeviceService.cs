@@ -1,13 +1,20 @@
 ﻿using Additional;
 using Additional.NLog;
+using InTheHand.Net.Bluetooth;
+using InTheHand.Net.Sockets;
+using InTheHand.Net;
+using Microsoft.Win32;
 using NLog;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Reflection;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static Tools.Common.ContextMenus;
+using System.Linq;
+using AudioSwitcher.AudioApi.CoreAudio;
 
 namespace Tools.ReconnectBluetoothDevice
 {

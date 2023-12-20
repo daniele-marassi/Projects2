@@ -38,7 +38,6 @@ C:\Users\eV\Downloads\Tools\ExecutionQueue\bin\Debug\EntityFramework.SqlServer.x
 C:\Users\eV\Downloads\Tools\ExecutionQueue\bin\Debug\NLog.xml
 C:\Users\eV\Downloads\Tools\ExecutionQueue\bin\Debug\System.ValueTuple.xml
 C:\Users\eV\Downloads\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.csproj.AssemblyReference.cache
-C:\Users\eV\Downloads\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.csproj.SuggestedBindingRedirects.cache
 C:\Users\eV\Downloads\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.csproj.CoreCompileInputs.cache
 C:\Users\eV\Downloads\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.csproj.CopyComplete
 C:\Users\eV\Downloads\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.exe
@@ -133,3 +132,11 @@ Y:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\obj\Debug\Executio
 \\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.csproj.CopyComplete
 \\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.exe
 \\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\c#\Tools\ExecutionQueue\obj\Debug\ExecutionQueue.pdb
+C:\Users\ev\Downloads\Tools\ExecutionQueue\bin\Debug\Resources\ServiceActive.png
+C:\Users\ev\Downloads\Tools\ExecutionQueue\bin\Debug\Resources\ServiceDisable.png
+C:\Users\ev\Downloads\Tools\ExecutionQueue\bin\Debug\Resources\ServicesError.png
+C:\Users\ev\Downloads\Tools\ExecutionQueue\bin\Debug\Resources\SongsManagerError.png
+C:\Users\ev\Downloads\Tools\ExecutionQueue\bin\Debug\Resources\SongsManagerDisable.png
+C:\Users\ev\Downloads\Tools\ExecutionQueue\bin\Debug\Resources\SongsManagerActive.png
+C:\Users\ev\Downloads\Tools\ExecutionQueue\bin\Debug\Supp.Models.dll
+C:\Users\ev\Downloads\Tools\ExecutionQueue\bin\Debug\Supp.Models.pdb

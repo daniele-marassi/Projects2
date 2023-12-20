@@ -30,7 +30,6 @@ C:\Users\eV\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\Newtonsoft
 C:\Users\eV\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\NLog.xml
 C:\Users\eV\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\System.ValueTuple.xml
 C:\Users\eV\Downloads\Tools\ReconnectBluetoothDeviceService\obj\Debug\ReconnectBluetoothDevice.csproj.AssemblyReference.cache
-C:\Users\eV\Downloads\Tools\ReconnectBluetoothDeviceService\obj\Debug\ReconnectBluetoothDevice.csproj.SuggestedBindingRedirects.cache
 C:\Users\eV\Downloads\Tools\ReconnectBluetoothDeviceService\obj\Debug\ReconnectBluetoothDevice.csproj.CoreCompileInputs.cache
 C:\Users\eV\Downloads\Tools\ReconnectBluetoothDeviceService\obj\Debug\ReconnectBluetoothDevice.csproj.CopyComplete
 C:\Users\eV\Downloads\Tools\ReconnectBluetoothDeviceService\obj\Debug\ReconnectBluetoothDevice.exe
@@ -113,3 +112,17 @@ Y:\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\o
 \\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\obj\Debug\ReconnectBluetoothDevice.csproj.CopyComplete
 \\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\obj\Debug\ReconnectBluetoothDevice.exe
 \\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\c#\Tools\ReconnectBluetoothDeviceService\obj\Debug\ReconnectBluetoothDevice.pdb
+C:\Users\ev\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\Resources\ServiceActive.png
+C:\Users\ev\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\Resources\ServiceDisable.png
+C:\Users\ev\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\Resources\ServicesError.png
+C:\Users\ev\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\Resources\SongsManagerError.png
+C:\Users\ev\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\Resources\SongsManagerDisable.png
+C:\Users\ev\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\Resources\SongsManagerActive.png
+C:\Users\ev\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\External_library\AudioSwitcher.AudioApi.CoreAudio.dll
+C:\Users\ev\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\External_library\AudioSwitcher.AudioApi.dll
+C:\Users\ev\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\External_library\InTheHand.Net.Bluetooth.dll
+C:\Users\ev\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\External_library\InTheHand.Net.Bluetooth.xml
+C:\Users\ev\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\AudioSwitcher.AudioApi.CoreAudio.dll
+C:\Users\ev\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\AudioSwitcher.AudioApi.dll
+C:\Users\ev\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\Supp.Models.dll
+C:\Users\ev\Downloads\Tools\ReconnectBluetoothDeviceService\bin\Debug\Supp.Models.pdb

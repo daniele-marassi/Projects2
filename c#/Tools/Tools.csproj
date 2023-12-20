@@ -216,6 +216,12 @@
     <Content Include="External_library\InTheHand.Net.Bluetooth.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External_library\Microsoft.Win32.Registry.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External_library\Microsoft.Win32.Registry.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External_library\Supp.Models.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

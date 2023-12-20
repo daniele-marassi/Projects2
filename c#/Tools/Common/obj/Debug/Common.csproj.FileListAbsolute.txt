@@ -103,3 +103,11 @@ Y:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\obj\Debug\Common.pdb
 \\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\obj\Debug\Common.csproj.CopyComplete
 \\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\obj\Debug\Common.dll
 \\ev-pc\c$\Users\ev\GoogleDriveShare\Projects\c#\Tools\Common\obj\Debug\Common.pdb
+C:\Users\ev\Downloads\Tools\Common\bin\Debug\Resources\ServiceActive.png
+C:\Users\ev\Downloads\Tools\Common\bin\Debug\Resources\ServiceDisable.png
+C:\Users\ev\Downloads\Tools\Common\bin\Debug\Resources\ServicesError.png
+C:\Users\ev\Downloads\Tools\Common\bin\Debug\Resources\SongsManagerError.png
+C:\Users\ev\Downloads\Tools\Common\bin\Debug\Resources\SongsManagerDisable.png
+C:\Users\ev\Downloads\Tools\Common\bin\Debug\Resources\SongsManagerActive.png
+C:\Users\ev\Downloads\Tools\Common\bin\Debug\Supp.Models.dll
+C:\Users\ev\Downloads\Tools\Common\bin\Debug\Supp.Models.pdb

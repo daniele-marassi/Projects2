@@ -10,7 +10,6 @@ C:\Users\eV\Downloads\Tools\MessagesPopUp\bin\Debug\Additional.pdb
 C:\Users\eV\Downloads\Tools\MessagesPopUp\bin\Debug\Additional.dll.config
 C:\Users\eV\Downloads\Tools\MessagesPopUp\bin\Debug\Newtonsoft.Json.xml
 C:\Users\eV\Downloads\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.csproj.AssemblyReference.cache
-C:\Users\eV\Downloads\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.csproj.SuggestedBindingRedirects.cache
 C:\Users\eV\Downloads\Tools\MessagesPopUp\obj\Debug\Tools.MessagesPopUp.PopUp.resources
 C:\Users\eV\Downloads\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.Properties.Resources.resources
 C:\Users\eV\Downloads\Tools\MessagesPopUp\obj\Debug\MessagesPopUp.csproj.GenerateResource.cache

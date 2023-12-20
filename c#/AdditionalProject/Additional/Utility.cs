@@ -140,21 +140,27 @@ namespace Additional
 
             var defaultAudioDeviceName = GetDefaultAudioDeviceName();
 
-            if (bluetoothPairedDeviceInfo == null | bluetoothDiscoverDeviceInfo != null || defaultAudioDeviceName.ToLower().Contains(deviceName.ToLower()) == false || forceReset)
+            if (bluetoothPairedDeviceInfo == null || bluetoothDiscoverDeviceInfo != null || defaultAudioDeviceName.ToLower().Contains(deviceName.ToLower()) == false || forceReset)
             {
                 SetRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Microsoft\\PolicyManager\\default\\Connectivity\\AllowBluetooth", "value", 0, RegistryValueKind.DWord, RegistryView.Registry64);
 
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(2000);
 
                 SetRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Microsoft\\PolicyManager\\default\\Connectivity\\AllowBluetooth", "value", 2, RegistryValueKind.DWord, RegistryView.Registry64);
 
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(2000);
 
                 bluetoothDiscoverDeviceInfo = GetBluetoothDeviceByName(GetBluetoothDiscoverDevices(), deviceName);
 
                 if (bluetoothDiscoverDeviceInfo != null)
                 {
-                    var connectResult = ConnectBluetoothSpeakers(bluetoothDiscoverDeviceInfo?.DeviceAddress, password, removeDevice);
+                    if (removeDevice)
+                    {
+                        RemoveBluetoothDevice(bluetoothDiscoverDeviceInfo?.DeviceAddress);
+                        System.Threading.Thread.Sleep(2000);
+                    }
+
+                    var connectResult = ConnectBluetoothSpeakers(bluetoothDiscoverDeviceInfo?.DeviceAddress, password);
 
                     result.Message = connectResult.Message;
                     result.Successful = connectResult.Successful;
@@ -193,8 +199,6 @@ namespace Additional
                 var buleRadio = BluetoothRadio.Default;//PrimaryRadio;
                 buleRadio.Mode = RadioMode.Connectable; //.Connectable;
                 var devices = bluetoothClient.DiscoverDevices();
-
-                var _devices = bluetoothClient.PairedDevices.ToList();
 
                 result.AddRange(devices);
             }
@@ -266,7 +270,7 @@ namespace Additional
         /// <param name="bluetoothAddress"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public (string Message, bool Successful) ConnectBluetoothSpeakers(BluetoothAddress bluetoothAddress, string password, bool removeDevice)
+        public (string Message, bool Successful) ConnectBluetoothSpeakers(BluetoothAddress bluetoothAddress, string password)
         {
             (string Message, bool Successful) result;
             result.Message = "";
@@ -276,7 +280,6 @@ namespace Additional
 
             try
             {
-                if (removeDevice) RemoveBluetoothDevice(bluetoothAddress);
                 var device = new BluetoothDeviceInfo(bluetoothAddress);
                 BluetoothSecurity.PairRequest(bluetoothAddress, password);
                 bluetoothClient = new BluetoothClient();
@@ -327,7 +330,13 @@ namespace Additional
         /// <returns></returns>
         public void RemoveBluetoothDevice(BluetoothAddress bluetoothAddress)
         {
-            BluetoothSecurity.RemoveDevice(bluetoothAddress);
+            try
+            {
+                BluetoothSecurity.RemoveDevice(bluetoothAddress);
+            }
+            catch (Exception)
+            {
+            }
         }
 
         /// <summary>
