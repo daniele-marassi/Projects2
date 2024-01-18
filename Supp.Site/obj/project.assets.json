@@ -3428,6 +3428,31 @@
           "Microsoft.AspNetCore.App"
         ]
       },
+      "Supp.Common/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Supp.Interfaces": "1.0.0",
+          "Supp.Models": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Supp.Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Supp.Common.dll": {}
+        }
+      },
+      "Supp.Interfaces/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Supp.Models": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Supp.Interfaces.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Supp.Interfaces.dll": {}
+        }
+      },
       "Supp.Models/1.0.0": {
         "type": "project",
         "compile": {
@@ -9966,6 +9991,16 @@
         "x.pagedlist.mvc.core.nuspec"
       ]
     },
+    "Supp.Common/1.0.0": {
+      "type": "project",
+      "path": "../Supp.Common/Supp.Common.csproj",
+      "msbuildProject": "../Supp.Common/Supp.Common.csproj"
+    },
+    "Supp.Interfaces/1.0.0": {
+      "type": "project",
+      "path": "../Supp.Interfaces/Supp.Interfaces.csproj",
+      "msbuildProject": "../Supp.Interfaces/Supp.Interfaces.csproj"
+    },
     "Supp.Models/1.0.0": {
       "type": "project",
       "path": "../Supp.Models/Supp.Models.csproj",
@@ -9988,6 +10023,8 @@
       "NLog.Schema >= 4.7.13",
       "NReco.VideoConverter >= 1.1.4",
       "Newtonsoft.Json >= 13.0.1",
+      "Supp.Common >= 1.0.0",
+      "Supp.Interfaces >= 1.0.0",
       "Supp.Models >= 1.0.0",
       "System.Configuration.ConfigurationManager >= 6.0.0",
       "System.Linq >= 4.3.0",
@@ -10030,6 +10067,12 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
+            "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Common\\Supp.Common.csproj": {
+              "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Common\\Supp.Common.csproj"
+            },
+            "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Interfaces\\Supp.Interfaces.csproj": {
+              "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Interfaces\\Supp.Interfaces.csproj"
+            },
             "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj": {
               "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj"
             }

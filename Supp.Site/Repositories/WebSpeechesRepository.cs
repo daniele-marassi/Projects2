@@ -267,120 +267,6 @@ namespace Supp.Site.Repositories
         }
 
         /// <summary>
-        /// Get Reminders
-        /// </summary>
-        /// <param name="token"></param>
-        /// <param name="userName"></param>
-        /// <param name="userId"></param>
-        /// <param name="timeMin"></param>
-        /// <param name="timeMax"></param>
-        /// <param name="webSpeechTypes"></param>
-        /// <param name="summaryToSearch"></param>
-        /// <returns></returns>
-        public async Task<CalendarEventsResult> GetReminders(string token, string userName, long userId, DateTime timeMin, DateTime timeMax, WebSpeechTypes webSpeechTypes, string summaryToSearch = null)
-        {
-            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
-            {
-                var response = new CalendarEventsResult() { Data = new List<CalendarEvent>(), ResultState = new GoogleManagerModels.ResultType() };
-
-                try
-                {
-                    var errors = new List<string>() { };
-                    var identity = userName + userId.ToString() + DateTime.Now.ToString("yyyyMMddHHmmssfff");
-
-                    var googleAccountRepository = new GoogleAccountsRepository() { };
-                    var googleAuthsRepository = new GoogleAuthsRepository() { };
-
-                    var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
-
-                    if (!googleAccountResult.Successful)
-                        errors.Add(nameof(googleAccountRepository.GetAllGoogleAccounts) + " " + googleAccountResult.Message + "!");
-
-                    if (errors.Count == 0)
-                    {
-                        var googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
-
-                        var googleAccounts = googleAccountResult.Data.Where(_ => _.UserId == userId && _.AccountType == AccountType.Calendar.ToString()).ToList();
-                        var googleAuthIds = googleAccounts.Select(_ => _.GoogleAuthId).ToList();
-
-                        foreach (var account in googleAccounts)
-                        {
-                            var auth = googleAuthResult.Data.Where(_ => _.Id == account.GoogleAuthId).FirstOrDefault();
-                            var tokenFile = JsonConvert.DeserializeObject<TokenFile>(auth.TokenFileInJson);
-
-                            var googleCalendarUtility = new GoogleCalendarUtility();
-                            var getCalendarEventsRequest = new CalendarEventsRequest()
-                            {
-                                Auth = new Auth()
-                                {
-                                    Installed = new AuthProperties()
-                                    {
-                                        Client_id = auth.Client_id,
-                                        Client_secret = auth.Client_secret,
-                                        Project_id = auth.Project_id
-                                    }
-                                },
-                                TokenFile = tokenFile,
-                                Account = account.Account,
-                                TimeMin = timeMin,
-                                TimeMax = timeMax
-                            };
-                            var getCalendarEventsResult = googleCalendarUtility.GetCalendarEvents(getCalendarEventsRequest);
-
-                            if (webSpeechTypes == WebSpeechTypes.ReadRemindersToday || webSpeechTypes == WebSpeechTypes.ReadRemindersTomorrow)
-                                getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.Contains("#Note", StringComparison.InvariantCultureIgnoreCase) == false).ToList();
-
-                            if (webSpeechTypes == WebSpeechTypes.ReadNotes)
-                                getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.Contains("#Note", StringComparison.InvariantCultureIgnoreCase) == true).ToList();
-
-                            if (summaryToSearch != null && summaryToSearch != String.Empty)
-                                getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.Contains(summaryToSearch, StringComparison.InvariantCultureIgnoreCase) == true).ToList();
-
-                            response.Data.AddRange(getCalendarEventsResult.Data);
-
-                            if (getCalendarEventsResult.Successful == false && getCalendarEventsResult.Message != null && getCalendarEventsResult.Message != String.Empty) errors.Add(getCalendarEventsResult.Message);
-                        }
-
-                        if (googleAccounts.Count == 0)
-                        {
-                            response.ResultState = GoogleManagerModels.ResultType.NotFound;
-                            errors.Add("No google accounts found!");
-                        }
-                    }
-
-                    if (response.Data.Count == 0 && errors.Count == 0)
-                        response.ResultState = GoogleManagerModels.ResultType.NotFound;
-                    if (response.Data.Count > 0 && errors.Count == 0)
-                        response.ResultState = GoogleManagerModels.ResultType.Found;
-                    if (response.Data.Count > 0 && errors.Count > 0)
-                        response.ResultState = GoogleManagerModels.ResultType.FoundWithError;
-
-                    if (response.Data.Count == 0 && errors.Count > 0)
-                    {
-                        response.Successful = false;
-                        response.ResultState = GoogleManagerModels.ResultType.Error;
-                    }
-                    else
-                        response.Successful = true;
-
-                    if (errors.Count > 0)
-                        response.Message = JsonConvert.SerializeObject(errors);
-                }
-                catch (Exception ex)
-                {
-                    response.Successful = false;
-                    response.ResultState = GoogleManagerModels.ResultType.Error;
-                    response.Message = ex.InnerException != null && ex.InnerException.Message != null? ex.InnerException.Message: ex.Message;
-                    response.OriginalException = null;
-                    logger.Error(ex.ToString());
-                    //throw ex;
-                }
-
-                return response;
-            }
-        }
-
-        /// <summary>
         /// Get Holidays
         /// </summary>
         /// <param name="token"></param>
@@ -401,8 +287,8 @@ namespace Supp.Site.Repositories
                     var errors = new List<string>() { };
                     var identity = userName + userId.ToString() + DateTime.Now.ToString("yyyyMMddHHmmssfff");
 
-                    var googleAccountRepository = new GoogleAccountsRepository() { };
-                    var googleAuthsRepository = new GoogleAuthsRepository() { };
+                    var googleAccountRepository = new GoogleAccountsRepository(GeneralSettings.Static.BaseUrl) { };
+                    var googleAuthsRepository = new GoogleAuthsRepository(GeneralSettings.Static.BaseUrl) { };
                     var mediaConfigurationsRepository = new MediaConfigurationsRepository() { };
 
                     var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
@@ -495,8 +381,8 @@ namespace Supp.Site.Repositories
                     var errors = new List<string>() { };
                     var identity = userName + userId.ToString() + DateTime.Now.ToString("yyyyMMddHHmmssfff");
 
-                    var googleAccountRepository = new GoogleAccountsRepository() { };
-                    var googleAuthsRepository = new GoogleAuthsRepository() { };
+                    var googleAccountRepository = new GoogleAccountsRepository(GeneralSettings.Static.BaseUrl) { };
+                    var googleAuthsRepository = new GoogleAuthsRepository(GeneralSettings.Static.BaseUrl) { };
 
                     var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
 
@@ -613,8 +499,8 @@ namespace Supp.Site.Repositories
                     var errors = new List<string>() { };
                     var identity = userName + userId.ToString() + DateTime.Now.ToString("yyyyMMddHHmmssfff");
 
-                    var googleAccountRepository = new GoogleAccountsRepository() { };
-                    var googleAuthsRepository = new GoogleAuthsRepository() { };
+                    var googleAccountRepository = new GoogleAccountsRepository(GeneralSettings.Static.BaseUrl) { };
+                    var googleAuthsRepository = new GoogleAuthsRepository(GeneralSettings.Static.BaseUrl) { };
 
                     var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
 
@@ -726,8 +612,8 @@ namespace Supp.Site.Repositories
                     GoogleAccountDto account = null;
                     var identity = userName + userId.ToString() + DateTime.Now.ToString("yyyyMMddHHmmssfff");
 
-                    var googleAccountRepository = new GoogleAccountsRepository() { };
-                    var googleAuthsRepository = new GoogleAuthsRepository() { };
+                    var googleAccountRepository = new GoogleAccountsRepository(GeneralSettings.Static.BaseUrl) { };
+                    var googleAuthsRepository = new GoogleAuthsRepository(GeneralSettings.Static.BaseUrl) { };
 
                     var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
 

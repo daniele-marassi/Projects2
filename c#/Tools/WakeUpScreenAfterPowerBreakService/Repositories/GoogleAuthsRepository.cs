@@ -8,10 +8,11 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Additional.NLog;
 using Additional;
+using Supp.Interfaces;
 
 namespace WakeUpScreenAfterPowerBreak.Repositories
 {
-    public class GoogleAuthsRepository
+    public class GoogleAuthsRepository: IGoogleAuthsRepository
     {
         private readonly static Logger classLogger  = LogManager.GetCurrentClassLogger();
         private readonly  NLogUtility nLogUtility = new NLogUtility();

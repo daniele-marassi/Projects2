@@ -23,7 +23,7 @@ namespace Supp.Site.Controllers
 
         public GoogleAuthsController()
         {
-            googleAuthRepo = new GoogleAuthsRepository();
+            googleAuthRepo = new GoogleAuthsRepository(GeneralSettings.Static.BaseUrl);
             suppUtility = new SuppUtility();
         }
 

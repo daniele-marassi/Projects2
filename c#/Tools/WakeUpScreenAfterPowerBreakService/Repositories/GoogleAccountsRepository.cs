@@ -7,10 +7,11 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using Additional.NLog;
+using Supp.Interfaces;
 
 namespace WakeUpScreenAfterPowerBreak.Repositories
 {
-    public class GoogleAccountsRepository
+    public class GoogleAccountsRepository : IGoogleAccountsRepository
     {
         private readonly static Logger classLogger  = LogManager.GetCurrentClassLogger();
         private readonly  NLogUtility nLogUtility = new NLogUtility();

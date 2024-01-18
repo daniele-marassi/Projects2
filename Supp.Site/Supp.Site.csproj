@@ -84,6 +84,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Supp.Common\Supp.Common.csproj" />
+    <ProjectReference Include="..\Supp.Interfaces\Supp.Interfaces.csproj" />
     <ProjectReference Include="..\Supp.Models\Supp.Models.csproj" />
   </ItemGroup>
 

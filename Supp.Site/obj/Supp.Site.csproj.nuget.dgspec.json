@@ -4,6 +4,47 @@
     "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Site\\Supp.Site.csproj": {}
   },
   "projects": {
+    "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Common\\Supp.Common.csproj": {
+      "restore": {
+        "projectUniqueName": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Common\\Supp.Common.csproj",
+        "projectName": "Supp.Common",
+        "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Common\\Supp.Common.csproj",
+        "frameworks": {
+          "net472": {
+            "projectReferences": {
+              "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Interfaces\\Supp.Interfaces.csproj": {
+                "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Interfaces\\Supp.Interfaces.csproj"
+              },
+              "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj": {
+                "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net472": {}
+      }
+    },
+    "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Interfaces\\Supp.Interfaces.csproj": {
+      "restore": {
+        "projectUniqueName": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Interfaces\\Supp.Interfaces.csproj",
+        "projectName": "Supp.Interfaces",
+        "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Interfaces\\Supp.Interfaces.csproj",
+        "frameworks": {
+          "net472": {
+            "projectReferences": {
+              "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj": {
+                "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net472": {}
+      }
+    },
     "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj": {
       "restore": {
         "projectUniqueName": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj",
@@ -49,6 +90,12 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
+              "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Common\\Supp.Common.csproj": {
+                "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Common\\Supp.Common.csproj"
+              },
+              "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Interfaces\\Supp.Interfaces.csproj": {
+                "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Interfaces\\Supp.Interfaces.csproj"
+              },
               "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj": {
                 "projectPath": "C:\\Users\\ev\\GoogleDriveShare\\Projects\\Supp.Models\\Supp.Models.csproj"
               }

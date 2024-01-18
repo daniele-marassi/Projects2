@@ -60,6 +60,7 @@ namespace Supp.Models
         ReadReminder,
         ReadRemindersToday,
         ReadRemindersTomorrow,
+        ReadRemindersBetweenShortTime,
         SystemEditReminder,
         DeleteReminder,
         SystemDeleteReminder,

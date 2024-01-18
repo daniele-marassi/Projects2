@@ -366,8 +366,8 @@ namespace Supp.Site.Repositories
                     var requests = new List<ManagerRequest>() { };
                     var identity = userName + userId.ToString() + DateTime.Now.ToString("yyyyMMddHHmmssfff");
                    
-                    var googleAccountRepository = new GoogleAccountsRepository() { };
-                    var googleAuthsRepository = new GoogleAuthsRepository() { };
+                    var googleAccountRepository = new GoogleAccountsRepository(GeneralSettings.Static.BaseUrl) { };
+                    var googleAuthsRepository = new GoogleAuthsRepository(GeneralSettings.Static.BaseUrl) { };
                     var mediaConfigurationsRepository = new MediaConfigurationsRepository() { };
 
                     var googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);

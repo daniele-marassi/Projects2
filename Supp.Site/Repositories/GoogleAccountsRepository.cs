@@ -10,19 +10,22 @@ using System.Threading.Tasks;
 using static Supp.Site.Common.Config;
 using Additional.NLog;
 using Additional;
+using Supp.Interfaces;
 
 namespace Supp.Site.Repositories
 {
-    public class GoogleAccountsRepository
+    public class GoogleAccountsRepository : IGoogleAccountsRepository
     {
         private readonly static Logger classLogger  = LogManager.GetCurrentClassLogger();
         private readonly  NLogUtility nLogUtility = new NLogUtility();
         private readonly SuppUtility suppUtility;
         private readonly Utility utility;
+        string _baseUrl;
 
-        public GoogleAccountsRepository()
+        public GoogleAccountsRepository(string baseUrl)
         {
-            utility = new Utility();
+            utility = new Additional.Utility();
+            _baseUrl = baseUrl;
         }
 
         /// <summary>
@@ -40,7 +43,7 @@ namespace Supp.Site.Repositories
                 {
                     var keyValuePairs = new Dictionary<string, string>() { };
 
-                    var result = await utility.CallApi(HttpMethod.Get, GeneralSettings.Static.BaseUrl, "api/GoogleAccounts/GetAllGoogleAccounts", keyValuePairs, token);
+                    var result = await utility.CallApi(HttpMethod.Get, _baseUrl, "api/GoogleAccounts/GetAllGoogleAccounts", keyValuePairs, token);
                     var content = await result.Content.ReadAsStringAsync();
 
                     if (result.IsSuccessStatusCode == false)
@@ -84,7 +87,7 @@ namespace Supp.Site.Repositories
                     var keyValuePairs = new Dictionary<string, string>() { };
                     keyValuePairs["Id"] = id.ToString();
 
-                    var result = await utility.CallApi(HttpMethod.Get, GeneralSettings.Static.BaseUrl, "api/GoogleAccounts/GetGoogleAccount", keyValuePairs, token);
+                    var result = await utility.CallApi(HttpMethod.Get, _baseUrl, "api/GoogleAccounts/GetGoogleAccount", keyValuePairs, token);
                     var content = await result.Content.ReadAsStringAsync();
 
                     if (result.IsSuccessStatusCode == false)
@@ -133,7 +136,7 @@ namespace Supp.Site.Repositories
                             keyValuePairs[prop.Name] = prop.GetValue(dto, null).ToString();
                     }
 
-                    var result = await utility.CallApi(HttpMethod.Put, GeneralSettings.Static.BaseUrl, "api/GoogleAccounts/UpdateGoogleAccount", keyValuePairs, token);
+                    var result = await utility.CallApi(HttpMethod.Put, _baseUrl, "api/GoogleAccounts/UpdateGoogleAccount", keyValuePairs, token);
                     var content = await result.Content.ReadAsStringAsync();
 
                     if (result.IsSuccessStatusCode == false)
@@ -182,7 +185,7 @@ namespace Supp.Site.Repositories
                             keyValuePairs[prop.Name] = prop.GetValue(dto, null).ToString();
                     }
 
-                    var result = await utility.CallApi(HttpMethod.Post, GeneralSettings.Static.BaseUrl, "api/GoogleAccounts/AddGoogleAccount", keyValuePairs, token);
+                    var result = await utility.CallApi(HttpMethod.Post, _baseUrl, "api/GoogleAccounts/AddGoogleAccount", keyValuePairs, token);
                     var content = await result.Content.ReadAsStringAsync();
 
                     if (result.IsSuccessStatusCode == false)
@@ -226,7 +229,7 @@ namespace Supp.Site.Repositories
                     var keyValuePairs = new Dictionary<string, string>() { };
                     keyValuePairs["Id"] = id.ToString();
 
-                    var result = await utility.CallApi(HttpMethod.Delete, GeneralSettings.Static.BaseUrl, "api/GoogleAccounts/DeleteGoogleAccount", keyValuePairs, token);
+                    var result = await utility.CallApi(HttpMethod.Delete, _baseUrl, "api/GoogleAccounts/DeleteGoogleAccount", keyValuePairs, token);
                     var content = await result.Content.ReadAsStringAsync();
 
                     if (result.IsSuccessStatusCode == false)

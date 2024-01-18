@@ -1,20 +1,26 @@
 ﻿using GoogleManagerModels;
+using NLog;
+using Supp.Interfaces;
 using Supp.Models;
 using Supp.Site.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Supp.Site.Common.Config;
 
 namespace Supp.Site.Recognition
 {
     public class DialogueAddToNote
     {
         private readonly WebSpeechesRepository webSpeecheRepo;
+        private readonly Supp.Common.Info commonInfo;
+        private readonly static Logger classLogger = LogManager.GetCurrentClassLogger();
 
         public DialogueAddToNote()
         {
             webSpeecheRepo = new WebSpeechesRepository();
+            commonInfo = new Supp.Common.Info();
         }
 
         /// <summary>
@@ -400,7 +406,13 @@ namespace Supp.Site.Recognition
             var summaryToSearch = dto.Elements[1].Value;
             var desc = dto.Elements[2].Value;
 
-            var getRemindersResult = await webSpeecheRepo.GetReminders(token, userName, userId, timeMin, timeMax, WebSpeechTypes.ReadNotes, summaryToSearch);
+            GoogleAccountResult googleAccountResult = null;
+            GoogleAuthResult googleAuthResult = null;
+
+            var googleAccountsRepository = new GoogleAccountsRepository(GeneralSettings.Static.BaseUrl) { };
+            var googleAuthsRepository = new GoogleAuthsRepository(GeneralSettings.Static.BaseUrl) { };
+
+            var getRemindersResult = commonInfo.GetReminders(token, userName, userId, timeMin, timeMax, WebSpeechTypes.ReadNotes, GeneralSettings.Static.BaseUrl, ref googleAccountResult, ref googleAuthResult, classLogger, googleAccountsRepository, googleAuthsRepository, summaryToSearch);
 
             if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
             {

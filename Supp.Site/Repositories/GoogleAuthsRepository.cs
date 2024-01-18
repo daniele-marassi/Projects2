@@ -10,20 +10,23 @@ using System.Threading.Tasks;
 using static Supp.Site.Common.Config;
 using Additional.NLog;
 using Additional;
+using Supp.Interfaces;
 
 namespace Supp.Site.Repositories
 {
-    public class GoogleAuthsRepository
+    public class GoogleAuthsRepository: IGoogleAuthsRepository
     {
         private readonly static Logger classLogger  = LogManager.GetCurrentClassLogger();
         private readonly  NLogUtility nLogUtility = new NLogUtility();
         private readonly SuppUtility suppUtility;
         private readonly Utility utility;
+        string _baseUrl;
 
-        public GoogleAuthsRepository()
+        public GoogleAuthsRepository(string baseUrl)
         {
             suppUtility = new SuppUtility();
             utility = new Utility();
+            _baseUrl = baseUrl;
         }
 
         /// <summary>
@@ -42,7 +45,7 @@ namespace Supp.Site.Repositories
                     var keyValuePairs = new Dictionary<string, string>() { };
 
 
-                    var result = await utility.CallApi(HttpMethod.Get, GeneralSettings.Static.BaseUrl, "api/GoogleAuths/GetAllGoogleAuths", keyValuePairs, token);
+                    var result = await utility.CallApi(HttpMethod.Get, _baseUrl, "api/GoogleAuths/GetAllGoogleAuths", keyValuePairs, token);
                     var content = await result.Content.ReadAsStringAsync();
 
                     if (result.IsSuccessStatusCode == false)
@@ -88,7 +91,7 @@ namespace Supp.Site.Repositories
                     keyValuePairs["Id"] = id.ToString();
 
 
-                    var result = await utility.CallApi(HttpMethod.Get, GeneralSettings.Static.BaseUrl, "api/GoogleAuths/GetGoogleAuth", keyValuePairs, token);
+                    var result = await utility.CallApi(HttpMethod.Get, _baseUrl, "api/GoogleAuths/GetGoogleAuth", keyValuePairs, token);
                     var content = await result.Content.ReadAsStringAsync();
 
                     if (result.IsSuccessStatusCode == false)
@@ -140,7 +143,7 @@ namespace Supp.Site.Repositories
 
 
 
-                    var result = await utility.CallApi(HttpMethod.Put, GeneralSettings.Static.BaseUrl, "api/GoogleAuths/UpdateGoogleAuth", keyValuePairs, token);
+                    var result = await utility.CallApi(HttpMethod.Put, _baseUrl, "api/GoogleAuths/UpdateGoogleAuth", keyValuePairs, token);
                     var content = await result.Content.ReadAsStringAsync();
 
                     if (result.IsSuccessStatusCode == false)
@@ -192,7 +195,7 @@ namespace Supp.Site.Repositories
 
 
 
-                    var result = await utility.CallApi(HttpMethod.Post, GeneralSettings.Static.BaseUrl, "api/GoogleAuths/AddGoogleAuth", keyValuePairs, token);
+                    var result = await utility.CallApi(HttpMethod.Post, _baseUrl, "api/GoogleAuths/AddGoogleAuth", keyValuePairs, token);
                     var content = await result.Content.ReadAsStringAsync();
 
                     if (result.IsSuccessStatusCode == false)
@@ -238,7 +241,7 @@ namespace Supp.Site.Repositories
                     keyValuePairs["Id"] = id.ToString();
 
 
-                    var result = await utility.CallApi(HttpMethod.Delete, GeneralSettings.Static.BaseUrl, "api/GoogleAuths/DeleteGoogleAuth", keyValuePairs, token);
+                    var result = await utility.CallApi(HttpMethod.Delete, _baseUrl, "api/GoogleAuths/DeleteGoogleAuth", keyValuePairs, token);
                     var content = await result.Content.ReadAsStringAsync();
 
                     if (result.IsSuccessStatusCode == false)

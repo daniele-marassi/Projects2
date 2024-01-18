@@ -26,9 +26,9 @@ namespace Supp.Site.Controllers
 
         public GoogleAccountsController()
         {
-            googleAccountRepo = new GoogleAccountsRepository();
+            googleAccountRepo = new GoogleAccountsRepository(GeneralSettings.Static.BaseUrl);
             suppUtility = new SuppUtility();
-            googleAuthRepo = new GoogleAuthsRepository();
+            googleAuthRepo = new GoogleAuthsRepository(GeneralSettings.Static.BaseUrl);
             userRepo = new UsersRepository();
         }
 

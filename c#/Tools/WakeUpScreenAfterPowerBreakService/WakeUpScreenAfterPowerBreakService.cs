@@ -5,8 +5,10 @@ using Google.Apis.Keep.v1.Data;
 using GoogleCalendar;
 using GoogleManagerModels;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLog;
 using RenewNotes.Repositories;
+using Supp.Interfaces;
 using Supp.Models;
 using System;
 using System.Collections.Generic;
@@ -20,10 +22,14 @@ using System.ServiceModel.Channels;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WakeUpScreenAfterPowerBreak.Repositories;
 using static Google.Apis.Requests.BatchRequest;
+using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using static Tools.Common.ContextMenus;
+using GoogleAccountsRepository = WakeUpScreenAfterPowerBreak.Repositories.GoogleAccountsRepository;
+using GoogleAuthsRepository = WakeUpScreenAfterPowerBreak.Repositories.GoogleAuthsRepository;
 
 namespace Tools.WakeUpScreenAfterPowerBreak
 {
@@ -50,6 +56,7 @@ namespace Tools.WakeUpScreenAfterPowerBreak
         private static DateTime dateLastMessage;
         string suppSiteBaseUrl;
         long suppSiteUserId = 0;
+        string meteoParameterToTheSalutation;
 
         public const int KEYEVENTF_EXTENTEDKEY = 1;
         public const int KEYEVENTF_KEYUP = 0;
@@ -59,8 +66,10 @@ namespace Tools.WakeUpScreenAfterPowerBreak
 
         private static GoogleAccountResult googleAccountResult = null;
         private static GoogleAuthResult googleAuthResult = null;
-
-        
+        private readonly Supp.Common.Info commonInfo;
+        private static GoogleAccountsRepository googleAccountsRepository;
+        private static GoogleAuthsRepository googleAuthsRepository;
+        private static bool infoReaded = false;
 
         [DllImport("user32.dll")]
         public static extern void keybd_event(byte virtualKey, byte scanCode, uint flags, IntPtr extraInfo);
@@ -87,7 +96,7 @@ namespace Tools.WakeUpScreenAfterPowerBreak
             utility = new Utility();
 
             timeToClosePopUpInMilliseconds = int.Parse(ConfigurationManager.AppSettings["TimeToClosePopUpInMilliseconds"]);
-            rootPath = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+            rootPath = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 
             commonUtility = new Common.Utility();
 
@@ -96,7 +105,14 @@ namespace Tools.WakeUpScreenAfterPowerBreak
             notifyMute = bool.Parse(appSettings["NotifyMute"]);
             notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
 
+            meteoParameterToTheSalutation = appSettings["MeteoParameterToTheSalutation"];
+
             dateLastMessage = DateTime.Now;
+
+            commonInfo = new Supp.Common.Info();
+
+            googleAccountsRepository = new GoogleAccountsRepository(suppServiceHostBaseUrl) { };
+            googleAuthsRepository = new GoogleAuthsRepository(suppServiceHostBaseUrl) { };
         }
 
         public void Stop()
@@ -121,7 +137,9 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                         commonUtility.ClickOnTaskbar();
                         sleepInMilliseconds = 30000;
 
-                        if ((DateTime.Now - dateLastMessage).TotalMinutes > 60)
+                        var now = DateTime.Now;
+
+                        if ((now - dateLastMessage).TotalMinutes > 60)
                         {
                             if (Variables.ServiceLoginResult == null || Variables.ServiceLoginResult?.Successful == false || Variables.ServiceLoginResult?.Data?.Count == 0)
                             {
@@ -137,20 +155,11 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                                 var userId = data.UserId;
                                 var token = data.TokenCode;
 
-                                var timeMin = DateTime.Now;
-                                var timeMax = DateTime.Parse(DateTime.Now.AddMinutes(60).ToString());
+                                var answer = GetInfo(token, service1Username, userId, suppServiceHostBaseUrl, culture, now);
 
-                                var getRemindersResult = await GetReminders(token, service1Username, userId, timeMin, timeMax, WebSpeechTypes.ReadRemindersToday);
-
-                                var answer = "";
-
-                                if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
+                                if (answer != null && answer != "" && answer != " ")
                                 {
                                     dateLastMessage = DateTime.Now;
-
-                                    var reminders = ReadReminders(getRemindersResult.Data, WebSpeechTypes.ReadRemindersToday.ToString());
-                                    if (answer != "") answer += " ";
-                                    answer += reminders;
 
                                     bool response = false;
                                     var keyValuePairs = new Dictionary<string, string>() { };
@@ -167,7 +176,7 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                                     else
                                     {
                                         response = JsonConvert.DeserializeObject<bool>(content);
-                                        if(response) 
+                                        if (response)
                                         {
                                             MediaPlayOrPause();
                                         }
@@ -199,6 +208,65 @@ namespace Tools.WakeUpScreenAfterPowerBreak
 
                 System.Threading.Thread.Sleep(sleepInMilliseconds);
             }
+        }
+
+        private string GetInfo(string token, string userName, long userId, string suppServiceHostBaseUrl, string culture, DateTime now)
+        {
+            var answer = "";
+
+            if (meteoParameterToTheSalutation != null && meteoParameterToTheSalutation != "")
+            {
+                if (Supp.Common.Utility.GetPartOfTheDay(now.AddHours(-1.5)) == PartsOfTheDayEng.Morning && !infoReaded)
+                {
+                    infoReaded = true;
+
+                    answer += commonInfo.GetMeteoPhrase(String.Empty, meteoParameterToTheSalutation, culture.ToLower(), true, classLogger);
+
+                    var timeMin = now;
+                    var timeMax = DateTime.Parse(now.ToString("yyyy-MM-dd") + " 23:59:59");
+                    GoogleAccountResult googleAccountResult = null;
+                    GoogleAuthResult googleAuthResult = null;
+
+                    var getRemindersResult = commonInfo.GetReminders(token, userName, userId, timeMin, timeMax, WebSpeechTypes.ReadRemindersToday, suppServiceHostBaseUrl, ref googleAccountResult, ref googleAuthResult, classLogger, googleAccountsRepository, googleAuthsRepository);
+
+                    if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
+                    {
+                        var reminders = commonInfo.ReadReminders(culture.ToLower(), getRemindersResult.Data, WebSpeechTypes.ReadRemindersToday.ToString());
+                        if (answer != "") answer += " ";
+                        answer += reminders;
+                    }
+
+                    if (getRemindersResult.Successful)
+                    {
+                        if (answer != "") answer += " ";
+                        answer += commonInfo.GetHolidaysPrhase(culture.ToLower(), token, userName, userId, WebSpeechTypes.ReadRemindersToday.ToString(), suppServiceHostBaseUrl, classLogger, googleAccountsRepository, googleAuthsRepository).GetAwaiter().GetResult();
+
+                        if (answer != "") answer += " ";
+                        answer += commonInfo.GetHolidaysPrhase(culture.ToLower(), token, userName, userId, WebSpeechTypes.ReadRemindersTomorrow.ToString(), suppServiceHostBaseUrl, classLogger, googleAccountsRepository, googleAuthsRepository).GetAwaiter().GetResult();
+                    }
+
+                    if (!getRemindersResult.Successful)
+                    {
+                        if (culture.ToLower() == "it-it") answer += " Attenzione! probabilmente il token google è scaduto.";
+                        if (culture.ToLower() == "en-us") answer += " Attention! probably the google token has expired.";
+                    }
+                }
+                else 
+                {
+                    var timeMin = now;
+                    var timeMax = DateTime.Parse(now.AddMinutes(60).ToString());
+                    var getRemindersResult = commonInfo.GetReminders(token, userName, userId, timeMin, timeMax, WebSpeechTypes.ReadRemindersToday, suppServiceHostBaseUrl, ref googleAccountResult, ref googleAuthResult, classLogger, googleAccountsRepository, googleAuthsRepository);
+
+                    if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
+                    {
+                        var reminders = commonInfo.ReadReminders(culture, getRemindersResult.Data, WebSpeechTypes.ReadRemindersToday.ToString());
+                        if (answer != "") answer += " ";
+                        answer += reminders;
+                    }
+                }
+            }
+
+            return answer;
         }
 
         protected override void OnStart(string[] args)
@@ -291,162 +359,6 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                     logger.Error(ex.ToString());
                     //throw ex;
                 }
-                return response;
-            }
-        }
-
-        private string ReadReminders(List<CalendarEvent> data, string type)
-        {
-            var reminders = "";
-
-            if (culture.ToLower() == "it-it" && type == WebSpeechTypes.ReadRemindersToday.ToString()) reminders = "NAME, ricordati di questi promemoria:";
-            if (culture.ToLower() == "en-us" && type == WebSpeechTypes.ReadRemindersToday.ToString()) reminders = "NAME, remember these reminders:";
-
-            foreach (var item in data)
-            {
-                reminders += item.Summary;
-
-                if (culture.ToLower() == "it-it")
-                {
-                    reminders += " alle " + item.EventDateStart.Value.Hour.ToString();
-
-                    if (item.EventDateStart.Value.Minute == 1) reminders += " e " + item.EventDateStart.Value.Minute.ToString() + " minuto.";
-                    else if (item.EventDateStart.Value.Minute > 1) reminders += " e " + item.EventDateStart.Value.Minute.ToString() + " minuti.";
-                    else reminders += ".";
-                }
-
-                if (culture.ToLower() == "en-us")
-                {
-                    reminders += " at " + item.EventDateStart.Value.Hour.ToString();
-
-                    if (item.EventDateStart.Value.Minute == 1) reminders += " and " + item.EventDateStart.Value.Minute.ToString() + " minute.";
-                    else if (item.EventDateStart.Value.Minute > 1) reminders += " and " + item.EventDateStart.Value.Minute.ToString() + " minutes.";
-                    else reminders += ".";
-                }
-            }
-
-            return reminders;
-        }
-
-        /// <summary>
-        /// Get Reminders
-        /// </summary>
-        /// <param name="token"></param>
-        /// <param name="userName"></param>
-        /// <param name="userId"></param>
-        /// <param name="timeMin"></param>
-        /// <param name="timeMax"></param>
-        /// <param name="webSpeechTypes"></param>
-        /// <param name="summaryToSearch"></param>
-        /// <returns></returns>
-        public async Task<CalendarEventsResult> GetReminders(string token, string userName, long userId, DateTime timeMin, DateTime timeMax, WebSpeechTypes webSpeechTypes, string summaryToSearch = null)
-        {
-            using (var logger = new NLogScope(classLogger, nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod())))
-            {
-                var response = new CalendarEventsResult() { Data = new List<CalendarEvent>(), ResultState = new GoogleManagerModels.ResultType() };
-
-                try
-                {
-                    var errors = new List<string>() { };
-                    var identity = userName + userId.ToString() + DateTime.Now.ToString("yyyyMMddHHmmssfff");
-
-                    var googleAccountRepository = new GoogleAccountsRepository(suppServiceHostBaseUrl) { };
-                    var googleAuthsRepository = new GoogleAuthsRepository(suppServiceHostBaseUrl) { };
-
-                    if (googleAccountResult == null || googleAccountResult?.Successful == false || googleAccountResult?.Data?.Count() == 0)
-                        googleAccountResult = await googleAccountRepository.GetAllGoogleAccounts(token);
-
-                    if (!googleAccountResult.Successful)
-                        errors.Add(nameof(googleAccountRepository.GetAllGoogleAccounts) + " " + googleAccountResult.Message + "!");
-
-                    if (errors.Count == 0)
-                    {
-                        if (googleAuthResult == null || googleAuthResult?.Successful == false || googleAuthResult?.Data?.Count() == 0)
-                            googleAuthResult = await googleAuthsRepository.GetAllGoogleAuths(token);
-
-                        var googleAccounts = googleAccountResult.Data.Where(_ => _.UserId == userId && _.AccountType == AccountType.Calendar.ToString()).ToList();
-                        var googleAuthIds = googleAccounts.Select(_ => _.GoogleAuthId).ToList();
-
-                        foreach (var account in googleAccounts)
-                        {
-                            var auth = googleAuthResult.Data.Where(_ => _.Id == account.GoogleAuthId).FirstOrDefault();
-                            var tokenFile = JsonConvert.DeserializeObject<TokenFile>(auth.TokenFileInJson);
-
-                            var googleCalendarUtility = new GoogleCalendarUtility();
-                            var getCalendarEventsRequest = new CalendarEventsRequest()
-                            {
-                                Auth = new Auth()
-                                {
-                                    Installed = new AuthProperties()
-                                    {
-                                        Client_id = auth.Client_id,
-                                        Client_secret = auth.Client_secret,
-                                        Project_id = auth.Project_id
-                                    }
-                                },
-                                TokenFile = tokenFile,
-                                Account = account.Account,
-                                TimeMin = timeMin,
-                                TimeMax = timeMax
-                            };
-
-                            var getCalendarEventsResult = googleCalendarUtility.GetCalendarEvents(getCalendarEventsRequest);
-
-                            if (webSpeechTypes == WebSpeechTypes.ReadRemindersToday || webSpeechTypes == WebSpeechTypes.ReadRemindersTomorrow)
-                            {
-                                getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.ToLower().Contains(("#Note").ToLower()) == false).ToList();
-                                getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.ToLower().Contains(("#Timer").ToLower()) == false).ToList();
-                                getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.ToLower().Contains(("#AlarmClock").ToLower()) == false).ToList();
-                            }
-
-                            if (webSpeechTypes == WebSpeechTypes.ReadNotes)
-                                getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.ToLower().Contains(("#Note").ToLower()) == true).ToList();
-
-                            if (summaryToSearch != null && summaryToSearch != String.Empty)
-                                getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.ToLower().Contains(summaryToSearch.ToLower()) == true).ToList();
-
-                            getCalendarEventsResult.Data = getCalendarEventsResult.Data.Where(_ => _.Summary.ToLower().Contains(("#Timer").ToLower()) == false).ToList();
-
-                            response.Data.AddRange(getCalendarEventsResult.Data);
-
-                            if (getCalendarEventsResult.Successful == false && getCalendarEventsResult.Message != null && getCalendarEventsResult.Message != String.Empty) errors.Add(getCalendarEventsResult.Message);
-                        }
-
-                        if (googleAccounts.Count == 0)
-                        {
-                            response.ResultState = GoogleManagerModels.ResultType.NotFound;
-                            errors.Add("No google accounts found!");
-                        }
-                    }
-
-                    if (response.Data.Count == 0 && errors.Count == 0)
-                        response.ResultState = GoogleManagerModels.ResultType.NotFound;
-                    if (response.Data.Count > 0 && errors.Count == 0)
-                        response.ResultState = GoogleManagerModels.ResultType.Found;
-                    if (response.Data.Count > 0 && errors.Count > 0)
-                        response.ResultState = GoogleManagerModels.ResultType.FoundWithError;
-
-                    if (response.Data.Count == 0 && errors.Count > 0)
-                    {
-                        response.Successful = false;
-                        response.ResultState = GoogleManagerModels.ResultType.Error;
-                    }
-                    else
-                        response.Successful = true;
-
-                    if (errors.Count > 0)
-                        response.Message = JsonConvert.SerializeObject(errors);
-                }
-                catch (Exception ex)
-                {
-                    response.Successful = false;
-                    response.ResultState = GoogleManagerModels.ResultType.Error;
-                    response.Message = ex.InnerException != null && ex.InnerException.Message != null ? ex.InnerException.Message : ex.Message;
-                    response.OriginalException = null;
-                    logger.Error(ex.ToString());
-                    //throw ex;
-                }
-
                 return response;
             }
         }

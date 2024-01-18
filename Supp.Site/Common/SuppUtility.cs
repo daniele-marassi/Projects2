@@ -277,7 +277,7 @@ namespace Supp.Site.Common
             var result = "";
             var now = DateTime.Now;
 
-            if (GetPartOfTheDay(now) == PartsOfTheDayEng.Morning)
+            if (Supp.Common.Utility.GetPartOfTheDay(now) == PartsOfTheDayEng.Morning)
             {
                 int x = rnd.Next(0, 10 + 1);
                 if (cultureInfo.Name == "it-IT" && x == 0) result = "Buongiorno.";
@@ -314,7 +314,7 @@ namespace Supp.Site.Common
                 if (cultureInfo.Name == "en-US" && x == 10) result = "Amazing day.";
             }
 
-            if (GetPartOfTheDay(now) == PartsOfTheDayEng.Afternoon)
+            if (Supp.Common.Utility.GetPartOfTheDay(now) == PartsOfTheDayEng.Afternoon)
             {
                 int x = rnd.Next(0, 9 + 1);
                 if (cultureInfo.Name == "it-IT" && x == 0) result = "Buon pomeriggio.";
@@ -348,7 +348,7 @@ namespace Supp.Site.Common
                 if (cultureInfo.Name == "en-US" && x == 9) result = "Amazing afternoon.";
             }
 
-            if (GetPartOfTheDay(now) == PartsOfTheDayEng.Evening)
+            if (Supp.Common.Utility.GetPartOfTheDay(now) == PartsOfTheDayEng.Evening)
             {
                 int x = rnd.Next(0, 10 + 1);
                 if (cultureInfo.Name == "it-IT" && x == 0) result = "Buonasera.";
@@ -385,7 +385,7 @@ namespace Supp.Site.Common
                 if (cultureInfo.Name == "en-US" && x == 10) result = "Amazing evening.";
             }
 
-            if (GetPartOfTheDay(now) == PartsOfTheDayEng.Night)
+            if (Supp.Common.Utility.GetPartOfTheDay(now) == PartsOfTheDayEng.Night)
             {
                 int x = rnd.Next(0, 9 + 1);
                 if (cultureInfo.Name == "it-IT" && x == 0) result = "Buona notte.";
@@ -418,24 +418,6 @@ namespace Supp.Site.Common
                 if (cultureInfo.Name == "it-IT" && x == 9) result = "Strepitosa notte.";
                 if (cultureInfo.Name == "en-US" && x == 9) result = "Amazing night.";
             }
-
-            return result;
-        }
-
-        /// <summary>
-        /// GetPartOfTheDay
-        /// </summary>
-        /// <param name="dateTime"></param>
-        /// <returns></returns>
-        public static PartsOfTheDayEng GetPartOfTheDay(DateTime dateTime)
-        {
-            var time = int.Parse(DateTime.Now.ToString("HHmm"));
-            var result = PartsOfTheDayEng.NotSet;
-
-            if (time >= 600 && time <= 1159) result = PartsOfTheDayEng.Morning;
-            if (time >= 1200 && time <= 1759) result = PartsOfTheDayEng.Afternoon;
-            if (time >= 1800 && time <= 2359) result = PartsOfTheDayEng.Evening;
-            if (time >= 0 && time <= 559) result = PartsOfTheDayEng.Night;
 
             return result;
         }

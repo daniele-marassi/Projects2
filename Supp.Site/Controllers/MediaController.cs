@@ -30,7 +30,7 @@ namespace Supp.Site.Controllers
         public MediaController()
         {
             mediaRepo = new MediaRepository();
-            googleAccountRepository = new GoogleAccountsRepository();
+            googleAccountRepository = new GoogleAccountsRepository(GeneralSettings.Static.BaseUrl);
             suppUtility = new SuppUtility();
         }
 
