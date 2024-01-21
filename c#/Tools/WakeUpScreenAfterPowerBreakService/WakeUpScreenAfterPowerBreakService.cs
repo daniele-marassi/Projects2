@@ -13,6 +13,7 @@ using Supp.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -214,6 +215,10 @@ namespace Tools.WakeUpScreenAfterPowerBreak
         {
             var answer = "";
 
+            var salutation = "Ehi NAME";
+
+            answer = salutation + " " + Supp.Common.Utility.GetSalutation(new CultureInfo(culture, false)) + ", ";
+
             if (meteoParameterToTheSalutation != null && meteoParameterToTheSalutation != "")
             {
                 if (Supp.Common.Utility.GetPartOfTheDay(now.AddHours(-1.5)) == PartsOfTheDayEng.Morning && !infoReaded)
@@ -259,7 +264,7 @@ namespace Tools.WakeUpScreenAfterPowerBreak
 
                     if (getRemindersResult.Successful && getRemindersResult.Data.Count > 0)
                     {
-                        var reminders = commonInfo.ReadReminders(culture, getRemindersResult.Data, WebSpeechTypes.ReadRemindersToday.ToString());
+                        var reminders = commonInfo.ReadReminders(culture, getRemindersResult.Data, WebSpeechTypes.ReadRemindersBetweenShortTime.ToString());
                         if (answer != "") answer += " ";
                         answer += reminders;
                     }

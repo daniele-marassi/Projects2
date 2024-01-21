@@ -368,7 +368,7 @@ namespace Supp.Common
 
                 var temperatureSplit = details["temperature"].ToString().Split(',');
 
-                result += " Adesso è previsto, temperatura " + temperatureSplit[0];
+                result += " Ora si prevede, temperatura " + temperatureSplit[0];
 
                 if (temperatureSplit.Length > 1)
                 {
@@ -409,7 +409,7 @@ namespace Supp.Common
 
                 var temperatureSplit = details["temperature"].ToString().Split(',');
 
-                result += " It is now expected, temperature " + temperatureSplit[0];
+                result += " Now it is expected, temperature " + temperatureSplit[0];
 
                 if (temperatureSplit.Length > 1)
                 {

@@ -836,12 +836,15 @@ namespace Supp.Site.Recognition
                         if (identification.Name == null && JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it") identification.Name = "tu";
                         if (identification.Name == null && JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us") identification.Name = "you";
                         if (identification.Surname == null) identification.Surname = String.Empty;
-                        salutation = salutation.Replace("NAME", identification.Name);
-                        salutation = salutation.Replace("SURNAME", identification.Surname);
+                        if (salutation != null && salutation != "")
+                        {
+                            salutation = salutation.Replace("NAME", identification.Name);
+                            salutation = salutation.Replace("SURNAME", identification.Surname);
 
-                        startAnswer = salutation + " " + SuppUtility.GetSalutation(new CultureInfo(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, false));
+                            startAnswer = salutation + " " + Supp.Common.Utility.GetSalutation(new CultureInfo(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture, false));
 
-                        if (DateTime.Now.Hour == 3) startAnswer = "";
+                            if (DateTime.Now.Hour == 3) startAnswer = "";
+                        }
 
                         if ((_phrase == null || _phrase == "") && data == null && _reset == false && _onlyRefresh == false && (_subType == null || _subType == ""))
                         {
