@@ -215,15 +215,15 @@ namespace Tools.WakeUpScreenAfterPowerBreak
         {
             var answer = "";
 
-            var salutation = "Ehi NAME";
-
-            answer = salutation + " " + Supp.Common.Utility.GetSalutation(new CultureInfo(culture, false)) + ", ";
-
             if (meteoParameterToTheSalutation != null && meteoParameterToTheSalutation != "")
             {
                 if (Supp.Common.Utility.GetPartOfTheDay(now.AddHours(-1.5)) == PartsOfTheDayEng.Morning && !infoReaded)
                 {
                     infoReaded = true;
+
+                    var salutation = "Ehi NAME";
+
+                    answer = salutation + " " + Supp.Common.Utility.GetSalutation(new CultureInfo(culture, false)) + ", ";
 
                     answer += commonInfo.GetMeteoPhrase(String.Empty, meteoParameterToTheSalutation, culture.ToLower(), true, classLogger);
 
