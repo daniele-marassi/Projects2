@@ -223,7 +223,7 @@ namespace Tools.WakeUpScreenAfterPowerBreak
 
                     var salutation = "Ehi NAME";
 
-                    answer = salutation + " " + Supp.Common.Utility.GetSalutation(new CultureInfo(culture, false)) + ", ";
+                    answer = salutation + " " + Supp.Common.Utility.GetSalutation(new CultureInfo(culture, false)) + " ";
 
                     answer += commonInfo.GetMeteoPhrase(String.Empty, meteoParameterToTheSalutation, culture.ToLower(), true, classLogger);
 
