@@ -365,7 +365,13 @@
                         message += words[i];
                     } 
 
-                    if((i == actualWords) || (i <= actualWords && (words[i].indexOf(".") > -1 || words[i].indexOf(",") > -1 || words[i].indexOf(";") > -1 || words[i].indexOf(":") > -1))) isActualWord = false;
+                    if ((i == actualWords) || (i <= actualWords && (words[i].indexOf(".") > -1 || words[i].indexOf(",") > -1 || words[i].indexOf(";") > -1 || words[i].indexOf(":") > -1))) {
+                        isActualWord = false;
+                        message = message.replace(/\./g, "");
+                        message = message.replace(/\,/g, "");
+                        message = message.replace(/\:/g, "");
+                        message = message.replace(/\;/g, "");
+                    }
                 }  
 
                 _message = _message.replace(message, "").trim();   
