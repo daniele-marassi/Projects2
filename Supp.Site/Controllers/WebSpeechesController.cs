@@ -912,7 +912,7 @@ namespace Supp.Site.Controllers
 
                     data.ResetAfterLoad = resetAfterLoad;
 
-                    if (data != null && application && data?.Answer != null && data?.Answer != String.Empty)
+                    if (data != null && application && data?.Answer != null && data?.Answer != String.Empty && data?.Answer != " ")
                     {
                         await MediaPlayOrPause(hostSelected);
                     }
@@ -1067,7 +1067,7 @@ namespace Supp.Site.Controllers
                         result = System.Text.Json.JsonSerializer.Serialize(data);
                         //result = result.Replace(@"\", "/");
 
-                        if (application && data?.Answer != null && data?.Answer != String.Empty) 
+                        if (application && data?.Answer != null && data?.Answer != String.Empty && data?.Answer != " ") 
                         {
                             await MediaPlayOrPause(hostSelected);
                         }
