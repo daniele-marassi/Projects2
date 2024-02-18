@@ -221,7 +221,7 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                 {
                     infoReaded = true;
 
-                    var salutation = "Ehi NAME";
+                    var salutation = "NAME";
 
                     answer = salutation + " " + Supp.Common.Utility.GetSalutation(new CultureInfo(culture, false)) + " ";
 

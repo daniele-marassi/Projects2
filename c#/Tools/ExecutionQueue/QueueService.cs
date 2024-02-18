@@ -296,7 +296,7 @@ namespace Tools.ExecutionQueue
                                             item.FullPath = songsPlayer;
                                             item.Arguments = @"""" + arguments.FullPath + @"""";
 
-                                            await RunExeAndUpdateDbAsync(item, false);
+                                            await RunExeAndUpdateDbAsync(item, false, false);
 
                                             song.Listened = true;
 
@@ -319,7 +319,7 @@ namespace Tools.ExecutionQueue
                                 if (item.Type == ExecutionQueueType.RunExe.ToString() || item.Type == ExecutionQueueType.SystemRunExe.ToString())
                                 {
                                     //await Task.Run(() => RunExeAndUpdateDbAsync(item, false));
-                                    await RunExeAndUpdateDbAsync(item, false);
+                                    await RunExeAndUpdateDbAsync(item, false, false);
                                 }
 
                                 if (item.Type == ExecutionQueueType.RunMediaAndPlay.ToString())
@@ -529,7 +529,7 @@ namespace Tools.ExecutionQueue
                         }
                     }
 
-                    if (playMedia)
+                    if (playMedia && item.Type == ExecutionQueueType.RunMediaAndPlay.ToString())
                     {
                         await Task.Run(() => RunMediaAndPlayWithDelay());
                     }

@@ -17,7 +17,7 @@ namespace Supp.Common
         /// <returns></returns>
         public static PartsOfTheDayEng GetPartOfTheDay(DateTime dateTime)
         {
-            var time = int.Parse(DateTime.Now.ToString("HHmm"));
+            var time = int.Parse(dateTime.ToString("HHmm"));
             var result = PartsOfTheDayEng.NotSet;
 
             if (time >= 600 && time <= 1159) result = PartsOfTheDayEng.Morning;
