@@ -152,7 +152,7 @@ namespace Tools
                 windowY = workingAreaHeight;
             }
 
-            if (fullScreen && alwaysShow && windowNormalFormat == false && hide == false) result = utility.RunAS(browserPath, browserExeName, $"-–ignore-certificate-errors --chrome-frame --enable-speech-dispatcher --window-size={workingAreaWidth + 22},{workingAreaHeight + taskBarHeight+10} --window-position={-10},{-(taskBarHeight)} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
+            if (fullScreen && alwaysShow && windowNormalFormat == false && hide == false) result = utility.RunAS(browserPath, browserExeName, $"-–ignore-certificate-errors --chrome-frame --enable-speech-dispatcher --window-size={workingAreaWidth + 20},{workingAreaHeight + taskBarHeight+10} --window-position={-10},{-(taskBarHeight)} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
             else if (!fullScreen && alwaysShow && windowNormalFormat == false && hide == false) result = utility.RunAS(browserPath, browserExeName, $"-–ignore-certificate-errors --chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={(workingAreaWidth - windowWidth) + 10},{(workingAreaHeight - windowHeight) + 10} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
             else if (windowNormalFormat == false && hide == true) result = utility.RunAS(browserPath, browserExeName, $"-–ignore-certificate-errors --chrome-frame --enable-speech-dispatcher --window-size={windowWidth},{windowHeight} --window-position={windowX},{windowY} --app={suppSiteBaseUrl + suppSiteSpeechAppUrl}", host, windowsUsername, windowsPassword, true, true, false);
             else if (windowNormalFormat && hide == false) 
@@ -179,7 +179,7 @@ namespace Tools
             IntPtr result = default(IntPtr);
             try
             {     
-                if(fullScreen && windowNormalFormat == false) result = utility.MoveExtWindow(windowCaption, -10, -40, workingAreaWidth + 22, workingAreaHeight + 50);
+                if(fullScreen && windowNormalFormat == false) result = utility.MoveExtWindow(windowCaption, -10, -40, workingAreaWidth + 20, workingAreaHeight + 50);
                 else if(windowNormalFormat == false) result = utility.MoveExtWindow(windowCaption, (workingAreaWidth - windowWidth) + 10, (workingAreaHeight - windowHeight) + 10, windowWidth, windowHeight);
 
                 if (result == default(IntPtr) || windowNormalFormat) Start(false, windowNormalFormat);
@@ -231,7 +231,7 @@ namespace Tools
 
             try
             {
-                if (fullScreen) utility.MoveExtWindowByProcessId(processId, -10, -40, workingAreaWidth + 22, workingAreaHeight + 50);
+                if (fullScreen) utility.MoveExtWindowByProcessId(processId, -10, -40, workingAreaWidth + 20, workingAreaHeight + 50);
                 else utility.MoveExtWindowByProcessId(processId, (workingAreaWidth - windowWidth) + 10, (workingAreaHeight - windowHeight) + 10, windowWidth, windowHeight);
 
                 var speechService = new SpeechService();

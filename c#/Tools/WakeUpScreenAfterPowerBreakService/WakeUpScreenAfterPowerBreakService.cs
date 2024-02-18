@@ -58,6 +58,8 @@ namespace Tools.WakeUpScreenAfterPowerBreak
         string suppSiteBaseUrl;
         long suppSiteUserId = 0;
         string meteoParameterToTheSalutation;
+        double volumePercent;
+        double informationMorningVolumePercent;
 
         public const int KEYEVENTF_EXTENTEDKEY = 1;
         public const int KEYEVENTF_KEYUP = 0;
@@ -102,6 +104,10 @@ namespace Tools.WakeUpScreenAfterPowerBreak
             commonUtility = new Common.Utility();
 
             volumeOfNotify = int.Parse(appSettings["VolumeOfNotify"]);
+
+            volumePercent = double.Parse(appSettings["VolumePercent"]);
+
+            informationMorningVolumePercent = double.Parse(appSettings["InformationMorningVolumePercent"]);
 
             notifyMute = bool.Parse(appSettings["NotifyMute"]);
             notifyPopupShow = bool.Parse(appSettings["NotifyPopupShow"]);
@@ -219,6 +225,8 @@ namespace Tools.WakeUpScreenAfterPowerBreak
             {
                 if (Supp.Common.Utility.GetPartOfTheDay(now.AddHours(-1.5)) == PartsOfTheDayEng.Morning && !infoReaded)
                 {
+                    commonUtility.SetVolume(informationMorningVolumePercent);
+
                     infoReaded = true;
 
                     var salutation = "NAME";
@@ -255,6 +263,13 @@ namespace Tools.WakeUpScreenAfterPowerBreak
                         if (culture.ToLower() == "it-it") answer += " Attenzione! probabilmente il token google è scaduto.";
                         if (culture.ToLower() == "en-us") answer += " Attention! probably the google token has expired.";
                     }
+
+                    Task.Run(() =>
+                        {
+                            System.Threading.Thread.Sleep(120000);
+                            commonUtility.SetVolume(volumePercent);
+                        }
+                    );
                 }
                 else 
                 {
