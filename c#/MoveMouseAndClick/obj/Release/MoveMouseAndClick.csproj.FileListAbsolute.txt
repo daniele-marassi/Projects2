@@ -1,0 +1,16 @@
+C:\Users\ev\GoogleDriveShare\Projects\c#\MoveMouseAndClick\bin\Release\External_library\Additional.dll.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\MoveMouseAndClick\bin\Release\External_library\Additional.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\MoveMouseAndClick\bin\Release\External_library\Additional.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\MoveMouseAndClick\bin\Release\MoveMouseAndClick.exe.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\MoveMouseAndClick\bin\Release\MoveMouseAndClick.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\MoveMouseAndClick\bin\Release\MoveMouseAndClick.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\MoveMouseAndClick\bin\Release\Additional.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\MoveMouseAndClick\bin\Release\Newtonsoft.Json.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\MoveMouseAndClick\bin\Release\Additional.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\MoveMouseAndClick\bin\Release\Additional.dll.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\MoveMouseAndClick\bin\Release\Newtonsoft.Json.xml
+C:\Users\ev\GoogleDriveShare\Projects\c#\MoveMouseAndClick\obj\Release\MoveMouseAndClick.csproj.AssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\MoveMouseAndClick\obj\Release\MoveMouseAndClick.csproj.CoreCompileInputs.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\MoveMouseAndClick\obj\Release\MoveMous.3BAB50A1.Up2Date
+C:\Users\ev\GoogleDriveShare\Projects\c#\MoveMouseAndClick\obj\Release\MoveMouseAndClick.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\MoveMouseAndClick\obj\Release\MoveMouseAndClick.pdb
