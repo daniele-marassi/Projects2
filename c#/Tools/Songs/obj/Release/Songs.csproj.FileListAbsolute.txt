@@ -46,6 +46,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Release\it\EntityFramew
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\bin\Release\it\EntityFramework.SqlServer.resources.dll
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Release\Songs.csproj.AssemblyReference.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Release\Songs.csproj.CoreCompileInputs.cache
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Release\Songs.csproj.CopyComplete
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Release\Songs.csproj.Up2Date
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Release\Songs.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\Songs\obj\Release\Songs.pdb

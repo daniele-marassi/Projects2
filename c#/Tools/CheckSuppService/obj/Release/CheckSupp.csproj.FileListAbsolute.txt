@@ -35,6 +35,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\CheckSuppService\bin\Release\NLog
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\CheckSuppService\bin\Release\Supp.Models.pdb
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\CheckSuppService\obj\Release\CheckSupp.csproj.AssemblyReference.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\CheckSuppService\obj\Release\CheckSupp.csproj.CoreCompileInputs.cache
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\CheckSuppService\obj\Release\CheckSupp.csproj.CopyComplete
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\CheckSuppService\obj\Release\CheckSupp.csproj.Up2Date
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\CheckSuppService\obj\Release\CheckSupp.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\CheckSuppService\obj\Release\CheckSupp.pdb

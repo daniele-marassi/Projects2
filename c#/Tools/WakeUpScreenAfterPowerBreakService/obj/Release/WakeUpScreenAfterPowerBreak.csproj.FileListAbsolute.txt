@@ -83,6 +83,6 @@ C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakServic
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\bin\Release\GoogleService.dll.config
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\obj\Release\WakeUpScreenAfterPowerBreak.csproj.AssemblyReference.cache
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\obj\Release\WakeUpScreenAfterPowerBreak.csproj.CoreCompileInputs.cache
-C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\obj\Release\WakeUpScreenAfterPowerBreak.csproj.CopyComplete
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\obj\Release\WakeUpSc.F6F04355.Up2Date
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\obj\Release\WakeUpScreenAfterPowerBreak.exe
 C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\WakeUpScreenAfterPowerBreakService\obj\Release\WakeUpScreenAfterPowerBreak.pdb

@@ -25,6 +25,7 @@ using System.ServiceModel.Channels;
 using System.Timers;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
+using Tools.MessagesPopUp;
 
 namespace Tools.ExecutionQueue
 {
@@ -443,7 +444,30 @@ namespace Tools.ExecutionQueue
 
             try
             {
-                result = utility.RunExe(item.FullPath, item.Arguments, async, true).GetAwaiter().GetResult();
+                var fullPaths = item.FullPath.Split(';');
+
+                string[] arguments = { };
+                
+                if(item.Arguments != null)
+                    arguments = item.Arguments.Split(';');
+
+                for (int i = 0; i < fullPaths.Length; i++)
+                {
+                    var _arguments = "";
+
+                    try
+                    {
+                        _arguments = arguments[i];
+                    }
+                    catch (Exception)
+                    {
+                    }
+
+                    var _result = utility.RunExe(fullPaths[i].Trim(), _arguments.Trim(), async, true).GetAwaiter().GetResult();
+
+                    result.Output += _result.Output;
+                    result.Error += _result.Error;         
+                }
 
                 if (result.Error != null && result.Error != String.Empty)
                 {
