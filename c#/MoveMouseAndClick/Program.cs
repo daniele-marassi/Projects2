@@ -1,5 +1,4 @@
 ﻿using Additional;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -26,16 +25,21 @@ namespace MoveMouseAndClick
 
             try
             {
-                var _arg = "";
+                //args = new string[6];//for test
+                //
+                //args[0] = "101";//for test
+                //args[1] = "102";//for test
+                //args[2] = "103";//for test
+                //
+                //args[3] = "201";//for test
+                //args[4] = "202";//for test
+                //args[5] = "203";//for test
 
                 for (int i = 0; i < args.Length; i++)
                 {
-                    if (_arg != "") _arg += " ";
-                    _arg += args[i];
+                    _params.Add(new Parameters() { X = int.Parse(args[i]), Y = int.Parse(args[i + 1]), Sleep = int.Parse(args[i + 2]) });
+                    i = i + 2;
                 }
-
-                //_arg = "[{\"X\":101, \"Y\":102, \"Sleep\":103},{\"X\":201, \"Y\":202, \"Sleep\":203}]"; //for test
-                _params = JsonConvert.DeserializeObject<List<Parameters>>(_arg);
 
                 if (_params == null) throw new Exception();
 
@@ -46,7 +50,7 @@ namespace MoveMouseAndClick
             }
             catch (Exception)
             {
-                MessageBox.Show("Pass this JSON structure in the parameters: " + "[{\"X\":101, \"Y\":102, \"Sleep\":103},{\"X\":201, \"Y\":202, \"Sleep\":203}]", "MoveMouseAndClick");
+                MessageBox.Show("Pass this structure in the parameters: " + "X Y SLEEP X Y SLEEP es. 101 102 103 201 202 203", "MoveMouseAndClick");
             }
         }
 
