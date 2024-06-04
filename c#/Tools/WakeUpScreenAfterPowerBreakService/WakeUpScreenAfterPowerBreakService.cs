@@ -55,6 +55,7 @@ namespace Tools.WakeUpScreenAfterPowerBreak
         string suppServiceHostBaseUrl;
         string culture;
         private static DateTime dateLastMessage;
+        private static List<string> lastMessage;
         string suppSiteBaseUrl;
         long suppSiteUserId = 0;
         string meteoParameterToTheSalutation;
@@ -115,6 +116,7 @@ namespace Tools.WakeUpScreenAfterPowerBreak
             meteoParameterToTheSalutation = appSettings["MeteoParameterToTheSalutation"];
 
             dateLastMessage = DateTime.Now;
+            lastMessage = new List<string>() { };
 
             commonInfo = new Supp.Common.Info();
 
@@ -164,9 +166,10 @@ namespace Tools.WakeUpScreenAfterPowerBreak
 
                                 var answer = GetInfo(token, service1Username, userId, suppServiceHostBaseUrl, culture, now);
 
-                                if (answer != null && answer != "" && answer != " ")
+                                if (answer != null && answer != "" && answer != " " && !lastMessage.Contains(answer))
                                 {
                                     dateLastMessage = DateTime.Now;
+                                    lastMessage.Add(answer);
 
                                     bool response = false;
                                     var keyValuePairs = new Dictionary<string, string>() { };

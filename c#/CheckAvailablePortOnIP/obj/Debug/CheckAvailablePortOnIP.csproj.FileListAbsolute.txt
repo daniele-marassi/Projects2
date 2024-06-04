@@ -1,0 +1,10 @@
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAvailablePortOnIP\bin\Debug\CheckAvailablePortOnIP.exe.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAvailablePortOnIP\bin\Debug\CheckAvailablePortOnIP.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAvailablePortOnIP\bin\Debug\CheckAvailablePortOnIP.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAvailablePortOnIP\obj\Debug\CheckAvailablePortOnIP.csproj.AssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAvailablePortOnIP\obj\Debug\CheckAvailablePortOnIP.Properties.Resources.resources
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAvailablePortOnIP\obj\Debug\CheckAvailablePortOnIP.csproj.GenerateResource.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAvailablePortOnIP\obj\Debug\CheckAvailablePortOnIP.csproj.CoreCompileInputs.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAvailablePortOnIP\obj\Debug\CheckAvailablePortOnIP.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAvailablePortOnIP\obj\Debug\CheckAvailablePortOnIP.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\CheckAvailablePortOnIP\obj\Debug\CheckAvailablePortOnIP.CheckAvailablePortOnIPFrm.resources
