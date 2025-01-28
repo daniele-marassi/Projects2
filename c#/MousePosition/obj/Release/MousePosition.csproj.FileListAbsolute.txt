@@ -1,0 +1,7 @@
+C:\Users\ev\GoogleDriveShare\Projects\c#\MousePosition\bin\Release\MousePosition.exe.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\MousePosition\bin\Release\MousePosition.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\MousePosition\bin\Release\MousePosition.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\MousePosition\obj\Release\MousePosition.csproj.AssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\MousePosition\obj\Release\MousePosition.csproj.CoreCompileInputs.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\MousePosition\obj\Release\MousePosition.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\MousePosition\obj\Release\MousePosition.pdb

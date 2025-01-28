@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <configSections>
+        <!-- For more information on Entity Framework configuration, visit http://go.microsoft.com/fwlink/?LinkID=237468 -->
+        <section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
+    </configSections>
+  <startup><supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7.2" /></startup>
+    <appSettings>
+        <add key="controlKey" value="Insert,NumPad0" />
+        <add key="keyUp" value="Up" />
+        <add key="KeyDown" value="Down" />
+        <add key="SleepOfTheQueueServiceInMilliseconds" value="250" />
+        <add key="SleepOfTheSyncIpServiceInMilliseconds" value="1800000" />
+        <add key="SleepOfTheReconnectBluetoothDeviceServiceInMilliseconds"
+            value="60000" />
+        <add key="SleepOfTheRenewNotesServiceInMilliseconds" value="1800000" />
+        <add key="SleepOfTheWakeUpScreenAfterPowerBreakServiceInMilliseconds"
+            value="200" />
+        <add key="TimeToClosePopUpInMilliseconds" value="20000" />
+        <add key="HookKey" value="true" />
+        <add key="QueueService" value="true" />
+        <add key="SyncIpService" value="False" />
+        <add key="ReconnectBluetoothDeviceService" value="False" />
+        <add key="RenewNotesService" value="False" />
+        <add key="WakeUpScreenAfterPowerBreakService" value="False" />
+        <add key="Speech" value="true" />
+        <add key="LimitLogFileInMB" value="50" />
+        <add key="SongsManager" value="true" />
+        <add key="SongsPath" value="F:\Musica" />
+        <add key="SongsPlayer" value="C:\Program Files (x86)\Windows Media Player\wmplayer.exe" />
+        <add key="BluetoothDeviceTypeList" value="Audio" />
+        <add key="BluetoothDeviceList" value="Soundbar SR400" />
+        <add key="BluetoothDevicePasswordList" value="0000" />
+        <add key="SuppServiceHostBaseUrl" value="http://192.168.1.105:82/" />
+        <add key="_SuppServiceHostBaseUrl" value="http://localhost:52110/" />
+        <add key="SuppSiteBaseUrl" value="https://192.168.1.105:83/" />
+        <add key="_SuppSiteBaseUrl" value="https://localhost:44388/" />
+        <add key="SuppUsername" value="daniele.marassi.ev.tb@gmail.com" />
+        <add key="SuppPassword" value="Enilno.00" />
+        <add key="_Host" value="EV-PC" />
+        <add key="__SuppDatabaseConnection" value="Data Source=EV-TB,1433\SQLEXPRESS;Initial Catalog=Supp.DataBase; user id=Admin;password=Enilno.00;" />
+        <add key="_SuppDatabaseConnection" value="Data Source=localhost;Initial Catalog=Supp.DataBase; user id=Admin;password=Enilno.00;" />
+        <add key="Host" value="EV-TB" />
+        <add key="SuppDatabaseConnection" value="Data Source=localhost\SQLEXPRESS;Initial Catalog=Supp.DataBase; user id=Admin;password=Enilno.00;" />
+        <add key="ShowTimeout" value="30000" />
+        <add key="FullScreen" value="true" />
+        <add key="AlwaysShow" value="true" />
+        <add key="WindowWidth" value="530" />
+        <add key="WindowHeight" value="600" />
+        <add key="WindowCaption" value="Box" />

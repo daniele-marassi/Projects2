@@ -1,0 +1,15 @@
+C:\Users\ev\GoogleDriveShare\Projects\c#\StartTools\bin\Debug\StartTools.exe.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\StartTools\bin\Debug\StartTools.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\StartTools\bin\Debug\StartTools.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\StartTools\obj\Debug\StartTools.csproj.AssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\StartTools\obj\Debug\StartTools.csproj.SuggestedBindingRedirects.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\StartTools\obj\Debug\StartTools.csproj.CoreCompileInputs.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\StartTools\obj\Debug\StartTools.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\StartTools\obj\Debug\StartTools.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\StartTools\bin\Debug\StartTools.exe.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\StartTools\bin\Debug\StartTools.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\StartTools\bin\Debug\StartTools.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\StartTools\obj\Debug\StartTools.csproj.SuggestedBindingRedirects.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\StartTools\obj\Debug\StartTools.csproj.CoreCompileInputs.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\StartTools\obj\Debug\StartTools.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\StartTools\obj\Debug\StartTools.pdb

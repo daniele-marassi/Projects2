@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "0d06903f-d4aa-430d-a58b-f81aa899cb8c": {
+      "ProjectGuid": "0d06903f-d4aa-430d-a58b-f81aa899cb8c",
+      "DisplayName": "RenewNotes",
+      "ColorIndex": 0
+    },
+    "f317af2e-9704-4a2a-bdae-b4662ed9483b": {
+      "ProjectGuid": "f317af2e-9704-4a2a-bdae-b4662ed9483b",
+      "DisplayName": "Tools",
+      "ColorIndex": 1
+    },
+    "83225b9d-2061-4ec4-b933-b57d6e4b352c": {
+      "ProjectGuid": "83225b9d-2061-4ec4-b933-b57d6e4b352c",
+      "DisplayName": "ExecutionQueue",
+      "ColorIndex": 2
+    },
+    "55c3206f-a2d0-47fc-968e-834fd5896e1f": {
+      "ProjectGuid": "55c3206f-a2d0-47fc-968e-834fd5896e1f",
+      "DisplayName": "MessagesPopUp",
+      "ColorIndex": 3
+    },
+    "b9466864-1158-409a-9312-5eb002ec0b60": {
+      "ProjectGuid": "b9466864-1158-409a-9312-5eb002ec0b60",
+      "DisplayName": "AboutBox",
+      "ColorIndex": 4
+    },
+    "2cebac98-3e27-409c-a7c6-647b5a19be0b": {
+      "ProjectGuid": "2cebac98-3e27-409c-a7c6-647b5a19be0b",
+      "DisplayName": "Common",
+      "ColorIndex": 5
+    },
+    "86504c23-3127-45c9-b568-ce2af5257b01": {
+      "ProjectGuid": "86504c23-3127-45c9-b568-ce2af5257b01",
+      "DisplayName": "RepositionSpeech",
+      "ColorIndex": 6
+    },
+    "0ecca25e-d738-40a1-b00b-d7750115ee67": {
+      "ProjectGuid": "0ecca25e-d738-40a1-b00b-d7750115ee67",
+      "DisplayName": "SyncIp",
+      "ColorIndex": 7
+    },
+    "ba4f1d4b-0503-416a-b77b-32b2ee44efe7": {
+      "ProjectGuid": "ba4f1d4b-0503-416a-b77b-32b2ee44efe7",
+      "DisplayName": "Songs",
+      "ColorIndex": 8
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "File esterni",
+      "ColorIndex": -1
+    },
+    "fd342ba0-de9a-49a0-8fcc-472771fdbf81": {
+      "ProjectGuid": "fd342ba0-de9a-49a0-8fcc-472771fdbf81",
+      "DisplayName": "WakeUpScreenAfterPowerBreak",
+      "ColorIndex": 9
+    },
+    "e8f2f7d4-4495-49da-850f-8b323e19a6cd": {
+      "ProjectGuid": "e8f2f7d4-4495-49da-850f-8b323e19a6cd",
+      "DisplayName": "ReconnectBluetoothDevice",
+      "ColorIndex": 10
+    },
+    "53584470-ac27-43ce-9f39-fe2e3feb1b1e": {
+      "ProjectGuid": "53584470-ac27-43ce-9f39-fe2e3feb1b1e",
+      "DisplayName": "StartTools",
+      "ColorIndex": 11
+    }
+  },
+  "NextColorIndex": 12
+}

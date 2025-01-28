@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <configSections>
+        <!-- For more information on Entity Framework configuration, visit http://go.microsoft.com/fwlink/?LinkID=237468 -->
+        <section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
+    </configSections>
+  <startup><supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7.2" /></startup>
+    <appSettings>
+        <add key="controlKey" value="Insert,NumPad0" />
+        <add key="keyUp" value="Up" />
+        <add key="KeyDown" value="Down" />
+        <add key="SleepOfTheMainServiceInMilliseconds" value="3600000" />
+        <add key="SleepOfTheQueueServiceInMilliseconds" value="250" />
+        <add key="SleepOfTheSyncIpServiceInMilliseconds" value="1800000" />
+        <add key="SleepOfTheCheckSuppServiceInMilliseconds" value="300000" />
+        <add key="SleepOfTheReconnectBluetoothDeviceServiceInMilliseconds"
+            value="60000" />
+        <add key="SleepOfTheRenewNotesServiceInMilliseconds" value="1800000" />
+        <add key="SleepOfTheWakeUpScreenAfterPowerBreakServiceInMilliseconds"
+            value="200" />
+        <add key="TimeToClosePopUpInMilliseconds" value="20000" />
+        <add key="HookKey" value="True" />
+        <add key="QueueService" value="True" />
+        <add key="SyncIpService" value="False" />
+        <add key="CheckSuppService" value="True" />
+        <add key="ReconnectBluetoothDeviceService" value="False" />
+        <add key="RenewNotesService" value="False" />
+        <add key="WakeUpScreenAfterPowerBreakService" value="False" />
+        <add key="Speech" value="True" />
+        <add key="LimitLogFileInMB" value="50" />
+        <add key="SongsManager" value="true" />
+        <add key="SongsPath" value="F:\Musica" />
+        <add key="SongsPlayer" value="C:\Program Files (x86)\Windows Media Player\wmplayer.exe" />
+        <add key="VolumeOfNotify" value="10" />
+        <add key="NotifyMute" value="False" />
+        <add key="NotifyPopupShow" value="True" />
+        <add key="LogsDirectory" value="C:\temp\Logs" />
+        <add key="BluetoothDeviceTypeList" value="Audio" />
+        <add key="BluetoothDeviceList" value="Soundbar SR400" />
+        <add key="BluetoothDevicePasswordList" value="0000" />
+        <add key="SuppServiceHostBaseUrl" value="http://192.168.1.105:82/" />
+        <add key="_SuppServiceHostBaseUrl" value="http://localhost:52110/" />
+        <add key="SuppSiteBaseUrl" value="https://192.168.1.105:83/" />
+        <add key="_SuppSiteBaseUrl" value="https://localhost:44388/" />
+        <add key="SuppUsername" value="daniele.marassi.ev.tb@gmail.com" />
+        <add key="SuppPassword" value="Enilno.00" />
+        <add key="AccessTokenAdminForService" value="1|e894d67378cf3f2ec4ca4238a0b92382b45425b73f8cbee00dcc509a6f75849bc4ca4238a0b92382e3afed0047b080590dcc509a6f75849bd0fada10f400c1e5e3afed0047b08059bf318f3dc85e3f51d0fada10f400c1e5efac344901c6b016bf318f3dc85e3f51e3afed0047b08059efac344901c6b016d0fada10f400c1e5e3afed0047b08059e3afed0047b08059d0fada10f400c1e5d0fada10f400c1e5e3afed0047b080599f9cb79859dbe06bd0fada10f400c1e545084e074e7146939f9cb79859dbe06b1329e03393e056f545084e074e714693e20b4b0a38b3965b" />
+        <add key="Host" value="EV-PC" />
+        <add key="SuppDatabaseConnection" value="Data Source=192.168.1.105\SQLEXPRESS;Initial Catalog=Supp.DataBase; user id=Admin;password=Enilno.00;" />
+        <add key="_SuppDatabaseConnection" value="Data Source=localhost;Initial Catalog=Supp.DataBase; user id=Admin;password=Enilno.00;" />
+        <add key="_Host" value="EV-TB" />
+        <add key="__SuppDatabaseConnection" value="Data Source=localhost\SQLEXPRESS;Initial Catalog=Supp.DataBase; user id=Admin;password=Enilno.00;" />
+        <add key="ShowTimeout" value="30000" />
+        <add key="FullScreen" value="true" />
+        <add key="AlwaysShow" value="true" />
+        <add key="WindowWidth" value="530" />
+        <add key="WindowHeight" value="600" />
+        <add key="WindowCaption" value="Box" />
+        <add key="BrowserPath" value="C:\Program Files\Google\Chrome\Application" />
+        <add key="BrowserExeName" value="chrome.exe" />
+        <add key="WindowsUsername" value="Admin" />
+        <add key="WindowsPassword" value="Enilno.00" />
+        <add key="SuppSiteSpeechAppUrl" value="WebSpeeches/Recognition" />
+        <add key="SuppSiteSpeechAppUrlParamsSeparatedWithComma" value="_username=#USERNAME#,_password=#PASSWORD#,_application=true,_alwaysShow=true,_login=true" />
+        <add key="VolumePercent" value="40,0" />
+        <add key="VolumeAppPath" value="C:\Program Files (x86)\Commands\Volume\volume_with_percentage.exe" />
+    </appSettings>
+  <entityFramework>
+    <providers>
+      <provider invariantName="System.Data.SqlClient" type="System.Data.Entity.SqlServer.SqlProviderServices, EntityFramework.SqlServer" />
+    </providers>
+  </entityFramework>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-13.0.0.0" newVersion="13.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Google.Apis.Calendar.v3" publicKeyToken="4b01fa6e34db77ab" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-1.55.0.2554" newVersion="1.55.0.2554" />

@@ -1,0 +1,17 @@
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\bin\Release\External_library\Additional.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\bin\Release\External_library\Additional.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\bin\Release\External_library\Additional.dll.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\bin\Release\RepositionSpeech.exe.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\bin\Release\RepositionSpeech.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\bin\Release\RepositionSpeech.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\bin\Release\Additional.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\bin\Release\System.ValueTuple.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\bin\Release\Newtonsoft.Json.dll
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\bin\Release\Additional.pdb
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\bin\Release\Additional.dll.config
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\bin\Release\System.ValueTuple.xml
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\obj\Release\RepositionSpeech.csproj.AssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\obj\Release\RepositionSpeech.csproj.CoreCompileInputs.cache
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\obj\Release\Repositi.D23D0FFB.Up2Date
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\obj\Release\RepositionSpeech.exe
+C:\Users\ev\GoogleDriveShare\Projects\c#\Tools\RepositionSpeech\obj\Release\RepositionSpeech.pdb
