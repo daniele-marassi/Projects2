@@ -19,6 +19,8 @@ using System.Threading.Tasks;
 using static Supp.Site.Common.Config;
 using System.Xml.Linq;
 using Supp.Interfaces;
+using Microsoft.Extensions.Hosting;
+using System.Security.Policy;
 
 namespace Supp.Site.Recognition
 {
@@ -168,6 +170,14 @@ namespace Supp.Site.Recognition
                         if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "it-it") percentage = " percento";
                         if (JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).General.Culture.ToLower() == "en-us") percentage = " percent";
                         _phrase = _phrase.Replace("%", percentage);
+
+                        var hostsArray = JsonConvert.DeserializeObject<List<string>>(JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.HostsArray);
+
+                        foreach (var host in hostsArray)
+                        {
+                            if (_phrase.Contains("in " + host, StringComparison.InvariantCultureIgnoreCase))
+                                _hostSelected = host;
+                        }
                     }
 
                     var currentMethod = nLogUtility.GetMethodToNLog(MethodInfo.GetCurrentMethod());

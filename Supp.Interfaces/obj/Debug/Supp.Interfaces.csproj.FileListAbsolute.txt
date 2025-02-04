@@ -1,0 +1,9 @@
+C:\Users\ev\GoogleDriveShare\Projects\Supp.Interfaces\bin\Debug\Supp.Interfaces.dll
+C:\Users\ev\GoogleDriveShare\Projects\Supp.Interfaces\bin\Debug\Supp.Interfaces.pdb
+C:\Users\ev\GoogleDriveShare\Projects\Supp.Interfaces\bin\Debug\Supp.Models.dll
+C:\Users\ev\GoogleDriveShare\Projects\Supp.Interfaces\bin\Debug\Supp.Models.pdb
+C:\Users\ev\GoogleDriveShare\Projects\Supp.Interfaces\obj\Debug\Supp.Interfaces.csproj.AssemblyReference.cache
+C:\Users\ev\GoogleDriveShare\Projects\Supp.Interfaces\obj\Debug\Supp.Interfaces.csproj.CoreCompileInputs.cache
+C:\Users\ev\GoogleDriveShare\Projects\Supp.Interfaces\obj\Debug\Supp.Int.D045BDBA.Up2Date
+C:\Users\ev\GoogleDriveShare\Projects\Supp.Interfaces\obj\Debug\Supp.Interfaces.dll
+C:\Users\ev\GoogleDriveShare\Projects\Supp.Interfaces\obj\Debug\Supp.Interfaces.pdb
