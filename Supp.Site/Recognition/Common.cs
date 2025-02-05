@@ -856,6 +856,16 @@ namespace Supp.Site.Recognition
                             if (DateTime.Now.Hour == 3) startAnswer = "";
                         }
 
+                        if (_phrase != "" && _phrase != null && data == null && _reset == false && _onlyRefresh == false && (_subType == null || _subType == ""))
+                        {
+                            var listeningPhrase = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.ListeningWord1.Trim().ToLower();
+                            if (listeningPhrase != "") listeningPhrase += " ";
+                            listeningPhrase += JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.ListeningWord2.Trim().ToLower();
+
+                            if (_phrase.Trim().ToLower() == listeningPhrase)
+                                data = new WebSpeechDto() { Answer = JsonConvert.DeserializeObject<Configuration>(identification.ConfigInJson).Speech.ListeningAnswer, Ehi = 1, FinalStep = false };
+                        }
+
                         if ((_phrase == null || _phrase == "") && data == null && _reset == false && _onlyRefresh == false && (_subType == null || _subType == ""))
                         {
                             data = new WebSpeechDto() { Answer = startAnswer, Ehi = 0, FinalStep = true };
