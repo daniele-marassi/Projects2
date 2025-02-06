@@ -1051,7 +1051,7 @@ namespace Supp.Site.Recognition
             if (pronouncedPhrase == null) pronouncedPhrase = String.Empty;
             if (phraseFromData == null) phraseFromData = String.Empty;
 
-            var phrase = pronouncedPhrase;
+            var phrase = "";
 
             try
             {
@@ -1071,10 +1071,25 @@ namespace Supp.Site.Recognition
 
             if(phrases == null) phrases = new List<string>() { };
 
+            var temp1 = "";
+            var temp2 = "";
+
             foreach (var item in phrases)
             {
-                phrase = phrase.Replace(item, "");
+                if (temp1 != "") temp1 += " ";
+                temp1 += item;
+
+                if (temp2 != "") temp2 = " " + temp2;
+                temp2 = item + temp2;
             }
+
+            String[] strings = null;
+
+            if (pronouncedPhrase.IndexOf(temp1) > 0) strings = pronouncedPhrase.Split(temp1);
+            if (pronouncedPhrase.IndexOf(temp2) > 0) strings = pronouncedPhrase.Split(temp2);
+
+            if (strings.Length > 1)
+                phrase = strings[1];
 
             return phrase;
         }
