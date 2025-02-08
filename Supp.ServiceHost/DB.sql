@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [Supp.DataBase]    Script Date: 06/02/2025 23:33:41 ******/
+/****** Object:  Database [Supp.DataBase]    Script Date: 08/02/2025 16:28:54 ******/
 CREATE DATABASE [Supp.DataBase]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -80,13 +80,13 @@ ALTER DATABASE [Supp.DataBase] SET QUERY_STORE = OFF
 GO
 USE [Supp.DataBase]
 GO
-/****** Object:  User [Admin]    Script Date: 06/02/2025 23:33:41 ******/
+/****** Object:  User [Admin]    Script Date: 08/02/2025 16:28:54 ******/
 CREATE USER [Admin] WITHOUT LOGIN WITH DEFAULT_SCHEMA=[dbo]
 GO
-/****** Object:  Schema [auth]    Script Date: 06/02/2025 23:33:41 ******/
+/****** Object:  Schema [auth]    Script Date: 08/02/2025 16:28:54 ******/
 CREATE SCHEMA [auth]
 GO
-/****** Object:  Table [auth].[Authentications]    Script Date: 06/02/2025 23:33:41 ******/
+/****** Object:  Table [auth].[Authentications]    Script Date: 08/02/2025 16:28:54 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -107,7 +107,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[Tokens]    Script Date: 06/02/2025 23:33:41 ******/
+/****** Object:  Table [auth].[Tokens]    Script Date: 08/02/2025 16:28:54 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -131,7 +131,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[UserRoles]    Script Date: 06/02/2025 23:33:41 ******/
+/****** Object:  Table [auth].[UserRoles]    Script Date: 08/02/2025 16:28:54 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -147,7 +147,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[UserRoleTypes]    Script Date: 06/02/2025 23:33:41 ******/
+/****** Object:  Table [auth].[UserRoleTypes]    Script Date: 08/02/2025 16:28:54 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -162,7 +162,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[Users]    Script Date: 06/02/2025 23:33:41 ******/
+/****** Object:  Table [auth].[Users]    Script Date: 08/02/2025 16:28:54 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -180,7 +180,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ExecutionQueues]    Script Date: 06/02/2025 23:33:41 ******/
+/****** Object:  Table [dbo].[ExecutionQueues]    Script Date: 08/02/2025 16:28:54 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -205,7 +205,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[GoogleAccounts]    Script Date: 06/02/2025 23:33:41 ******/
+/****** Object:  Table [dbo].[GoogleAccounts]    Script Date: 08/02/2025 16:28:54 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -224,7 +224,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[GoogleAuths]    Script Date: 06/02/2025 23:33:41 ******/
+/****** Object:  Table [dbo].[GoogleAuths]    Script Date: 08/02/2025 16:28:54 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -243,7 +243,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Media]    Script Date: 06/02/2025 23:33:41 ******/
+/****** Object:  Table [dbo].[Media]    Script Date: 08/02/2025 16:28:54 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -281,7 +281,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[MediaConfigurations]    Script Date: 06/02/2025 23:33:41 ******/
+/****** Object:  Table [dbo].[MediaConfigurations]    Script Date: 08/02/2025 16:28:54 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -298,7 +298,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Songs]    Script Date: 06/02/2025 23:33:41 ******/
+/****** Object:  Table [dbo].[Songs]    Script Date: 08/02/2025 16:28:54 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -317,7 +317,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[WebSpeeches]    Script Date: 06/02/2025 23:33:41 ******/
+/****** Object:  Table [dbo].[WebSpeeches]    Script Date: 08/02/2025 16:28:54 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -374,11 +374,11 @@ SET IDENTITY_INSERT [auth].[Tokens] ON
 GO
 INSERT [auth].[Tokens] ([Id], [UserId], [TokenCode], [ExpiryDate], [ExpiresInSeconds], [UserName], [RolesInJson], [Name], [Surname], [ConfigInJson], [InsDateTime]) VALUES (27, 8, N'8|e894d67378cf3f2ec9f0f895fb98ab91b45425b73f8cbee059f51fd0297e236dc9f0f895fb98ab91d71e6670ea1eff5959f51fd0297e236db223cde37ee6480ad71e6670ea1eff59bf318f3dc85e3f51b223cde37ee6480aefac344901c6b016bf318f3dc85e3f51db0c619c8f3dab03efac344901c6b0161dd8a18c33bee3f9db0c619c8f3dab038872127956df27401dd8a18c33bee3f9ab1e36854104cd658872127956df2740b3065929dadc89f1ab1e36854104cd65359326578202c07cb3065929dadc89f147cdd975b1b84a6e359326578202c07cde3569c03aaa054a', NULL, 31617813, N'daniele.marassi.phone1@gmail.com', N'["User","SuperUser"]', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"Salotto\",\"Soggiorno\"]","HostDefault":"Salotto","ListeningWord1":"Ehi","ListeningWord2":"cortana","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "False", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "False", "GoogleCalendarAccount": "daniele.marassi", "MessagingActive": "False", "NicknamesInJson":"[\"NAME\",\"Amore\"]"}}', CAST(N'2025-02-04T22:43:33.857' AS DateTime))
 GO
-INSERT [auth].[Tokens] ([Id], [UserId], [TokenCode], [ExpiryDate], [ExpiresInSeconds], [UserName], [RolesInJson], [Name], [Surname], [ConfigInJson], [InsDateTime]) VALUES (33, 5, N'5|e894d67378cf3f2ee4da3b7fbbce2345b45425b73f8cbee0d7772b0674a318d5e4da3b7fbbce2345a1cb419d64bbbc71d7772b0674a318d546b778683b1771d2a1cb419d64bbbc71bf318f3dc85e3f5146b778683b1771d2efac344901c6b016bf318f3dc85e3f51db0c619c8f3dab03efac344901c6b0161dd8a18c33bee3f9db0c619c8f3dab038872127956df27401dd8a18c33bee3f9ab1e36854104cd658872127956df2740b3065929dadc89f1ab1e36854104cd65359326578202c07cb3065929dadc89f12477643ec6b2a420359326578202c07c3a82ccc30d89a316', NULL, 31536467, N'daniele.marassi.ev.tb@gmail.com', N'["User","SuperUser"]', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"Salotto\",\"Soggiorno\"]","HostDefault":"Soggiorno","ListeningWord1":"soggiorno","ListeningWord2":"Ehi","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "False", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "True", "GoogleCalendarAccount": "daniele.marassi", "MessagingActive": "True", "NicknamesInJson":"[\"NAME\",\"Amore\"]"}}', CAST(N'2025-02-06T00:07:47.517' AS DateTime))
+INSERT [auth].[Tokens] ([Id], [UserId], [TokenCode], [ExpiryDate], [ExpiresInSeconds], [UserName], [RolesInJson], [Name], [Surname], [ConfigInJson], [InsDateTime]) VALUES (50, 5, N'5|e894d67378cf3f2ee4da3b7fbbce2345b45425b73f8cbee0d7772b0674a318d5e4da3b7fbbce2345a1cb419d64bbbc71d7772b0674a318d546b778683b1771d2a1cb419d64bbbc71bf318f3dc85e3f5146b778683b1771d2efac344901c6b016bf318f3dc85e3f51db0c619c8f3dab03efac344901c6b0161dd8a18c33bee3f9db0c619c8f3dab038872127956df27401dd8a18c33bee3f9ab1e36854104cd658872127956df2740b3065929dadc89f1ab1e36854104cd65359326578202c07cb3065929dadc89f1ab4cf14db1602dc3359326578202c07c8abc494a9a7c1f33', NULL, 31599222, N'daniele.marassi.ev.tb@gmail.com', N'["User","SuperUser"]', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"Salotto\",\"Soggiorno\"]","HostDefault":"Soggiorno","ListeningWord1":"Ok","ListeningWord2":"Soggiorno","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "False", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "True", "GoogleCalendarAccount": "daniele.marassi", "MessagingActive": "True", "NicknamesInJson":"[\"NAME\",\"Amore\"]"}}', CAST(N'2025-02-07T17:33:42.213' AS DateTime))
 GO
-INSERT [auth].[Tokens] ([Id], [UserId], [TokenCode], [ExpiryDate], [ExpiresInSeconds], [UserName], [RolesInJson], [Name], [Surname], [ConfigInJson], [InsDateTime]) VALUES (38, 9, N'9|e894d67378cf3f2e45c48cce2e2d7fbdb45425b73f8cbee0ea1afc51c7c6ad2645c48cce2e2d7fbd60ccbbaaa02ab369ea1afc51c7c6ad26ef5b664f32f1586160ccbbaaa02ab369bf318f3dc85e3f51ef5b664f32f15861efac344901c6b016bf318f3dc85e3f51db0c619c8f3dab03efac344901c6b0161dd8a18c33bee3f9db0c619c8f3dab038872127956df27401dd8a18c33bee3f9ab1e36854104cd658872127956df2740b3065929dadc89f1ab1e36854104cd65359326578202c07cb3065929dadc89f19654d13882a20bf7359326578202c07c9c4e75e4864898c3', NULL, 31546916, N'daniele.marassi.service1@gmail.com', N'["User","SuperUser"]', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"Salotto\",\"Soggiorno\"]","HostDefault":"Soggiorno","ListeningWord1":"Ehi","ListeningWord2":"cortana","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "False", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "True", "GoogleCalendarAccount": "daniele.marassi", "MessagingActive": "False", "NicknamesInJson":"[\"NAME\",\"Amore\"]"}}', CAST(N'2025-02-06T03:01:56.743' AS DateTime))
+INSERT [auth].[Tokens] ([Id], [UserId], [TokenCode], [ExpiryDate], [ExpiresInSeconds], [UserName], [RolesInJson], [Name], [Surname], [ConfigInJson], [InsDateTime]) VALUES (51, 9, N'9|e894d67378cf3f2e45c48cce2e2d7fbdb45425b73f8cbee0ea1afc51c7c6ad2645c48cce2e2d7fbd60ccbbaaa02ab369ea1afc51c7c6ad26ef5b664f32f1586160ccbbaaa02ab369bf318f3dc85e3f51ef5b664f32f15861efac344901c6b016bf318f3dc85e3f51db0c619c8f3dab03efac344901c6b0161dd8a18c33bee3f9db0c619c8f3dab038872127956df27401dd8a18c33bee3f9ab1e36854104cd658872127956df2740b3065929dadc89f1ab1e36854104cd65359326578202c07cb3065929dadc89f13bc0fd3917094fed359326578202c07cc759de78bbb2cef3', NULL, 31546908, N'daniele.marassi.service1@gmail.com', N'["User","SuperUser"]', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"Salotto\",\"Soggiorno\"]","HostDefault":"Soggiorno","ListeningWord1":"Ehi","ListeningWord2":"cortana","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "False", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "True", "GoogleCalendarAccount": "daniele.marassi", "MessagingActive": "False", "NicknamesInJson":"[\"NAME\",\"Amore\"]"}}', CAST(N'2025-02-08T03:01:48.327' AS DateTime))
 GO
-INSERT [auth].[Tokens] ([Id], [UserId], [TokenCode], [ExpiryDate], [ExpiresInSeconds], [UserName], [RolesInJson], [Name], [Surname], [ConfigInJson], [InsDateTime]) VALUES (43, 4, N'4|e894d67378cf3f2ea87ff679a2f3e71db45425b73f8cbee09181a67b7542122ca87ff679a2f3e71db78b7c4b7bde17e29181a67b7542122c01b358a015119262b78b7c4b7bde17e2bf318f3dc85e3f5101b358a015119262efac344901c6b016bf318f3dc85e3f51db0c619c8f3dab03efac344901c6b0161dd8a18c33bee3f9db0c619c8f3dab038872127956df27401dd8a18c33bee3f9ab1e36854104cd658872127956df2740b3065929dadc89f1ab1e36854104cd65359326578202c07cb3065929dadc89f12df68a5f4d81a9bc359326578202c07c74bc529a2f151e32', NULL, 31618906, N'daniele.marassi@gmail.com', N'["User","SuperUser"]', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"Salotto\",\"Soggiorno\"]","HostDefault":"Salotto","ListeningWord1":"Salotto","ListeningWord2":"Ehi","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "False", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "False", "GoogleCalendarAccount": "daniele.marassi", "MessagingActive": "False", "NicknamesInJson":"[\"NAME\",\"Amore\"]"}}', CAST(N'2025-02-06T23:01:46.537' AS DateTime))
+INSERT [auth].[Tokens] ([Id], [UserId], [TokenCode], [ExpiryDate], [ExpiresInSeconds], [UserName], [RolesInJson], [Name], [Surname], [ConfigInJson], [InsDateTime]) VALUES (53, 4, N'4|e894d67378cf3f2ea87ff679a2f3e71db45425b73f8cbee09181a67b7542122ca87ff679a2f3e71db78b7c4b7bde17e29181a67b7542122c01b358a015119262b78b7c4b7bde17e2bf318f3dc85e3f5101b358a015119262efac344901c6b016bf318f3dc85e3f51db0c619c8f3dab03efac344901c6b0161dd8a18c33bee3f9db0c619c8f3dab038872127956df27401dd8a18c33bee3f9ab1e36854104cd658872127956df2740b3065929dadc89f1ab1e36854104cd65359326578202c07cb3065929dadc89f1aff37b5c078fba91359326578202c07c714e137fea9a541c', NULL, 31595157, N'daniele.marassi@gmail.com', N'["User","SuperUser"]', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"Salotto\",\"Soggiorno\"]","HostDefault":"Salotto","ListeningWord1":"Ok","ListeningWord2":"Salotto","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "False", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "False", "GoogleCalendarAccount": "daniele.marassi", "MessagingActive": "False", "NicknamesInJson":"[\"NAME\",\"Amore\"]"}}', CAST(N'2025-02-08T16:25:57.913' AS DateTime))
 GO
 SET IDENTITY_INSERT [auth].[Tokens] OFF
 GO
@@ -432,9 +432,9 @@ INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [CustomizeParams], [
 GO
 INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [CustomizeParams], [InsDateTime]) VALUES (3, N'Guest', N'Guest', N'Guest', NULL, CAST(N'2020-01-27T14:20:55.193' AS DateTime))
 GO
-INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [CustomizeParams], [InsDateTime]) VALUES (4, N'daniele.marassi@gmail.com', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"Salotto\",\"Soggiorno\"]","HostDefault":"Salotto","ListeningWord1":"Salotto","ListeningWord2":"Ehi","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "False", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "False", "GoogleCalendarAccount": "daniele.marassi", "MessagingActive": "False", "NicknamesInJson":"[\"NAME\",\"Amore\"]"}}', CAST(N'2021-04-28T22:15:21.000' AS DateTime))
+INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [CustomizeParams], [InsDateTime]) VALUES (4, N'daniele.marassi@gmail.com', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"Salotto\",\"Soggiorno\"]","HostDefault":"Salotto","ListeningWord1":"Ok","ListeningWord2":"Salotto","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "False", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "False", "GoogleCalendarAccount": "daniele.marassi", "MessagingActive": "False", "NicknamesInJson":"[\"NAME\",\"Amore\"]"}}', CAST(N'2021-04-28T22:15:21.000' AS DateTime))
 GO
-INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [CustomizeParams], [InsDateTime]) VALUES (5, N'daniele.marassi.ev.tb@gmail.com', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"Salotto\",\"Soggiorno\"]","HostDefault":"Soggiorno","ListeningWord1":"soggiorno","ListeningWord2":"Ehi","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "False", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "True", "GoogleCalendarAccount": "daniele.marassi", "MessagingActive": "True", "NicknamesInJson":"[\"NAME\",\"Amore\"]"}}', CAST(N'2022-01-02T12:12:06.000' AS DateTime))
+INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [CustomizeParams], [InsDateTime]) VALUES (5, N'daniele.marassi.ev.tb@gmail.com', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"Salotto\",\"Soggiorno\"]","HostDefault":"Soggiorno","ListeningWord1":"Ok","ListeningWord2":"Soggiorno","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "False", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "True", "GoogleCalendarAccount": "daniele.marassi", "MessagingActive": "True", "NicknamesInJson":"[\"NAME\",\"Amore\"]"}}', CAST(N'2022-01-02T12:12:06.000' AS DateTime))
 GO
 INSERT [auth].[Users] ([Id], [UserName], [Name], [Surname], [CustomizeParams], [InsDateTime]) VALUES (8, N'daniele.marassi.phone1@gmail.com', N'Daniele', N'Marassi', N'{"General":{"PageSize":"5","Culture":"it-IT"},"Speech":{"HostsArray":"[\"Salotto\",\"Soggiorno\"]","HostDefault":"Salotto","ListeningWord1":"Ehi","ListeningWord2":"cortana","ListeningAnswer":"si dimmi",/*Salutation - If it contains the key ''NAME'' it will be replaced with your profile name. If it contains the key ''SURNAME'' it will be replaced with your profile surname.*/"Salutation":"Ehi NAME",/*MeteoParameterToTheSalutation - empty to disable it.*/"MeteoParameterToTheSalutation":"","DescriptionMeteoToTheSalutationActive": "True","RemindersActive": "False", "TimeToResetInSeconds": 172800, "TimeToEhiTimeoutInSeconds": 15, "WakeUpScreenAfterEhiActive": "False", "GoogleCalendarAccount": "daniele.marassi", "MessagingActive": "False", "NicknamesInJson":"[\"NAME\",\"Amore\"]"}}', CAST(N'2023-09-20T14:52:28.000' AS DateTime))
 GO
@@ -696,7 +696,7 @@ SET IDENTITY_INSERT [dbo].[WebSpeeches] OFF
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__UserRole__F9B8A48B05C457CE]    Script Date: 06/02/2025 23:33:44 ******/
+/****** Object:  Index [UQ__UserRole__F9B8A48B05C457CE]    Script Date: 08/02/2025 16:28:57 ******/
 ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED 
 (
 	[Type] ASC
@@ -704,7 +704,7 @@ ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__UserRole__F9B8A48B1C4A48B2]    Script Date: 06/02/2025 23:33:44 ******/
+/****** Object:  Index [UQ__UserRole__F9B8A48B1C4A48B2]    Script Date: 08/02/2025 16:28:57 ******/
 ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED 
 (
 	[Type] ASC
@@ -712,7 +712,7 @@ ALTER TABLE [auth].[UserRoleTypes] ADD UNIQUE NONCLUSTERED
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__Users__C9F284564B922F94]    Script Date: 06/02/2025 23:33:44 ******/
+/****** Object:  Index [UQ__Users__C9F284564B922F94]    Script Date: 08/02/2025 16:28:57 ******/
 ALTER TABLE [auth].[Users] ADD UNIQUE NONCLUSTERED 
 (
 	[UserName] ASC
@@ -720,7 +720,7 @@ ALTER TABLE [auth].[Users] ADD UNIQUE NONCLUSTERED
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__Users__C9F2845676246339]    Script Date: 06/02/2025 23:33:44 ******/
+/****** Object:  Index [UQ__Users__C9F2845676246339]    Script Date: 08/02/2025 16:28:57 ******/
 ALTER TABLE [auth].[Users] ADD UNIQUE NONCLUSTERED 
 (
 	[UserName] ASC
@@ -728,7 +728,7 @@ ALTER TABLE [auth].[Users] ADD UNIQUE NONCLUSTERED
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__WebSpeec__A20D08328D13A12F]    Script Date: 06/02/2025 23:33:44 ******/
+/****** Object:  Index [UQ__WebSpeec__A20D08328D13A12F]    Script Date: 08/02/2025 16:28:57 ******/
 ALTER TABLE [dbo].[WebSpeeches] ADD UNIQUE NONCLUSTERED 
 (
 	[Name] ASC,

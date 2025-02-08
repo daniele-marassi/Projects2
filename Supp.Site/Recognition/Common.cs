@@ -1088,7 +1088,7 @@ namespace Supp.Site.Recognition
             if (pronouncedPhrase.IndexOf(temp1) > 0) strings = pronouncedPhrase.Split(temp1);
             if (pronouncedPhrase.IndexOf(temp2) > 0) strings = pronouncedPhrase.Split(temp2);
 
-            if (strings.Length > 1)
+            if (strings != null && strings.Length > 1)
                 phrase = strings[1];
 
             return phrase;

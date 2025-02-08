@@ -145,12 +145,12 @@
                 id = 0;
             }
 
-            listeningWord1 = DecodeUnicodeExtended(model["ListeningWord1"]);
-            listeningWord2 = DecodeUnicodeExtended(model["ListeningWord2"]);
+            listeningWord1 = DecodeUnicodeExtended(model["ListeningWord1"]).trim().toLowerCase();
+            listeningWord2 = DecodeUnicodeExtended(model["ListeningWord2"]).trim().toLowerCase();
 
-            listeningPhrase = listeningWord1.trim().toLowerCase();
+            listeningPhrase = listeningWord1;
             if(listeningPhrase != "") listeningPhrase += " ";
-            listeningPhrase += listeningWord2.trim().toLowerCase();
+            listeningPhrase += listeningWord2;
 
             executionQueueId = DecodeUnicodeExtended(model["ExecutionQueueId"]);
             shortcutsInJson = DecodeUnicodeExtended(model["ShortcutsInJson"]);
@@ -229,12 +229,12 @@
                 id = 0;
             }
 
-            listeningWord1 = "@Model?.ListeningWord1";
-            listeningWord2 = "@Model?.ListeningWord2";
+            listeningWord1 = ("@Model?.ListeningWord1").trim().toLowerCase();
+            listeningWord2 = ("@Model?.ListeningWord2").trim().toLowerCase();
 
-            listeningPhrase = listeningWord1.trim().toLowerCase();
+            listeningPhrase = listeningWord1;
             if(listeningPhrase != "") listeningPhrase += " ";
-            listeningPhrase += listeningWord2.trim().toLowerCase();
+            listeningPhrase += listeningWord2;
 
             executionQueueId = "@Model?.ExecutionQueueId";
             shortcutsInJson = "@Model?.ShortcutsInJson";
@@ -771,7 +771,13 @@
                             document.getElementById("interim_span").innerHTML = "";
                             interim_transcript = "";
 
-                            if (_phrase === listeningPhrase && ehi == 0 && _reset == false) {
+                            var listeningPhraseFound = false;
+
+
+                            if (listeningWord1 != null && listeningWord1 != "null" && listeningWord1 != undefined && listeningWord1 != "") listeningPhraseFound = _phrase.includes(listeningWord1);
+                            if (listeningWord2 != null && listeningWord2 != "null" && listeningWord2 != undefined && listeningWord2 != "") listeningPhraseFound = _phrase.includes(listeningWord2);
+
+                            if (listeningPhraseFound && ehi == 0 && _reset == false) {
                                 ehiRecognitedAudio.play();
                                             
                                 var phraseTmp = _phrase;
@@ -784,7 +790,7 @@
                                 }   
 
                                 CallWebSpeechDtoInJson(("_subType=" + subType + "&userId=" + userId  + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionEhi");
-                            } else if (ehi == 1 && _phrase != listeningPhrase && _phrase != null && _phrase != "" && _reset == false) {
+                            } else if (ehi == 1 && listeningPhraseFound == false && _phrase != null && _phrase != "" && _reset == false) {
                                 ehiRecognitedAudio.play();
 
                                 var phraseTmp = _phrase;
@@ -797,7 +803,7 @@
                                 }   
 
                                 CallWebSpeechDtoInJson(("_subType=" + subType + "&userId=" + userId  + "&_step=" + step + "&_recognitionDisable=" + recognitionDisable + "&_id=" + id + "&_phrase=" + phraseTmp + "&_hostSelected="+$("#hosts_cmb option:selected").text() + "&_application="+application + "&_param="+encodeURIComponent(newParameters)) + "&_keysMatched=" + _keysMatched, "ResultRecognitionPhrase");
-                            } else if (ehi == 0 && _phrase != listeningPhrase && _phrase.includes(listeningPhrase) && _phrase != null && _phrase != "" && _reset == false) {
+                            } else if (ehi == 0 && _phrase != listeningPhrase && listeningPhraseFound == true && _phrase != null && _phrase != "" && _reset == false) {
                                 ehiRecognitedAudio.play();
 
                                 var phraseTmp = _phrase;
