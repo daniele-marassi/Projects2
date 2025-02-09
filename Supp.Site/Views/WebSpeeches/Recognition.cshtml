@@ -764,8 +764,8 @@
                     countTheTimeToResetInSeconds = 0;
                     countTheTimeToResetInterim_spanInSeconds = 0;
 
-                    var _phraseSplit = _phrase.split(" ");
-                    if (_phraseSplit.length > 0 && recognitionActive == true) {
+                    
+                    if (recognitionActive == true) {
                         if (isFinal == true){
                             LogWithTime("Recognition: " + interim_transcript);
                             document.getElementById("interim_span").innerHTML = "";
@@ -773,9 +773,26 @@
 
                             var listeningPhraseFound = false;
 
+                            if (ehi == 0) {
+                                var listeningPhraseFound1 = false;
+                                var listeningPhraseFound2 = false;
+                                var _phraseSplit = _phrase.split(" ");
 
-                            if (listeningWord1 != null && listeningWord1 != "null" && listeningWord1 != undefined && listeningWord1 != "") listeningPhraseFound = _phrase.includes(listeningWord1);
-                            if (listeningWord2 != null && listeningWord2 != "null" && listeningWord2 != undefined && listeningWord2 != "") listeningPhraseFound = _phrase.includes(listeningWord2);
+                                for (var x = 0; x < _phraseSplit.length; x++) {
+
+                                    if (listeningWord1 != null && listeningWord1 != "null" && listeningWord1 != undefined && listeningWord1 != "") {
+                                        if (_phraseSplit[x].trim().toLowerCase() == listeningWord1.trim().toLowerCase()) listeningPhraseFound1 = true;
+                                    } else
+                                        listeningPhraseFound1 = true;
+
+                                    if (listeningWord2 != null && listeningWord2 != "null" && listeningWord2 != undefined && listeningWord2 != "") {
+                                        if (_phraseSplit[x].trim().toLowerCase() == listeningWord2.trim().toLowerCase()) listeningPhraseFound2 = true;
+                                    } else
+                                        listeningPhraseFound2 = true;
+                                }
+
+                                listeningPhraseFound = listeningPhraseFound1 && listeningPhraseFound2;
+                            }
 
                             if (listeningPhraseFound && ehi == 0 && _reset == false) {
                                 ehiRecognitedAudio.play();
