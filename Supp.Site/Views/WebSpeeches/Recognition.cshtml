@@ -776,22 +776,46 @@
                             if (ehi == 0) {
                                 var listeningPhraseFound1 = false;
                                 var listeningPhraseFound2 = false;
+
+                                var listeningPhrasePosition1 = 0;
+                                var listeningPhrasePosition2 = 0;
+
                                 var _phraseSplit = _phrase.split(" ");
 
+                                var _phraseTemp = "";
+
                                 for (var x = 0; x < _phraseSplit.length; x++) {
+                                    
+                                    if (listeningPhraseFound1 && listeningPhraseFound2) {
+                                        if (_phraseTemp != "") _phraseTemp += " ";
+                                        _phraseTemp += _phraseSplit[x];
+                                    }
 
                                     if (listeningWord1 != null && listeningWord1 != "null" && listeningWord1 != undefined && listeningWord1 != "") {
-                                        if (_phraseSplit[x].trim().toLowerCase() == listeningWord1.trim().toLowerCase()) listeningPhraseFound1 = true;
+                                        if (_phraseSplit[x].trim().toLowerCase() == listeningWord1.trim().toLowerCase()) { 
+                                            listeningPhraseFound1 = true;
+                                            listeningPhrasePosition1 = x;
+                                            if (_phraseTemp != "") _phraseTemp += " ";
+                                            _phraseTemp += _phraseSplit[x];
+                                        }
                                     } else
                                         listeningPhraseFound1 = true;
 
                                     if (listeningWord2 != null && listeningWord2 != "null" && listeningWord2 != undefined && listeningWord2 != "") {
-                                        if (_phraseSplit[x].trim().toLowerCase() == listeningWord2.trim().toLowerCase()) listeningPhraseFound2 = true;
+                                        if (_phraseSplit[x].trim().toLowerCase() == listeningWord2.trim().toLowerCase()) {
+                                            listeningPhraseFound2 = true;
+                                            listeningPhrasePosition2 = x;
+                                            if (_phraseTemp != "") _phraseTemp += " ";
+                                            _phraseTemp += _phraseSplit[x];
+                                        }
                                     } else
                                         listeningPhraseFound2 = true;
                                 }
 
+                                _phrase = _phraseTemp;
+
                                 listeningPhraseFound = listeningPhraseFound1 && listeningPhraseFound2;
+                                if (((listeningPhrasePosition2 - listeningPhrasePosition1) > 3) || ((listeningPhrasePosition1 - listeningPhrasePosition2) > 3)) listeningPhraseFound = false;
                             }
 
                             if (listeningPhraseFound && ehi == 0 && _reset == false) {
