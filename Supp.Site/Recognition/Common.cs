@@ -21,6 +21,7 @@ using System.Xml.Linq;
 using Supp.Interfaces;
 using Microsoft.Extensions.Hosting;
 using System.Security.Policy;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Supp.Site.Recognition
 {
@@ -1071,27 +1072,25 @@ namespace Supp.Site.Recognition
 
             if(phrases == null) phrases = new List<string>() { };
 
-            var temp1 = "";
-            var temp2 = "";
-
-            foreach (var item in phrases)
-            {
-                if (temp1 != "") temp1 += " ";
-                temp1 += item;
-
-                if (temp2 != "") temp2 = " " + temp2;
-                temp2 = item + temp2;
-            }
-
             String[] strings = null;
+            var prevPos = 0;
 
-            if (pronouncedPhrase.IndexOf(temp1) > 0) strings = pronouncedPhrase.Split(temp1);
-            if (pronouncedPhrase.IndexOf(temp2) > 0) strings = pronouncedPhrase.Split(temp2);
+            for (int i = phrases.Count-1; i >= 0; i--)
+            {
+                var pos = pronouncedPhrase.IndexOf(phrases[i]);
+                if (pos >= prevPos && pronouncedPhrase.IndexOf(phrases[i]) > 0) strings = pronouncedPhrase.Split(phrases[i]);
+                prevPos = pos;
+            }
 
             if (strings != null && strings.Length > 1)
                 phrase = strings[1];
 
-            return phrase;
+            foreach (var item in phrases)
+            {
+                phrase = phrase.Replace(item, "");
+            }
+
+            return phrase.Trim();
         }
 
         /// <summary>
